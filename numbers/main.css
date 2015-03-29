@@ -1,0 +1,354 @@
+div
+{
+    -webkit-tap-highlight-color: transparent;
+}
+
+body
+{
+    position: absolute;
+    margin: 0px;
+    font-family: 'Roboto', sans-serif;
+    background: #fafafa;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+div.game-panel
+{
+    position: absolute;
+    width: 600px;
+    height: 336px;
+}
+
+div.frame
+{
+    overflow: hidden;
+    position: absolute;
+    width: 600px;
+    height: 336px;
+    background: #f5f5f5;
+    border-radius: 2px;
+    -webkit-border-radius: 2px;
+    box-shadow: 0px 4px 8px -2px rgba(0, 0, 0, 0.5);
+}
+
+div.label.target-label
+{
+    position: absolute;
+    width: 600px;
+    font-size: 48px;
+    color: rgba(66, 66, 66, 0.87);
+    text-align: center;
+    line-height: 64px;
+    cursor: default;
+}
+
+div.label.target-solutions-label
+{
+    position: absolute;
+    right: 9px;
+    bottom: 9px;
+    font-size: 22px;
+    cursor: default;
+}
+
+div.target-panel
+{
+    position: absolute;
+    overflow: hidden;
+    top: 272px;
+    height: 64px;
+    width: 600px;
+    border-top: 2px solid #bdbdbd;
+    -webkit-border-top: 2px solid #bdbdbd;
+    background: #f5f5f5;
+    opacity: 0;
+}
+
+div.toolbar
+{
+    position: absolute;
+    width: 600px;
+    height: 64px;
+    background: #e0e0e0;
+    border-radius: 2px 2px 0px 0px;
+    -webkit-border-radius: 2px 2px 0px 0px;
+    box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.5);
+    z-index: 5;
+}
+
+div.numbers-panel
+{
+    position: absolute;
+    left: 0px;
+    top: 80px;
+    width: 600px;
+    height: 100px;
+    z-index: 3;
+}
+
+div.operators-panel
+{
+    position: absolute;
+    left: 0px;
+    top: 176px;
+    width: 600px;
+    height: 100px;
+    z-index: 1;
+}
+
+div.target-background1,
+div.target-background2,
+div.target-background-overlay1,
+div.target-background-overlay2
+{
+    position: absolute;
+    left: 260px;
+    width: 80px;
+    height: 80px;
+    visibility: hidden;
+    cursor: pointer;
+}
+
+div.target-background1,
+div.target-background2
+{
+    top: 80px;
+    border-radius: 2px;
+    -webkit-border-radius: 2px;
+    background: #616161;
+    z-index: 2;
+}
+
+div.target-background1
+{
+    opacity: 0.4;
+}
+
+div.target-background-overlay1,
+div.target-background-overlay2
+{
+    top: 162px;
+    border-radius: 40px;
+    -webkit-border-radius: 40px;
+    background: #f5f5f5;
+    z-index: 4;
+    opacity: 0;
+}
+
+div.toolbar-button.new
+{
+    left: 6px;
+}
+
+div.toolbar-button.hint
+{
+    left: 488px;
+    opacity: 0;
+}
+
+div.toolbar-button.undo
+{
+    left: 542px;
+    opacity: 0;
+}
+
+div.label
+{
+    cursor: default;
+}
+
+div.label.medium
+{
+    font-size: 48px;
+}
+
+div.label.small
+{
+    font-size: 36px;
+}
+
+div.label.extra-small
+{
+    font-size: 24px;
+}
+
+div.header
+{
+    position: absolute;
+    width: 600px;
+    font-family: 'Lobster', sans-serif;
+    font-size: 44px;
+    line-height: 64px;
+    text-align: center;
+    color: #000000;
+    opacity: 0.36;
+}
+
+div.header.background1
+{
+    color: #000000;
+    opacity: 0.26;
+    margin: -1px 0px 0px 0px;
+}
+
+div.header.background2
+{
+    color: #ffffff;
+    opacity: 0.62;
+    margin: 1px 0px 0px 0px;
+}
+
+div.tools-panel
+{
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 8px;
+    height: 32px;
+    font-size: 22px;
+    color: rgba(0, 0, 0, 0.26);
+    line-height: 30px;
+}
+
+a.permalink
+{
+    position: absolute;
+    right: 168px;
+    color: rgba(0, 0, 0, 0.26);
+    text-decoration:none;
+}
+
+a.permalink:visited
+{
+    color: rgba(0, 0, 0, 0.26);
+}
+
+a.permalink:hover
+{
+    color: rgba(0, 0, 0, 0.26);
+}
+
+div.label.share-label
+{
+    position: absolute;
+    right: 72px;
+    cursor: pointer;
+    color: #e91e63;
+}
+
+div.label.about-label
+{
+    position: absolute;
+    right: 0px;
+    cursor: pointer;
+}
+
+div.fb-like
+{
+    position: absolute;
+}
+
+div.dialog-container
+{
+    z-index: 7;
+    position: fixed;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    background: rgba(0, 0, 0, 0.4);
+    font-size: 18px;
+}
+
+div.dialog
+{
+    position: absolute;
+    background: #ffffff;
+    box-shadow: 0px 16px 24px 0px rgba(0, 0, 0, 0.3);
+    border-radius: 2px;
+    -webkit-border-radius: 2px;
+}
+
+div.dialog.share
+{
+    width: 500px;
+    height: 300px;
+    overflow-y: scroll;
+}
+
+div.dialog.about
+{
+    width: 300px;
+    height: 150px;
+    text-align: center;
+}
+
+div.label.about-dialog-header
+{
+    font-family: 'Lobster', sans-serif;
+    font-size: 44px;
+    line-height: 64px;
+    color: #03a9f4;
+}
+
+div.link.share
+{
+    line-height: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+div.link.share:hover
+{
+    background: rgba(0, 0, 0, 0.3);
+}
+
+div.help-overlay
+{
+    position: absolute;
+    z-index: 6;
+}
+
+div.tooltip
+{
+    position: absolute;
+}
+
+div.tooltip-arrow
+{
+    position: absolute;
+    height: 12px;
+    width: 12px;
+    margin: -6px;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    background: #616161;
+    z-index: 0;
+}
+
+div.tooltip-container
+{
+    position: absolute;
+    background: #616161;
+    border-radius: 2px;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    z-index: 1;
+}
+
+div.tooltip-label
+{
+    position: absolute;
+    padding: 2px 8px;
+    color: #fff176;
+    font-size: 22px;
+    white-space: nowrap;
+    z-index: 2;
+}
