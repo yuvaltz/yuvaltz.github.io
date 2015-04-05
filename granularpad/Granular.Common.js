@@ -723,6 +723,9 @@
 	$Granular_Compatibility_String.IsNullOrWhitespace = function(value) {
 		return ss.isValue($Granular_Compatibility_String.$StringWhitespaceFormat.exec(value));
 	};
+	$Granular_Compatibility_String.FromByteArray = function(data) {
+		return decodeURIComponent(escape(String.fromCharCode.apply(null, data)));
+	};
 	global.Granular.Compatibility.String = $Granular_Compatibility_String;
 	////////////////////////////////////////////////////////////////////////////////
 	// Granular.Compatibility.TimeSpan
@@ -1046,13 +1049,6 @@
 	$System_AssemblyExtensions.__typeName = 'System.AssemblyExtensions';
 	$System_AssemblyExtensions.GetName = function(assembly) {
 		return new $System_AssemblyName(assembly.toString());
-	};
-	$System_AssemblyExtensions.GetEmbeddedResourceString = function(assembly, resourceName) {
-		var resourceStream = assembly.getResourceData(resourceName);
-		if (ss.isNullOrUndefined(resourceStream)) {
-			return '';
-		}
-		return decodeURIComponent(escape(String.fromCharCode.apply(null, resourceStream)));
 	};
 	global.System.AssemblyExtensions = $System_AssemblyExtensions;
 	////////////////////////////////////////////////////////////////////////////////
@@ -2365,7 +2361,7 @@
 	ss.setMetadata($Granular_Compatibility_Double, { members: [{ name: 'IsInfinity', isStatic: true, type: 8, sname: 'IsInfinity', returnType: Boolean, params: [Number] }] });
 	ss.setMetadata($Granular_Compatibility_EqualityComparer$1, { members: [{ name: '.ctor', type: 1, params: [ss.IEqualityComparer] }, { name: 'Equals', type: 8, sname: 'areEqual', returnType: Boolean, params: [Object, Object] }, { name: 'GetHashCode', type: 8, sname: 'getObjectHashCode', returnType: ss.Int32, params: [Object] }, { name: 'Default', isStatic: true, type: 4, returnType: ss.makeGenericType($Granular_Compatibility_EqualityComparer$1, [Object]), sname: 'Default' }] });
 	ss.setMetadata($Granular_Compatibility_RuntimeHelpers, { members: [{ name: 'RunClassConstructor', isStatic: true, type: 8, sname: 'RunClassConstructor', returnType: Object, params: [Function] }] });
-	ss.setMetadata($Granular_Compatibility_String, { members: [{ name: 'IsNullOrWhitespace', isStatic: true, type: 8, sname: 'IsNullOrWhitespace', returnType: Boolean, params: [String] }] });
+	ss.setMetadata($Granular_Compatibility_String, { members: [{ name: 'FromByteArray', isStatic: true, type: 8, sname: 'FromByteArray', returnType: String, params: [Array] }, { name: 'IsNullOrWhitespace', isStatic: true, type: 8, sname: 'IsNullOrWhitespace', returnType: Boolean, params: [String] }] });
 	ss.setMetadata($Granular_Compatibility_TimeSpan, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Subtract', isStatic: true, type: 8, sname: 'Subtract', returnType: ss.TimeSpan, params: [Date, Date] }, { name: 'MaxValue', isStatic: true, type: 4, returnType: ss.TimeSpan, sname: 'MaxValue' }, { name: 'MinValue', isStatic: true, type: 4, returnType: ss.TimeSpan, sname: 'MinValue' }] });
 	ss.setMetadata($Granular_Compatibility_Type, { members: [{ name: 'GetType', isStatic: true, type: 8, sname: 'GetType', returnType: Function, params: [String] }] });
 	ss.setMetadata($Granular_Extensions_AssemblyExtensions, { members: [{ name: 'FirstOrDefaultCustomAttributeCached', isStatic: true, type: 8, tpcount: 1, sname: 'FirstOrDefaultCustomAttributeCached', returnType: Object, params: [Object] }, { name: 'GetCustomAttributesCached', isStatic: true, type: 8, tpcount: 1, sname: 'GetCustomAttributesCached', returnType: ss.IEnumerable, params: [Object] }] });
@@ -2377,7 +2373,7 @@
 	ss.setMetadata($Granular_Extensions_StringExtensions, { members: [{ name: 'DefaultIfNullOrEmpty', isStatic: true, type: 8, sname: 'DefaultIfNullOrEmpty', returnType: String, params: [String, String] }, { name: 'GetCharacterIndexFromLineIndex', isStatic: true, type: 8, sname: 'GetCharacterIndexFromLineIndex', returnType: ss.Int32, params: [String, ss.Int32] }, { name: 'GetLineIndexFromCharacterIndex', isStatic: true, type: 8, sname: 'GetLineIndexFromCharacterIndex', returnType: ss.Int32, params: [String, ss.Int32] }, { name: 'GetLineLength', isStatic: true, type: 8, sname: 'GetLineLength', returnType: ss.Int32, params: [String, ss.Int32] }, { name: 'GetLineText', isStatic: true, type: 8, sname: 'GetLineText', returnType: String, params: [String, ss.Int32] }, { name: 'GetLines', isStatic: true, type: 8, sname: 'GetLines', returnType: Array, params: [String] }, { name: 'IndexOfAll', isStatic: true, type: 8, sname: 'IndexOfAll', returnType: Array, params: [String, String] }, { name: 'IsNullOrEmpty', isStatic: true, type: 8, sname: 'IsNullOrEmpty', returnType: Boolean, params: [String] }, { name: 'IsNullOrWhitespace', isStatic: true, type: 8, sname: 'IsNullOrWhitespace', returnType: Boolean, params: [String] }] });
 	ss.setMetadata($Granular_Extensions_TimeSpanExtensions, { members: [{ name: 'Divide', isStatic: true, type: 8, sname: 'Divide', returnType: Number, params: [ss.TimeSpan, ss.TimeSpan] }, { name: 'Max', isStatic: true, type: 8, sname: 'Max', returnType: ss.TimeSpan, params: [ss.TimeSpan, ss.TimeSpan] }, { name: 'Min', isStatic: true, type: 8, sname: 'Min', returnType: ss.TimeSpan, params: [ss.TimeSpan, ss.TimeSpan] }, { name: 'Scale', isStatic: true, type: 8, sname: 'Scale', returnType: ss.TimeSpan, params: [ss.TimeSpan, Number] }] });
 	ss.setMetadata($Granular_Extensions_TypeExtensions, { members: [{ name: 'GetDefaultIndexProperty', isStatic: true, type: 8, sname: 'GetDefaultIndexProperty', returnType: Object, params: [Function] }, { name: 'GetInstanceProperty', isStatic: true, type: 8, sname: 'GetInstanceProperty', returnType: Object, params: [Function, String] }, { name: 'GetInterfaceType', isStatic: true, type: 8, sname: 'GetInterfaceType', returnType: Function, params: [Function, Function] }] });
-	ss.setMetadata($System_AssemblyExtensions, { members: [{ name: 'GetEmbeddedResourceString', isStatic: true, type: 8, sname: 'GetEmbeddedResourceString', returnType: String, params: [Object, String] }, { name: 'GetName', isStatic: true, type: 8, sname: 'GetName', returnType: $System_AssemblyName, params: [Object] }] });
+	ss.setMetadata($System_AssemblyExtensions, { members: [{ name: 'GetName', isStatic: true, type: 8, sname: 'GetName', returnType: $System_AssemblyName, params: [Object] }] });
 	ss.setMetadata($System_AssemblyName, { members: [{ name: '.ctor', type: 1, params: [String] }, { name: 'Name', type: 16, returnType: String, getter: { name: 'get_Name', type: 8, sname: 'get_Name', returnType: String, params: [] }, setter: { name: 'set_Name', type: 8, sname: 'set_Name', returnType: Object, params: [String] } }] });
 	ss.setMetadata($System_STAThreadAttribute, { members: [{ name: '.ctor', type: 1, params: [] }] });
 	ss.setMetadata($System_TypeExtensions, { members: [{ name: 'GetDefaultConstructor', isStatic: true, type: 8, sname: 'GetDefaultConstructor', returnType: Object, params: [Function] }, { name: 'GetIsAbstract', isStatic: true, type: 8, sname: 'GetIsAbstract', returnType: Boolean, params: [Function] }, { name: 'GetIsGenericType', isStatic: true, type: 8, sname: 'GetIsGenericType', returnType: Boolean, params: [Function] }, { name: 'GetIsValueType', isStatic: true, type: 8, sname: 'GetIsValueType', returnType: Boolean, params: [Function] }] });

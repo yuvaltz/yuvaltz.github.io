@@ -20,6 +20,26 @@
 			style.SetValue('background-image', $Granular_Host_HtmlValueConverterExtensions.ToImageString(converter, background));
 		}
 	};
+	$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackgroundLocation = function(style, location, converter) {
+		if (System.Windows.Point.IsNullOrEmpty(location)) {
+			style.ClearValue('background-position');
+		}
+		else {
+			style.SetValue('background-position', converter.ToPixelString$1(location));
+		}
+	};
+	$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackgroundSize = function(style, size, converter) {
+		if (System.Windows.Size.IsNullOrEmpty(size)) {
+			style.ClearValue('background-size');
+		}
+		else {
+			style.SetValue('background-size', converter.ToPixelString$2(size));
+		}
+	};
+	$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackgroundBounds = function(style, bounds, converter) {
+		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackgroundLocation(style, bounds.get_Location(), converter);
+		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackgroundSize(style, bounds.get_Size(), converter);
+	};
 	$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBorderThickness = function(style, borderThickness, converter) {
 		if (ss.referenceEquals(borderThickness, System.Windows.Thickness.Zero)) {
 			style.ClearValue('border-style');
@@ -28,7 +48,7 @@
 		}
 		else {
 			style.SetValue('border-style', 'solid');
-			style.SetValue('border-width', converter.ToPixelString$2(borderThickness));
+			style.SetValue('border-width', converter.ToPixelString$3(borderThickness));
 			style.SetValue('border-image-slice', converter.ToImplicitValueString$1(borderThickness));
 		}
 	};
@@ -184,6 +204,14 @@
 	$Granular_Host_$HtmlStyleDictionaryExtensions.$SetVerticalScrollBarVisibility = function(style, scrollBarVisibility, converter) {
 		style.SetValue('overflow-y', converter.ToOverflowString(scrollBarVisibility));
 	};
+	$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackgroundImage = function(style, imageSource, converter) {
+		if (ss.isNullOrUndefined(imageSource)) {
+			style.ClearValue('background-image');
+		}
+		else {
+			style.SetValue('background-image', converter.ToUrlString(ss.cast(imageSource.get_RenderImageSource(), $Granular_Host_RenderImageSource).get_Url()));
+		}
+	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Granular.Host.ElementExtensions
 	var $Granular_Host_ElementExtensions = function() {
@@ -311,6 +339,64 @@
 	$Granular_Host_PresentationSourceFactory.__typeName = 'Granular.Host.PresentationSourceFactory';
 	global.Granular.Host.PresentationSourceFactory = $Granular_Host_PresentationSourceFactory;
 	////////////////////////////////////////////////////////////////////////////////
+	// Granular.Host.RenderImageSource
+	var $Granular_Host_RenderImageSource = function(container, url, isLocalUrl, sourceRect) {
+		this.$1$StateChangedField = null;
+		this.$state = 0;
+		this.$1$SizeField = null;
+		this.$1$UrlField = null;
+		this.$1$SourceRectField = null;
+		this.$1$ImageSizeField = null;
+		this.$container = null;
+		this.$image = null;
+		this.$container = container;
+		this.set_Url(url);
+		this.set_SourceRect(sourceRect);
+		this.set_State((isLocalUrl ? 0 : 1));
+		this.$image = document.createElement('img');
+		container.appendChild(this.$image);
+		this.$image.addEventListener('load', ss.mkdel(this, this.$OnImageLoad));
+		this.$image.addEventListener('error', ss.mkdel(this, this.$OnImageError));
+		this.$image.addEventListener('abort', ss.mkdel(this, this.$OnImageAbort));
+		this.$image.setAttribute('src', url);
+		this.set_ImageSize(System.Windows.Size.Empty);
+		this.set_Size(System.Windows.Size.Empty);
+	};
+	$Granular_Host_RenderImageSource.__typeName = 'Granular.Host.RenderImageSource';
+	global.Granular.Host.RenderImageSource = $Granular_Host_RenderImageSource;
+	////////////////////////////////////////////////////////////////////////////////
+	// Granular.Host.RenderImageSourceFactory
+	var $Granular_Host_RenderImageSourceFactory = function(converter) {
+		this.$container = null;
+		this.$converter = null;
+		this.$objectUrlCache = null;
+		this.$converter = converter;
+		this.$objectUrlCache = new (ss.makeGenericType(Granular.Collections.CacheDictionary$2, [String, String]))(ss.mkdel(this, this.$ResolveObjectUrl));
+	};
+	$Granular_Host_RenderImageSourceFactory.__typeName = 'Granular.Host.RenderImageSourceFactory';
+	$Granular_Host_RenderImageSourceFactory.$IsUrl = function(uri) {
+		return uri.indexOf('://') !== -1;
+	};
+	$Granular_Host_RenderImageSourceFactory.$GetRenderImageType = function(uri) {
+		var extension = uri.substring(uri.lastIndexOf(String.fromCharCode(46)) + 1).toLowerCase();
+		switch (extension) {
+			case 'gif': {
+				return 1;
+			}
+			case 'jpg': {
+				return 2;
+			}
+			case 'png': {
+				return 3;
+			}
+			case 'svg': {
+				return 4;
+			}
+		}
+		return 0;
+	};
+	global.Granular.Host.RenderImageSourceFactory = $Granular_Host_RenderImageSourceFactory;
+	////////////////////////////////////////////////////////////////////////////////
 	// Granular.Host.RenderQueue
 	var $Granular_Host_RenderQueue = function() {
 		this.$items = null;
@@ -358,13 +444,26 @@
 		this.$cornerRadius = System.Windows.CornerRadius.Zero;
 		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackground(this.get_Style(), this.get_Background(), converter);
 		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBorderThickness(this.get_Style(), this.get_BorderThickness(), converter);
-		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBounds(this.get_Style(), new System.Windows.Rect.$ctor1(this.get_Bounds().get_Location(), System.Windows.Size.op_Subtraction(this.get_Bounds().get_Size(), this.get_BorderThickness().get_Size())), converter);
+		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBounds(this.get_Style(), new System.Windows.Rect.$ctor2(this.get_Bounds().get_Location(), System.Windows.Size.op_Subtraction(this.get_Bounds().get_Size(), this.get_BorderThickness().get_Size())), converter);
 		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBorderBrush(this.get_Style(), this.get_BorderBrush(), converter);
 		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetCornerRadius(this.get_Style(), this.$cornerRadius, converter);
 		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetIsHitTestVisible(this.get_Style(), this.get_IsHitTestVisible() && ss.isValue(this.get_Background()));
 	};
 	$Granular_Host_Render_HtmlBorderRenderElement.__typeName = 'Granular.Host.Render.HtmlBorderRenderElement';
 	global.Granular.Host.Render.HtmlBorderRenderElement = $Granular_Host_Render_HtmlBorderRenderElement;
+	////////////////////////////////////////////////////////////////////////////////
+	// Granular.Host.Render.HtmlImageRenderElement
+	var $Granular_Host_Render_HtmlImageRenderElement = function(renderQueue, converter) {
+		this.$bounds = null;
+		this.$source = null;
+		this.$converter = null;
+		$Granular_Host_Render_HtmlRenderElement.call(this, renderQueue);
+		this.$converter = converter;
+		this.$bounds = System.Windows.Rect.Zero;
+		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBounds(this.get_Style(), this.get_Bounds(), converter);
+	};
+	$Granular_Host_Render_HtmlImageRenderElement.__typeName = 'Granular.Host.Render.HtmlImageRenderElement';
+	global.Granular.Host.Render.HtmlImageRenderElement = $Granular_Host_Render_HtmlImageRenderElement;
 	////////////////////////////////////////////////////////////////////////////////
 	// Granular.Host.Render.HtmlRenderElement
 	var $Granular_Host_Render_HtmlRenderElement = function(renderQueue) {
@@ -550,7 +649,7 @@
 			});
 		}
 	});
-	ss.initInterface($Granular_Host_IHtmlValueConverter, $asm, { ToPixelString: null, ToPercentString: null, ToDegreesString: null, ToImplicitValueString: null, ToPixelString$1: null, ToPercentString$1: null, ToColorString: null, ToPixelString$2: null, ToImplicitValueString$1: null, ToUrlString: null, ToLinearGradientString: null, ToRadialGradientString: null, ToColorStopsString: null, ToColorString$1: null, ToImageString$1: null, ToImageString$2: null, ToImageString: null, ToFontStyleString: null, ToFontStretchString: null, ToFontWeightString: null, ToTextAlignmentString: null, ToOverflowString: null, ToHtmlContentString: null, ToWrapString: null, ToWhiteSpaceString: null, ToFontFamilyNamesString: null, ToBooleanString: null, ConvertBackMouseButton: null, ConvertBackKey: null });
+	ss.initInterface($Granular_Host_IHtmlValueConverter, $asm, { ToPixelString: null, ToPercentString: null, ToDegreesString: null, ToImplicitValueString: null, ToPixelString$1: null, ToPercentString$1: null, ToPixelString$2: null, ToColorString: null, ToPixelString$3: null, ToImplicitValueString$1: null, ToUrlString: null, ToLinearGradientString: null, ToRadialGradientString: null, ToColorStopsString: null, ToColorString$1: null, ToImageString$1: null, ToImageString$2: null, ToImageString: null, ToFontStyleString: null, ToFontStretchString: null, ToFontWeightString: null, ToTextAlignmentString: null, ToOverflowString: null, ToHtmlContentString: null, ToWrapString: null, ToWhiteSpaceString: null, ToFontFamilyNamesString: null, ToBooleanString: null, ToMimeTypeString: null, ConvertBackMouseButton: null, ConvertBackKey: null });
 	ss.initClass($Granular_Host_HtmlValueConverter, $asm, {
 		ToPixelString: function(value) {
 			if (Granular.Extensions.DoubleExtensions.IsNaN(value)) {
@@ -579,17 +678,20 @@
 		ToPercentString$1: function(point) {
 			return ss.formatString('{0} {1}', this.ToPercentString(point.get_X()), this.ToPercentString(point.get_Y()));
 		},
+		ToPixelString$2: function(size) {
+			return ss.formatString('{0} {1}', this.ToPixelString(size.get_Width()), this.ToPixelString(size.get_Height()));
+		},
 		ToColorString: function(color) {
 			return ((color.get_A() === 255) ? ss.formatString('#{0:x2}{1:x2}{2:x2}', color.get_R(), color.get_G(), color.get_B()) : ss.formatString('rgba({0}, {1}, {2}, {3})', color.get_R(), color.get_G(), color.get_B(), ss.round(color.get_A() / 255, 2)));
 		},
-		ToPixelString$2: function(thickness) {
+		ToPixelString$3: function(thickness) {
 			return (thickness.get_IsUniform() ? this.ToPixelString(thickness.get_Top()) : ss.formatString('{0} {1} {2} {3}', this.ToPixelString(thickness.get_Top()), this.ToPixelString(thickness.get_Right()), this.ToPixelString(thickness.get_Bottom()), this.ToPixelString(thickness.get_Left())));
 		},
 		ToImplicitValueString$1: function(thickness) {
 			return ss.formatString('{0} {1} {2} {3}', this.ToImplicitValueString(thickness.get_Top()), this.ToImplicitValueString(thickness.get_Right()), this.ToImplicitValueString(thickness.get_Bottom()), this.ToImplicitValueString(thickness.get_Left()));
 		},
-		ToUrlString: function(imageSource) {
-			return ss.formatString('url({0})', imageSource);
+		ToUrlString: function(url) {
+			return ss.formatString('url({0})', url);
 		},
 		ToLinearGradientString: function(brush) {
 			var gradientStops = ((brush.get_SpreadMethod() === 1) ? $Granular_Host_HtmlValueConverter.$GetReflectedGradientStops(brush.get_GradientStops()) : brush.get_GradientStops());
@@ -776,6 +878,26 @@
 		},
 		ToBooleanString: function(value) {
 			return (value ? 'true' : 'false');
+		},
+		ToMimeTypeString: function(renderImageType) {
+			switch (renderImageType) {
+				case 0: {
+					return '';
+				}
+				case 1: {
+					return 'image/gif';
+				}
+				case 2: {
+					return 'image/jpeg';
+				}
+				case 3: {
+					return 'image/png';
+				}
+				case 4: {
+					return 'image/svg+xml';
+				}
+			}
+			throw new Granular.Exception('Unexpected RenderImageType "{0}"', [renderImageType]);
 		},
 		ConvertBackMouseButton: function(buttonIndex) {
 			switch (buttonIndex) {
@@ -1122,7 +1244,7 @@
 		},
 		$UpdateLayout: function() {
 			this.get_RootElement().Measure(new System.Windows.Size(this.$window.innerWidth, this.$window.innerHeight));
-			this.get_RootElement().Arrange(new System.Windows.Rect.$ctor2(0, 0, this.$window.innerWidth, this.$window.innerHeight));
+			this.get_RootElement().Arrange(new System.Windows.Rect.$ctor3(0, 0, this.$window.innerWidth, this.$window.innerHeight));
 		},
 		$OnKeyDown: function(e) {
 			var keyboardEvent = ss.cast(e, KeyboardEvent);
@@ -1210,6 +1332,91 @@
 			}, ss.getDefaultValue($Granular_Host_PresentationSource));
 		}
 	}, null, [System.Windows.IPresentationSourceFactory]);
+	ss.initClass($Granular_Host_RenderImageSource, $asm, {
+		add_StateChanged: function(value) {
+			this.$1$StateChangedField = ss.delegateCombine(this.$1$StateChangedField, value);
+		},
+		remove_StateChanged: function(value) {
+			this.$1$StateChangedField = ss.delegateRemove(this.$1$StateChangedField, value);
+		},
+		get_State: function() {
+			return this.$state;
+		},
+		set_State: function(value) {
+			if (this.$state === value) {
+				return;
+			}
+			this.$state = value;
+			Granular.Extensions.EventHandlerExtensions.Raise(this.$1$StateChangedField, this);
+		},
+		get_Size: function() {
+			return this.$1$SizeField;
+		},
+		set_Size: function(value) {
+			this.$1$SizeField = value;
+		},
+		get_Url: function() {
+			return this.$1$UrlField;
+		},
+		set_Url: function(value) {
+			this.$1$UrlField = value;
+		},
+		get_SourceRect: function() {
+			return this.$1$SourceRectField;
+		},
+		set_SourceRect: function(value) {
+			this.$1$SourceRectField = value;
+		},
+		get_ImageSize: function() {
+			return this.$1$ImageSizeField;
+		},
+		set_ImageSize: function(value) {
+			this.$1$ImageSizeField = value;
+		},
+		$OnImageLoad: function() {
+			this.set_ImageSize(new System.Windows.Size(this.$image.clientWidth, this.$image.clientHeight));
+			this.set_Size((!System.Windows.RectExtensions.IsNullOrEmpty(this.get_SourceRect()) ? this.get_SourceRect().get_Size() : this.get_ImageSize()));
+			this.set_State(2);
+			this.$container.removeChild(this.$image);
+		},
+		$OnImageError: function() {
+			this.set_State(3);
+			this.$container.removeChild(this.$image);
+		},
+		$OnImageAbort: function() {
+			this.set_State(3);
+			this.$container.removeChild(this.$image);
+		}
+	}, null, [System.Windows.Media.IRenderImageSource]);
+	ss.initClass($Granular_Host_RenderImageSourceFactory, $asm, {
+		get_$Container: function() {
+			if (ss.isNullOrUndefined(this.$container)) {
+				this.$container = document.createElement('div');
+				this.$container.style.visibility = 'hidden';
+				this.$container.style.overflow = 'hidden';
+				this.$container.style.width = '0px';
+				this.$container.style.height = '0px';
+				document.body.appendChild(this.$container);
+			}
+			return this.$container;
+		},
+		CreateRenderImageSource: function(uri, sourceRect) {
+			if ($Granular_Host_RenderImageSourceFactory.$IsUrl(uri)) {
+				return new $Granular_Host_RenderImageSource(this.get_$Container(), uri, false, sourceRect);
+			}
+			return new $Granular_Host_RenderImageSource(this.get_$Container(), this.$objectUrlCache.GetValue(uri), true, sourceRect);
+		},
+		CreateRenderImageSource$1: function(imageType, imageData, sourceRect) {
+			var mimeType = this.$converter.ToMimeTypeString(imageType);
+			var url = URL.createObjectURL(new Blob([new Uint8Array(imageData)], { type: mimeType }));
+			return new $Granular_Host_RenderImageSource(this.get_$Container(), url, true, sourceRect);
+		},
+		$ResolveObjectUrl: function(uri) {
+			var imageData = System.Windows.EmbeddedResourceLoader.LoadResourceData(uri);
+			var mimeType = this.$converter.ToMimeTypeString($Granular_Host_RenderImageSourceFactory.$GetRenderImageType(uri));
+			return URL.createObjectURL(new Blob([new Uint8Array(imageData)], { type: mimeType }));
+		}
+	}, null, [System.Windows.IRenderImageSourceFactory]);
 	ss.initClass($Granular_Host_RenderQueue, $asm, {
 		Add: function(item) {
 			this.$items.push(item);
@@ -1274,6 +1481,9 @@
 		},
 		get_TextMeasurementService: function() {
 			return $Granular_Host_TextMeasurementService.Default;
+		},
+		get_RenderImageSourceFactory: function() {
+			return $Granular_Host_RenderImageSourceFactory.Default;
 		},
 		Run: function(applicationEntryPoint) {
 			window.onload = ss.delegateCombine(window.onload, function(e) {
@@ -1341,7 +1551,7 @@
 			}
 			this.$borderThickness = value;
 			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBorderThickness(this.get_Style(), this.$borderThickness, this.$converter);
-			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBounds(this.get_Style(), new System.Windows.Rect.$ctor1(this.get_Bounds().get_Location(), System.Windows.Size.op_Subtraction(this.get_Bounds().get_Size(), this.get_BorderThickness().get_Size())), this.$converter);
+			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBounds(this.get_Style(), new System.Windows.Rect.$ctor2(this.get_Bounds().get_Location(), System.Windows.Size.op_Subtraction(this.get_Bounds().get_Size(), this.get_BorderThickness().get_Size())), this.$converter);
 		},
 		get_BorderBrush: function() {
 			return this.$borderBrush;
@@ -1367,7 +1577,7 @@
 				return;
 			}
 			this.$bounds = value;
-			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBounds(this.get_Style(), new System.Windows.Rect.$ctor1(this.get_Bounds().get_Location(), System.Windows.Size.op_Subtraction(this.get_Bounds().get_Size(), this.get_BorderThickness().get_Size())), this.$converter);
+			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBounds(this.get_Style(), new System.Windows.Rect.$ctor2(this.get_Bounds().get_Location(), System.Windows.Size.op_Subtraction(this.get_Bounds().get_Size(), this.get_BorderThickness().get_Size())), this.$converter);
 		},
 		get_CornerRadius: function() {
 			return this.$cornerRadius;
@@ -1396,6 +1606,47 @@
 			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBorderBrush(this.get_Style(), this.get_BorderBrush(), this.$converter);
 		}
 	}, $Granular_Host_Render_HtmlRenderElement, [$Granular_Host_IRenderItem, System.Windows.Media.IBorderRenderElement]);
+	ss.initClass($Granular_Host_Render_HtmlImageRenderElement, $asm, {
+		get_Bounds: function() {
+			return this.$bounds;
+		},
+		set_Bounds: function(value) {
+			if (System.Windows.Rect.op_Equality(this.$bounds, value)) {
+				return;
+			}
+			this.$bounds = value;
+			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBounds(this.get_Style(), this.$bounds, this.$converter);
+			this.$SetSourceRect();
+		},
+		get_Source: function() {
+			return this.$source;
+		},
+		set_Source: function(value) {
+			if (ss.referenceEquals(this.$source, value)) {
+				return;
+			}
+			this.$source = value;
+			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackgroundImage(this.get_Style(), this.$source, this.$converter);
+			this.$SetSourceRect();
+		},
+		$SetSourceRect: function() {
+			if (ss.isNullOrUndefined(this.get_Source()) || System.Windows.RectExtensions.IsNullOrEmpty(this.get_Bounds()) || this.get_Bounds().get_Size().get_Width() === 0 || this.get_Bounds().get_Size().get_Height() === 0) {
+				return;
+			}
+			var sourceRect = ss.cast(this.get_Source().get_RenderImageSource(), $Granular_Host_RenderImageSource).get_SourceRect();
+			var imageSize = ss.cast(this.get_Source().get_RenderImageSource(), $Granular_Host_RenderImageSource).get_ImageSize();
+			if (!System.Windows.RectExtensions.IsNullOrEmpty(sourceRect)) {
+				var widthFactor = this.get_Bounds().get_Size().get_Width() / sourceRect.get_Width();
+				var heightFactor = this.get_Bounds().get_Size().get_Height() / sourceRect.get_Height();
+				var location = new System.Windows.Point.$ctor1(-sourceRect.get_Left() * widthFactor, -sourceRect.get_Top() * heightFactor);
+				var size = new System.Windows.Size(imageSize.get_Width() * widthFactor, imageSize.get_Height() * heightFactor);
+				$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackgroundBounds(this.get_Style(), new System.Windows.Rect.$ctor2(location, size), this.$converter);
+			}
+			else {
+				$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackgroundBounds(this.get_Style(), new System.Windows.Rect(this.get_Bounds().get_Size()), this.$converter);
+			}
+		}
+	}, $Granular_Host_Render_HtmlRenderElement, [$Granular_Host_IRenderItem, System.Windows.Media.IImageRenderElement]);
 	ss.initClass($Granular_Host_Render_HtmlRenderElementFactory, $asm, {
 		CreateVisualRenderElement: function(owner) {
 			return new $Granular_Host_Render_HtmlVisualRenderElement(owner, $Granular_Host_RenderQueue.Default, $Granular_Host_HtmlValueConverter.Default);
@@ -1411,6 +1662,9 @@
 		},
 		CreateBorderRenderElement: function(owner) {
 			return new $Granular_Host_Render_HtmlBorderRenderElement($Granular_Host_RenderQueue.Default, $Granular_Host_HtmlValueConverter.Default);
+		},
+		CreateImageRenderElement: function(owner) {
+			return new $Granular_Host_Render_HtmlImageRenderElement($Granular_Host_RenderQueue.Default, $Granular_Host_HtmlValueConverter.Default);
 		}
 	}, null, [System.Windows.Media.IRenderElementFactory]);
 	ss.initClass($Granular_Host_Render_HtmlTextBlockRenderElement, $asm, {
@@ -2044,7 +2298,7 @@
 		}
 	}, $Granular_Host_Render_HtmlRenderElement, [$Granular_Host_IRenderItem, System.Windows.Media.IVisualRenderElement]);
 	(function() {
-		$Granular_Host_HtmlDefinition.Tags = ['a', 'abbr', 'acronym', 'address', 'applet', 'area', 'article', 'aside', 'audio', 'b', 'base', 'basefont', 'bdi', 'bdo', 'big', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'datalist', 'dd', 'del', 'details', 'dfn', 'dialog', 'dir', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'font', 'footer', 'form', 'frame', 'frameset', 'h1', 'head', 'header', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'legend', 'li', 'link', 'main', 'map', 'mark', 'menu', 'menuitem', 'meta', 'meter', 'nav', 'noframes', 'noscript', 'object', 'ol', 'optgroup', 'option', 'output', 'p', 'param', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strike', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'tt', 'u', 'ul', 'var', 'video', 'wbr'];
+		$Granular_Host_HtmlDefinition.Tags = ['a', 'abbr', 'acronym', 'address', 'applet', 'area', 'article', 'aside', 'audio', 'b', 'base', 'basefont', 'bdi', 'bdo', 'big', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'datalist', 'dd', 'del', 'details', 'dfn', 'dialog', 'dir', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'font', 'footer', 'form', 'frame', 'frameset', 'h1', 'head', 'header', 'hr', 'html', 'i', 'iframe', 'image', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'legend', 'li', 'link', 'main', 'map', 'mark', 'menu', 'menuitem', 'meta', 'meter', 'nav', 'noframes', 'noscript', 'object', 'ol', 'optgroup', 'option', 'output', 'p', 'param', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strike', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'tt', 'u', 'ul', 'var', 'video', 'wbr'];
 	})();
 	(function() {
 		$Granular_Host_HtmlValueConverter.Default = new $Granular_Host_HtmlValueConverter();
@@ -2057,6 +2311,9 @@
 	})();
 	(function() {
 		$Granular_Host_PresentationSourceFactory.Default = new $Granular_Host_PresentationSourceFactory();
+	})();
+	(function() {
+		$Granular_Host_RenderImageSourceFactory.Default = new $Granular_Host_RenderImageSourceFactory($Granular_Host_HtmlValueConverter.Default);
 	})();
 	(function() {
 		$Granular_Host_TaskScheduler.Default = new $Granular_Host_TaskScheduler();
