@@ -49,7 +49,7 @@
 		else {
 			style.SetValue('border-style', 'solid');
 			style.SetValue('border-width', converter.ToPixelString$3(borderThickness));
-			style.SetValue('border-image-slice', converter.ToImplicitValueString$1(borderThickness));
+			style.SetValue('border-image-slice', converter.ToImplicitValueString$2(borderThickness));
 		}
 	};
 	$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBorderBrush = function(style, borderBrush, converter) {
@@ -226,10 +226,18 @@
 	global.Granular.Host.HtmlDefinition = $Granular_Host_HtmlDefinition;
 	////////////////////////////////////////////////////////////////////////////////
 	// Granular.Host.HtmlStyleDictionary
-	var $Granular_Host_HtmlStyleDictionary = function() {
-		this.$1$ChangedField = null;
+	var $Granular_Host_HtmlStyleDictionary = function(element) {
+		this.$1$InvalidatedField = null;
+		this.$isValid = false;
+		this.$element = null;
 		this.$dictionary = null;
+		this.$setProperties = null;
+		this.$clearProperties = null;
+		this.$element = element;
 		this.$dictionary = new (ss.makeGenericType(ss.Dictionary$2, [String, String]))();
+		this.$setProperties = new (ss.makeGenericType(ss.Dictionary$2, [String, String]))();
+		this.$clearProperties = new (ss.makeGenericType(System.Collections.Generic.HashSet$1, [String]))();
+		this.set_IsValid(true);
 	};
 	$Granular_Host_HtmlStyleDictionary.__typeName = 'Granular.Host.HtmlStyleDictionary';
 	global.Granular.Host.HtmlStyleDictionary = $Granular_Host_HtmlStyleDictionary;
@@ -302,6 +310,10 @@
 		this.set_MouseDevice(new System.Windows.Input.MouseDevice(this));
 		this.set_KeyboardDevice(new System.Windows.Input.KeyboardDevice(this));
 		this.$window = window.window;
+		this.get_MouseDevice().add_CursorChanged(ss.mkdel(this, function(sender, e) {
+			window.document.body.style.cursor = converter.ToCursorString(this.get_MouseDevice().get_Cursor());
+		}));
+		window.document.body.style.cursor = converter.ToCursorString(this.get_MouseDevice().get_Cursor());
 		window.onkeydown = ss.mkdel(this, this.$OnKeyDown);
 		window.onkeyup = ss.mkdel(this, this.$OnKeyUp);
 		window.onkeypress = ss.mkdel(this, this.$PreventKeyboardHandled);
@@ -309,20 +321,20 @@
 		window.onmousedown = ss.mkdel(this, this.$OnMouseDown);
 		window.onmouseup = ss.mkdel(this, this.$OnMouseUp);
 		window.onscroll = ss.mkdel(this, this.$OnMouseWheel);
-		window.onfocus = ss.mkdel(this, function(e) {
+		window.onfocus = ss.mkdel(this, function(e1) {
 			this.get_MouseDevice().Activate();
 		});
-		window.onblur = ss.mkdel(this, function(e1) {
+		window.onblur = ss.mkdel(this, function(e2) {
 			this.get_MouseDevice().Deactivate();
 		});
-		window.onresize = ss.mkdel(this, function(e2) {
-			this.$UpdateLayout();
+		window.onresize = ss.mkdel(this, function(e3) {
+			this.$SetRootElementSize();
 		});
 		window.onclick = ss.mkdel(this, this.$PreventMouseHandled);
 		window.ondblclick = ss.mkdel(this, this.$PreventMouseHandled);
 		window.oncontextmenu = ss.mkdel(this, this.$PreventMouseHandled);
 		window.addEventListener('wheel', ss.mkdel(this, this.$OnMouseWheel));
-		this.$UpdateLayout();
+		this.$SetRootElementSize();
 		window.document.body.style.overflow = 'hidden';
 		window.document.body.appendChild(ss.cast(this.get_RootElement().GetRenderElement($Granular_Host_Render_HtmlRenderElementFactory.Default), $Granular_Host_Render_HtmlRenderElement).get_HtmlElement());
 		this.get_MouseDevice().Activate();
@@ -416,6 +428,7 @@
 	var $Granular_Host_TextMeasurementService = function(converter) {
 		this.$converter = null;
 		this.$htmlElement = null;
+		this.$style = null;
 		this.$converter = converter;
 	};
 	$Granular_Host_TextMeasurementService.__typeName = 'Granular.Host.TextMeasurementService';
@@ -431,7 +444,7 @@
 	// Granular.Host.Render.HtmlBorderRenderElement
 	var $Granular_Host_Render_HtmlBorderRenderElement = function(renderQueue, converter) {
 		this.$background = null;
-		this.$borderThickness = System.Windows.Thickness.Zero;
+		this.$borderThickness = null;
 		this.$borderBrush = null;
 		this.$bounds = System.Windows.Rect.Zero;
 		this.$cornerRadius = null;
@@ -442,9 +455,10 @@
 		this.$bounds = System.Windows.Rect.Zero;
 		this.$borderThickness = System.Windows.Thickness.Zero;
 		this.$cornerRadius = System.Windows.CornerRadius.Zero;
+		this.get_Style().SetValue('background-clip', 'content-box');
 		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackground(this.get_Style(), this.get_Background(), converter);
 		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBorderThickness(this.get_Style(), this.get_BorderThickness(), converter);
-		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBounds(this.get_Style(), new System.Windows.Rect.$ctor2(this.get_Bounds().get_Location(), System.Windows.Size.op_Subtraction(this.get_Bounds().get_Size(), this.get_BorderThickness().get_Size())), converter);
+		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBounds(this.get_Style(), new System.Windows.Rect.$ctor2(this.get_Bounds().get_Location(), System.Windows.SizeExtensions.Max(System.Windows.Size.op_Subtraction(this.get_Bounds().get_Size(), this.get_BorderThickness().get_Size()), System.Windows.Size.Zero)), converter);
 		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBorderBrush(this.get_Style(), this.get_BorderBrush(), converter);
 		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetCornerRadius(this.get_Style(), this.$cornerRadius, converter);
 		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetIsHitTestVisible(this.get_Style(), this.get_IsHitTestVisible() && ss.isValue(this.get_Background()));
@@ -479,20 +493,17 @@
 		this.$1$HtmlElementField = null;
 		this.$1$StyleField = null;
 		this.$isRenderValid = false;
-		this.$isStyleValid = false;
 		this.$renderQueue = null;
 		this.set_HtmlElement(document.createElement(htmlElementTagName));
 		this.$renderQueue = renderQueue;
 		if (!Granular.Extensions.StringExtensions.IsNullOrEmpty(htmlElementId)) {
 			this.get_HtmlElement().id = htmlElementId;
 		}
-		this.set_Style(new $Granular_Host_HtmlStyleDictionary());
-		this.get_Style().add_Changed(ss.mkdel(this, function(sender, e) {
-			this.$isStyleValid = false;
+		this.set_Style(new $Granular_Host_HtmlStyleDictionary(this.get_HtmlElement()));
+		this.get_Style().add_Invalidated(ss.mkdel(this, function(sender, e) {
 			this.InvalidateRender();
 		}));
 		this.$isRenderValid = true;
-		this.$isStyleValid = true;
 	};
 	global.Granular.Host.Render.HtmlRenderElement = $Granular_Host_Render_HtmlRenderElement;
 	////////////////////////////////////////////////////////////////////////////////
@@ -543,12 +554,14 @@
 		this.$contentElement = null;
 		this.$2$TextChangedField = null;
 		this.$text = null;
+		this.$maxLength = 0;
 		this.$2$CaretIndexChangedField = null;
 		this.$caretIndex = 0;
 		this.$2$SelectionStartChangedField = null;
 		this.$selectionStart = 0;
 		this.$2$SelectionLengthChangedField = null;
 		this.$selectionLength = 0;
+		this.$isPassword = false;
 		this.$isReadOnly = false;
 		this.$spellCheck = false;
 		this.$bounds = null;
@@ -624,36 +637,77 @@
 	ss.initClass($Granular_Host_ElementExtensions, $asm, {});
 	ss.initClass($Granular_Host_HtmlDefinition, $asm, {});
 	ss.initClass($Granular_Host_HtmlStyleDictionary, $asm, {
-		add_Changed: function(value) {
-			this.$1$ChangedField = ss.delegateCombine(this.$1$ChangedField, value);
+		add_Invalidated: function(value) {
+			this.$1$InvalidatedField = ss.delegateCombine(this.$1$InvalidatedField, value);
 		},
-		remove_Changed: function(value) {
-			this.$1$ChangedField = ss.delegateRemove(this.$1$ChangedField, value);
+		remove_Invalidated: function(value) {
+			this.$1$InvalidatedField = ss.delegateRemove(this.$1$InvalidatedField, value);
 		},
-		GetValue: function(key) {
-			return this.$dictionary.get_item(key);
+		get_IsValid: function() {
+			return this.$isValid;
+		},
+		set_IsValid: function(value) {
+			if (this.$isValid === value) {
+				return;
+			}
+			this.$isValid = value;
+			if (!this.$isValid) {
+				Granular.Extensions.EventHandlerExtensions.Raise(this.$1$InvalidatedField, this);
+			}
 		},
 		SetValue: function(key, value) {
+			var currentValue = {};
+			if (this.$dictionary.tryGetValue(key, currentValue) && ss.referenceEquals(currentValue.$, value)) {
+				return;
+			}
 			this.$dictionary.set_item(key, value);
-			Granular.Extensions.EventHandlerExtensions.Raise(this.$1$ChangedField, this);
+			this.$setProperties.set_item(key, value);
+			this.$clearProperties.remove(key);
+			this.set_IsValid(false);
 		},
 		ClearValue: function(key) {
+			if (!this.$dictionary.containsKey(key)) {
+				return;
+			}
 			this.$dictionary.remove(key);
-			Granular.Extensions.EventHandlerExtensions.Raise(this.$1$ChangedField, this);
+			this.$setProperties.remove(key);
+			this.$clearProperties.add(key);
+			this.set_IsValid(false);
 		},
-		toString: function() {
-			return Enumerable.from(this.$dictionary).select(function(pair) {
-				return ss.formatString('{0}: {1}', pair.key, pair.value);
-			}).defaultIfEmpty('').aggregate(function(s1, s2) {
-				return ss.formatString('{0}; {1}', s1, s2);
-			});
+		Apply: function() {
+			if (this.get_IsValid()) {
+				return;
+			}
+			var $t1 = this.$setProperties.getEnumerator();
+			try {
+				while ($t1.moveNext()) {
+					var pair = $t1.current();
+					this.$element.style.setProperty(pair.key, pair.value);
+				}
+			}
+			finally {
+				$t1.dispose();
+			}
+			var $t2 = this.$clearProperties.getEnumerator();
+			try {
+				while ($t2.moveNext()) {
+					var key = $t2.current();
+					this.$element.style.removeProperty(key);
+				}
+			}
+			finally {
+				$t2.dispose();
+			}
+			this.$setProperties.clear();
+			this.$clearProperties.clear();
+			this.set_IsValid(true);
 		}
 	});
-	ss.initInterface($Granular_Host_IHtmlValueConverter, $asm, { ToPixelString: null, ToPercentString: null, ToDegreesString: null, ToImplicitValueString: null, ToPixelString$1: null, ToPercentString$1: null, ToPixelString$2: null, ToColorString: null, ToPixelString$3: null, ToImplicitValueString$1: null, ToUrlString: null, ToLinearGradientString: null, ToRadialGradientString: null, ToColorStopsString: null, ToColorString$1: null, ToImageString$1: null, ToImageString$2: null, ToImageString: null, ToFontStyleString: null, ToFontStretchString: null, ToFontWeightString: null, ToTextAlignmentString: null, ToOverflowString: null, ToHtmlContentString: null, ToWrapString: null, ToWhiteSpaceString: null, ToFontFamilyNamesString: null, ToBooleanString: null, ToMimeTypeString: null, ConvertBackMouseButton: null, ConvertBackKey: null });
+	ss.initInterface($Granular_Host_IHtmlValueConverter, $asm, { ToPixelString: null, ToPercentString: null, ToDegreesString: null, ToImplicitValueString: null, ToPixelString$1: null, ToPercentString$1: null, ToImplicitValueString$1: null, ToPixelString$2: null, ToColorString: null, ToPixelString$3: null, ToImplicitValueString$2: null, ToUrlString: null, ToLinearGradientString: null, ToRadialGradientString: null, ToColorStopsString: null, ToColorString$1: null, ToImageString$1: null, ToImageString$2: null, ToImageString: null, ToFontStyleString: null, ToFontStretchString: null, ToFontWeightString: null, ToTextAlignmentString: null, ToOverflowString: null, ToHtmlContentString: null, ToWrapString: null, ToWhiteSpaceString: null, ToFontFamilyNamesString: null, ToBooleanString: null, ToMimeTypeString: null, ToCursorString: null, ConvertBackMouseButton: null, ConvertBackKey: null });
 	ss.initClass($Granular_Host_HtmlValueConverter, $asm, {
 		ToPixelString: function(value) {
-			if (Granular.Extensions.DoubleExtensions.IsNaN(value)) {
-				throw new Granular.Exception("Can't convert Double.NaN to pixel string", []);
+			if (Granular.Extensions.DoubleExtensions.IsNaN(value) || !isFinite(value)) {
+				throw new Granular.Exception("Can't convert {0} to pixel string", [value]);
 			}
 			return ss.formatString('{0}px', ss.round(value, 2));
 		},
@@ -678,6 +732,9 @@
 		ToPercentString$1: function(point) {
 			return ss.formatString('{0} {1}', this.ToPercentString(point.get_X()), this.ToPercentString(point.get_Y()));
 		},
+		ToImplicitValueString$1: function(point) {
+			return ss.formatString('{0} {1}', this.ToImplicitValueString(point.get_X()), this.ToImplicitValueString(point.get_Y()));
+		},
 		ToPixelString$2: function(size) {
 			return ss.formatString('{0} {1}', this.ToPixelString(size.get_Width()), this.ToPixelString(size.get_Height()));
 		},
@@ -687,7 +744,7 @@
 		ToPixelString$3: function(thickness) {
 			return (thickness.get_IsUniform() ? this.ToPixelString(thickness.get_Top()) : ss.formatString('{0} {1} {2} {3}', this.ToPixelString(thickness.get_Top()), this.ToPixelString(thickness.get_Right()), this.ToPixelString(thickness.get_Bottom()), this.ToPixelString(thickness.get_Left())));
 		},
-		ToImplicitValueString$1: function(thickness) {
+		ToImplicitValueString$2: function(thickness) {
 			return ss.formatString('{0} {1} {2} {3}', this.ToImplicitValueString(thickness.get_Top()), this.ToImplicitValueString(thickness.get_Right()), this.ToImplicitValueString(thickness.get_Bottom()), this.ToImplicitValueString(thickness.get_Left()));
 		},
 		ToUrlString: function(url) {
@@ -898,6 +955,76 @@
 				}
 			}
 			throw new Granular.Exception('Unexpected RenderImageType "{0}"', [renderImageType]);
+		},
+		ToCursorString: function(cursor) {
+			if (ss.isNullOrUndefined(cursor)) {
+				return 'default';
+			}
+			if (ss.isValue(cursor.get_ImageSource())) {
+				var urlString = this.ToUrlString(ss.cast(cursor.get_ImageSource().get_RenderImageSource(), $Granular_Host_RenderImageSource).get_Url());
+				return (!System.Windows.Point.IsNullOrEmpty(cursor.get_Hotspot()) ? ss.formatString('{0} {1}, default', urlString, this.ToImplicitValueString$1(cursor.get_Hotspot())) : ss.formatString('{0}, default', urlString));
+			}
+			switch (cursor.get_CursorType()) {
+				case 0: {
+					return 'none';
+				}
+				case 1: {
+					return 'not-allowed';
+				}
+				case 2: {
+					return 'default';
+				}
+				case 3: {
+					return 'progress';
+				}
+				case 4: {
+					return 'crosshair';
+				}
+				case 5: {
+					return 'help';
+				}
+				case 6: {
+					return 'text';
+				}
+				case 7: {
+					return 'move';
+				}
+				case 8: {
+					return 'nesw-resize';
+				}
+				case 9: {
+					return 'ns-resize';
+				}
+				case 10: {
+					return 'nwse-resize';
+				}
+				case 11: {
+					return 'ew-resize';
+				}
+				case 13: {
+					return 'wait';
+				}
+				case 14: {
+					return 'pointer';
+				}
+				case 12:
+				case 15:
+				case 16:
+				case 17:
+				case 18:
+				case 19:
+				case 20:
+				case 21:
+				case 22:
+				case 23:
+				case 24:
+				case 25:
+				case 26:
+				case 27: {
+					return 'default';
+				}
+			}
+			throw new Granular.Exception('Unexpected CursorType "{0}"', [cursor.get_CursorType()]);
 		},
 		ConvertBackMouseButton: function(buttonIndex) {
 			switch (buttonIndex) {
@@ -1242,9 +1369,9 @@
 		set_Title: function(value) {
 			window.document.title = value;
 		},
-		$UpdateLayout: function() {
-			this.get_RootElement().Measure(new System.Windows.Size(this.$window.innerWidth, this.$window.innerHeight));
-			this.get_RootElement().Arrange(new System.Windows.Rect.$ctor3(0, 0, this.$window.innerWidth, this.$window.innerHeight));
+		$SetRootElementSize: function() {
+			ss.cast(this.get_RootElement(), System.Windows.FrameworkElement).set_Width(this.$window.innerWidth);
+			ss.cast(this.get_RootElement(), System.Windows.FrameworkElement).set_Height(this.$window.innerHeight);
 		},
 		$OnKeyDown: function(e) {
 			var keyboardEvent = ss.cast(e, KeyboardEvent);
@@ -1443,31 +1570,35 @@
 	}, null, [$Granular_Host_IRenderQueue]);
 	ss.initClass($Granular_Host_TaskScheduler, $asm, {
 		ScheduleTask: function(timeSpan, action) {
-			window.setTimeout(action, ss.Int32.trunc(timeSpan.ticks / 10000));
+			var token = window.setTimeout(action, ss.Int32.trunc(timeSpan.ticks / 10000));
+			return new System.Windows.Disposable(function() {
+				window.clearTimeout(token);
+			});
 		}
 	}, null, [System.Windows.Threading.ITaskScheduler]);
 	ss.initClass($Granular_Host_TextMeasurementService, $asm, {
 		Measure: function(text, fontSize, typeface, maxWidth) {
 			if (ss.isNullOrUndefined(this.$htmlElement)) {
 				this.$htmlElement = document.createElement('div');
+				this.$style = new $Granular_Host_HtmlStyleDictionary(this.$htmlElement);
 				document.body.appendChild(this.$htmlElement);
 			}
-			var style = new $Granular_Host_HtmlStyleDictionary();
-			style.SetValue('position', 'absolute');
-			style.SetValue('visibility', 'hidden');
-			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetFontSize(style, fontSize, this.$converter);
-			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetFontFamily(style, typeface.get_FontFamily(), this.$converter);
-			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetFontStretch(style, typeface.get_Stretch(), this.$converter);
-			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetFontStyle(style, typeface.get_Style(), this.$converter);
-			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetFontWeight(style, typeface.get_Weight(), this.$converter);
-			if (Granular.Extensions.DoubleExtensions.IsNaN(maxWidth)) {
-				$Granular_Host_$HtmlStyleDictionaryExtensions.$SetTextWrapping(style, 1, this.$converter);
+			this.$style.SetValue('position', 'absolute');
+			this.$style.SetValue('visibility', 'hidden');
+			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetFontSize(this.$style, fontSize, this.$converter);
+			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetFontFamily(this.$style, typeface.get_FontFamily(), this.$converter);
+			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetFontStretch(this.$style, typeface.get_Stretch(), this.$converter);
+			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetFontStyle(this.$style, typeface.get_Style(), this.$converter);
+			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetFontWeight(this.$style, typeface.get_Weight(), this.$converter);
+			if (Granular.Extensions.DoubleExtensions.IsNaN(maxWidth) || !isFinite(maxWidth)) {
+				$Granular_Host_$HtmlStyleDictionaryExtensions.$SetTextWrapping(this.$style, 1, this.$converter);
+				this.$style.ClearValue('max-width');
 			}
 			else {
-				$Granular_Host_$HtmlStyleDictionaryExtensions.$SetTextWrapping(style, 0, this.$converter);
-				style.SetValue('max-width', this.$converter.ToPixelString(maxWidth));
+				$Granular_Host_$HtmlStyleDictionaryExtensions.$SetTextWrapping(this.$style, 0, this.$converter);
+				this.$style.SetValue('max-width', this.$converter.ToPixelString(maxWidth));
 			}
-			this.$htmlElement.setAttribute('style', style.toString());
+			this.$style.Apply();
 			this.$htmlElement.innerHTML = this.$converter.ToHtmlContentString(Granular.Extensions.StringExtensions.DefaultIfNullOrEmpty(text, 'A'));
 			return new System.Windows.Size((Granular.Extensions.StringExtensions.IsNullOrEmpty(text) ? 0 : (this.$htmlElement.offsetWidth + 2)), this.$htmlElement.offsetHeight);
 		}
@@ -1513,10 +1644,7 @@
 		},
 		Render: function() {
 			this.$isRenderValid = true;
-			if (!this.$isStyleValid) {
-				this.get_HtmlElement().setAttribute('style', this.get_Style().toString());
-				this.$isStyleValid = true;
-			}
+			this.get_Style().Apply();
 			this.OnRender();
 		},
 		OnRender: function() {
@@ -1551,7 +1679,8 @@
 			}
 			this.$borderThickness = value;
 			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBorderThickness(this.get_Style(), this.$borderThickness, this.$converter);
-			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBounds(this.get_Style(), new System.Windows.Rect.$ctor2(this.get_Bounds().get_Location(), System.Windows.Size.op_Subtraction(this.get_Bounds().get_Size(), this.get_BorderThickness().get_Size())), this.$converter);
+			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBounds(this.get_Style(), new System.Windows.Rect.$ctor2(this.get_Bounds().get_Location(), System.Windows.SizeExtensions.Max(System.Windows.Size.op_Subtraction(this.get_Bounds().get_Size(), this.get_BorderThickness().get_Size()), System.Windows.Size.Zero)), this.$converter);
+			this.$SetCornerRadius();
 		},
 		get_BorderBrush: function() {
 			return this.$borderBrush;
@@ -1577,7 +1706,7 @@
 				return;
 			}
 			this.$bounds = value;
-			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBounds(this.get_Style(), new System.Windows.Rect.$ctor2(this.get_Bounds().get_Location(), System.Windows.Size.op_Subtraction(this.get_Bounds().get_Size(), this.get_BorderThickness().get_Size())), this.$converter);
+			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBounds(this.get_Style(), new System.Windows.Rect.$ctor2(this.get_Bounds().get_Location(), System.Windows.SizeExtensions.Max(System.Windows.Size.op_Subtraction(this.get_Bounds().get_Size(), this.get_BorderThickness().get_Size()), System.Windows.Size.Zero)), this.$converter);
 		},
 		get_CornerRadius: function() {
 			return this.$cornerRadius;
@@ -1587,7 +1716,7 @@
 				return;
 			}
 			this.$cornerRadius = value;
-			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetCornerRadius(this.get_Style(), this.$cornerRadius, this.$converter);
+			this.$SetCornerRadius();
 		},
 		get_IsHitTestVisible: function() {
 			return this.$isHitTestVisible;
@@ -1598,6 +1727,11 @@
 			}
 			this.$isHitTestVisible = value;
 			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetIsHitTestVisible(this.get_Style(), this.$isHitTestVisible && ss.isValue(this.get_Background()));
+		},
+		$SetCornerRadius: function() {
+			// CornerRadius is relative to the center of the border line, interpolate the outline radius
+			var borderOutlineCornerRadius = new System.Windows.CornerRadius.$ctor1(this.get_CornerRadius().get_TopLeft() + (this.get_BorderThickness().get_Top() + this.get_BorderThickness().get_Left()) / 4, this.get_CornerRadius().get_TopRight() + (this.get_BorderThickness().get_Top() + this.get_BorderThickness().get_Right()) / 4, this.get_CornerRadius().get_BottomRight() + (this.get_BorderThickness().get_Bottom() + this.get_BorderThickness().get_Right()) / 4, this.get_CornerRadius().get_BottomLeft() + (this.get_BorderThickness().get_Bottom() + this.get_BorderThickness().get_Left()) / 4);
+			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetCornerRadius(this.get_Style(), borderOutlineCornerRadius, this.$converter);
 		},
 		$OnBackgroundChanged: function(sender, e) {
 			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackground(this.get_Style(), this.get_Background(), this.$converter);
@@ -1829,6 +1963,16 @@
 			this.$GetContentElementSelection();
 			Granular.Extensions.EventHandlerExtensions.Raise(this.$2$TextChangedField, this);
 		},
+		get_MaxLength: function() {
+			return this.$maxLength;
+		},
+		set_MaxLength: function(value) {
+			if (this.$maxLength === value) {
+				return;
+			}
+			this.$maxLength = value;
+			this.$SetContentElementMaxLength();
+		},
 		add_CaretIndexChanged: function(value) {
 			this.$2$CaretIndexChangedField = ss.delegateCombine(this.$2$CaretIndexChangedField, value);
 		},
@@ -1879,6 +2023,16 @@
 			this.$selectionLength = value;
 			this.$SetContentElementSelectionLength();
 			Granular.Extensions.EventHandlerExtensions.Raise(this.$2$SelectionLengthChangedField, this);
+		},
+		get_IsPassword: function() {
+			return this.$isPassword;
+		},
+		set_IsPassword: function(value) {
+			if (this.$isPassword === value) {
+				return;
+			}
+			this.$isPassword = value;
+			this.$SetContentElement();
 		},
 		get_IsReadOnly: function() {
 			return this.$isReadOnly;
@@ -2054,14 +2208,15 @@
 			this.$2$AcceptsTabField = value;
 		},
 		$SetContentElement: function() {
-			if (this.get_AcceptsReturn()) {
-				this.set_$ContentElement(new $Granular_Host_Render_HtmlRenderElement.$ctor1('textarea', this.$renderQueue$1));
+			if (this.get_IsPassword() || !this.get_AcceptsReturn()) {
+				this.set_$ContentElement(new $Granular_Host_Render_HtmlRenderElement.$ctor1('input', this.$renderQueue$1));
+				this.get_$ContentElement().get_HtmlElement().setAttribute('type', (this.get_IsPassword() ? 'password' : 'text'));
 			}
 			else {
-				this.set_$ContentElement(new $Granular_Host_Render_HtmlRenderElement.$ctor1('input', this.$renderQueue$1));
-				this.get_$ContentElement().get_HtmlElement().setAttribute('type', 'text');
+				this.set_$ContentElement(new $Granular_Host_Render_HtmlRenderElement.$ctor1('textarea', this.$renderQueue$1));
 			}
 			this.$SetContentElementText();
+			this.$SetContentElementMaxLength();
 			this.$SetContentElementSelectionStart();
 			this.$SetContentElementSelectionLength();
 			this.$SetContentElementIsReadOnly();
@@ -2072,6 +2227,7 @@
 			this.get_$ContentElement().get_Style().SetValue('padding', '0px');
 			this.get_$ContentElement().get_Style().SetValue('border', '0px solid transparent');
 			this.get_$ContentElement().get_Style().SetValue('outline', '1px solid transparent');
+			this.get_$ContentElement().get_Style().SetValue('cursor', 'inherit');
 			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackground(this.get_$ContentElement().get_Style(), System.Windows.Media.Brushes.get_Transparent(), this.$converter);
 			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetLocation(this.get_$ContentElement().get_Style(), System.Windows.Point.Zero, this.$converter);
 			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetSize(this.get_$ContentElement().get_Style(), this.get_Bounds().get_Size(), this.$converter);
@@ -2157,6 +2313,14 @@
 		$SetContentElementText: function() {
 			if (!ss.referenceEquals(this.get_$ContentElement().get_HtmlElement().value, Granular.Extensions.StringExtensions.DefaultIfNullOrEmpty(this.get_Text(), null))) {
 				this.get_$ContentElement().get_HtmlElement().value = this.get_Text();
+			}
+		},
+		$SetContentElementMaxLength: function() {
+			if (this.$maxLength > 0) {
+				this.get_$ContentElement().get_HtmlElement().setAttribute('maxLength', this.$maxLength.toString());
+			}
+			else {
+				this.get_$ContentElement().get_HtmlElement().removeAttribute('maxLength');
 			}
 		},
 		$SetContentElementIsReadOnly: function() {

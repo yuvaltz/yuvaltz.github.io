@@ -4,6 +4,7 @@
 	global.Granular = global.Granular || {};
 	global.Granular.Collections = global.Granular.Collections || {};
 	global.Granular.Compatibility = global.Granular.Compatibility || {};
+	global.Granular.Diagnostics = global.Granular.Diagnostics || {};
 	global.Granular.Extensions = global.Granular.Extensions || {};
 	global.System = global.System || {};
 	global.System.Collections = global.System.Collections || {};
@@ -132,7 +133,7 @@
 				if (this.$dictionary.tryGetValue(key, value)) {
 					return true;
 				}
-				if (this.$unsetValues.Contains(key)) {
+				if (this.$unsetValues.contains(key)) {
 					value.$ = ss.getDefaultValue(TValue);
 					return false;
 				}
@@ -145,20 +146,20 @@
 					this.$dictionary.add(key, value.$);
 					return true;
 				}
-				this.$unsetValues.Add(key);
+				this.$unsetValues.add(key);
 				value.$ = ss.getDefaultValue(TValue);
 				return false;
 			},
 			Contains: function(key) {
-				return this.$dictionary.containsKey(key) || this.$unsetValues.Contains(key);
+				return this.$dictionary.containsKey(key) || this.$unsetValues.contains(key);
 			},
 			Remove: function(key) {
 				this.$dictionary.remove(key);
-				this.$unsetValues.Remove(key);
+				this.$unsetValues.remove(key);
 			},
 			Clear: function() {
 				this.$dictionary.clear();
-				this.$unsetValues.Clear();
+				this.$unsetValues.clear();
 			}
 		}, function() {
 			return null;
@@ -480,8 +481,7 @@
 				throw new ss.InvalidOperationException('Queue is empty');
 			},
 			TryDequeue: function(value) {
-				if (this.$list.get_count() > 0) {
-					value.$ = Enumerable.from($System_Collections_Generic_DictionaryExtensions.GetValues(ss.makeGenericType($Granular_$Collections_PriorityQueue$2$IndexedKey, [TKey, TValue]), TValue).call(null, this.$list)).first();
+				if (this.TryPeek(value)) {
 					this.$list.RemoveAt(0);
 					return true;
 				}
@@ -489,10 +489,19 @@
 				return false;
 			},
 			Peek: function() {
-				if (this.$list.get_count() > 0) {
-					return Enumerable.from($System_Collections_Generic_DictionaryExtensions.GetValues(ss.makeGenericType($Granular_$Collections_PriorityQueue$2$IndexedKey, [TKey, TValue]), TValue).call(null, this.$list)).first();
+				var value = {};
+				if (this.TryPeek(value)) {
+					return value.$;
 				}
 				throw new ss.InvalidOperationException('Queue is empty');
+			},
+			TryPeek: function(value) {
+				if (this.$list.get_count() > 0) {
+					value.$ = Enumerable.from($System_Collections_Generic_DictionaryExtensions.GetValues(ss.makeGenericType($Granular_$Collections_PriorityQueue$2$IndexedKey, [TKey, TValue]), TValue).call(null, this.$list)).first();
+					return true;
+				}
+				value.$ = ss.getDefaultValue(TValue);
+				return false;
 			},
 			getEnumerator: function() {
 				return Enumerable.from(this.$list).select(function(pair) {
@@ -786,6 +795,21 @@
 		return ss.getType(name);
 	};
 	global.Granular.Compatibility.Type = $Granular_Compatibility_Type;
+	////////////////////////////////////////////////////////////////////////////////
+	// Granular.Diagnostics.HitCounter
+	var $Granular_Diagnostics_HitCounter = function(name, getAdditionalStatus) {
+		this.$name = null;
+		this.$getAdditionalStatus = null;
+		this.$totalHitsCount = 0;
+		this.$lastHitsCount = 0;
+		this.$lastReportTime = new Date(0);
+		this.$name = name;
+		this.$getAdditionalStatus = getAdditionalStatus;
+		this.$lastReportTime = new Date();
+		console.log(ss.formatString('{0} - HitCounter initialized', name));
+	};
+	$Granular_Diagnostics_HitCounter.__typeName = 'Granular.Diagnostics.HitCounter';
+	global.Granular.Diagnostics.HitCounter = $Granular_Diagnostics_HitCounter;
 	////////////////////////////////////////////////////////////////////////////////
 	// Granular.Extensions.AssemblyExtensions
 	var $Granular_Extensions_AssemblyExtensions = function() {
@@ -1135,19 +1159,19 @@
 			this.$dictionary = new (ss.makeGenericType(ss.Dictionary$2, [T, Object]))();
 		};
 		ss.registerGenericClassInstance($type, $System_Collections_Generic_HashSet$1, [T], {
-			get_Count: function() {
+			get_count: function() {
 				return this.$dictionary.get_count();
 			},
-			Contains: function(item) {
+			contains: function(item) {
 				return this.$dictionary.containsKey(item);
 			},
-			Add: function(item) {
+			add: function(item) {
 				this.$dictionary.set_item(item, null);
 			},
-			Remove: function(item) {
+			remove: function(item) {
 				return this.$dictionary.remove(item);
 			},
-			Clear: function() {
+			clear: function() {
 				this.$dictionary.clear();
 			},
 			getEnumerator: function() {
@@ -1156,9 +1180,9 @@
 		}, function() {
 			return null;
 		}, function() {
-			return [ss.IEnumerable, ss.IEnumerable];
+			return [ss.IEnumerable, ss.IEnumerable, ss.ICollection];
 		});
-		ss.setMetadata($type, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Add', type: 8, sname: 'Add', returnType: Object, params: [T] }, { name: 'Clear', type: 8, sname: 'Clear', returnType: Object, params: [] }, { name: 'Contains', type: 8, sname: 'Contains', returnType: Boolean, params: [T] }, { name: 'GetEnumerator', type: 8, sname: 'getEnumerator', returnType: ss.IEnumerator, params: [] }, { name: 'Remove', type: 8, sname: 'Remove', returnType: Boolean, params: [T] }, { name: 'Count', type: 16, returnType: ss.Int32, getter: { name: 'get_Count', type: 8, sname: 'get_Count', returnType: ss.Int32, params: [] } }] });
+		ss.setMetadata($type, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Add', type: 8, sname: 'add', returnType: Object, params: [T] }, { name: 'Clear', type: 8, sname: 'clear', returnType: Object, params: [] }, { name: 'Contains', type: 8, sname: 'contains', returnType: Boolean, params: [T] }, { name: 'GetEnumerator', type: 8, sname: 'getEnumerator', returnType: ss.IEnumerator, params: [] }, { name: 'Remove', type: 8, sname: 'remove', returnType: Boolean, params: [T] }, { name: 'Count', type: 16, returnType: ss.Int32, getter: { name: 'get_Count', type: 8, sname: 'get_count', returnType: ss.Int32, params: [] } }] });
 		return $type;
 	};
 	$System_Collections_Generic_HashSet$1.__typeName = 'System.Collections.Generic.HashSet$1';
@@ -1728,7 +1752,7 @@
 		var domParser = new DOMParser();
 		var xmlElement = domParser.parseFromString(content, 'application/xml').documentElement;
 		if (xmlElement.nodeName === 'parsererror' || ss.isValue(xmlElement.firstChild) && xmlElement.firstChild.nodeName === 'parsererror') {
-			throw new ss.Exception($System_Xaml_XamlParser.$GetParserErrorMessage(xmlElement.textContent));
+			throw new $Granular_Exception($System_Xaml_XamlParser.$GetParserErrorMessage(xmlElement.textContent), []);
 		}
 		return $System_Xaml_XamlParser.$Parse(xmlElement);
 	};
@@ -1806,7 +1830,11 @@
 		});
 	};
 	global.System.Xaml.XmlElementExtensions = $System_Xaml_XmlElementExtensions;
-	ss.initClass($Granular_Exception, $asm, {}, ss.Exception);
+	ss.initClass($Granular_Exception, $asm, {
+		toString: function() {
+			return this.get_message();
+		}
+	}, ss.Exception);
 	ss.initClass($Granular_Collections_IListDictionaryExtensions, $asm, {});
 	ss.initInterface($Granular_Collections_INotifyCollectionChanged, $asm, { add_CollectionChanged: null, remove_CollectionChanged: null });
 	ss.initEnum($Granular_Collections_NotifyCollectionChangedAction, $asm, { Add: 0, Remove: 1, Replace: 2, Move: 3, Reset: 4 });
@@ -1854,6 +1882,25 @@
 	ss.initClass($Granular_Compatibility_String, $asm, {});
 	ss.initClass($Granular_Compatibility_TimeSpan, $asm, {});
 	ss.initClass($Granular_Compatibility_Type, $asm, {});
+	ss.initClass($Granular_Diagnostics_HitCounter, $asm, {
+		Hit: function() {
+			this.$totalHitsCount++;
+			var now = new Date();
+			var interval = $Granular_Compatibility_TimeSpan.Subtract(now, this.$lastReportTime);
+			if (interval.ticks >= (new ss.TimeSpan(1 * 10000000)).ticks) {
+				var rate = ss.round((this.$totalHitsCount - this.$lastHitsCount) / (interval.ticks / 10000000), 1);
+				var additionalStatus = (!ss.staticEquals(this.$getAdditionalStatus, null) ? this.$getAdditionalStatus() : '');
+				if ($Granular_Extensions_StringExtensions.IsNullOrEmpty(additionalStatus)) {
+					console.log(ss.formatString('{0} - Total: {1} hits, Rate: {2} hits/sec', this.$name, this.$totalHitsCount, rate));
+				}
+				else {
+					console.log(ss.formatString('{0} - Total: {1} hits, Rate: {2} hits/sec - {3}', this.$name, this.$totalHitsCount, rate, additionalStatus));
+				}
+				this.$lastReportTime = now;
+				this.$lastHitsCount = this.$totalHitsCount;
+			}
+		}
+	});
 	ss.initClass($Granular_Extensions_AssemblyExtensions, $asm, {});
 	ss.initClass($Granular_Extensions_CollectionExtensions, $asm, {});
 	ss.initClass($Granular_Extensions_DoubleExtensions, $asm, {});
@@ -2148,7 +2195,7 @@
 		},
 		equals: function(obj) {
 			var other = ss.safeCast(obj, $System_Xaml_NamespaceDeclaration);
-			return ss.isValue(other) && ss.referenceEquals(ss.getInstanceType(this), ss.getInstanceType(other)) && ss.referenceEquals(this.get_Prefix(), other.get_Prefix()) && ss.referenceEquals(this.get_Namespace(), other.get_Namespace());
+			return ss.referenceEquals(this, other) || !ss.referenceEquals(other, null) && ss.referenceEquals(this.get_Prefix(), other.get_Prefix()) && ss.referenceEquals(this.get_Namespace(), other.get_Namespace());
 		},
 		getHashCode: function() {
 			return ss.getHashCode(this.get_Prefix()) ^ ss.getHashCode(this.get_Prefix());
@@ -2279,7 +2326,7 @@
 		},
 		equals: function(obj) {
 			var other = ss.safeCast(obj, $System_Xaml_XamlName);
-			return $System_Xaml_XamlName.op_Inequality(other, null) && ss.referenceEquals(ss.getInstanceType(this), ss.getInstanceType(other)) && ss.referenceEquals(this.get_LocalName(), other.get_LocalName()) && ss.referenceEquals(this.get_NamespaceName(), other.get_NamespaceName());
+			return ss.referenceEquals(this, other) || !ss.referenceEquals(other, null) && ss.referenceEquals(this.get_LocalName(), other.get_LocalName()) && ss.referenceEquals(this.get_NamespaceName(), other.get_NamespaceName());
 		}
 	});
 	ss.initClass($System_Xaml_XamlNamespaces, $asm, {
@@ -2309,7 +2356,7 @@
 	ss.initClass($System_Xaml_XamlNamespacesExtensions, $asm, {});
 	ss.initClass($System_Xaml_XamlParser, $asm, {});
 	ss.initClass($System_Xaml_XmlElementExtensions, $asm, {});
-	ss.setMetadata($Granular_Exception, { members: [{ name: '.ctor', type: 1, params: [String, Array] }] });
+	ss.setMetadata($Granular_Exception, { members: [{ name: '.ctor', type: 1, params: [String, Array] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }] });
 	ss.setMetadata($Granular_$Collections_PriorityQueue$2$IndexedKey, { members: [{ name: '.ctor', type: 1, params: [Object, ss.Int32] }, { name: 'Index', type: 16, returnType: ss.Int32, getter: { name: 'get_Index', type: 8, sname: 'get_$Index', returnType: ss.Int32, params: [] }, setter: { name: 'set_Index', type: 8, sname: 'set_$Index', returnType: Object, params: [ss.Int32] } }, { name: 'Key', type: 16, returnType: Object, getter: { name: 'get_Key', type: 8, sname: 'get_$Key', returnType: Object, params: [] }, setter: { name: 'set_Key', type: 8, sname: 'set_$Key', returnType: Object, params: [Object] } }] });
 	ss.setMetadata($Granular_$Collections_PriorityQueue$2$IndexedKeyComparer, { members: [{ name: '.ctor', type: 1, params: [ss.IComparer] }, { name: 'Compare', type: 8, sname: 'compare', returnType: ss.Int32, params: [ss.makeGenericType($Granular_$Collections_PriorityQueue$2$IndexedKey, [Object, Object]), ss.makeGenericType($Granular_$Collections_PriorityQueue$2$IndexedKey, [Object, Object])] }] });
 	ss.setMetadata($Granular_$Compatibility_Comparer$1$CompatibleComparer, { members: [{ name: '.ctor', type: 1, params: [ss.Comparer] }, { name: 'Compare', type: 8, sname: 'compare', returnType: ss.Int32, params: [Object, Object] }] });
@@ -2364,6 +2411,7 @@
 	ss.setMetadata($Granular_Compatibility_String, { members: [{ name: 'FromByteArray', isStatic: true, type: 8, sname: 'FromByteArray', returnType: String, params: [Array] }, { name: 'IsNullOrWhitespace', isStatic: true, type: 8, sname: 'IsNullOrWhitespace', returnType: Boolean, params: [String] }] });
 	ss.setMetadata($Granular_Compatibility_TimeSpan, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Subtract', isStatic: true, type: 8, sname: 'Subtract', returnType: ss.TimeSpan, params: [Date, Date] }, { name: 'MaxValue', isStatic: true, type: 4, returnType: ss.TimeSpan, sname: 'MaxValue' }, { name: 'MinValue', isStatic: true, type: 4, returnType: ss.TimeSpan, sname: 'MinValue' }] });
 	ss.setMetadata($Granular_Compatibility_Type, { members: [{ name: 'GetType', isStatic: true, type: 8, sname: 'GetType', returnType: Function, params: [String] }] });
+	ss.setMetadata($Granular_Diagnostics_HitCounter, { members: [{ name: '.ctor', type: 1, params: [String, Function] }, { name: 'Hit', type: 8, sname: 'Hit', returnType: Object, params: [] }] });
 	ss.setMetadata($Granular_Extensions_AssemblyExtensions, { members: [{ name: 'FirstOrDefaultCustomAttributeCached', isStatic: true, type: 8, tpcount: 1, sname: 'FirstOrDefaultCustomAttributeCached', returnType: Object, params: [Object] }, { name: 'GetCustomAttributesCached', isStatic: true, type: 8, tpcount: 1, sname: 'GetCustomAttributesCached', returnType: ss.IEnumerable, params: [Object] }] });
 	ss.setMetadata($Granular_Extensions_CollectionExtensions, { members: [{ name: 'AddRange', isStatic: true, type: 8, tpcount: 1, sname: 'AddRange', returnType: Object, params: [ss.ICollection, ss.IEnumerable] }] });
 	ss.setMetadata($Granular_Extensions_DoubleExtensions, { members: [{ name: 'Bounds', isStatic: true, type: 8, sname: 'Bounds', returnType: Number, params: [Number, Number, Number] }, { name: 'DefaultIfNaN', isStatic: true, type: 8, sname: 'DefaultIfNaN', returnType: Number, params: [Number, Number] }, { name: 'IsClose', isStatic: true, type: 8, sname: 'IsClose', returnType: Boolean, params: [Number, Number] }, { name: 'IsNaN', isStatic: true, type: 8, sname: 'IsNaN', returnType: Boolean, params: [Number] }, { name: 'Max', isStatic: true, type: 8, sname: 'Max', returnType: Number, params: [Number, Number] }, { name: 'Min', isStatic: true, type: 8, sname: 'Min', returnType: Number, params: [Number, Number] }] });
@@ -2379,7 +2427,7 @@
 	ss.setMetadata($System_TypeExtensions, { members: [{ name: 'GetDefaultConstructor', isStatic: true, type: 8, sname: 'GetDefaultConstructor', returnType: Object, params: [Function] }, { name: 'GetIsAbstract', isStatic: true, type: 8, sname: 'GetIsAbstract', returnType: Boolean, params: [Function] }, { name: 'GetIsGenericType', isStatic: true, type: 8, sname: 'GetIsGenericType', returnType: Boolean, params: [Function] }, { name: 'GetIsValueType', isStatic: true, type: 8, sname: 'GetIsValueType', returnType: Boolean, params: [Function] }] });
 	ss.setMetadata($System_$Xaml_XmlElementExtensions$XmlEnumerable$1, { members: [{ name: '.ctor', type: 1, params: [Function] }, { name: 'GetEnumerator', type: 8, sname: 'getEnumerator', returnType: ss.IEnumerator, params: [] }] });
 	ss.setMetadata($System_Collections_Generic_DictionaryExtensions, { members: [{ name: 'GetKeys', isStatic: true, type: 8, tpcount: 2, sname: 'GetKeys', returnType: ss.IEnumerable, params: [ss.IDictionary] }, { name: 'GetValues', isStatic: true, type: 8, tpcount: 2, sname: 'GetValues', returnType: ss.IEnumerable, params: [ss.IDictionary] }] });
-	ss.setMetadata($System_Collections_Generic_HashSet$1, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Add', type: 8, sname: 'Add', returnType: Object, params: [Object] }, { name: 'Clear', type: 8, sname: 'Clear', returnType: Object, params: [] }, { name: 'Contains', type: 8, sname: 'Contains', returnType: Boolean, params: [Object] }, { name: 'GetEnumerator', type: 8, sname: 'getEnumerator', returnType: ss.IEnumerator, params: [] }, { name: 'Remove', type: 8, sname: 'Remove', returnType: Boolean, params: [Object] }, { name: 'Count', type: 16, returnType: ss.Int32, getter: { name: 'get_Count', type: 8, sname: 'get_Count', returnType: ss.Int32, params: [] } }] });
+	ss.setMetadata($System_Collections_Generic_HashSet$1, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Add', type: 8, sname: 'add', returnType: Object, params: [Object] }, { name: 'Clear', type: 8, sname: 'clear', returnType: Object, params: [] }, { name: 'Contains', type: 8, sname: 'contains', returnType: Boolean, params: [Object] }, { name: 'GetEnumerator', type: 8, sname: 'getEnumerator', returnType: ss.IEnumerator, params: [] }, { name: 'Remove', type: 8, sname: 'remove', returnType: Boolean, params: [Object] }, { name: 'Count', type: 16, returnType: ss.Int32, getter: { name: 'get_Count', type: 8, sname: 'get_count', returnType: ss.Int32, params: [] } }] });
 	ss.setMetadata($System_Collections_Generic_SortedList$2, { members: [{ name: '.ctor', type: 1, params: [ss.IComparer] }, { name: 'Add', type: 8, sname: 'add', returnType: Object, params: [Object, Object] }, { name: 'Clear', type: 8, sname: 'Clear', returnType: Object, params: [] }, { name: 'ContainsKey', type: 8, sname: 'containsKey', returnType: Boolean, params: [Object] }, { name: 'GetEnumerator', type: 8, sname: 'getEnumerator', returnType: ss.IEnumerator, params: [] }, { name: 'Remove', type: 8, sname: 'remove', returnType: Boolean, params: [Object] }, { name: 'RemoveAt', type: 8, sname: 'RemoveAt', returnType: Boolean, params: [ss.Int32] }, { name: 'Count', type: 16, returnType: ss.Int32, getter: { name: 'get_Count', type: 8, sname: 'get_count', returnType: ss.Int32, params: [] } }, { name: 'IsReadOnly', type: 16, returnType: Boolean, getter: { name: 'get_IsReadOnly', type: 8, sname: 'get_IsReadOnly', returnType: Boolean, params: [] } }, { name: 'Item', type: 16, returnType: Object, params: [Object], getter: { name: 'get_Item', type: 8, sname: 'get_item', returnType: Object, params: [Object] }, setter: { name: 'set_Item', type: 8, sname: 'set_item', returnType: Object, params: [Object, Object] } }, { name: 'Keys', type: 16, returnType: ss.ICollection, getter: { name: 'get_Keys', type: 8, sname: 'get_keys', returnType: ss.ICollection, params: [] } }, { name: 'Values', type: 16, returnType: ss.ICollection, getter: { name: 'get_Values', type: 8, sname: 'get_values', returnType: ss.ICollection, params: [] } }] });
 	ss.setMetadata($System_ComponentModel_INotifyPropertyChanged, { members: [{ name: 'PropertyChanged', type: 2, adder: { name: 'add_PropertyChanged', type: 8, sname: 'add_PropertyChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_PropertyChanged', type: 8, sname: 'remove_PropertyChanged', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_ComponentModel_PropertyChangedEventArgs, { members: [{ name: '.ctor', type: 1, params: [String] }, { name: 'PropertyName', type: 16, returnType: String, getter: { name: 'get_PropertyName', type: 8, sname: 'get_PropertyName', returnType: String, params: [] }, setter: { name: 'set_PropertyName', type: 8, sname: 'set_PropertyName', returnType: Object, params: [String] } }] });
