@@ -134,7 +134,7 @@
 					return true;
 				}
 				if (this.$unsetValues.contains(key)) {
-					value.$ = ss.getDefaultValue(TValue);
+					value.$ = $type.$DefaultValue;
 					return false;
 				}
 				if (!ss.staticEquals(this.$tryResolveValue, null) && this.$tryResolveValue(key, value)) {
@@ -147,7 +147,7 @@
 					return true;
 				}
 				this.$unsetValues.add(key);
-				value.$ = ss.getDefaultValue(TValue);
+				value.$ = $type.$DefaultValue;
 				return false;
 			},
 			Contains: function(key) {
@@ -168,6 +168,7 @@
 		});
 		$type.$ctor1.prototype = $type.$ctor2.prototype = $type.prototype;
 		ss.setMetadata($type, { members: [{ name: '.ctor', type: 1, params: [Function] }, { name: '.ctor', type: 1, params: [Function], sname: '$ctor1' }, { name: 'Clear', type: 8, sname: 'Clear', returnType: Object, params: [] }, { name: 'Contains', type: 8, sname: 'Contains', returnType: Boolean, params: [TKey] }, { name: 'GetValue', type: 8, sname: 'GetValue', returnType: TValue, params: [TKey] }, { name: 'Remove', type: 8, sname: 'Remove', returnType: Object, params: [TKey] }] });
+		$type.$DefaultValue = ss.getDefaultValue(TValue);
 		return $type;
 	};
 	$Granular_Collections_CacheDictionary$2.__typeName = 'Granular.Collections.CacheDictionary$2';
@@ -485,7 +486,7 @@
 					this.$list.RemoveAt(0);
 					return true;
 				}
-				value.$ = ss.getDefaultValue(TValue);
+				value.$ = $type.$DefaultValue;
 				return false;
 			},
 			Peek: function() {
@@ -500,7 +501,7 @@
 					value.$ = Enumerable.from($System_Collections_Generic_DictionaryExtensions.GetValues(ss.makeGenericType($Granular_$Collections_PriorityQueue$2$IndexedKey, [TKey, TValue]), TValue).call(null, this.$list)).first();
 					return true;
 				}
-				value.$ = ss.getDefaultValue(TValue);
+				value.$ = $type.$DefaultValue;
 				return false;
 			},
 			getEnumerator: function() {
@@ -515,6 +516,7 @@
 		});
 		$type.$ctor1.prototype = $type.prototype;
 		ss.setMetadata($type, { members: [{ name: '.ctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [ss.IComparer], sname: '$ctor1' }, { name: 'Dequeue', type: 8, sname: 'Dequeue', returnType: TValue, params: [] }, { name: 'Enqueue', type: 8, sname: 'Enqueue', returnType: Object, params: [TKey, TValue] }, { name: 'GetEnumerator', type: 8, sname: 'getEnumerator', returnType: ss.IEnumerator, params: [] }, { name: 'Peek', type: 8, sname: 'Peek', returnType: TValue, params: [] }, { name: 'Count', type: 16, returnType: ss.Int32, getter: { name: 'get_Count', type: 8, sname: 'get_Count', returnType: ss.Int32, params: [] } }] });
+		$type.$DefaultValue = ss.getDefaultValue(TValue);
 		return $type;
 	};
 	$Granular_Collections_PriorityQueue$2.__typeName = 'Granular.Collections.PriorityQueue$2';
@@ -794,6 +796,23 @@
 		}
 		return ss.getType(name);
 	};
+	$Granular_Compatibility_Type.GetTypeInterfaceGenericArguments = function(type, interfaceType) {
+		var arguments1 = ss.getGenericArguments(interfaceType);
+		if (ss.isValue(arguments1)) {
+			return arguments1;
+		}
+		if (ss.referenceEquals(interfaceType, ss.ICollection)) {
+			return Enumerable.from(ss.getMembers(type, 8, 20)).where(function(methodInfo) {
+				return methodInfo.name === 'Add' && methodInfo.params.length === 1;
+			}).first().params;
+		}
+		if (ss.referenceEquals(interfaceType, ss.IDictionary)) {
+			return Enumerable.from(ss.getMembers(type, 8, 20)).where(function(methodInfo1) {
+				return methodInfo1.name === 'Add' && methodInfo1.params.length === 2;
+			}).first().params;
+		}
+		throw new $Granular_Exception('Can\'t get generic arguments for type "{0}" interface "{1}"', [ss.getTypeName(type), ss.getTypeName(interfaceType)]);
+	};
 	global.Granular.Compatibility.Type = $Granular_Compatibility_Type;
 	////////////////////////////////////////////////////////////////////////////////
 	// Granular.Diagnostics.HitCounter
@@ -1057,7 +1076,7 @@
 	};
 	$Granular_Extensions_TypeExtensions.GetDefaultIndexProperty = function(type) {
 		return Enumerable.from(ss.getMembers(type, 16, 28)).firstOrDefault(function(property) {
-			return Enumerable.from($System_Reflection_PropertyInfoExtensions.GetIndexParameters(property)).any();
+			return Enumerable.from($System_Reflection_ParameterInfoExtensions.GetIndexParameters(property)).any();
 		}, ss.getDefaultValue(Object));
 	};
 	$Granular_Extensions_TypeExtensions.GetInterfaceType = function(type, interfaceGenericType) {
@@ -1266,7 +1285,7 @@
 			tryGetValue: function(key, value) {
 				var index = {};
 				if (!this.$FindItem(key, index)) {
-					value.$ = ss.getDefaultValue(TValue);
+					value.$ = $type.$DefaultValue;
 					return false;
 				}
 				value.$ = this.$values[index.$];
@@ -1306,6 +1325,7 @@
 			return [ss.IEnumerable, ss.IEnumerable, ss.IDictionary];
 		});
 		ss.setMetadata($type, { members: [{ name: '.ctor', type: 1, params: [ss.IComparer] }, { name: 'Add', type: 8, sname: 'add', returnType: Object, params: [TKey, TValue] }, { name: 'Clear', type: 8, sname: 'Clear', returnType: Object, params: [] }, { name: 'ContainsKey', type: 8, sname: 'containsKey', returnType: Boolean, params: [TKey] }, { name: 'GetEnumerator', type: 8, sname: 'getEnumerator', returnType: ss.IEnumerator, params: [] }, { name: 'Remove', type: 8, sname: 'remove', returnType: Boolean, params: [TKey] }, { name: 'RemoveAt', type: 8, sname: 'RemoveAt', returnType: Boolean, params: [ss.Int32] }, { name: 'Count', type: 16, returnType: ss.Int32, getter: { name: 'get_Count', type: 8, sname: 'get_count', returnType: ss.Int32, params: [] } }, { name: 'IsReadOnly', type: 16, returnType: Boolean, getter: { name: 'get_IsReadOnly', type: 8, sname: 'get_IsReadOnly', returnType: Boolean, params: [] } }, { name: 'Item', type: 16, returnType: TValue, params: [TKey], getter: { name: 'get_Item', type: 8, sname: 'get_item', returnType: TValue, params: [TKey] }, setter: { name: 'set_Item', type: 8, sname: 'set_item', returnType: Object, params: [TKey, TValue] } }, { name: 'Keys', type: 16, returnType: ss.ICollection, getter: { name: 'get_Keys', type: 8, sname: 'get_keys', returnType: ss.ICollection, params: [] } }, { name: 'Values', type: 16, returnType: ss.ICollection, getter: { name: 'get_Values', type: 8, sname: 'get_values', returnType: ss.ICollection, params: [] } }] });
+		$type.$DefaultValue = ss.getDefaultValue(TValue);
 		return $type;
 	};
 	$System_Collections_Generic_SortedList$2.__typeName = 'System.Collections.Generic.SortedList$2';
@@ -1408,15 +1428,31 @@
 	$System_Reflection_ParameterInfo.__typeName = 'System.Reflection.ParameterInfo';
 	global.System.Reflection.ParameterInfo = $System_Reflection_ParameterInfo;
 	////////////////////////////////////////////////////////////////////////////////
-	// System.Reflection.PropertyInfoExtensions
-	var $System_Reflection_PropertyInfoExtensions = function() {
+	// System.Reflection.ParameterInfoExtensions
+	var $System_Reflection_ParameterInfoExtensions = function() {
 	};
-	$System_Reflection_PropertyInfoExtensions.__typeName = 'System.Reflection.PropertyInfoExtensions';
-	$System_Reflection_PropertyInfoExtensions.GetIndexParameters = function(propertyInfo) {
+	$System_Reflection_ParameterInfoExtensions.__typeName = 'System.Reflection.ParameterInfoExtensions';
+	$System_Reflection_ParameterInfoExtensions.GetParameters = function(constructorInfo) {
+		return Enumerable.from(constructorInfo.params).select(function(type) {
+			return new $System_Reflection_ParameterInfo(type);
+		}).toArray();
+	};
+	$System_Reflection_ParameterInfoExtensions.GetParameters$1 = function(methodInfo) {
+		return Enumerable.from(methodInfo.params).select(function(type) {
+			return new $System_Reflection_ParameterInfo(type);
+		}).toArray();
+	};
+	$System_Reflection_ParameterInfoExtensions.GetIndexParameters = function(propertyInfo) {
 		return Enumerable.from(propertyInfo.params || []).select(function(type) {
 			return new $System_Reflection_ParameterInfo(type);
 		}).toArray();
 	};
+	global.System.Reflection.ParameterInfoExtensions = $System_Reflection_ParameterInfoExtensions;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Reflection.PropertyInfoExtensions
+	var $System_Reflection_PropertyInfoExtensions = function() {
+	};
+	$System_Reflection_PropertyInfoExtensions.__typeName = 'System.Reflection.PropertyInfoExtensions';
 	$System_Reflection_PropertyInfoExtensions.GetGetMethod = function(propertyInfo) {
 		return propertyInfo.getter;
 	};
@@ -1573,88 +1609,18 @@
 	$System_Xaml_Token.__typeName = 'System.Xaml.Token';
 	global.System.Xaml.Token = $System_Xaml_Token;
 	////////////////////////////////////////////////////////////////////////////////
-	// System.Xaml.XamlAttribute
-	var $System_Xaml_XamlAttribute = function(name, namespaces, value) {
-		this.$2$ValueField = null;
-		$System_Xaml_XamlNode.call(this, name, namespaces);
-		this.set_Value(value);
-	};
-	$System_Xaml_XamlAttribute.__typeName = 'System.Xaml.XamlAttribute';
-	global.System.Xaml.XamlAttribute = $System_Xaml_XamlAttribute;
-	////////////////////////////////////////////////////////////////////////////////
 	// System.Xaml.XamlElement
-	var $System_Xaml_XamlElement = function(name, namespaces, attributes, children, textValue) {
-		this.$2$AttributesField = null;
-		this.$2$ChildrenField = null;
-		this.$2$TextValueField = null;
+	var $System_Xaml_XamlElement = function(name, namespaces, members, values, directives) {
+		this.$2$MembersField = null;
+		this.$2$ValuesField = null;
+		this.$2$DirectivesField = null;
 		$System_Xaml_XamlNode.call(this, name, namespaces);
-		this.set_Attributes(attributes || []);
-		this.set_Children(children || []);
-		this.set_TextValue(ss.coalesce(textValue, ''));
+		this.set_Members(members || $System_Xaml_XamlElement.$EmptyMembers);
+		this.set_Values(values || $System_Xaml_XamlElement.$EmptyValues);
+		this.set_Directives(directives || $System_Xaml_XamlElement.$EmptyDirectives);
 	};
 	$System_Xaml_XamlElement.__typeName = 'System.Xaml.XamlElement';
 	global.System.Xaml.XamlElement = $System_Xaml_XamlElement;
-	////////////////////////////////////////////////////////////////////////////////
-	// System.Xaml.XamlElementExtensions
-	var $System_Xaml_XamlElementExtensions = function() {
-	};
-	$System_Xaml_XamlElementExtensions.__typeName = 'System.Xaml.XamlElementExtensions';
-	$System_Xaml_XamlElementExtensions.TryGetMemberValue = function(element, memberName, value) {
-		var memberAttribute = Enumerable.from(element.get_Attributes()).where(function(attribute) {
-			return $System_Xaml_XamlName.op_Equality(attribute.get_Name(), memberName);
-		}).firstOrDefault(null, ss.getDefaultValue($System_Xaml_XamlAttribute));
-		if (ss.isValue(memberAttribute)) {
-			value.$ = memberAttribute.get_Value();
-			return true;
-		}
-		var memberChild = Enumerable.from(element.get_Children()).where(function(child) {
-			return $System_Xaml_XamlName.op_Equality(child.get_Name(), memberName);
-		}).firstOrDefault(null, ss.getDefaultValue($System_Xaml_XamlElement));
-		if (ss.isValue(memberChild)) {
-			value.$ = $System_Xaml_XamlElementExtensions.GetMemberValue(memberChild);
-			return true;
-		}
-		value.$ = null;
-		return false;
-	};
-	$System_Xaml_XamlElementExtensions.GetMemberAttributes = function(element) {
-		return Enumerable.from(element.get_Attributes()).where(function(attribute) {
-			return !$System_Xaml_XamlLanguage.IsDirective(attribute.get_Name());
-		});
-	};
-	$System_Xaml_XamlElementExtensions.GetMemberChildren = function(element) {
-		return Enumerable.from(element.get_Children()).where(function(child) {
-			return child.get_Name().get_IsMemberName();
-		});
-		// member name cannot be directive
-	};
-	$System_Xaml_XamlElementExtensions.GetMemberNodes = function(element) {
-		return Enumerable.from($System_Xaml_XamlElementExtensions.GetMemberAttributes(element)).select(function(x) {
-			return ss.cast(x, $System_Xaml_XamlNode);
-		}).concat($System_Xaml_XamlElementExtensions.GetMemberChildren(element));
-	};
-	$System_Xaml_XamlElementExtensions.GetContentChildren = function(element) {
-		return Enumerable.from(element.get_Children()).where(function(child) {
-			return !child.get_Name().get_IsMemberName() && !$System_Xaml_XamlLanguage.IsDirective(child.get_Name());
-		});
-	};
-	$System_Xaml_XamlElementExtensions.GetMemberValue = function(element) {
-		if (Enumerable.from($System_Xaml_XamlElementExtensions.GetMemberChildren(element)).any()) {
-			throw new $Granular_Exception('Element "{0}" cannot have attributes', [element.get_Name().get_LocalName()]);
-		}
-		var children = $System_Xaml_XamlElementExtensions.GetContentChildren(element);
-		if (!Enumerable.from(children).any() && $Granular_Extensions_StringExtensions.IsNullOrEmpty(element.get_TextValue())) {
-			throw new $Granular_Exception('Element "{0}" doesn\'t have a value', [element.get_Name().get_LocalName()]);
-		}
-		if (Enumerable.from(children).count() > 1) {
-			throw new $Granular_Exception('Element "{0}" can only have one child', [element.get_Name()]);
-		}
-		if (Enumerable.from(children).any() && !$Granular_Extensions_StringExtensions.IsNullOrEmpty(element.get_TextValue())) {
-			throw new $Granular_Exception('Element "{0}" cannot have both children and text value', [element.get_Name().get_LocalName()]);
-		}
-		return (!$Granular_Extensions_StringExtensions.IsNullOrEmpty(element.get_TextValue()) ? element.get_TextValue() : Enumerable.from(children).first());
-	};
-	global.System.Xaml.XamlElementExtensions = $System_Xaml_XamlElementExtensions;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Xaml.XamlLanguage
 	var $System_Xaml_XamlLanguage = function() {
@@ -1667,6 +1633,34 @@
 		return Enumerable.from($System_Xaml_XamlLanguage.$XamlTypes).contains(name);
 	};
 	global.System.Xaml.XamlLanguage = $System_Xaml_XamlLanguage;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Xaml.XamlMember
+	var $System_Xaml_XamlMember = function(name, namespaces, values) {
+		this.$2$ValuesField = null;
+		$System_Xaml_XamlNode.call(this, name, namespaces);
+		this.set_Values(values || $System_Xaml_XamlMember.$EmptyValues);
+	};
+	$System_Xaml_XamlMember.__typeName = 'System.Xaml.XamlMember';
+	$System_Xaml_XamlMember.$ctor1 = function(name, namespaces, value) {
+		$System_Xaml_XamlMember.call(this, name, namespaces, [value]);
+		//
+	};
+	global.System.Xaml.XamlMember = $System_Xaml_XamlMember;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Xaml.XamlMemberExtensions
+	var $System_Xaml_XamlMemberExtensions = function() {
+	};
+	$System_Xaml_XamlMemberExtensions.__typeName = 'System.Xaml.XamlMemberExtensions';
+	$System_Xaml_XamlMemberExtensions.GetSingleValue = function(member) {
+		if (!Enumerable.from(member.get_Values()).any()) {
+			throw new $Granular_Exception('Member "{0}" doesn\'t have values', [member.get_Name()]);
+		}
+		if (Enumerable.from(member.get_Values()).count() > 1) {
+			throw new $Granular_Exception('Member "{0}" cannot have multiple values', [member.get_Name()]);
+		}
+		return Enumerable.from(member.get_Values()).first();
+	};
+	global.System.Xaml.XamlMemberExtensions = $System_Xaml_XamlMemberExtensions;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Xaml.XamlName
 	var $System_Xaml_XamlName = function(localName, namespaceName) {
@@ -1759,43 +1753,92 @@
 	$System_Xaml_XamlParser.$Parse = function(element) {
 		return $System_Xaml_XamlParser.$CreateXamlElement(element, $System_Xaml_XamlNamespaces.Empty);
 	};
-	$System_Xaml_XamlParser.$CreateXamlElement = function(root, namespaces) {
-		if (Enumerable.from($System_Xaml_XmlElementExtensions.Nodes(root)).ofType(Text).where(function(text) {
-			return !$Granular_Extensions_StringExtensions.IsNullOrWhitespace(text.nodeValue);
-		}).count() > 1) {
-			throw new $Granular_Exception('Xml cannot contain more than one text node', []);
-		}
-		var elementNamespaces = Enumerable.from($System_Xaml_XmlElementExtensions.Attributes(root)).where(function(attribute) {
-			return $System_Xaml_XamlParser.$IsNamespaceDeclaration(attribute);
-		}).select(function(attribute1) {
-			return new $System_Xaml_NamespaceDeclaration.$ctor1($System_Xaml_XamlParser.$GetNamespaceDeclarationPrefix(attribute1), attribute1.value);
+	$System_Xaml_XamlParser.$CreateXamlElement = function(element, namespaces) {
+		var elementNamespaces = Enumerable.from($System_Xaml_XmlElementExtensions.Attributes(element)).where($System_Xaml_XamlParser.$IsNamespaceDeclaration).select(function(attribute) {
+			return new $System_Xaml_NamespaceDeclaration.$ctor1($System_Xaml_XamlParser.$GetNamespaceDeclarationPrefix(attribute), attribute.value);
 		}).toArray();
 		if (Enumerable.from(elementNamespaces).any()) {
 			namespaces = namespaces.Merge(elementNamespaces);
 		}
-		var attributes = Enumerable.from($System_Xaml_XmlElementExtensions.Attributes(root)).where(function(attribute2) {
-			return !$System_Xaml_XamlParser.$IsNamespaceDeclaration(attribute2);
-		}).select(function(attribute3) {
-			return $System_Xaml_XamlParser.$CreateXamlAttribute(attribute3, namespaces);
+		return new $System_Xaml_XamlElement(new $System_Xaml_XamlName(element.localName, element.namespaceURI), namespaces, $System_Xaml_XamlParser.$CreateXamlMembers(element, namespaces), $System_Xaml_XamlParser.$CreateValues(element, namespaces), $System_Xaml_XamlParser.$CreateDirectives(element, namespaces));
+	};
+	$System_Xaml_XamlParser.$CreateXamlMembers = function(element, namespaces) {
+		var attributeMembers = Enumerable.from($System_Xaml_XmlElementExtensions.Attributes(element)).where(function(attribute) {
+			return !$System_Xaml_XamlParser.$IsDirective(attribute) && !$System_Xaml_XamlParser.$IsNamespaceDeclaration(attribute);
+		}).select(function(attribute1) {
+			return $System_Xaml_XamlParser.$CreateXamlMember(attribute1, namespaces);
+		});
+		var elementMembers = Enumerable.from($System_Xaml_XmlElementExtensions.Elements(element)).where(function(child) {
+			return $System_Xaml_XamlParser.$IsMemberName(child);
+		}).select(function(child1) {
+			return $System_Xaml_XamlParser.$CreateXamlMember$1(child1, namespaces);
+		});
+		return Enumerable.from(attributeMembers).concat(elementMembers).toArray();
+	};
+	$System_Xaml_XamlParser.$CreateXamlMember = function(attribute, namespaces) {
+		var name = new $System_Xaml_XamlName(attribute.localName, ($Granular_Extensions_StringExtensions.IsNullOrEmpty(attribute.namespaceURI) ? namespaces.Get('') : attribute.namespaceURI));
+		var value = $System_Xaml_MarkupExtensionParser.Parse(attribute.value, namespaces);
+		return new $System_Xaml_XamlMember.$ctor1(name, namespaces, value);
+	};
+	$System_Xaml_XamlParser.$CreateXamlMember$1 = function(element, namespaces) {
+		var name = new $System_Xaml_XamlName(element.localName, ($Granular_Extensions_StringExtensions.IsNullOrEmpty(element.namespaceURI) ? namespaces.Get('') : element.namespaceURI));
+		if (Enumerable.from($System_Xaml_XmlElementExtensions.Attributes(element)).any()) {
+			throw new $Granular_Exception('Member "{0}" cannot contain attributes', [element.localName]);
+		}
+		if (Enumerable.from($System_Xaml_XmlElementExtensions.Elements(element)).any(function(child) {
+			return $System_Xaml_XamlParser.$IsMemberName(child);
+		})) {
+			throw new $Granular_Exception('Member "{0}" cannot contain member elements', [element.localName]);
+		}
+		return new $System_Xaml_XamlMember(name, namespaces, $System_Xaml_XamlParser.$CreateValues(element, namespaces));
+	};
+	$System_Xaml_XamlParser.$CreateDirectives = function(element, namespaces) {
+		var attributeDirectives = Enumerable.from($System_Xaml_XmlElementExtensions.Attributes(element)).where(function(attribute) {
+			return $System_Xaml_XamlParser.$IsDirective(attribute) && !$System_Xaml_XamlParser.$IsNamespaceDeclaration(attribute);
+		}).select(function(attribute1) {
+			return $System_Xaml_XamlParser.$CreateXamlMember(attribute1, namespaces);
+		});
+		var elementDirectives = Enumerable.from($System_Xaml_XmlElementExtensions.Elements(element)).where(function(child) {
+			return $System_Xaml_XamlParser.$IsDirective$1(child);
+		}).select(function(child1) {
+			return $System_Xaml_XamlParser.$CreateXamlMember$1(child1, namespaces);
+		});
+		return Enumerable.from(attributeDirectives).concat(elementDirectives).toArray();
+	};
+	$System_Xaml_XamlParser.$CreateValues = function(element, namespaces) {
+		return Enumerable.from($System_Xaml_XmlElementExtensions.Nodes(element)).where(function(node) {
+			return $System_Xaml_XamlParser.$IsValue(node);
+		}).select(function(node1) {
+			return $System_Xaml_XamlParser.$CreateValue(node1, namespaces);
 		}).toArray();
-		var elements = Enumerable.from($System_Xaml_XmlElementExtensions.Elements(root)).select(function(element) {
-			return $System_Xaml_XamlParser.$CreateXamlElement(element, namespaces);
-		}).toArray();
-		var textValue = Enumerable.from($System_Xaml_XmlElementExtensions.Nodes(root)).ofType(Text).where(function(text1) {
-			return !$Granular_Extensions_StringExtensions.IsNullOrWhitespace(text1.nodeValue);
-		}).select(function(text2) {
-			return text2.nodeValue.trim();
-		}).defaultIfEmpty('').first();
-		return new $System_Xaml_XamlElement(new $System_Xaml_XamlName(root.localName, root.namespaceURI), namespaces, attributes, elements, textValue);
+	};
+	$System_Xaml_XamlParser.$IsValue = function(node) {
+		return ss.isInstanceOfType(node, Text) && !$Granular_Extensions_StringExtensions.IsNullOrWhitespace(ss.cast(node, Text).nodeValue) || ss.isInstanceOfType(node, Element) && $System_Xaml_XamlParser.$IsValueName(ss.cast(node, Element));
+	};
+	$System_Xaml_XamlParser.$CreateValue = function(node, namespaces) {
+		if (ss.isInstanceOfType(node, Text)) {
+			return ss.cast(node, Text).nodeValue.trim();
+		}
+		if (ss.isInstanceOfType(node, Element)) {
+			return $System_Xaml_XamlParser.$CreateXamlElement(ss.cast(node, Element), namespaces);
+		}
+		throw new $Granular_Exception('Node "{0}" doesn\'t contain a value', [node]);
+	};
+	$System_Xaml_XamlParser.$IsMemberName = function(element) {
+		return element.localName.indexOf('.') !== -1 && !$System_Xaml_XamlParser.$IsDirective$1(element);
+	};
+	$System_Xaml_XamlParser.$IsValueName = function(element) {
+		return !(element.localName.indexOf('.') !== -1) && !$System_Xaml_XamlParser.$IsDirective$1(element);
+	};
+	$System_Xaml_XamlParser.$IsDirective = function(attribute) {
+		return ss.referenceEquals($System_Xaml_XamlLanguage.NamespaceName, attribute.namespaceURI) && $System_Xaml_XamlLanguage.IsDirective(new $System_Xaml_XamlName(attribute.localName, attribute.namespaceURI));
+	};
+	$System_Xaml_XamlParser.$IsDirective$1 = function(element) {
+		return ss.referenceEquals($System_Xaml_XamlLanguage.NamespaceName, element.namespaceURI) && $System_Xaml_XamlLanguage.IsDirective(new $System_Xaml_XamlName(element.localName, element.namespaceURI));
 	};
 	$System_Xaml_XamlParser.$IsNamespaceDeclaration = function(attribute) {
 		var name = attribute.name.toLowerCase();
 		return name === 'xmlns' || ss.startsWithString(name, 'xmlns:');
-	};
-	$System_Xaml_XamlParser.$CreateXamlAttribute = function(attribute, namespaces) {
-		var name = new $System_Xaml_XamlName(attribute.localName, ($Granular_Extensions_StringExtensions.IsNullOrEmpty(attribute.namespaceURI) ? namespaces.Get('') : attribute.namespaceURI));
-		var value = $System_Xaml_MarkupExtensionParser.Parse(attribute.value, namespaces);
-		return new $System_Xaml_XamlAttribute(name, namespaces, value);
 	};
 	$System_Xaml_XamlParser.$GetNamespaceDeclarationPrefix = function(attribute) {
 		return ($Granular_Extensions_StringExtensions.IsNullOrEmpty(attribute.prefix) ? '' : attribute.localName);
@@ -1942,6 +1985,7 @@
 			this.$1$ParameterTypeField = value;
 		}
 	});
+	ss.initClass($System_Reflection_ParameterInfoExtensions, $asm, {});
 	ss.initClass($System_Reflection_PropertyInfoExtensions, $asm, {});
 	ss.initClass($System_Text_RegularExpressions_Capture, $asm, {
 		get_Index: function() {
@@ -2065,30 +2109,30 @@
 			this.$VerifyTokensExists();
 			this.$MatchTerminal('{');
 			var typeFullName = this.$MatchIdentifier();
-			var attributesList = this.$MatchAttributesList();
+			var membersList = this.$MatchMembersList();
 			this.$MatchTerminal('}');
-			return new $System_Xaml_XamlElement(new $System_Xaml_XamlName(this.$GetTypeName(typeFullName), this.$GetTypeNamespace(typeFullName)), this.$namespaces, attributesList, null, null);
+			return new $System_Xaml_XamlElement(new $System_Xaml_XamlName(this.$GetTypeName(typeFullName), this.$GetTypeNamespace(typeFullName)), this.$namespaces, membersList, null, null);
 		},
-		$MatchAttributesList: function() {
+		$MatchMembersList: function() {
 			this.$VerifyTokensExists();
 			var list = [];
 			if (this.$tokens.Peek().get_Value() !== '}') {
-				list.push(this.$MatchAttribute());
-				ss.arrayAddRange(list, this.$MatchAttributesListEnd());
+				list.push(this.$MatchMember());
+				ss.arrayAddRange(list, this.$MatchMembersListEnd());
 			}
 			return list;
 		},
-		$MatchAttributesListEnd: function() {
+		$MatchMembersListEnd: function() {
 			this.$VerifyTokensExists();
 			var list = [];
 			if (this.$tokens.Peek().get_Value() !== '}') {
 				this.$MatchTerminal(',');
-				list.push(this.$MatchAttribute());
-				ss.arrayAddRange(list, this.$MatchAttributesListEnd());
+				list.push(this.$MatchMember());
+				ss.arrayAddRange(list, this.$MatchMembersListEnd());
 			}
 			return list;
 		},
-		$MatchAttribute: function() {
+		$MatchMember: function() {
 			this.$VerifyTokensExists();
 			var name = '';
 			var value;
@@ -2105,7 +2149,7 @@
 			else {
 				value = this.$MatchValue();
 			}
-			return new $System_Xaml_XamlAttribute(new $System_Xaml_XamlName(name, null), this.$namespaces, value);
+			return new $System_Xaml_XamlMember.$ctor1(new $System_Xaml_XamlName(name, null), this.$namespaces, value);
 		},
 		$MatchNamedValue: function() {
 			this.$VerifyTokensExists();
@@ -2251,39 +2295,40 @@
 			return this.get_Name().toString();
 		}
 	});
-	ss.initClass($System_Xaml_XamlAttribute, $asm, {
-		get_Value: function() {
-			return this.$2$ValueField;
+	ss.initClass($System_Xaml_XamlElement, $asm, {
+		get_Members: function() {
+			return this.$2$MembersField;
 		},
-		set_Value: function(value) {
-			this.$2$ValueField = value;
+		set_Members: function(value) {
+			this.$2$MembersField = value;
+		},
+		get_Values: function() {
+			return this.$2$ValuesField;
+		},
+		set_Values: function(value) {
+			this.$2$ValuesField = value;
+		},
+		get_Directives: function() {
+			return this.$2$DirectivesField;
+		},
+		set_Directives: function(value) {
+			this.$2$DirectivesField = value;
+		}
+	}, $System_Xaml_XamlNode);
+	ss.initClass($System_Xaml_XamlLanguage, $asm, {});
+	ss.initClass($System_Xaml_XamlMember, $asm, {
+		get_Values: function() {
+			return this.$2$ValuesField;
+		},
+		set_Values: function(value) {
+			this.$2$ValuesField = value;
 		},
 		toString: function() {
-			return ss.formatString('{0}={1}', $System_Xaml_XamlNode.prototype.toString.call(this), this.get_Value());
+			return ((Enumerable.from(this.get_Values()).count() === 1) ? ss.formatString('{0}={1}', $System_Xaml_XamlNode.prototype.toString.call(this), Enumerable.from(this.get_Values()).first().toString()) : $System_Xaml_XamlNode.prototype.toString.call(this));
 		}
 	}, $System_Xaml_XamlNode);
-	ss.initClass($System_Xaml_XamlElement, $asm, {
-		get_Attributes: function() {
-			return this.$2$AttributesField;
-		},
-		set_Attributes: function(value) {
-			this.$2$AttributesField = value;
-		},
-		get_Children: function() {
-			return this.$2$ChildrenField;
-		},
-		set_Children: function(value) {
-			this.$2$ChildrenField = value;
-		},
-		get_TextValue: function() {
-			return this.$2$TextValueField;
-		},
-		set_TextValue: function(value) {
-			this.$2$TextValueField = value;
-		}
-	}, $System_Xaml_XamlNode);
-	ss.initClass($System_Xaml_XamlElementExtensions, $asm, {});
-	ss.initClass($System_Xaml_XamlLanguage, $asm, {});
+	$System_Xaml_XamlMember.$ctor1.prototype = $System_Xaml_XamlMember.prototype;
+	ss.initClass($System_Xaml_XamlMemberExtensions, $asm, {});
 	ss.initClass($System_Xaml_XamlName, $asm, {
 		get_LocalName: function() {
 			return this.$1$LocalNameField;
@@ -2410,7 +2455,7 @@
 	ss.setMetadata($Granular_Compatibility_RuntimeHelpers, { members: [{ name: 'RunClassConstructor', isStatic: true, type: 8, sname: 'RunClassConstructor', returnType: Object, params: [Function] }] });
 	ss.setMetadata($Granular_Compatibility_String, { members: [{ name: 'FromByteArray', isStatic: true, type: 8, sname: 'FromByteArray', returnType: String, params: [Array] }, { name: 'IsNullOrWhitespace', isStatic: true, type: 8, sname: 'IsNullOrWhitespace', returnType: Boolean, params: [String] }] });
 	ss.setMetadata($Granular_Compatibility_TimeSpan, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Subtract', isStatic: true, type: 8, sname: 'Subtract', returnType: ss.TimeSpan, params: [Date, Date] }, { name: 'MaxValue', isStatic: true, type: 4, returnType: ss.TimeSpan, sname: 'MaxValue' }, { name: 'MinValue', isStatic: true, type: 4, returnType: ss.TimeSpan, sname: 'MinValue' }] });
-	ss.setMetadata($Granular_Compatibility_Type, { members: [{ name: 'GetType', isStatic: true, type: 8, sname: 'GetType', returnType: Function, params: [String] }] });
+	ss.setMetadata($Granular_Compatibility_Type, { members: [{ name: 'GetType', isStatic: true, type: 8, sname: 'GetType', returnType: Function, params: [String] }, { name: 'GetTypeInterfaceGenericArguments', isStatic: true, type: 8, sname: 'GetTypeInterfaceGenericArguments', returnType: ss.IEnumerable, params: [Function, Function] }] });
 	ss.setMetadata($Granular_Diagnostics_HitCounter, { members: [{ name: '.ctor', type: 1, params: [String, Function] }, { name: 'Hit', type: 8, sname: 'Hit', returnType: Object, params: [] }] });
 	ss.setMetadata($Granular_Extensions_AssemblyExtensions, { members: [{ name: 'FirstOrDefaultCustomAttributeCached', isStatic: true, type: 8, tpcount: 1, sname: 'FirstOrDefaultCustomAttributeCached', returnType: Object, params: [Object] }, { name: 'GetCustomAttributesCached', isStatic: true, type: 8, tpcount: 1, sname: 'GetCustomAttributesCached', returnType: ss.IEnumerable, params: [Object] }] });
 	ss.setMetadata($Granular_Extensions_CollectionExtensions, { members: [{ name: 'AddRange', isStatic: true, type: 8, tpcount: 1, sname: 'AddRange', returnType: Object, params: [ss.ICollection, ss.IEnumerable] }] });
@@ -2435,7 +2480,8 @@
 	ss.setMetadata($System_Linq_EnumerableExtensions, { members: [{ name: 'CopyTo', isStatic: true, type: 8, tpcount: 1, sname: 'CopyTo', returnType: Object, params: [ss.IEnumerable, Array, ss.Int32] }, { name: 'Max', isStatic: true, type: 8, tpcount: 1, sname: 'Max', returnType: Object, params: [ss.IEnumerable] }, { name: 'Min', isStatic: true, type: 8, tpcount: 1, sname: 'Min', returnType: Object, params: [ss.IEnumerable] }] });
 	ss.setMetadata($System_Reflection_EventInfoExtensions, { members: [{ name: 'GetEventHandlerType', isStatic: true, type: 8, sname: 'GetEventHandlerType', returnType: Function, params: [Object] }] });
 	ss.setMetadata($System_Reflection_ParameterInfo, { members: [{ name: '.ctor', type: 1, params: [Function] }, { name: 'ParameterType', type: 16, returnType: Function, getter: { name: 'get_ParameterType', type: 8, sname: 'get_ParameterType', returnType: Function, params: [] }, setter: { name: 'set_ParameterType', type: 8, sname: 'set_ParameterType', returnType: Object, params: [Function] } }] });
-	ss.setMetadata($System_Reflection_PropertyInfoExtensions, { members: [{ name: 'GetGetMethod', isStatic: true, type: 8, sname: 'GetGetMethod', returnType: Object, params: [Object] }, { name: 'GetIndexParameters', isStatic: true, type: 8, sname: 'GetIndexParameters', returnType: Array, params: [Object] }, { name: 'GetSetMethod', isStatic: true, type: 8, sname: 'GetSetMethod', returnType: Object, params: [Object] }, { name: 'IsDelegate', isStatic: true, type: 8, sname: 'IsDelegate', returnType: Boolean, params: [Object] }] });
+	ss.setMetadata($System_Reflection_ParameterInfoExtensions, { members: [{ name: 'GetIndexParameters', isStatic: true, type: 8, sname: 'GetIndexParameters', returnType: Array, params: [Object] }, { name: 'GetParameters', isStatic: true, type: 8, sname: 'GetParameters', returnType: Array, params: [Object] }, { name: 'GetParameters', isStatic: true, type: 8, sname: 'GetParameters$1', returnType: Array, params: [Object] }] });
+	ss.setMetadata($System_Reflection_PropertyInfoExtensions, { members: [{ name: 'GetGetMethod', isStatic: true, type: 8, sname: 'GetGetMethod', returnType: Object, params: [Object] }, { name: 'GetSetMethod', isStatic: true, type: 8, sname: 'GetSetMethod', returnType: Object, params: [Object] }, { name: 'IsDelegate', isStatic: true, type: 8, sname: 'IsDelegate', returnType: Boolean, params: [Object] }] });
 	ss.setMetadata($System_Text_RegularExpressions_Capture, { members: [{ name: '.ctor', type: 1, params: [ss.Int32, String] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'Index', type: 16, returnType: ss.Int32, getter: { name: 'get_Index', type: 8, sname: 'get_Index', returnType: ss.Int32, params: [] }, setter: { name: 'set_Index', type: 8, sname: 'set_Index', returnType: Object, params: [ss.Int32] } }, { name: 'Length', type: 16, returnType: ss.Int32, getter: { name: 'get_Length', type: 8, sname: 'get_Length', returnType: ss.Int32, params: [] } }, { name: 'Value', type: 16, returnType: String, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: String, params: [] }, setter: { name: 'set_Value', type: 8, sname: 'set_Value', returnType: Object, params: [String] } }] });
 	ss.setMetadata($System_Text_RegularExpressions_Group, { members: [{ name: '.ctor', type: 1, params: [ss.Int32, String, Boolean] }, { name: 'Success', type: 16, returnType: Boolean, getter: { name: 'get_Success', type: 8, sname: 'get_Success', returnType: Boolean, params: [] }, setter: { name: 'set_Success', type: 8, sname: 'set_Success', returnType: Object, params: [Boolean] } }] });
 	ss.setMetadata($System_Text_RegularExpressions_GroupCollection, { members: [{ name: '.ctor', type: 1, params: [ss.IEnumerable] }, { name: 'GetEnumerator', type: 8, sname: 'getEnumerator', returnType: ss.IEnumerator, params: [] }, { name: 'Count', type: 16, returnType: ss.Int32, getter: { name: 'get_Count', type: 8, sname: 'get_Count', returnType: ss.Int32, params: [] } }, { name: 'Item', type: 16, returnType: $System_Text_RegularExpressions_Group, params: [ss.Int32], getter: { name: 'get_Item', type: 8, sname: 'get_Item', returnType: $System_Text_RegularExpressions_Group, params: [ss.Int32] } }, { name: 'Empty', isStatic: true, type: 4, returnType: $System_Text_RegularExpressions_GroupCollection, sname: 'Empty' }] });
@@ -2447,10 +2493,10 @@
 	ss.setMetadata($System_Xaml_NamespaceDeclaration, { members: [{ name: '.ctor', type: 1, params: [String] }, { name: '.ctor', type: 1, params: [String, String], sname: '$ctor1' }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'Namespace', type: 16, returnType: String, getter: { name: 'get_Namespace', type: 8, sname: 'get_Namespace', returnType: String, params: [] }, setter: { name: 'set_Namespace', type: 8, sname: 'set_Namespace', returnType: Object, params: [String] } }, { name: 'Prefix', type: 16, returnType: String, getter: { name: 'get_Prefix', type: 8, sname: 'get_Prefix', returnType: String, params: [] }, setter: { name: 'set_Prefix', type: 8, sname: 'set_Prefix', returnType: Object, params: [String] } }] });
 	ss.setMetadata($System_Xaml_RegexTokenDefinition, { members: [{ name: '.ctor', type: 1, params: [Object, RegExp] }, { name: 'Match', type: 8, sname: 'Match', returnType: $System_Xaml_Token, params: [String, ss.Int32] }] });
 	ss.setMetadata($System_Xaml_Token, { members: [{ name: '.ctor', type: 1, params: [Object, String, ss.Int32] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'Id', type: 16, returnType: Object, getter: { name: 'get_Id', type: 8, sname: 'get_Id', returnType: Object, params: [] }, setter: { name: 'set_Id', type: 8, sname: 'set_Id', returnType: Object, params: [Object] } }, { name: 'Start', type: 16, returnType: ss.Int32, getter: { name: 'get_Start', type: 8, sname: 'get_Start', returnType: ss.Int32, params: [] }, setter: { name: 'set_Start', type: 8, sname: 'set_Start', returnType: Object, params: [ss.Int32] } }, { name: 'Value', type: 16, returnType: String, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: String, params: [] }, setter: { name: 'set_Value', type: 8, sname: 'set_Value', returnType: Object, params: [String] } }] });
-	ss.setMetadata($System_Xaml_XamlAttribute, { members: [{ name: '.ctor', type: 1, params: [$System_Xaml_XamlName, $System_Xaml_XamlNamespaces, Object] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] }, setter: { name: 'set_Value', type: 8, sname: 'set_Value', returnType: Object, params: [Object] } }] });
-	ss.setMetadata($System_Xaml_XamlElement, { members: [{ name: '.ctor', type: 1, params: [$System_Xaml_XamlName, $System_Xaml_XamlNamespaces, ss.IEnumerable, ss.IEnumerable, String] }, { name: 'Attributes', type: 16, returnType: ss.IEnumerable, getter: { name: 'get_Attributes', type: 8, sname: 'get_Attributes', returnType: ss.IEnumerable, params: [] }, setter: { name: 'set_Attributes', type: 8, sname: 'set_Attributes', returnType: Object, params: [ss.IEnumerable] } }, { name: 'Children', type: 16, returnType: ss.IEnumerable, getter: { name: 'get_Children', type: 8, sname: 'get_Children', returnType: ss.IEnumerable, params: [] }, setter: { name: 'set_Children', type: 8, sname: 'set_Children', returnType: Object, params: [ss.IEnumerable] } }, { name: 'TextValue', type: 16, returnType: String, getter: { name: 'get_TextValue', type: 8, sname: 'get_TextValue', returnType: String, params: [] }, setter: { name: 'set_TextValue', type: 8, sname: 'set_TextValue', returnType: Object, params: [String] } }] });
-	ss.setMetadata($System_Xaml_XamlElementExtensions, { members: [{ name: 'GetContentChildren', isStatic: true, type: 8, sname: 'GetContentChildren', returnType: ss.IEnumerable, params: [$System_Xaml_XamlElement] }, { name: 'GetMemberAttributes', isStatic: true, type: 8, sname: 'GetMemberAttributes', returnType: ss.IEnumerable, params: [$System_Xaml_XamlElement] }, { name: 'GetMemberChildren', isStatic: true, type: 8, sname: 'GetMemberChildren', returnType: ss.IEnumerable, params: [$System_Xaml_XamlElement] }, { name: 'GetMemberNodes', isStatic: true, type: 8, sname: 'GetMemberNodes', returnType: ss.IEnumerable, params: [$System_Xaml_XamlElement] }, { name: 'GetMemberValue', isStatic: true, type: 8, sname: 'GetMemberValue', returnType: Object, params: [$System_Xaml_XamlElement] }] });
+	ss.setMetadata($System_Xaml_XamlElement, { members: [{ name: '.ctor', type: 1, params: [$System_Xaml_XamlName, $System_Xaml_XamlNamespaces, ss.IEnumerable, ss.IEnumerable, ss.IEnumerable] }, { name: 'Directives', type: 16, returnType: ss.IEnumerable, getter: { name: 'get_Directives', type: 8, sname: 'get_Directives', returnType: ss.IEnumerable, params: [] }, setter: { name: 'set_Directives', type: 8, sname: 'set_Directives', returnType: Object, params: [ss.IEnumerable] } }, { name: 'Members', type: 16, returnType: ss.IEnumerable, getter: { name: 'get_Members', type: 8, sname: 'get_Members', returnType: ss.IEnumerable, params: [] }, setter: { name: 'set_Members', type: 8, sname: 'set_Members', returnType: Object, params: [ss.IEnumerable] } }, { name: 'Values', type: 16, returnType: ss.IEnumerable, getter: { name: 'get_Values', type: 8, sname: 'get_Values', returnType: ss.IEnumerable, params: [] }, setter: { name: 'set_Values', type: 8, sname: 'set_Values', returnType: Object, params: [ss.IEnumerable] } }] });
 	ss.setMetadata($System_Xaml_XamlLanguage, { members: [{ name: 'IsDirective', isStatic: true, type: 8, sname: 'IsDirective', returnType: Boolean, params: [$System_Xaml_XamlName] }, { name: 'IsXamlType', isStatic: true, type: 8, sname: 'IsXamlType', returnType: Boolean, params: [$System_Xaml_XamlName] }, { name: 'ClassDirective', isStatic: true, type: 4, returnType: $System_Xaml_XamlName, sname: 'ClassDirective' }, { name: 'KeyDirective', isStatic: true, type: 4, returnType: $System_Xaml_XamlName, sname: 'KeyDirective' }, { name: 'NameDirective', isStatic: true, type: 4, returnType: $System_Xaml_XamlName, sname: 'NameDirective' }, { name: 'NamespaceName', isStatic: true, type: 4, returnType: String, sname: 'NamespaceName' }, { name: 'NullTypeName', isStatic: true, type: 4, returnType: $System_Xaml_XamlName, sname: 'NullTypeName' }, { name: 'SharedDirective', isStatic: true, type: 4, returnType: $System_Xaml_XamlName, sname: 'SharedDirective' }, { name: 'TypeTypeName', isStatic: true, type: 4, returnType: $System_Xaml_XamlName, sname: 'TypeTypeName' }] });
+	ss.setMetadata($System_Xaml_XamlMember, { members: [{ name: '.ctor', type: 1, params: [$System_Xaml_XamlName, $System_Xaml_XamlNamespaces, ss.IEnumerable] }, { name: '.ctor', type: 1, params: [$System_Xaml_XamlName, $System_Xaml_XamlNamespaces, Object], sname: '$ctor1' }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'Values', type: 16, returnType: ss.IEnumerable, getter: { name: 'get_Values', type: 8, sname: 'get_Values', returnType: ss.IEnumerable, params: [] }, setter: { name: 'set_Values', type: 8, sname: 'set_Values', returnType: Object, params: [ss.IEnumerable] } }] });
+	ss.setMetadata($System_Xaml_XamlMemberExtensions, { members: [{ name: 'GetSingleValue', isStatic: true, type: 8, sname: 'GetSingleValue', returnType: Object, params: [$System_Xaml_XamlMember] }] });
 	ss.setMetadata($System_Xaml_XamlName, { members: [{ name: '.ctor', type: 1, params: [String, String] }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'FromPrefixedName', isStatic: true, type: 8, sname: 'FromPrefixedName', returnType: $System_Xaml_XamlName, params: [String, $System_Xaml_XamlNamespaces] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'op_Equality', isStatic: true, type: 8, sname: 'op_Equality', returnType: Boolean, params: [$System_Xaml_XamlName, $System_Xaml_XamlName] }, { name: 'op_Inequality', isStatic: true, type: 8, sname: 'op_Inequality', returnType: Boolean, params: [$System_Xaml_XamlName, $System_Xaml_XamlName] }, { name: 'ContainingTypeName', type: 16, returnType: $System_Xaml_XamlName, getter: { name: 'get_ContainingTypeName', type: 8, sname: 'get_ContainingTypeName', returnType: $System_Xaml_XamlName, params: [] }, setter: { name: 'set_ContainingTypeName', type: 8, sname: 'set_ContainingTypeName', returnType: Object, params: [$System_Xaml_XamlName] } }, { name: 'IsEmpty', type: 16, returnType: Boolean, getter: { name: 'get_IsEmpty', type: 8, sname: 'get_IsEmpty', returnType: Boolean, params: [] } }, { name: 'IsMemberName', type: 16, returnType: Boolean, getter: { name: 'get_IsMemberName', type: 8, sname: 'get_IsMemberName', returnType: Boolean, params: [] }, setter: { name: 'set_IsMemberName', type: 8, sname: 'set_IsMemberName', returnType: Object, params: [Boolean] } }, { name: 'LocalName', type: 16, returnType: String, getter: { name: 'get_LocalName', type: 8, sname: 'get_LocalName', returnType: String, params: [] }, setter: { name: 'set_LocalName', type: 8, sname: 'set_LocalName', returnType: Object, params: [String] } }, { name: 'MemberName', type: 16, returnType: String, getter: { name: 'get_MemberName', type: 8, sname: 'get_MemberName', returnType: String, params: [] }, setter: { name: 'set_MemberName', type: 8, sname: 'set_MemberName', returnType: Object, params: [String] } }, { name: 'NamespaceName', type: 16, returnType: String, getter: { name: 'get_NamespaceName', type: 8, sname: 'get_NamespaceName', returnType: String, params: [] }, setter: { name: 'set_NamespaceName', type: 8, sname: 'set_NamespaceName', returnType: Object, params: [String] } }, { name: 'Empty', isStatic: true, type: 4, returnType: $System_Xaml_XamlName, sname: 'Empty' }] });
 	ss.setMetadata($System_Xaml_XamlNamespaces, { members: [{ name: '.ctor', type: 1, params: [ss.IEnumerable] }, { name: '.ctor', type: 1, params: [String], sname: '$ctor1' }, { name: '.ctor', type: 1, params: [String, String], sname: '$ctor2' }, { name: 'Contains', type: 8, sname: 'Contains', returnType: Boolean, params: [String] }, { name: 'Get', type: 8, sname: 'Get', returnType: String, params: [String] }, { name: 'Merge', type: 8, sname: 'Merge', returnType: $System_Xaml_XamlNamespaces, params: [ss.IEnumerable] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'Empty', isStatic: true, type: 4, returnType: $System_Xaml_XamlNamespaces, sname: 'Empty' }] });
 	ss.setMetadata($System_Xaml_XamlNamespacesExtensions, { members: [{ name: 'ContainsDefault', isStatic: true, type: 8, sname: 'ContainsDefault', returnType: Boolean, params: [$System_Xaml_XamlNamespaces] }, { name: 'GetDefault', isStatic: true, type: 8, sname: 'GetDefault', returnType: String, params: [$System_Xaml_XamlNamespaces] }] });
@@ -2495,7 +2541,15 @@
 		$System_Xaml_Lexer.$WhiteSpaceRegex = new RegExp('[ \t]+');
 	})();
 	(function() {
+		$System_Xaml_XamlElement.$EmptyMembers = [];
+		$System_Xaml_XamlElement.$EmptyValues = [];
+		$System_Xaml_XamlElement.$EmptyDirectives = [];
+	})();
+	(function() {
 		$System_Xaml_XamlName.Empty = new $System_Xaml_XamlName('', null);
+	})();
+	(function() {
+		$System_Xaml_XamlMember.$EmptyValues = [];
 	})();
 	(function() {
 		$System_Xaml_MarkupExtensionParser.$lexer = new $System_Xaml_Lexer([new $System_Xaml_RegexTokenDefinition(0, new RegExp('[{}=,]')), new $System_Xaml_RegexTokenDefinition(3, new RegExp('true|True|false|False')), new $System_Xaml_RegexTokenDefinition(2, new RegExp("'([^']|'')*'")), new $System_Xaml_RegexTokenDefinition(4, new RegExp('[0-9]+')), new $System_Xaml_RegexTokenDefinition(5, new RegExp('[0-9]*\\.[0-9]+')), new $System_Xaml_RegexTokenDefinition(1, new RegExp('[A-Za-z0-9_:\\(\\)\\.]*'))]);

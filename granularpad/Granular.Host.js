@@ -2275,7 +2275,8 @@
 		$OnContentElementKeyDown: function(e) {
 			if (!this.get_IsReadOnly() && this.get_AcceptsTab() && ss.cast(e, KeyboardEvent).keyCode === 9) {
 				var selectionStart = this.get_SelectionStart();
-				this.set_Text(ss.formatString('{0}\t{1}', this.get_Text().substr(0, this.get_SelectionStart()), this.get_Text().substring(this.get_SelectionStart() + this.get_SelectionLength())));
+				var contentElementText = this.get_$ContentElement().get_HtmlElement().value;
+				this.set_Text(ss.formatString('{0}\t{1}', contentElementText.substr(0, this.get_SelectionStart()), contentElementText.substring(this.get_SelectionStart() + this.get_SelectionLength())));
 				this.get_$ContentElement().get_HtmlElement().selectionStart = selectionStart + 1;
 				this.get_$ContentElement().get_HtmlElement().selectionEnd = selectionStart + 1;
 				this.$GetContentElementSelection();
@@ -2336,6 +2337,10 @@
 		},
 		$SetContentElementTextWrapping: function() {
 			this.get_$ContentElement().get_HtmlElement().setAttribute('wrap', this.$converter.ToWrapString(this.get_TextWrapping()));
+		},
+		ProcessKeyEvent: function(e) {
+			e.set_ForceHostHandling(true);
+			e.set_Handled(true);
 		}
 	}, $Granular_Host_Render_HtmlRenderElement, [$Granular_Host_IRenderItem, System.Windows.Media.ITextBoxRenderElement]);
 	ss.initClass($Granular_Host_Render_HtmlVisualRenderElement, $asm, {
