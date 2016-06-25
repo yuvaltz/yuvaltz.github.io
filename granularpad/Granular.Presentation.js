@@ -6,6 +6,7 @@
 	global.System.Windows.Controls = global.System.Windows.Controls || {};
 	global.System.Windows.Controls.Primitives = global.System.Windows.Controls.Primitives || {};
 	global.System.Windows.Data = global.System.Windows.Data || {};
+	global.System.Windows.Documents = global.System.Windows.Documents || {};
 	global.System.Windows.Input = global.System.Windows.Input || {};
 	global.System.Windows.Markup = global.System.Windows.Markup || {};
 	global.System.Windows.Media = global.System.Windows.Media || {};
@@ -31,10 +32,13 @@
 	};
 	$System_$Windows_DependencyProperty$TypeComparer.__typeName = 'System.$Windows.DependencyProperty$TypeComparer';
 	////////////////////////////////////////////////////////////////////////////////
-	// System.Windows.Disposable.EmptyDisposable
-	var $System_$Windows_Disposable$EmptyDisposable = function() {
+	// System.Windows.DependencyPropertyValueEntry.IndexedObservableValue
+	var $System_$Windows_DependencyPropertyValueEntry$IndexedObservableValue = function(index, baseValue) {
+		this.$2$IndexField = 0;
+		$System_Windows_Data_ObservableValue.$ctor1.call(this, baseValue);
+		this.set_$Index(index);
 	};
-	$System_$Windows_Disposable$EmptyDisposable.__typeName = 'System.$Windows.Disposable$EmptyDisposable';
+	$System_$Windows_DependencyPropertyValueEntry$IndexedObservableValue.__typeName = 'System.$Windows.DependencyPropertyValueEntry$IndexedObservableValue';
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Duration.DurationType
 	var $System_$Windows_Duration$DurationType = function() {
@@ -109,11 +113,35 @@
 		this.$observableValue = null;
 		this.$values = [];
 		this.$observableValue = new $System_Windows_Data_ObservableValue();
-		this.$observableValue.add_ValueChanged(ss.mkdel(this, function(sender, e) {
-			Granular.Extensions.EventHandlerExtensions.Raise$4($System_Windows_Data_ObservableValueChangedArgs).call(null, this.$1$ValueChangedField, this, e);
+		this.$observableValue.add_ValueChanged(ss.mkdel(this, function(sender, oldValue, newValue) {
+			$System_Windows_Data_ObservableValueChangedEventHandlerExtensions.Raise(this.$1$ValueChangedField, this, oldValue, newValue);
 		}));
 	};
 	$System_$Windows_Setter$ValueOverlapExpression.__typeName = 'System.$Windows.Setter$ValueOverlapExpression';
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Controls.Adorner.VisualPathTransform
+	var $System_$Windows_Controls_Adorner$VisualPathTransform = function(visual, ancestor) {
+		this.$value = null;
+		this.$visual = null;
+		this.$ancestor = null;
+		this.$visualPath = null;
+		$System_Windows_Media_Transform.call(this);
+		this.$visual = visual;
+		this.$ancestor = ancestor;
+		this.$visualPath = Enumerable.from($System_Windows_Media_VisualExtensions.GetVisualPath(visual, ancestor)).toArray();
+		var $t1 = ss.getEnumerator(this.$visualPath);
+		try {
+			while ($t1.moveNext()) {
+				var element = $t1.current();
+				element.add_VisualTransformChanged(ss.mkdel(this, this.$OnVisualTransformChanged));
+			}
+		}
+		finally {
+			$t1.dispose();
+		}
+		this.$SetValue$1();
+	};
+	$System_$Windows_Controls_Adorner$VisualPathTransform.__typeName = 'System.$Windows.Controls.Adorner$VisualPathTransform';
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Controls.ContentPresenter.DefaultContentTemplate
 	var $System_$Windows_Controls_ContentPresenter$DefaultContentTemplate = function() {
@@ -129,8 +157,8 @@
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Controls.ContentPresenter.UIElementTemplate
 	var $System_$Windows_Controls_ContentPresenter$UIElementTemplate = function(content) {
-		this.$content = null;
-		this.$content = content;
+		this.$1$ContentField = null;
+		this.set_$Content(content);
 	};
 	$System_$Windows_Controls_ContentPresenter$UIElementTemplate.__typeName = 'System.$Windows.Controls.ContentPresenter$UIElementTemplate';
 	////////////////////////////////////////////////////////////////////////////////
@@ -466,6 +494,11 @@
 	};
 	$System_$Windows_Markup_PropertyPathParser$TokenType.__typeName = 'System.$Windows.Markup.PropertyPathParser$TokenType';
 	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Markup.TypeConverter.EmptyTypeConverter
+	var $System_$Windows_Markup_TypeConverter$EmptyTypeConverter = function() {
+	};
+	$System_$Windows_Markup_TypeConverter$EmptyTypeConverter.__typeName = 'System.$Windows.Markup.TypeConverter$EmptyTypeConverter';
+	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Markup.XamlTypes.NullProvider
 	var $System_$Windows_Markup_XamlTypes$NullProvider = function() {
 	};
@@ -477,11 +510,11 @@
 	};
 	$System_$Windows_Markup_XamlTypes$TypeProvider.__typeName = 'System.$Windows.Markup.XamlTypes$TypeProvider';
 	////////////////////////////////////////////////////////////////////////////////
-	// System.Windows.Media.Transform.IdentityTransfrom
-	var $System_$Windows_Media_Transform$IdentityTransfrom = function() {
+	// System.Windows.Media.Transform.IdentityTransform
+	var $System_$Windows_Media_Transform$IdentityTransform = function() {
 		$System_Windows_Media_Transform.call(this);
 	};
-	$System_$Windows_Media_Transform$IdentityTransfrom.__typeName = 'System.$Windows.Media.Transform$IdentityTransfrom';
+	$System_$Windows_Media_Transform$IdentityTransform.__typeName = 'System.$Windows.Media.Transform$IdentityTransform';
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Media.Animation.RootClock.ClockSchedule
 	var $System_$Windows_Media_Animation_RootClock$ClockSchedule = function(clock) {
@@ -503,14 +536,14 @@
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.DataTriggerCondition
 	var $System_Windows_$DataTriggerCondition = function(element, expressionProvider, value) {
-		this.$2$IsMatchedChangedField = null;
+		this.$3$IsMatchedChangedField = null;
 		this.$isMatched = false;
 		this.$element = null;
 		this.$expressionProvider = null;
 		this.$value = null;
 		this.$resolvedValue = null;
 		this.$isDisposed = false;
-		$System_Windows_DependencyObject.call(this);
+		$System_Windows_Freezable.call(this);
 		this.$element = element;
 		this.$expressionProvider = expressionProvider;
 		this.$value = value;
@@ -656,28 +689,6 @@
 	$System_Windows_BaseValueSource.__typeName = 'System.Windows.BaseValueSource';
 	global.System.Windows.BaseValueSource = $System_Windows_BaseValueSource;
 	////////////////////////////////////////////////////////////////////////////////
-	// System.Windows.CoercedDependencyPropertyValueEntry
-	var $System_Windows_CoercedDependencyPropertyValueEntry = function(source, dependencyObject, coerceValueCallback) {
-		this.$1$ValueChangedField = null;
-		this.$source = null;
-		this.$coerceValueCallback = null;
-		this.$dependencyObject = null;
-		this.$observableValue = null;
-		this.$source = source;
-		this.$dependencyObject = dependencyObject;
-		this.$coerceValueCallback = coerceValueCallback;
-		this.$observableValue = new $System_Windows_Data_ObservableValue();
-		this.$observableValue.add_ValueChanged(ss.mkdel(this, function(sender, e) {
-			Granular.Extensions.EventHandlerExtensions.Raise$4($System_Windows_Data_ObservableValueChangedArgs).call(null, this.$1$ValueChangedField, this, e);
-		}));
-		source.add_ValueChanged(ss.mkdel(this, function(sender1, e1) {
-			this.CoerceValue();
-		}));
-		this.CoerceValue();
-	};
-	$System_Windows_CoercedDependencyPropertyValueEntry.__typeName = 'System.Windows.CoercedDependencyPropertyValueEntry';
-	global.System.Windows.CoercedDependencyPropertyValueEntry = $System_Windows_CoercedDependencyPropertyValueEntry;
-	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.ComponentResourceKey
 	var $System_Windows_ComponentResourceKey = function() {
 		this.$1$TypeInTargetAssemblyField = null;
@@ -695,6 +706,14 @@
 	};
 	$System_Windows_Condition.__typeName = 'System.Windows.Condition';
 	global.System.Windows.Condition = $System_Windows_Condition;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.ContentElement
+	var $System_Windows_ContentElement = function() {
+		$System_Windows_DependencyObject.call(this);
+		//
+	};
+	$System_Windows_ContentElement.__typeName = 'System.Windows.ContentElement';
+	global.System.Windows.ContentElement = $System_Windows_ContentElement;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.CornerRadius
 	var $System_Windows_CornerRadius = function(uniformRadius) {
@@ -715,7 +734,7 @@
 		this.set_IsUniform(this.get_TopLeft() === this.get_TopRight() && this.get_TopLeft() === this.get_BottomRight() && this.get_TopLeft() === this.get_BottomLeft());
 	};
 	$System_Windows_CornerRadius.op_Equality = function(cornerRadius1, cornerRadius2) {
-		return (ss.referenceEquals(cornerRadius1, null) ? ss.referenceEquals(cornerRadius2, null) : cornerRadius1.equals(cornerRadius2));
+		return ss.staticEquals(cornerRadius1, cornerRadius2);
 	};
 	$System_Windows_CornerRadius.op_Inequality = function(cornerRadius1, cornerRadius2) {
 		return !$System_Windows_CornerRadius.op_Equality(cornerRadius1, cornerRadius2);
@@ -742,6 +761,12 @@
 		return cornerRadius || (defaultValue || $System_Windows_CornerRadius.Zero);
 	};
 	global.System.Windows.CornerRadiusExtensions = $System_Windows_CornerRadiusExtensions;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.CornerRadiusTypeConverter
+	var $System_Windows_CornerRadiusTypeConverter = function() {
+	};
+	$System_Windows_CornerRadiusTypeConverter.__typeName = 'System.Windows.CornerRadiusTypeConverter';
+	global.System.Windows.CornerRadiusTypeConverter = $System_Windows_CornerRadiusTypeConverter;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.DataTemplate
 	var $System_Windows_DataTemplate = function() {
@@ -779,13 +804,19 @@
 		this.$entries = null;
 		this.$readOnlyEntries = null;
 		this.$inheritanceParent = null;
+		this.$entryValueChangedEventHandler = null;
+		this.$containedEntryValueChangedEventHandler = null;
+		this.$parentPropertyChangedEventHandler = null;
 		this.$entries = new (ss.makeGenericType(ss.Dictionary$2, [$System_Windows_DependencyProperty, $System_Windows_IDependencyPropertyValueEntry]))();
 		this.$readOnlyEntries = new (ss.makeGenericType(ss.Dictionary$2, [$System_Windows_DependencyProperty, $System_Windows_IDependencyPropertyValueEntry]))();
+		this.$entryValueChangedEventHandler = ss.mkdel(this, this.$OnEntryValueChanged);
+		this.$containedEntryValueChangedEventHandler = ss.mkdel(this, this.$OnContainedEntryValueChanged);
+		this.$parentPropertyChangedEventHandler = ss.mkdel(this, this.$OnParentPropertyChanged);
 	};
 	$System_Windows_DependencyObject.__typeName = 'System.Windows.DependencyObject';
 	$System_Windows_DependencyObject.$VerifyReadOnlyProperty = function(dependencyProperty, dependencyPropertyKey) {
 		if (dependencyProperty.get_IsReadOnly() && (ss.isNullOrUndefined(dependencyPropertyKey) || !ss.referenceEquals(dependencyPropertyKey.get_DependencyProperty(), dependencyProperty) || !$System_Windows_DependencyProperty.IsValidReadOnlyKey(dependencyPropertyKey))) {
-			throw new Granular.Exception('Can\'t modify the read-only dependency property "{0}" without its key', [dependencyProperty]);
+			throw new Granular.Exception('Can\'t modify the readonly dependency property "{0}" without its key', [dependencyProperty]);
 		}
 	};
 	global.System.Windows.DependencyObject = $System_Windows_DependencyObject;
@@ -798,12 +829,13 @@
 		this.$1$ValidateValueCallbackField = null;
 		this.$1$IsReadOnlyField = false;
 		this.$1$InheritsField = false;
+		this.$1$IsAttachedField = false;
 		this.$hashKey = null;
 		this.$typeMetadata = null;
 		this.$ownerMetadata = null;
-		this.$isAttached = false;
 		this.$isMetadataOverridden = false;
 		this.$typeMetadataCache = null;
+		this.$typeContainsCache = null;
 		this.$orderedTypeMetadataCache = null;
 		this.$hashKey = hashKey;
 		this.set_Name(hashKey.get_$Name());
@@ -813,10 +845,11 @@
 		this.set_IsReadOnly(isReadOnly);
 		this.set_Inherits(metadata.get_Inherits());
 		this.$ownerMetadata = metadata;
-		this.$isAttached = isAttached;
+		this.set_IsAttached(isAttached);
 		this.$typeMetadata = new (ss.makeGenericType(ss.Dictionary$2, [Function, $System_Windows_PropertyMetadata]))();
 		this.$typeMetadata.add(this.get_OwnerType(), this.$ownerMetadata);
 		this.$typeMetadataCache = new (ss.makeGenericType(Granular.Collections.CacheDictionary$2, [Function, $System_Windows_PropertyMetadata]))(ss.mkdel(this, this.$ResolveTypeMetadata));
+		this.$typeContainsCache = new (ss.makeGenericType(Granular.Collections.CacheDictionary$2, [Function, Boolean]))(ss.mkdel(this, this.$ResolveTypeContains));
 	};
 	$System_Windows_DependencyProperty.__typeName = 'System.Windows.DependencyProperty';
 	$System_Windows_DependencyProperty.$Register = function(key, propertyType, metadata, validateValueCallback, isAttached, isReadOnly) {
@@ -920,16 +953,26 @@
 	global.System.Windows.DependencyProperty = $System_Windows_DependencyProperty;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.DependencyPropertyChangedEventArgs
-	var $System_Windows_DependencyPropertyChangedEventArgs = function(property, oldValue, newValue) {
+	var $System_Windows_DependencyPropertyChangedEventArgs = function(property, value) {
+		$System_Windows_DependencyPropertyChangedEventArgs.$ctor2.call(this, property, value, value, true);
+		//
+	};
+	$System_Windows_DependencyPropertyChangedEventArgs.__typeName = 'System.Windows.DependencyPropertyChangedEventArgs';
+	$System_Windows_DependencyPropertyChangedEventArgs.$ctor1 = function(property, oldValue, newValue) {
+		$System_Windows_DependencyPropertyChangedEventArgs.$ctor2.call(this, property, oldValue, newValue, false);
+		//
+	};
+	$System_Windows_DependencyPropertyChangedEventArgs.$ctor2 = function(property, oldValue, newValue, isSubPropertyChange) {
 		this.$2$PropertyField = null;
 		this.$2$NewValueField = null;
 		this.$2$OldValueField = null;
+		this.$2$IsSubPropertyChangeField = false;
 		ss.EventArgs.call(this);
 		this.set_Property(property);
 		this.set_OldValue(oldValue);
 		this.set_NewValue(newValue);
+		this.set_IsSubPropertyChange(isSubPropertyChange);
 	};
-	$System_Windows_DependencyPropertyChangedEventArgs.__typeName = 'System.Windows.DependencyPropertyChangedEventArgs';
 	global.System.Windows.DependencyPropertyChangedEventArgs = $System_Windows_DependencyPropertyChangedEventArgs;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.DependencyPropertyChangedEventHandlerExtensions
@@ -966,47 +1009,64 @@
 	global.System.Windows.DependencyPropertyTypeConverter = $System_Windows_DependencyPropertyTypeConverter;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.DependencyPropertyValueEntry
-	var $System_Windows_DependencyPropertyValueEntry = function(dependencyObject, dependencyProperty) {
+	var $System_Windows_DependencyPropertyValueEntry = function(dependencyObject, dependencyProperty, coerceValueCallback) {
 		this.$1$ValueChangedField = null;
-		this.$observableValue = null;
-		this.$baseValues = null;
-		this.$currentValue = null;
-		this.$animationValue = null;
+		this.$value = null;
+		this.$1$ValuePriorityField = 0;
+		this.$notifyValueChangedEventHandler = null;
+		this.$indexedObservableValueChangedEventHandler = null;
+		this.$observableValues = null;
+		this.$values = null;
+		this.$baseValuePriority = 0;
+		this.$dependencyObject = null;
 		this.$dependencyProperty = null;
-		this.$defaultValue = null;
+		this.$coerceValueCallback = null;
+		this.$dependencyObject = dependencyObject;
 		this.$dependencyProperty = dependencyProperty;
-		this.$defaultValue = dependencyProperty.GetMetadata(ss.getInstanceType(dependencyObject)).get_DefaultValue();
-		this.$observableValue = new $System_Windows_Data_ObservableValue();
-		this.$observableValue.add_ValueChanged(ss.mkdel(this, function(sender, e) {
-			Granular.Extensions.EventHandlerExtensions.Raise$4($System_Windows_Data_ObservableValueChangedArgs).call(null, this.$1$ValueChangedField, this, e);
-		}));
-		this.$baseValues = new Array($System_Windows_DependencyPropertyValueEntry.$BaseValuePriorities);
-		for (var i = 0; i < this.$baseValues.length; i++) {
-			this.$baseValues[i] = $System_Windows_Data_ObservableValue.UnsetValue;
+		this.$coerceValueCallback = coerceValueCallback;
+		this.$values = new Array(14);
+		for (var i = 0; i < this.$values.length; i++) {
+			this.$values[i] = $System_Windows_Data_ObservableValue.UnsetValue;
 		}
-		this.$currentValue = $System_Windows_Data_ObservableValue.UnsetValue;
-		this.$animationValue = $System_Windows_Data_ObservableValue.UnsetValue;
 	};
 	$System_Windows_DependencyPropertyValueEntry.__typeName = 'System.Windows.DependencyPropertyValueEntry';
-	$System_Windows_DependencyPropertyValueEntry.$GetFlattenedValue = function(value) {
-		var observableValue = ss.safeCast(value, $System_Windows_Data_IObservableValue);
-		return (ss.isValue(observableValue) ? $System_Windows_DependencyPropertyValueEntry.$GetFlattenedValue(observableValue.get_Value()) : value);
-	};
 	global.System.Windows.DependencyPropertyValueEntry = $System_Windows_DependencyPropertyValueEntry;
 	////////////////////////////////////////////////////////////////////////////////
-	// System.Windows.Disposable
-	var $System_Windows_Disposable = function(dispose) {
-		this.$dispose = null;
-		this.$dispose = dispose;
+	// System.Windows.DependencyPropertyValueEntryExtensions
+	var $System_Windows_DependencyPropertyValueEntryExtensions = function() {
 	};
-	$System_Windows_Disposable.__typeName = 'System.Windows.Disposable';
-	$System_Windows_Disposable.Combine = function(disposable1, disposable2) {
-		return new $System_Windows_Disposable(function() {
-			disposable1.dispose();
-			disposable2.dispose();
-		});
+	$System_Windows_DependencyPropertyValueEntryExtensions.__typeName = 'System.Windows.DependencyPropertyValueEntryExtensions';
+	$System_Windows_DependencyPropertyValueEntryExtensions.GetBaseValue = function(entry, flattened) {
+		return entry.GetValue(entry.GetBaseValuePriority(), flattened);
 	};
-	global.System.Windows.Disposable = $System_Windows_Disposable;
+	$System_Windows_DependencyPropertyValueEntryExtensions.GetBaseValue$1 = function(entry, priority, flattened) {
+		return entry.GetValue(priority, flattened);
+	};
+	$System_Windows_DependencyPropertyValueEntryExtensions.SetBaseValue = function(entry, priority, value) {
+		entry.SetValue(priority, value);
+	};
+	$System_Windows_DependencyPropertyValueEntryExtensions.ClearBaseValue = function(entry, priority) {
+		entry.SetValue(priority, $System_Windows_Data_ObservableValue.UnsetValue);
+	};
+	$System_Windows_DependencyPropertyValueEntryExtensions.GetCurrentValue = function(entry, flattened) {
+		return entry.GetValue($System_Windows_DependencyPropertyValueEntry.CurrentValuePriority, flattened);
+	};
+	$System_Windows_DependencyPropertyValueEntryExtensions.SetCurrentValue = function(entry, value) {
+		entry.SetValue($System_Windows_DependencyPropertyValueEntry.CurrentValuePriority, value);
+	};
+	$System_Windows_DependencyPropertyValueEntryExtensions.ClearCurrentValue = function(entry) {
+		entry.SetValue($System_Windows_DependencyPropertyValueEntry.CurrentValuePriority, $System_Windows_Data_ObservableValue.UnsetValue);
+	};
+	$System_Windows_DependencyPropertyValueEntryExtensions.GetAnimationValue = function(entry, flattened) {
+		return entry.GetValue($System_Windows_DependencyPropertyValueEntry.AnimationValuePriority, flattened);
+	};
+	$System_Windows_DependencyPropertyValueEntryExtensions.SetAnimationValue = function(entry, value) {
+		entry.SetValue($System_Windows_DependencyPropertyValueEntry.AnimationValuePriority, value);
+	};
+	$System_Windows_DependencyPropertyValueEntryExtensions.ClearAnimationValue = function(entry) {
+		entry.SetValue($System_Windows_DependencyPropertyValueEntry.AnimationValuePriority, $System_Windows_Data_ObservableValue.UnsetValue);
+	};
+	global.System.Windows.DependencyPropertyValueEntryExtensions = $System_Windows_DependencyPropertyValueEntryExtensions;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Duration
 	var $System_Windows_Duration = function(timeSpan) {
@@ -1035,6 +1095,12 @@
 		throw new Granular.Exception('Can\'t parse Duration value "{0}"', [value]);
 	};
 	global.System.Windows.Duration = $System_Windows_Duration;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.DurationTypeConverter
+	var $System_Windows_DurationTypeConverter = function() {
+	};
+	$System_Windows_DurationTypeConverter.__typeName = 'System.Windows.DurationTypeConverter';
+	global.System.Windows.DurationTypeConverter = $System_Windows_DurationTypeConverter;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.DynamicResourceExtension
 	var $System_Windows_DynamicResourceExtension = function() {
@@ -1247,6 +1313,12 @@
 	};
 	global.System.Windows.FontFamily = $System_Windows_FontFamily;
 	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.FontFamilyTypeConverter
+	var $System_Windows_FontFamilyTypeConverter = function() {
+	};
+	$System_Windows_FontFamilyTypeConverter.__typeName = 'System.Windows.FontFamilyTypeConverter';
+	global.System.Windows.FontFamilyTypeConverter = $System_Windows_FontFamilyTypeConverter;
+	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.FontStretch
 	var $System_Windows_FontStretch = function() {
 	};
@@ -1264,6 +1336,13 @@
 	};
 	$System_Windows_FontWeight.__typeName = 'System.Windows.FontWeight';
 	global.System.Windows.FontWeight = $System_Windows_FontWeight;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.FrameworkContentElement
+	var $System_Windows_FrameworkContentElement = function() {
+		$System_Windows_ContentElement.call(this);
+	};
+	$System_Windows_FrameworkContentElement.__typeName = 'System.Windows.FrameworkContentElement';
+	global.System.Windows.FrameworkContentElement = $System_Windows_FrameworkContentElement;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.FrameworkElement
 	var $System_Windows_FrameworkElement = function() {
@@ -1284,6 +1363,8 @@
 		this.$4$NameField = null;
 		this.$appliedTemplate = null;
 		this.$resourcesCache = null;
+		this.$layoutTransformValue = null;
+		this.$isDefaultAlignment = false;
 		$System_Windows_UIElement.call(this);
 		this.set_Triggers(new (ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITrigger]))());
 		this.get_Triggers().add_CollectionChanged(ss.mkdel(this, this.$OnTriggersCollectionChanged));
@@ -1294,6 +1375,7 @@
 		this.set_Size($System_Windows_Size.Empty);
 		this.set_MinSize($System_Windows_Size.Zero);
 		this.set_MaxSize($System_Windows_Size.Infinity);
+		this.$isDefaultAlignment = true;
 	};
 	$System_Windows_FrameworkElement.__typeName = 'System.Windows.FrameworkElement';
 	$System_Windows_FrameworkElement.$GetAlignmentOffset = function(container, alignedRectSize, horizontalAlignment, verticalAlignment) {
@@ -1311,7 +1393,7 @@
 		if (verticalAlignment === 1 || verticalAlignment === 3) {
 			alignedTop = container.get_Top() + (container.get_Height() - alignedRectSize.get_Height()) / 2;
 		}
-		return new $System_Windows_Point.$ctor1(alignedLeft, alignedTop);
+		return ((alignedLeft === 0 && alignedTop === 0) ? $System_Windows_Point.Zero : new $System_Windows_Point.$ctor1(alignedLeft, alignedTop));
 	};
 	global.System.Windows.FrameworkElement = $System_Windows_FrameworkElement;
 	////////////////////////////////////////////////////////////////////////////////
@@ -1361,7 +1443,9 @@
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Freezable
 	var $System_Windows_Freezable = function() {
-		this.$2$ChangedField = null;
+		this.$2$ContextParentChangedField = null;
+		this.$contextParent = null;
+		this.$changed = null;
 		this.$2$ResourcesChangedField = null;
 		this.$2$IsFrozenField = false;
 		this.$parentResourceContainer = null;
@@ -1382,6 +1466,21 @@
 			$System_Windows_Freezable.call(this);
 			this.$collection = new (ss.makeGenericType(Granular.Collections.ObservableCollection$1, [T]).$ctor1)(collection);
 			this.$collection.add_CollectionChanged(ss.mkdel(this, this.$OnCollectionChanged));
+			var $t1 = ss.getEnumerator(collection);
+			try {
+				while ($t1.moveNext()) {
+					var value = $t1.current();
+					if (ss.isInstanceOfType(value, $System_Windows_IContextElement)) {
+						ss.cast(value, $System_Windows_IContextElement).TrySetContextParent(this);
+					}
+					if (ss.isInstanceOfType(value, $System_Windows_INotifyChanged)) {
+						ss.cast(value, $System_Windows_INotifyChanged).add_Changed(ss.mkdel(this, this.$OnItemChanged));
+					}
+				}
+			}
+			finally {
+				$t1.dispose();
+			}
 		};
 		ss.registerGenericClassInstance($type, $System_Windows_FreezableCollection$1, [T], {
 			add_CollectionChanged: function(value) {
@@ -1407,9 +1506,11 @@
 				try {
 					while ($t1.moveNext()) {
 						var value = $t1.current();
-						value.SetInheritanceParent(null);
-						if (ss.isInstanceOfType(value, $System_Windows_Freezable)) {
-							ss.safeCast(value, $System_Windows_Freezable).remove_Changed(ss.mkdel(this, this.$OnItemChanged));
+						if (ss.isInstanceOfType(value, $System_Windows_IContextElement)) {
+							ss.cast(value, $System_Windows_IContextElement).TrySetContextParent(null);
+						}
+						if (ss.isInstanceOfType(value, $System_Windows_INotifyChanged)) {
+							ss.cast(value, $System_Windows_INotifyChanged).remove_Changed(ss.mkdel(this, this.$OnItemChanged));
 						}
 					}
 				}
@@ -1420,9 +1521,11 @@
 				try {
 					while ($t2.moveNext()) {
 						var value1 = $t2.current();
-						value1.SetInheritanceParent(this);
-						if (ss.isInstanceOfType(value1, $System_Windows_Freezable)) {
-							ss.safeCast(value1, $System_Windows_Freezable).add_Changed(ss.mkdel(this, this.$OnItemChanged));
+						if (ss.isInstanceOfType(value1, $System_Windows_IContextElement)) {
+							ss.cast(value1, $System_Windows_IContextElement).TrySetContextParent(this);
+						}
+						if (ss.isInstanceOfType(value1, $System_Windows_INotifyChanged)) {
+							ss.cast(value1, $System_Windows_INotifyChanged).add_Changed(ss.mkdel(this, this.$OnItemChanged));
 						}
 					}
 				}
@@ -1434,9 +1537,6 @@
 			},
 			$OnItemChanged: function(sender, e) {
 				this.RaiseChanged();
-			},
-			OnInheritanceParentChanged: function(oldInheritanceParent, newInheritanceParent) {
-				$System_Windows_Freezable.prototype.OnInheritanceParentChanged.call(this, oldInheritanceParent, newInheritanceParent);
 			},
 			add: function(item) {
 				this.$collection.add(item);
@@ -1468,10 +1568,10 @@
 		}, function() {
 			return $System_Windows_Freezable;
 		}, function() {
-			return [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, ss.IEnumerable, ss.IEnumerable, Granular.Collections.INotifyCollectionChanged, ss.makeGenericType(Granular.Collections.IObservableCollection$1, [T]), ss.ICollection, ss.IList];
+			return [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, ss.IEnumerable, ss.IEnumerable, Granular.Collections.INotifyCollectionChanged, ss.makeGenericType(Granular.Collections.IObservableCollection$1, [T]), ss.ICollection, ss.IList];
 		});
 		$type.$ctor1.prototype = $type.prototype;
-		ss.setMetadata($type, { members: [{ name: '.ctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [ss.IEnumerable], sname: '$ctor1' }, { name: 'Add', type: 8, sname: 'add', returnType: Object, params: [T] }, { name: 'Clear', type: 8, sname: 'clear', returnType: Object, params: [] }, { name: 'Contains', type: 8, sname: 'contains', returnType: Boolean, params: [T] }, { name: 'CopyTo', type: 8, sname: 'CopyTo', returnType: Object, params: [Array, ss.Int32] }, { name: 'GetEnumerator', type: 8, sname: 'getEnumerator', returnType: ss.IEnumerator, params: [] }, { name: 'IndexOf', type: 8, sname: 'indexOf', returnType: ss.Int32, params: [T] }, { name: 'Insert', type: 8, sname: 'insert', returnType: Object, params: [ss.Int32, T] }, { name: 'OnInheritanceParentChanged', type: 8, sname: 'OnInheritanceParentChanged', returnType: Object, params: [$System_Windows_DependencyObject, $System_Windows_DependencyObject] }, { name: 'Remove', type: 8, sname: 'remove', returnType: Boolean, params: [T] }, { name: 'RemoveAt', type: 8, sname: 'removeAt', returnType: Object, params: [ss.Int32] }, { name: 'Count', type: 16, returnType: ss.Int32, getter: { name: 'get_Count', type: 8, sname: 'get_count', returnType: ss.Int32, params: [] } }, { name: 'IsReadOnly', type: 16, returnType: Boolean, getter: { name: 'get_IsReadOnly', type: 8, sname: 'get_IsReadOnly', returnType: Boolean, params: [] } }, { name: 'Item', type: 16, returnType: T, params: [ss.Int32], getter: { name: 'get_Item', type: 8, sname: 'get_item', returnType: T, params: [ss.Int32] }, setter: { name: 'set_Item', type: 8, sname: 'set_item', returnType: Object, params: [ss.Int32, T] } }, { name: 'CollectionChanged', type: 2, adder: { name: 'add_CollectionChanged', type: 8, sname: 'add_CollectionChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_CollectionChanged', type: 8, sname: 'remove_CollectionChanged', returnType: Object, params: [Function] } }] });
+		ss.setMetadata($type, { members: [{ name: '.ctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [ss.IEnumerable], sname: '$ctor1' }, { name: 'Add', type: 8, sname: 'add', returnType: Object, params: [T] }, { name: 'Clear', type: 8, sname: 'clear', returnType: Object, params: [] }, { name: 'Contains', type: 8, sname: 'contains', returnType: Boolean, params: [T] }, { name: 'CopyTo', type: 8, sname: 'CopyTo', returnType: Object, params: [Array, ss.Int32] }, { name: 'GetEnumerator', type: 8, sname: 'getEnumerator', returnType: ss.IEnumerator, params: [] }, { name: 'IndexOf', type: 8, sname: 'indexOf', returnType: ss.Int32, params: [T] }, { name: 'Insert', type: 8, sname: 'insert', returnType: Object, params: [ss.Int32, T] }, { name: 'Remove', type: 8, sname: 'remove', returnType: Boolean, params: [T] }, { name: 'RemoveAt', type: 8, sname: 'removeAt', returnType: Object, params: [ss.Int32] }, { name: 'Count', type: 16, returnType: ss.Int32, getter: { name: 'get_Count', type: 8, sname: 'get_count', returnType: ss.Int32, params: [] } }, { name: 'IsReadOnly', type: 16, returnType: Boolean, getter: { name: 'get_IsReadOnly', type: 8, sname: 'get_IsReadOnly', returnType: Boolean, params: [] } }, { name: 'Item', type: 16, returnType: T, params: [ss.Int32], getter: { name: 'get_Item', type: 8, sname: 'get_item', returnType: T, params: [ss.Int32] }, setter: { name: 'set_Item', type: 8, sname: 'set_item', returnType: Object, params: [ss.Int32, T] } }, { name: 'CollectionChanged', type: 2, adder: { name: 'add_CollectionChanged', type: 8, sname: 'add_CollectionChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_CollectionChanged', type: 8, sname: 'remove_CollectionChanged', returnType: Object, params: [Function] } }] });
 		return $type;
 	};
 	$System_Windows_FreezableCollection$1.__typeName = 'System.Windows.FreezableCollection$1';
@@ -1489,6 +1589,12 @@
 	};
 	$System_Windows_IApplicationHost.__typeName = 'System.Windows.IApplicationHost';
 	global.System.Windows.IApplicationHost = $System_Windows_IApplicationHost;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.IContextElement
+	var $System_Windows_IContextElement = function() {
+	};
+	$System_Windows_IContextElement.__typeName = 'System.Windows.IContextElement';
+	global.System.Windows.IContextElement = $System_Windows_IContextElement;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.IDataTriggerCondition
 	var $System_Windows_IDataTriggerCondition = function() {
@@ -1538,12 +1644,6 @@
 	$System_Windows_IFrameworkTemplate.__typeName = 'System.Windows.IFrameworkTemplate';
 	global.System.Windows.IFrameworkTemplate = $System_Windows_IFrameworkTemplate;
 	////////////////////////////////////////////////////////////////////////////////
-	// System.Windows.IInheritableObject
-	var $System_Windows_IInheritableObject = function() {
-	};
-	$System_Windows_IInheritableObject.__typeName = 'System.Windows.IInheritableObject';
-	global.System.Windows.IInheritableObject = $System_Windows_IInheritableObject;
-	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.IInputElement
 	var $System_Windows_IInputElement = function() {
 	};
@@ -1573,6 +1673,12 @@
 	};
 	$System_Windows_IndexPropertyPathElement.__typeName = 'System.Windows.IndexPropertyPathElement';
 	global.System.Windows.IndexPropertyPathElement = $System_Windows_IndexPropertyPathElement;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.INotifyChanged
+	var $System_Windows_INotifyChanged = function() {
+	};
+	$System_Windows_INotifyChanged.__typeName = 'System.Windows.INotifyChanged';
+	global.System.Windows.INotifyChanged = $System_Windows_INotifyChanged;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.IPresentationSource
 	var $System_Windows_IPresentationSource = function() {
@@ -1724,25 +1830,49 @@
 		this.set_IsEmpty(false);
 	};
 	$System_Windows_Point.op_Equality = function(point1, point2) {
-		return (ss.referenceEquals(point1, null) ? ss.referenceEquals(point2, null) : point1.equals(point2));
+		return ss.staticEquals(point1, point2);
 	};
 	$System_Windows_Point.op_Inequality = function(point1, point2) {
 		return !$System_Windows_Point.op_Equality(point1, point2);
 	};
 	$System_Windows_Point.op_UnaryNegation = function(point) {
+		if ($System_Windows_Point.op_Equality(point, $System_Windows_Point.Zero)) {
+			return point;
+		}
 		return new $System_Windows_Point.$ctor1(-point.get_X(), -point.get_Y());
 	};
 	$System_Windows_Point.op_Addition = function(point1, point2) {
+		if ($System_Windows_Point.op_Equality(point1, $System_Windows_Point.Zero)) {
+			return point2;
+		}
+		if ($System_Windows_Point.op_Equality(point2, $System_Windows_Point.Zero)) {
+			return point1;
+		}
 		return new $System_Windows_Point.$ctor1(point1.get_X() + point2.get_X(), point1.get_Y() + point2.get_Y());
 	};
 	$System_Windows_Point.op_Subtraction = function(point1, point2) {
+		if ($System_Windows_Point.op_Equality(point1, $System_Windows_Point.Zero)) {
+			return $System_Windows_Point.op_UnaryNegation(point2);
+		}
+		if ($System_Windows_Point.op_Equality(point2, $System_Windows_Point.Zero)) {
+			return point1;
+		}
 		return new $System_Windows_Point.$ctor1(point1.get_X() - point2.get_X(), point1.get_Y() - point2.get_Y());
 	};
 	$System_Windows_Point.op_Multiply$1 = function(point, scalar) {
+		if (scalar === 1 || ss.referenceEquals(point, $System_Windows_Point.Zero)) {
+			return point;
+		}
 		return new $System_Windows_Point.$ctor1(point.get_X() * scalar, point.get_Y() * scalar);
 	};
 	$System_Windows_Point.op_Multiply = function(scalar, point) {
 		return $System_Windows_Point.op_Multiply$1(point, scalar);
+	};
+	$System_Windows_Point.op_Multiply$2 = function(point, size) {
+		return new $System_Windows_Point.$ctor1(point.get_X() * size.get_Width(), point.get_Y() * size.get_Height());
+	};
+	$System_Windows_Point.op_Multiply$3 = function(size, point) {
+		return $System_Windows_Point.op_Multiply$2(point, size);
 	};
 	$System_Windows_Point.op_Division = function(point, scalar) {
 		return new $System_Windows_Point.$ctor1(point.get_X() / scalar, point.get_Y() / scalar);
@@ -1816,7 +1946,26 @@
 	$System_Windows_PointExtensions.GetLengthSqr = function(point) {
 		return point.get_X() * point.get_X() + point.get_Y() * point.get_Y();
 	};
+	$System_Windows_PointExtensions.Abs = function(point) {
+		return ((point.get_X() >= 0 && point.get_Y() >= 0) ? point : new $System_Windows_Point.$ctor1(Granular.Extensions.DoubleExtensions.Abs(point.get_X()), Granular.Extensions.DoubleExtensions.Abs(point.get_Y())));
+	};
+	$System_Windows_PointExtensions.GetAngle = function(point) {
+		if (point.get_Y() === 0) {
+			return ((point.get_X() < 0) ? Math.PI : 0);
+		}
+		if (point.get_X() === 0) {
+			return ((point.get_Y() < 0) ? (-Math.PI / 2) : (Math.PI / 2));
+		}
+		var $t1 = point.get_Y();
+		return (($t1 > 0) ? 1 : (($t1 < 0) ? -1 : 0)) * Math.acos(point.get_X() / $System_Windows_PointExtensions.GetLength(point));
+	};
 	global.System.Windows.PointExtensions = $System_Windows_PointExtensions;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.PointTypeConverter
+	var $System_Windows_PointTypeConverter = function() {
+	};
+	$System_Windows_PointTypeConverter.__typeName = 'System.Windows.PointTypeConverter';
+	global.System.Windows.PointTypeConverter = $System_Windows_PointTypeConverter;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.PropertyMetadata
 	var $System_Windows_PropertyMetadata = function(defaultValue, propertyChangedCallback, coerceValueCallback, inherits) {
@@ -1929,13 +2078,10 @@
 		this.$source = null;
 		this.$source = source;
 		source.add_ValueChanged(ss.mkdel(this, function(sender, e) {
-			Granular.Extensions.EventHandlerExtensions.Raise$4($System_Windows_Data_ObservableValueChangedArgs).call(null, this.$1$ValueChangedField, this, e);
+			$System_Windows_DependencyPropertyChangedEventHandlerExtensions.Raise(this.$1$ValueChangedField, this, e);
 		}));
 	};
 	$System_Windows_ReadOnlyDependencyPropertyValueEntry.__typeName = 'System.Windows.ReadOnlyDependencyPropertyValueEntry';
-	$System_Windows_ReadOnlyDependencyPropertyValueEntry.$ThrowReadOnlyException = function() {
-		throw new Granular.Exception("Can't modify a read-only dependency property value", []);
-	};
 	global.System.Windows.ReadOnlyDependencyPropertyValueEntry = $System_Windows_ReadOnlyDependencyPropertyValueEntry;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Rect
@@ -2019,7 +2165,7 @@
 	};
 	$System_Windows_RectExtensions.__typeName = 'System.Windows.RectExtensions';
 	$System_Windows_RectExtensions.IsNullOrEmpty = function(rect) {
-		return $System_Windows_Rect.op_Equality(rect, null) || rect.get_IsEmpty();
+		return ss.referenceEquals(rect, null) || rect.get_IsEmpty();
 	};
 	$System_Windows_RectExtensions.DefaultIfNullOrEmpty = function(rect, defaultValue) {
 		return ($System_Windows_RectExtensions.IsNullOrEmpty(rect) ? (defaultValue || $System_Windows_Rect.Zero) : rect);
@@ -2028,13 +2174,19 @@
 		return $System_Windows_PointExtensions.IsClose(this1.get_Location(), rect.get_Location()) && $System_Windows_SizeExtensions.IsClose(this1.get_Size(), rect.get_Size());
 	};
 	$System_Windows_RectExtensions.Contains = function(rect, point) {
-		return rect.get_Left() <= point.get_X() && point.get_X() < rect.get_Right() && rect.get_Top() <= point.get_Y() && point.get_Y() < rect.get_Bottom();
+		return point.get_IsEmpty() || !rect.get_IsEmpty() && rect.get_Left() <= point.get_X() && point.get_X() < rect.get_Right() && rect.get_Top() <= point.get_Y() && point.get_Y() < rect.get_Bottom();
+	};
+	$System_Windows_RectExtensions.Contains$1 = function(this1, rect) {
+		return rect.get_IsEmpty() || !this1.get_IsEmpty() && this1.get_Left() <= rect.get_Left() && this1.get_Top() <= rect.get_Top() && this1.get_Right() >= rect.get_Right() && this1.get_Bottom() >= rect.get_Bottom();
 	};
 	$System_Windows_RectExtensions.Transform = function(rect, matrix) {
-		var topLeft = $System_Windows_Media_Matrix.op_Multiply$1(rect.get_Location(), matrix);
-		var topRight = $System_Windows_Media_Matrix.op_Multiply$1(new $System_Windows_Point.$ctor1(rect.get_Left() + rect.get_Width(), rect.get_Top()), matrix);
-		var bottomLeft = $System_Windows_Media_Matrix.op_Multiply$1(new $System_Windows_Point.$ctor1(rect.get_Left(), rect.get_Top() + rect.get_Height()), matrix);
-		var bottomRight = $System_Windows_Media_Matrix.op_Multiply$1(new $System_Windows_Point.$ctor1(rect.get_Left() + rect.get_Width(), rect.get_Top() + rect.get_Height()), matrix);
+		if (matrix.get_IsIdentity()) {
+			return rect;
+		}
+		var topLeft = $System_Windows_Media_Matrix.op_Multiply$1($System_Windows_RectExtensions.GetTopLeft(rect), matrix);
+		var topRight = $System_Windows_Media_Matrix.op_Multiply$1($System_Windows_RectExtensions.GetTopRight(rect), matrix);
+		var bottomLeft = $System_Windows_Media_Matrix.op_Multiply$1($System_Windows_RectExtensions.GetBottomLeft(rect), matrix);
+		var bottomRight = $System_Windows_Media_Matrix.op_Multiply$1($System_Windows_RectExtensions.GetBottomRight(rect), matrix);
 		var location = new $System_Windows_Point.$ctor1(Granular.Extensions.DoubleExtensions.Min(Granular.Extensions.DoubleExtensions.Min(Granular.Extensions.DoubleExtensions.Min(topLeft.get_X(), topRight.get_X()), bottomLeft.get_X()), bottomRight.get_X()), Granular.Extensions.DoubleExtensions.Min(Granular.Extensions.DoubleExtensions.Min(Granular.Extensions.DoubleExtensions.Min(topLeft.get_Y(), topRight.get_Y()), bottomLeft.get_Y()), bottomRight.get_Y()));
 		var size = new $System_Windows_Size(Granular.Extensions.DoubleExtensions.Max(Granular.Extensions.DoubleExtensions.Max(Granular.Extensions.DoubleExtensions.Max(topLeft.get_X(), topRight.get_X()), bottomLeft.get_X()), bottomRight.get_X()) - location.get_X(), Granular.Extensions.DoubleExtensions.Max(Granular.Extensions.DoubleExtensions.Max(Granular.Extensions.DoubleExtensions.Max(topLeft.get_Y(), topRight.get_Y()), bottomLeft.get_Y()), bottomRight.get_Y()) - location.get_Y());
 		return new $System_Windows_Rect.$ctor2(location, size);
@@ -2043,32 +2195,49 @@
 		return rect.get_Location();
 	};
 	$System_Windows_RectExtensions.GetTopRight = function(rect) {
-		return new $System_Windows_Point.$ctor1(rect.get_Location().get_X() + rect.get_Size().get_Width(), rect.get_Location().get_Y());
+		return new $System_Windows_Point.$ctor1(rect.get_Right(), rect.get_Top());
 	};
 	$System_Windows_RectExtensions.GetBottomLeft = function(rect) {
-		return new $System_Windows_Point.$ctor1(rect.get_Location().get_X(), rect.get_Location().get_Y() + rect.get_Size().get_Height());
+		return new $System_Windows_Point.$ctor1(rect.get_Left(), rect.get_Bottom());
 	};
 	$System_Windows_RectExtensions.GetBottomRight = function(rect) {
-		return new $System_Windows_Point.$ctor1(rect.get_Location().get_X() + rect.get_Size().get_Width(), rect.get_Location().get_Y() + rect.get_Size().get_Height());
+		return new $System_Windows_Point.$ctor1(rect.get_Right(), rect.get_Bottom());
+	};
+	$System_Windows_RectExtensions.GetCorners = function(rect) {
+		return [$System_Windows_RectExtensions.GetTopLeft(rect), $System_Windows_RectExtensions.GetTopRight(rect), $System_Windows_RectExtensions.GetBottomLeft(rect), $System_Windows_RectExtensions.GetBottomRight(rect)];
 	};
 	$System_Windows_RectExtensions.AddOffset = function(rect, offset) {
-		return new $System_Windows_Rect.$ctor3(rect.get_Left() + offset.get_X(), rect.get_Top() + offset.get_Y(), rect.get_Width(), rect.get_Height());
+		if ($System_Windows_Point.op_Equality(offset, $System_Windows_Point.Zero)) {
+			return rect;
+		}
+		return new $System_Windows_Rect.$ctor2($System_Windows_Point.op_Addition(rect.get_Location(), offset), rect.get_Size());
 	};
 	$System_Windows_RectExtensions.AddMargin = function(rect, margin) {
+		if ($System_Windows_Thickness.op_Equality(margin, $System_Windows_Thickness.Zero)) {
+			return rect;
+		}
 		return new $System_Windows_Rect.$ctor2($System_Windows_Point.op_Subtraction(rect.get_Location(), margin.get_Location()), $System_Windows_Size.op_Addition(rect.get_Size(), margin.get_Size()));
+	};
+	$System_Windows_RectExtensions.Union = function(this1, rect) {
+		if ($System_Windows_RectExtensions.Contains$1(this1, rect)) {
+			return this1;
+		}
+		if ($System_Windows_RectExtensions.Contains$1(rect, this1)) {
+			return rect;
+		}
+		var left = Granular.Extensions.DoubleExtensions.Min(this1.get_Left(), rect.get_Left());
+		var top = Granular.Extensions.DoubleExtensions.Min(this1.get_Top(), rect.get_Top());
+		var right = Granular.Extensions.DoubleExtensions.Max(this1.get_Right(), rect.get_Right());
+		var bottom = Granular.Extensions.DoubleExtensions.Max(this1.get_Bottom(), rect.get_Bottom());
+		return new $System_Windows_Rect.$ctor3(left, top, right - left, bottom - top);
 	};
 	global.System.Windows.RectExtensions = $System_Windows_RectExtensions;
 	////////////////////////////////////////////////////////////////////////////////
-	// System.Windows.ReentrancyLock
-	var $System_Windows_ReentrancyLock = function() {
-		this.$1$IsEnteredField = false;
-		this.set_IsEntered(false);
+	// System.Windows.RectTypeConverter
+	var $System_Windows_RectTypeConverter = function() {
 	};
-	$System_Windows_ReentrancyLock.__typeName = 'System.Windows.ReentrancyLock';
-	$System_Windows_ReentrancyLock.op_Implicit = function(ScopeEntrancyLock) {
-		return ScopeEntrancyLock.get_IsEntered();
-	};
-	global.System.Windows.ReentrancyLock = $System_Windows_ReentrancyLock;
+	$System_Windows_RectTypeConverter.__typeName = 'System.Windows.RectTypeConverter';
+	global.System.Windows.RectTypeConverter = $System_Windows_RectTypeConverter;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.ResourceContainerExtensions
 	var $System_Windows_ResourceContainerExtensions = function() {
@@ -2122,10 +2291,10 @@
 		this.$resourceContainer = resourceContainer;
 		this.$resourceKey = resourceKey;
 		this.$observableValue = new $System_Windows_Data_ObservableValue();
-		this.$observableValue.add_ValueChanged(ss.mkdel(this, function(sender, e) {
-			Granular.Extensions.EventHandlerExtensions.Raise$4($System_Windows_Data_ObservableValueChangedArgs).call(null, this.$1$ValueChangedField, this, e);
+		this.$observableValue.add_ValueChanged(ss.mkdel(this, function(sender, oldValue, newValue) {
+			$System_Windows_Data_ObservableValueChangedEventHandlerExtensions.Raise(this.$1$ValueChangedField, this, oldValue, newValue);
 		}));
-		this.$observableValue.set_Value(this.$GetResourceValue());
+		this.$observableValue.set_BaseValue(this.$GetResourceValue());
 		resourceContainer.add_ResourcesChanged(ss.mkdel(this, this.$OnResourcesChanged));
 	};
 	$System_Windows_ResourceReferenceExpression.__typeName = 'System.Windows.ResourceReferenceExpression';
@@ -2259,7 +2428,7 @@
 		return ((valueSource === 6 && ss.isValue(target.get_TemplatedParent())) ? 10 : valueSource);
 	};
 	$System_Windows_Setter.$GetInitializedValueOverlapExpression = function(target, property, valueSource) {
-		var valueOverlapExpression = ss.safeCast(target.GetValueEntry(property).GetBaseValue$1(valueSource, false), $System_$Windows_Setter$ValueOverlapExpression);
+		var valueOverlapExpression = ss.safeCast($System_Windows_DependencyPropertyValueEntryExtensions.GetBaseValue$1(target.GetValueEntry(property), valueSource, false), $System_$Windows_Setter$ValueOverlapExpression);
 		if (ss.isNullOrUndefined(valueOverlapExpression)) {
 			valueOverlapExpression = new $System_$Windows_Setter$ValueOverlapExpression();
 			target.SetValue(property, valueOverlapExpression, valueSource);
@@ -2294,27 +2463,48 @@
 		return new $System_Windows_Size(Number.NaN, height);
 	};
 	$System_Windows_Size.op_Equality = function(size1, size2) {
-		return (ss.referenceEquals(size1, null) ? ss.referenceEquals(size2, null) : size1.equals(size2));
+		return ss.staticEquals(size1, size2);
 	};
 	$System_Windows_Size.op_Inequality = function(size1, size2) {
 		return !$System_Windows_Size.op_Equality(size1, size2);
 	};
 	$System_Windows_Size.op_UnaryNegation = function(size) {
+		if ($System_Windows_Size.op_Equality(size, $System_Windows_Size.Zero)) {
+			return size;
+		}
 		return new $System_Windows_Size(-size.get_Width(), -size.get_Height());
 	};
 	$System_Windows_Size.op_Addition = function(size1, size2) {
+		if ($System_Windows_Size.op_Equality(size1, $System_Windows_Size.Zero)) {
+			return size2;
+		}
+		if ($System_Windows_Size.op_Equality(size2, $System_Windows_Size.Zero)) {
+			return size1;
+		}
 		return new $System_Windows_Size(size1.get_Width() + size2.get_Width(), size1.get_Height() + size2.get_Height());
 	};
 	$System_Windows_Size.op_Subtraction = function(size1, size2) {
+		if ($System_Windows_Size.op_Equality(size1, $System_Windows_Size.Zero)) {
+			return $System_Windows_Size.op_UnaryNegation(size2);
+		}
+		if ($System_Windows_Size.op_Equality(size2, $System_Windows_Size.Zero)) {
+			return size1;
+		}
 		return new $System_Windows_Size(size1.get_Width() - size2.get_Width(), size1.get_Height() - size2.get_Height());
 	};
 	$System_Windows_Size.op_Multiply$1 = function(size, factor) {
+		if (factor === 1 || ss.referenceEquals(size, $System_Windows_Size.Zero)) {
+			return size;
+		}
 		return new $System_Windows_Size(size.get_Width() * factor, size.get_Height() * factor);
 	};
 	$System_Windows_Size.op_Multiply = function(factor, size) {
 		return $System_Windows_Size.op_Multiply$1(size, factor);
 	};
 	$System_Windows_Size.op_Division = function(size, factor) {
+		if (factor === 1 || ss.referenceEquals(size, $System_Windows_Size.Zero)) {
+			return size;
+		}
 		return new $System_Windows_Size(size.get_Width() / factor, size.get_Height() / factor);
 	};
 	$System_Windows_Size.Parse = function(value) {
@@ -2342,6 +2532,12 @@
 		return ($System_Windows_Size.IsNullOrEmpty(size) ? (defaultValue || $System_Windows_Size.Zero) : size);
 	};
 	$System_Windows_SizeExtensions.Combine = function(size, fallback) {
+		if (!size.get_IsPartiallyEmpty()) {
+			return size;
+		}
+		if (size.get_IsEmpty()) {
+			return fallback;
+		}
 		return new $System_Windows_Size((size.get_IsWidthEmpty() ? fallback.get_Width() : size.get_Width()), (size.get_IsHeightEmpty() ? fallback.get_Height() : size.get_Height()));
 	};
 	$System_Windows_SizeExtensions.Min = function(this1, size) {
@@ -2393,7 +2589,16 @@
 	$System_Windows_SizeExtensions.Contains = function(size, point) {
 		return 0 <= point.get_X() && point.get_X() < size.get_Width() && 0 <= point.get_Y() && point.get_Y() < size.get_Height();
 	};
+	$System_Windows_SizeExtensions.MaxArea = function(this1, size) {
+		return ((this1.get_Width() * this1.get_Height() > size.get_Width() * size.get_Height()) ? this1 : size);
+	};
 	global.System.Windows.SizeExtensions = $System_Windows_SizeExtensions;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.SizeTypeConverter
+	var $System_Windows_SizeTypeConverter = function() {
+	};
+	$System_Windows_SizeTypeConverter.__typeName = 'System.Windows.SizeTypeConverter';
+	global.System.Windows.SizeTypeConverter = $System_Windows_SizeTypeConverter;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.StartupEventArgs
 	var $System_Windows_StartupEventArgs = function() {
@@ -2519,25 +2724,47 @@
 		this.$1$BottomField = 0;
 		this.$1$LocationField = null;
 		this.$1$SizeField = null;
-		this.$1$IsUniformField = false;
 		this.set_Left(left);
 		this.set_Top(top);
 		this.set_Right(right);
 		this.set_Bottom(bottom);
-		this.set_Location(new $System_Windows_Point.$ctor1(left, top));
-		this.set_Size(new $System_Windows_Size(left + right, top + bottom));
-		this.set_IsUniform(this.get_Left() === this.get_Top() && this.get_Left() === this.get_Right() && this.get_Left() === this.get_Bottom());
+		this.set_Location(((left === 0 && top === 0) ? $System_Windows_Point.Zero : new $System_Windows_Point.$ctor1(left, top)));
+		this.set_Size(((left + right === 0 && top + bottom === 0) ? $System_Windows_Size.Zero : new $System_Windows_Size(left + right, top + bottom)));
+	};
+	$System_Windows_Thickness.op_Equality = function(thickness1, thickness2) {
+		return ss.staticEquals(thickness1, thickness2);
+	};
+	$System_Windows_Thickness.op_Inequality = function(thickness1, thickness2) {
+		return !$System_Windows_Thickness.op_Equality(thickness1, thickness2);
 	};
 	$System_Windows_Thickness.op_UnaryNegation = function(thickness) {
+		if ($System_Windows_Thickness.op_Equality(thickness, $System_Windows_Thickness.Zero)) {
+			return thickness;
+		}
 		return new $System_Windows_Thickness.$ctor3(-thickness.get_Left(), -thickness.get_Top(), -thickness.get_Right(), -thickness.get_Bottom());
 	};
 	$System_Windows_Thickness.op_Addition = function(thickness1, thickness2) {
+		if ($System_Windows_Thickness.op_Equality(thickness1, $System_Windows_Thickness.Zero)) {
+			return thickness2;
+		}
+		if ($System_Windows_Thickness.op_Equality(thickness2, $System_Windows_Thickness.Zero)) {
+			return thickness1;
+		}
 		return new $System_Windows_Thickness.$ctor3(thickness1.get_Left() + thickness2.get_Left(), thickness1.get_Top() + thickness2.get_Top(), thickness1.get_Right() + thickness2.get_Right(), thickness1.get_Bottom() + thickness2.get_Bottom());
 	};
 	$System_Windows_Thickness.op_Subtraction = function(thickness1, thickness2) {
+		if ($System_Windows_Thickness.op_Equality(thickness1, $System_Windows_Thickness.Zero)) {
+			return $System_Windows_Thickness.op_UnaryNegation(thickness2);
+		}
+		if ($System_Windows_Thickness.op_Equality(thickness2, $System_Windows_Thickness.Zero)) {
+			return thickness1;
+		}
 		return new $System_Windows_Thickness.$ctor3(thickness1.get_Left() - thickness2.get_Left(), thickness1.get_Top() - thickness2.get_Top(), thickness1.get_Right() - thickness2.get_Right(), thickness1.get_Bottom() - thickness2.get_Bottom());
 	};
 	$System_Windows_Thickness.op_Multiply$1 = function(thickness, scalar) {
+		if (scalar === 1 || ss.referenceEquals(thickness, $System_Windows_Thickness.Zero)) {
+			return thickness;
+		}
 		return new $System_Windows_Thickness.$ctor3(thickness.get_Left() * scalar, thickness.get_Top() * scalar, thickness.get_Right() * scalar, thickness.get_Bottom() * scalar);
 	};
 	$System_Windows_Thickness.op_Multiply = function(scalar, thickness) {
@@ -2572,6 +2799,12 @@
 	};
 	global.System.Windows.ThicknessExtensions = $System_Windows_ThicknessExtensions;
 	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.ThicknessTypeConverter
+	var $System_Windows_ThicknessTypeConverter = function() {
+	};
+	$System_Windows_ThicknessTypeConverter.__typeName = 'System.Windows.ThicknessTypeConverter';
+	global.System.Windows.ThicknessTypeConverter = $System_Windows_ThicknessTypeConverter;
+	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Trigger
 	var $System_Windows_Trigger = function() {
 		this.$5$PropertyField = null;
@@ -2604,7 +2837,8 @@
 		this.$animatableRootClock = null;
 		this.$3$PreviousAvailableSizeField = null;
 		this.$3$PreviousFinalRectField = null;
-		this.$measureInvalidationDisabled = 0;
+		this.$disableMeasureInvalidationRequests = 0;
+		this.$disableMeasureInvalidationToken = null;
 		this.$routedEventHandlers = null;
 		this.$routedEventHandlersCache = null;
 		this.$previousDesiredSize = null;
@@ -2617,11 +2851,13 @@
 		this.set_PreviousFinalRect($System_Windows_Rect.Empty);
 		this.set_PreviousAvailableSize($System_Windows_Size.Empty);
 		this.$previousDesiredSize = $System_Windows_Size.Empty;
-		this.$SetIsVisible();
 		this.set_VisualClipToBounds(this.get_ClipToBounds());
 		this.set_VisualIsHitTestVisible(this.get_IsHitTestVisible());
 		this.set_VisualIsVisible(this.get_IsVisible());
 		this.set_VisualOpacity(this.get_Opacity());
+		this.$disableMeasureInvalidationToken = new Granular.Disposable(ss.mkdel(this, function() {
+			this.$disableMeasureInvalidationRequests--;
+		}));
 	};
 	$System_Windows_UIElement.__typeName = 'System.Windows.UIElement';
 	$System_Windows_UIElement.AddHandler = function(element, routedEvent, handler, handledEventsToo) {
@@ -2721,9 +2957,9 @@
 		this.$container = null;
 		$System_Windows_Freezable.call(this);
 		this.set_States(new (ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_VisualState]))());
-		this.get_States().SetInheritanceParent(this);
+		this.get_States().TrySetContextParent(this);
 		this.set_Transitions(new (ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_VisualTransition]))());
-		this.get_Transitions().SetInheritanceParent(this);
+		this.get_Transitions().TrySetContextParent(this);
 	};
 	$System_Windows_VisualStateGroup.__typeName = 'System.Windows.VisualStateGroup';
 	$System_Windows_VisualStateGroup.$GetTransition = function(transitions, fromStateName, toStateName) {
@@ -2861,18 +3097,16 @@
 	var $System_Windows_Controls_Adorner = function(adornedElement) {
 		this.$child = null;
 		this.$5$AdornedElementField = null;
+		this.$visualPathTransform = null;
 		$System_Windows_FrameworkElement.call(this);
 		this.set_AdornedElement(adornedElement);
-		this.set_VisualClipToBounds(false);
 	};
 	$System_Windows_Controls_Adorner.__typeName = 'System.Windows.Controls.Adorner';
 	global.System.Windows.Controls.Adorner = $System_Windows_Controls_Adorner;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Controls.AdornerLayer
 	var $System_Windows_Controls_AdornerLayer = function() {
-		this.$adornersBounds = null;
 		$System_Windows_FrameworkElement.call(this);
-		this.$adornersBounds = new (ss.makeGenericType(ss.Dictionary$2, [$System_Windows_Controls_Adorner, $System_Windows_Rect]))();
 	};
 	$System_Windows_Controls_AdornerLayer.__typeName = 'System.Windows.Controls.AdornerLayer';
 	$System_Windows_Controls_AdornerLayer.GetAdornerLayer = function(visual) {
@@ -3078,9 +3312,9 @@
 		this.$defaultColumnDefinitions = null;
 		$System_Windows_Controls_Panel.call(this);
 		this.set_RowDefinitions(new (ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_Controls_RowDefinition]))());
-		this.get_RowDefinitions().SetInheritanceParent(this);
+		this.get_RowDefinitions().TrySetContextParent(this);
 		this.set_ColumnDefinitions(new (ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_Controls_ColumnDefinition]))());
-		this.get_ColumnDefinitions().SetInheritanceParent(this);
+		this.get_ColumnDefinitions().TrySetContextParent(this);
 		this.$defaultRowDefinitions = [new $System_Windows_Controls_RowDefinition()];
 		this.$defaultColumnDefinitions = [new $System_Windows_Controls_ColumnDefinition()];
 	};
@@ -3722,6 +3956,11 @@
 		}
 		throw new Granular.Exception('Unexpected ScrollBarVisibility "{0}"', [scrollBarVisibility]);
 	};
+	$System_Windows_Controls_ScrollViewer.$OnScrollBarVisibilityChanged = function(dependencyObject, e) {
+		if (ss.isInstanceOfType(dependencyObject, $System_Windows_Controls_ScrollViewer)) {
+			ss.cast(dependencyObject, $System_Windows_Controls_ScrollViewer).$SetContentCanScroll();
+		}
+	};
 	global.System.Windows.Controls.ScrollViewer = $System_Windows_Controls_ScrollViewer;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Controls.SelectionChangedEventArgs
@@ -3752,7 +3991,7 @@
 				return this.selection;
 			},
 			set_Selection: function(value) {
-				if (ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Object]).Default.areEqual(this.selection, value)) {
+				if (Granular.Compatibility.EqualityComparer.Default.areEqual(this.selection, value)) {
 					return;
 				}
 				this.selection = value;
@@ -4177,6 +4416,15 @@
 	$System_Windows_Controls_Primitives_Track.__typeName = 'System.Windows.Controls.Primitives.Track';
 	global.System.Windows.Controls.Primitives.Track = $System_Windows_Controls_Primitives_Track;
 	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Controls.Primitives.UniformGrid
+	var $System_Windows_Controls_Primitives_UniformGrid = function() {
+		this.$actualRows = 0;
+		this.$actualColumns = 0;
+		$System_Windows_Controls_Panel.call(this);
+	};
+	$System_Windows_Controls_Primitives_UniformGrid.__typeName = 'System.Windows.Controls.Primitives.UniformGrid';
+	global.System.Windows.Controls.Primitives.UniformGrid = $System_Windows_Controls_Primitives_UniformGrid;
+	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Data.Binding
 	var $System_Windows_Data_Binding = function() {
 		this.$1$PathField = null;
@@ -4192,12 +4440,6 @@
 		this.$1$TargetNullValueField = null;
 	};
 	$System_Windows_Data_Binding.__typeName = 'System.Windows.Data.Binding';
-	$System_Windows_Data_Binding.$GetDataContextRelativePath = function(path, source, relativeSource, elementName) {
-		if (ss.isValue(source) || ss.isValue(relativeSource) || !Granular.Extensions.StringExtensions.IsNullOrEmpty(elementName)) {
-			return path;
-		}
-		return $System_Windows_PropertyPathExtensions.Insert(path, 0, new $System_Windows_DependencyPropertyPathElement($System_Windows_FrameworkElement.DataContextProperty));
-	};
 	$System_Windows_Data_Binding.$GetStringFormatConverter = function(format) {
 		return (!Granular.Extensions.StringExtensions.IsNullOrEmpty(format) ? new $System_$Windows_Data_Binding$StringFormatConverter(format) : null);
 	};
@@ -4219,6 +4461,7 @@
 		this.$1$FallbackValueField = null;
 		this.$1$TargetNullValueField = null;
 		this.$1$StatusField = 0;
+		this.$sourceObserver = null;
 		this.$sourceExpression = null;
 		this.$targetValue = null;
 		this.$isSourceUpdateMode = false;
@@ -4238,69 +4481,47 @@
 		this.set_FallbackValue(fallbackValue);
 		this.set_TargetNullValue(targetNullValue);
 		this.set_Status(0);
-		this.$disableSourceUpdate = new $System_Windows_ReentrancyLock();
-		this.$disableTargetUpdate = new $System_Windows_ReentrancyLock();
+		this.$disableSourceUpdate = new Granular.ReentrancyLock();
+		this.$disableTargetUpdate = new Granular.ReentrancyLock();
 		this.$targetValue = new $System_Windows_Data_ObservableValue.$ctor1(this.get_Target().GetValue(this.get_TargetProperty()));
 		this.$targetValue.add_ValueChanged(ss.mkdel(this, this.$OnTargetValueChanged));
 		var resolvedBindingMode = ((this.get_Mode() === 3) ? $System_Windows_Data_BindingExpression.$GetDefaultBindingMode(this.get_Target(), this.get_TargetProperty()) : this.get_Mode());
 		this.$isSourceUpdateMode = resolvedBindingMode === 0 || resolvedBindingMode === 2;
 		this.$isTargetUpdateMode = resolvedBindingMode === 0 || resolvedBindingMode === 1;
-		var $t1 = this.get_Source();
-		if (ss.isNullOrUndefined($t1)) {
-			$t1 = $System_Windows_Data_BindingExpression.$GetRelativeSource(this.get_Target(), this.get_RelativeSource(), this.get_ElementName());
-		}
-		var resolvedSource = $t1;
-		this.$sourceExpression = new $System_Windows_Data_ObservableExpression.$ctor3(resolvedSource, this.get_Path());
+		this.$sourceObserver = $System_Windows_Data_BindingExpression.$CreateSourceObserver(this.get_Target(), this.get_Source(), this.get_RelativeSource(), this.get_ElementName());
+		this.$sourceExpression = new $System_Windows_Data_ObservableExpression.$ctor3(this.$sourceObserver, this.get_Path() || $System_Windows_PropertyPath.Empty);
 		// try to update the target (or the source on OneWayToSource)
 		if (this.$isTargetUpdateMode) {
-			this.$sourceExpression.add_ValueChanged(ss.mkdel(this, function(sender, e) {
+			this.$sourceExpression.add_ValueChanged(ss.mkdel(this, function(sender, oldValue, newValue) {
 				this.$UpdateTargetOnSourceChanged();
 			}));
 			this.$UpdateTargetOnSourceChanged();
 		}
 		else if (this.$isSourceUpdateMode) {
-			this.$sourceExpression.add_ValueChanged(ss.mkdel(this, function(sender1, e1) {
-				if (this.get_Status() === 4 && !ss.referenceEquals(this.$sourceExpression.get_Value(), $System_Windows_Data_ObservableValue.UnsetValue) && !$System_Windows_ReentrancyLock.op_Implicit(this.$disableTargetUpdate)) {
+			this.$sourceExpression.add_ValueChanged(ss.mkdel(this, function(sender1, oldValue1, newValue1) {
+				if (this.get_Status() === 4 && !ss.referenceEquals(this.$sourceExpression.get_Value(), $System_Windows_Data_ObservableValue.UnsetValue) && !Granular.ReentrancyLock.op_Implicit(this.$disableTargetUpdate)) {
 					// source was connected
 					this.$UpdateSourceOnTargetChanged();
 				}
 			}));
 			this.$UpdateSourceOnTargetChanged();
 		}
-		if ((ss.isValue(this.get_RelativeSource()) && this.get_RelativeSource().get_Mode() !== 1 || !Granular.Extensions.StringExtensions.IsNullOrEmpty(this.get_ElementName())) && ss.isInstanceOfType(this.get_Target(), $System_Windows_Media_Visual)) {
-			ss.cast(this.get_Target(), $System_Windows_Media_Visual).add_VisualAncestorChanged(ss.mkdel(this, this.$OnTargetVisualAncestorChanged));
-		}
 		if (this.get_UpdateSourceTrigger() === 2 && this.$isSourceUpdateMode && ss.isInstanceOfType(this.get_Target(), $System_Windows_UIElement)) {
 			ss.cast(this.get_Target(), $System_Windows_UIElement).add_LostFocus(ss.mkdel(this, this.$OnLostFocus));
 		}
 	};
 	$System_Windows_Data_BindingExpression.__typeName = 'System.Windows.Data.BindingExpression';
-	$System_Windows_Data_BindingExpression.$GetRelativeSource = function(target, relativeSource, elementName) {
+	$System_Windows_Data_BindingExpression.$CreateSourceObserver = function(target, source, relativeSource, elementName) {
+		if (ss.isValue(source)) {
+			return new $System_Windows_Data_StaticObservableValue(source);
+		}
+		if (ss.isValue(relativeSource)) {
+			return relativeSource.CreateSourceObserver(target);
+		}
 		if (!Granular.Extensions.StringExtensions.IsNullOrEmpty(elementName)) {
-			var nameScope = $System_Windows_Markup_NameScope.GetContainingNameScope(target);
-			return (ss.isValue(nameScope) ? nameScope.FindName(elementName) : null);
+			return new $System_Windows_Data_ScopeElementSourceObserver(target, elementName);
 		}
-		if (ss.isNullOrUndefined(relativeSource) || relativeSource.get_Mode() === 1) {
-			return target;
-		}
-		if (relativeSource.get_Mode() === 0) {
-			return (ss.isInstanceOfType(target, $System_Windows_FrameworkElement) ? ss.cast(target, $System_Windows_FrameworkElement).get_TemplatedParent() : null);
-		}
-		if (relativeSource.get_Mode() === 2) {
-			if (!ss.isInstanceOfType(target, $System_Windows_Media_Visual)) {
-				return null;
-			}
-			var visual = ss.safeCast(target, $System_Windows_Media_Visual).get_VisualParent();
-			var level = relativeSource.get_AncestorLevel() - 1;
-			while (ss.isValue(visual) && (level > 0 || ss.isValue(relativeSource.get_AncestorType()) && !ss.isInstanceOfType(visual, relativeSource.get_AncestorType()))) {
-				if (ss.isNullOrUndefined(relativeSource.get_AncestorType()) || ss.isInstanceOfType(visual, relativeSource.get_AncestorType())) {
-					level--;
-				}
-				visual = visual.get_VisualParent();
-			}
-			return visual;
-		}
-		throw new Granular.Exception('RelativeSourceMode "{0}" is unexpected', [relativeSource.get_Mode()]);
+		return new $System_Windows_Data_DataContextSourceObserver(target);
 	};
 	$System_Windows_Data_BindingExpression.$GetDefaultBindingMode = function(dependencyObject, dependencyProperty) {
 		var frameworkPropertyMetadata = ss.safeCast(dependencyProperty.GetMetadata(ss.getInstanceType(dependencyObject)), $System_Windows_FrameworkPropertyMetadata);
@@ -4336,8 +4557,8 @@
 		this.$propertySetMethod = System.Reflection.PropertyInfoExtensions.GetSetMethod(propertyInfo);
 		this.$index = index;
 		this.$observableValue = new $System_Windows_Data_ObservableValue();
-		this.$observableValue.add_ValueChanged(ss.mkdel(this, function(sender, e) {
-			Granular.Extensions.EventHandlerExtensions.Raise$4($System_Windows_Data_ObservableValueChangedArgs).call(null, this.$1$ValueChangedField, this, e);
+		this.$observableValue.add_ValueChanged(ss.mkdel(this, function(sender, oldValue, newValue) {
+			$System_Windows_Data_ObservableValueChangedEventHandlerExtensions.Raise(this.$1$ValueChangedField, this, oldValue, newValue);
 		}));
 	};
 	$System_Windows_Data_ClrPropertyObserver.__typeName = 'System.Windows.Data.ClrPropertyObserver';
@@ -4374,13 +4595,51 @@
 	};
 	global.System.Windows.Data.CollectionView = $System_Windows_Data_CollectionView;
 	////////////////////////////////////////////////////////////////////////////////
-	// System.Windows.Data.ConstantObservableValue
-	var $System_Windows_Data_ConstantObservableValue = function(value) {
-		this.$1$ValueField = null;
-		this.set_Value(value);
+	// System.Windows.Data.ContextSourceObserver
+	var $System_Windows_Data_ContextSourceObserver = function(target, baseValue) {
+		this.$1$ValueChangedField = null;
+		this.$target = null;
+		this.$observableValue = null;
+		this.$target = target;
+		this.$observableValue = new $System_Windows_Data_ObservableValue.$ctor1(baseValue);
+		this.$observableValue.add_ValueChanged(ss.mkdel(this, function(sender, oldValue, newValue) {
+			$System_Windows_Data_ObservableValueChangedEventHandlerExtensions.Raise(this.$1$ValueChangedField, this, oldValue, newValue);
+		}));
+		if (ss.isInstanceOfType(target, $System_Windows_IContextElement)) {
+			ss.cast(target, $System_Windows_IContextElement).add_ContextParentChanged(ss.mkdel(this, this.$OnTargetContextParentChanged));
+		}
 	};
-	$System_Windows_Data_ConstantObservableValue.__typeName = 'System.Windows.Data.ConstantObservableValue';
-	global.System.Windows.Data.ConstantObservableValue = $System_Windows_Data_ConstantObservableValue;
+	$System_Windows_Data_ContextSourceObserver.__typeName = 'System.Windows.Data.ContextSourceObserver';
+	global.System.Windows.Data.ContextSourceObserver = $System_Windows_Data_ContextSourceObserver;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Data.DataContextSourceObserver
+	var $System_Windows_Data_DataContextSourceObserver = function(target) {
+		this.$1$ValueChangedField = null;
+		this.$target = null;
+		this.$frameworkElementValue = null;
+		this.$dataContextValue = null;
+		this.$target = target;
+		this.$frameworkElementValue = new $System_Windows_Data_ObservableValue.$ctor1($System_Windows_Data_DataContextSourceObserver.$GetFrameworkElementAncestor(target));
+		this.$frameworkElementValue.add_ValueChanged(ss.mkdel(this, function(sender, oldValue, newValue) {
+			this.$dataContextValue.SetBaseValue(newValue);
+		}));
+		this.$dataContextValue = new $System_Windows_Data_DependencyPropertyObserver($System_Windows_FrameworkElement.DataContextProperty);
+		this.$dataContextValue.SetBaseValue(this.$frameworkElementValue.get_Value());
+		this.$dataContextValue.add_ValueChanged(ss.mkdel(this, function(sender1, oldValue1, newValue1) {
+			$System_Windows_Data_ObservableValueChangedEventHandlerExtensions.Raise(this.$1$ValueChangedField, this, oldValue1, newValue1);
+		}));
+		if (ss.isInstanceOfType(target, $System_Windows_IContextElement)) {
+			ss.cast(target, $System_Windows_IContextElement).add_ContextParentChanged(ss.mkdel(this, this.$OnTargetContextParentChanged));
+		}
+	};
+	$System_Windows_Data_DataContextSourceObserver.__typeName = 'System.Windows.Data.DataContextSourceObserver';
+	$System_Windows_Data_DataContextSourceObserver.$GetFrameworkElementAncestor = function(target) {
+		while (!ss.isInstanceOfType(target, $System_Windows_FrameworkElement) && ss.isInstanceOfType(target, $System_Windows_IContextElement)) {
+			target = ss.cast(target, $System_Windows_IContextElement).get_ContextParent();
+		}
+		return ss.safeCast(target, $System_Windows_FrameworkElement);
+	};
+	global.System.Windows.Data.DataContextSourceObserver = $System_Windows_Data_DataContextSourceObserver;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Data.DependencyPropertyObserver
 	var $System_Windows_Data_DependencyPropertyObserver = function(dependencyProperty) {
@@ -4391,12 +4650,43 @@
 		this.$baseValue = null;
 		this.$dependencyProperty = dependencyProperty;
 		this.$observableValue = new $System_Windows_Data_ObservableValue();
-		this.$observableValue.add_ValueChanged(ss.mkdel(this, function(sender, e) {
-			Granular.Extensions.EventHandlerExtensions.Raise$4($System_Windows_Data_ObservableValueChangedArgs).call(null, this.$1$ValueChangedField, this, e);
+		this.$observableValue.add_ValueChanged(ss.mkdel(this, function(sender, oldValue, newValue) {
+			$System_Windows_Data_ObservableValueChangedEventHandlerExtensions.Raise(this.$1$ValueChangedField, this, oldValue, newValue);
 		}));
 	};
 	$System_Windows_Data_DependencyPropertyObserver.__typeName = 'System.Windows.Data.DependencyPropertyObserver';
 	global.System.Windows.Data.DependencyPropertyObserver = $System_Windows_Data_DependencyPropertyObserver;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Data.FindAncestorSourceObserver
+	var $System_Windows_Data_FindAncestorSourceObserver = function(target, ancestorType, ancestorLevel) {
+		this.$target$1 = null;
+		this.$ancestorType = null;
+		this.$ancestorLevel = 0;
+		$System_Windows_Data_ContextSourceObserver.call(this, target, $System_Windows_Data_FindAncestorSourceObserver.GetAncestor(target, ancestorType, ancestorLevel));
+		this.$target$1 = target;
+		this.$ancestorType = ancestorType;
+		this.$ancestorLevel = ancestorLevel;
+	};
+	$System_Windows_Data_FindAncestorSourceObserver.__typeName = 'System.Windows.Data.FindAncestorSourceObserver';
+	$System_Windows_Data_FindAncestorSourceObserver.GetAncestor = function(target, ancestorType, ancestorLevel) {
+		if (!ss.isInstanceOfType(target, $System_Windows_IContextElement)) {
+			return $System_Windows_Data_ObservableValue.UnsetValue;
+		}
+		var contextElement = ss.cast(target, $System_Windows_IContextElement).get_ContextParent();
+		var level = ancestorLevel - 1;
+		while (ss.isValue(contextElement) && (level > 0 || ss.isValue(ancestorType) && !ss.isInstanceOfType(contextElement, ancestorType))) {
+			if (ss.isNullOrUndefined(ancestorType) || ss.isInstanceOfType(contextElement, ancestorType)) {
+				level--;
+			}
+			contextElement = contextElement.get_ContextParent();
+		}
+		var $t1 = contextElement;
+		if (ss.isNullOrUndefined($t1)) {
+			$t1 = $System_Windows_Data_ObservableValue.UnsetValue;
+		}
+		return $t1;
+	};
+	global.System.Windows.Data.FindAncestorSourceObserver = $System_Windows_Data_FindAncestorSourceObserver;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Data.ICollectionView
 	var $System_Windows_Data_ICollectionView = function() {
@@ -4418,11 +4708,11 @@
 			throw new Granular.Exception('Invalid number of index parameters for "{0}.{1}"', [ss.getTypeName(indexPropertyInfo.typeDef), indexPropertyInfo.name]);
 		}
 		this.$indexerObserver = new $System_Windows_Data_ClrPropertyObserver(indexPropertyInfo, propertyPathElement.ParseIndexValues(indexPropertyInfo));
-		this.$indexerObserver.add_ValueChanged(ss.mkdel(this, function(sender, e) {
-			Granular.Extensions.EventHandlerExtensions.Raise$4($System_Windows_Data_ObservableValueChangedArgs).call(null, this.$1$ValueChangedField, this, e);
+		this.$indexerObserver.add_ValueChanged(ss.mkdel(this, function(sender, oldValue, newValue) {
+			$System_Windows_Data_ObservableValueChangedEventHandlerExtensions.Raise(this.$1$ValueChangedField, this, oldValue, newValue);
 		}));
 		if (ss.isValue(this.$baseObserver)) {
-			this.$baseObserver.add_ValueChanged(ss.mkdel(this, function(sender1, e1) {
+			this.$baseObserver.add_ValueChanged(ss.mkdel(this, function(sender1, oldValue1, newValue1) {
 				this.$indexerObserver.SetBaseValue(this.$baseObserver.get_Value());
 			}));
 			this.$indexerObserver.SetBaseValue(this.$baseObserver.get_Value());
@@ -4500,17 +4790,17 @@
 		this.$delegateObserver = null;
 		this.$propertyPathElement = null;
 		this.$observableValue = new $System_Windows_Data_ObservableValue();
-		this.$observableValue.add_ValueChanged(ss.mkdel(this, function(sender, e) {
-			Granular.Extensions.EventHandlerExtensions.Raise$4($System_Windows_Data_ObservableValueChangedArgs).call(null, this.$1$ValueChangedField, this, e);
+		this.$observableValue.add_ValueChanged(ss.mkdel(this, function(sender, oldValue, newValue) {
+			$System_Windows_Data_ObservableValueChangedEventHandlerExtensions.Raise(this.$1$ValueChangedField, this, oldValue, newValue);
 		}));
 		if (propertyPath.get_IsEmpty()) {
-			this.$observableValue.set_Value(baseValue);
+			this.$observableValue.set_BaseValue(baseValue);
 			this.set_ValueType((ss.isValue(baseValue) ? ss.getInstanceType(baseValue) : null));
 		}
 		else {
 			this.$propertyPathElement = Enumerable.from(propertyPath.get_Elements()).last();
 			this.$baseObserver = new $System_Windows_Data_ObservableExpression.$ctor3(baseValue, $System_Windows_PropertyPathExtensions.GetBasePropertyPath(propertyPath));
-			this.$baseObserver.add_ValueChanged(ss.mkdel(this, function(sender1, e1) {
+			this.$baseObserver.add_ValueChanged(ss.mkdel(this, function(sender1, oldValue1, newValue1) {
 				this.$SetDelegateObserverBaseValue();
 			}));
 			this.$SetDelegateObserverBaseValue();
@@ -4524,38 +4814,29 @@
 		//
 	};
 	$System_Windows_Data_ObservableValue.__typeName = 'System.Windows.Data.ObservableValue';
-	$System_Windows_Data_ObservableValue.$ctor1 = function(value) {
+	$System_Windows_Data_ObservableValue.$ctor1 = function(baseValue) {
 		this.$1$ValueChangedField = null;
-		this.$value = null;
-		this.set_Value(value);
+		this.$1$ValueField = null;
+		this.$baseObservableValue = null;
+		this.$baseValue = null;
+		this.$baseObservableValueChangedEventHandler = null;
+		this.set_BaseValue(baseValue);
 	};
 	$System_Windows_Data_ObservableValue.IsNullOrUnset = function(value) {
 		return ss.isNullOrUndefined(value) || ss.referenceEquals(value, $System_Windows_Data_ObservableValue.UnsetValue);
 	};
 	global.System.Windows.Data.ObservableValue = $System_Windows_Data_ObservableValue;
 	////////////////////////////////////////////////////////////////////////////////
-	// System.Windows.Data.ObservableValueChangedArgs
-	var $System_Windows_Data_ObservableValueChangedArgs = function(oldValue, newValue) {
-		this.$2$NewValueField = null;
-		this.$2$OldValueField = null;
-		ss.EventArgs.call(this);
-		this.set_OldValue(oldValue);
-		this.set_NewValue(newValue);
+	// System.Windows.Data.ObservableValueChangedEventHandlerExtensions
+	var $System_Windows_Data_ObservableValueChangedEventHandlerExtensions = function() {
 	};
-	$System_Windows_Data_ObservableValueChangedArgs.__typeName = 'System.Windows.Data.ObservableValueChangedArgs';
-	global.System.Windows.Data.ObservableValueChangedArgs = $System_Windows_Data_ObservableValueChangedArgs;
-	////////////////////////////////////////////////////////////////////////////////
-	// System.Windows.Data.ReadOnlyObservableValue
-	var $System_Windows_Data_ReadOnlyObservableValue = function(source) {
-		this.$1$ValueChangedField = null;
-		this.$source = null;
-		this.$source = source;
-		source.add_ValueChanged(ss.mkdel(this, function(sender, e) {
-			Granular.Extensions.EventHandlerExtensions.Raise$4($System_Windows_Data_ObservableValueChangedArgs).call(null, this.$1$ValueChangedField, this, e);
-		}));
+	$System_Windows_Data_ObservableValueChangedEventHandlerExtensions.__typeName = 'System.Windows.Data.ObservableValueChangedEventHandlerExtensions';
+	$System_Windows_Data_ObservableValueChangedEventHandlerExtensions.Raise = function(handler, sender, oldValue, newValue) {
+		if (!ss.staticEquals(handler, null)) {
+			handler(sender, oldValue, newValue);
+		}
 	};
-	$System_Windows_Data_ReadOnlyObservableValue.__typeName = 'System.Windows.Data.ReadOnlyObservableValue';
-	global.System.Windows.Data.ReadOnlyObservableValue = $System_Windows_Data_ReadOnlyObservableValue;
+	global.System.Windows.Data.ObservableValueChangedEventHandlerExtensions = $System_Windows_Data_ObservableValueChangedEventHandlerExtensions;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Data.RelativeSource
 	var $System_Windows_Data_RelativeSource = function() {
@@ -4572,6 +4853,29 @@
 	$System_Windows_Data_RelativeSourceMode.__typeName = 'System.Windows.Data.RelativeSourceMode';
 	global.System.Windows.Data.RelativeSourceMode = $System_Windows_Data_RelativeSourceMode;
 	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Data.ScopeElementSourceObserver
+	var $System_Windows_Data_ScopeElementSourceObserver = function(target, elementName) {
+		this.$target$1 = null;
+		this.$elementName = null;
+		$System_Windows_Data_ContextSourceObserver.call(this, target, $System_Windows_Data_ScopeElementSourceObserver.$GetScopeElement(target, elementName));
+		this.$target$1 = target;
+		this.$elementName = elementName;
+	};
+	$System_Windows_Data_ScopeElementSourceObserver.__typeName = 'System.Windows.Data.ScopeElementSourceObserver';
+	$System_Windows_Data_ScopeElementSourceObserver.$GetScopeElement = function(target, elementName) {
+		var nameScope = $System_Windows_Markup_NameScope.GetContainingNameScope(target);
+		return (ss.isValue(nameScope) ? nameScope.FindName(elementName) : $System_Windows_Data_ObservableValue.UnsetValue);
+	};
+	global.System.Windows.Data.ScopeElementSourceObserver = $System_Windows_Data_ScopeElementSourceObserver;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Data.StaticObservableValue
+	var $System_Windows_Data_StaticObservableValue = function(value) {
+		this.$value = null;
+		this.$value = value;
+	};
+	$System_Windows_Data_StaticObservableValue.__typeName = 'System.Windows.Data.StaticObservableValue';
+	global.System.Windows.Data.StaticObservableValue = $System_Windows_Data_StaticObservableValue;
+	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Data.TemplateBindingExtension
 	var $System_Windows_Data_TemplateBindingExtension = function() {
 		this.$1$PropertyField = null;
@@ -4581,11 +4885,76 @@
 	$System_Windows_Data_TemplateBindingExtension.__typeName = 'System.Windows.Data.TemplateBindingExtension';
 	global.System.Windows.Data.TemplateBindingExtension = $System_Windows_Data_TemplateBindingExtension;
 	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Data.TemplatedParentSourceObserver
+	var $System_Windows_Data_TemplatedParentSourceObserver = function(target) {
+		this.$target$1 = null;
+		$System_Windows_Data_ContextSourceObserver.call(this, target, $System_Windows_Data_TemplatedParentSourceObserver.$GetTemplatedParent(target));
+		this.$target$1 = target;
+	};
+	$System_Windows_Data_TemplatedParentSourceObserver.__typeName = 'System.Windows.Data.TemplatedParentSourceObserver';
+	$System_Windows_Data_TemplatedParentSourceObserver.$GetTemplatedParent = function(target) {
+		while (!ss.isInstanceOfType(target, $System_Windows_FrameworkElement) && ss.isInstanceOfType(target, $System_Windows_IContextElement)) {
+			target = ss.cast(target, $System_Windows_IContextElement).get_ContextParent();
+		}
+		return (ss.isInstanceOfType(target, $System_Windows_FrameworkElement) ? ss.cast(target, $System_Windows_FrameworkElement).get_TemplatedParent() : $System_Windows_Data_ObservableValue.UnsetValue);
+	};
+	global.System.Windows.Data.TemplatedParentSourceObserver = $System_Windows_Data_TemplatedParentSourceObserver;
+	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Data.UpdateSourceTrigger
 	var $System_Windows_Data_UpdateSourceTrigger = function() {
 	};
 	$System_Windows_Data_UpdateSourceTrigger.__typeName = 'System.Windows.Data.UpdateSourceTrigger';
 	global.System.Windows.Data.UpdateSourceTrigger = $System_Windows_Data_UpdateSourceTrigger;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Documents.Block
+	var $System_Windows_Documents_Block = function() {
+		this.$5$SiblingBlocksField = null;
+		$System_Windows_Documents_TextElement.call(this);
+		//FrameworkElement.MarginProperty.OverrideMetadata(typeof(Block), ...
+	};
+	$System_Windows_Documents_Block.__typeName = 'System.Windows.Documents.Block';
+	global.System.Windows.Documents.Block = $System_Windows_Documents_Block;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Documents.Inline
+	var $System_Windows_Documents_Inline = function() {
+		this.$5$SiblingInlinesField = null;
+		$System_Windows_Documents_TextElement.call(this);
+	};
+	$System_Windows_Documents_Inline.__typeName = 'System.Windows.Documents.Inline';
+	global.System.Windows.Documents.Inline = $System_Windows_Documents_Inline;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Documents.InlineConverter
+	var $System_Windows_Documents_InlineConverter = function() {
+	};
+	$System_Windows_Documents_InlineConverter.__typeName = 'System.Windows.Documents.InlineConverter';
+	global.System.Windows.Documents.InlineConverter = $System_Windows_Documents_InlineConverter;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Documents.Paragraph
+	var $System_Windows_Documents_Paragraph = function() {
+		this.$6$InlinesField = null;
+		$System_Windows_Documents_Block.call(this);
+	};
+	$System_Windows_Documents_Paragraph.__typeName = 'System.Windows.Documents.Paragraph';
+	global.System.Windows.Documents.Paragraph = $System_Windows_Documents_Paragraph;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Documents.Run
+	var $System_Windows_Documents_Run = function() {
+		$System_Windows_Documents_Inline.call(this);
+		//
+	};
+	$System_Windows_Documents_Run.__typeName = 'System.Windows.Documents.Run';
+	$System_Windows_Documents_Run.$ctor1 = function(text) {
+		$System_Windows_Documents_Inline.call(this);
+		this.set_Text(text);
+	};
+	global.System.Windows.Documents.Run = $System_Windows_Documents_Run;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Documents.TextElement
+	var $System_Windows_Documents_TextElement = function() {
+		$System_Windows_FrameworkContentElement.call(this);
+	};
+	$System_Windows_Documents_TextElement.__typeName = 'System.Windows.Documents.TextElement';
+	global.System.Windows.Documents.TextElement = $System_Windows_Documents_TextElement;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Input.Cursor
 	var $System_Windows_Input_Cursor = function(cursorType) {
@@ -4738,7 +5107,7 @@
 		var focusScope = $System_Windows_Input_FocusManager.GetFocusScope(element);
 		if (ss.isValue(focusScope)) {
 			$System_Windows_Input_FocusManager.SetFocusedElement(focusScope, element);
-			return new $System_Windows_Disposable(function() {
+			return new Granular.Disposable(function() {
 				if (ss.referenceEquals($System_Windows_Input_FocusManager.GetFocusedElement(focusScope), element)) {
 					$System_Windows_Input_FocusManager.SetFocusedElement(focusScope, null);
 				}
@@ -5166,7 +5535,7 @@
 		}, this);
 	};
 	$System_Windows_Input_KeyboardNavigationTarget.$GetAbsoluteBounds = function(element) {
-		return new $System_Windows_Rect.$ctor2(element.PointToRoot($System_Windows_Point.Zero), element.get_VisualSize());
+		return $System_Windows_Media_MatrixExtensions.GetApproximatedRect$1(element.TransformToAncestor(null), element.get_VisualBounds().get_Size());
 	};
 	$System_Windows_Input_KeyboardNavigationTarget.$GetLeftBoundPosition = function(bounds) {
 		return $System_Windows_Point.op_Addition(bounds.get_Location(), new $System_Windows_Point.$ctor1(0, bounds.get_Height() / 2));
@@ -5390,19 +5759,6 @@
 	};
 	$System_Windows_Markup_$ObjectTypeConverter.__typeName = 'System.Windows.Markup.$ObjectTypeConverter';
 	////////////////////////////////////////////////////////////////////////////////
-	// System.Windows.Markup.ParseTypeConverter
-	var $System_Windows_Markup_$ParseTypeConverter = function(type) {
-		this.$parseMethod = null;
-		this.$parseMethod = $System_Windows_Markup_$ParseTypeConverter.$GetParseMethod(type);
-	};
-	$System_Windows_Markup_$ParseTypeConverter.__typeName = 'System.Windows.Markup.$ParseTypeConverter';
-	$System_Windows_Markup_$ParseTypeConverter.$ContainsParseMethod = function(type) {
-		return ss.isValue($System_Windows_Markup_$ParseTypeConverter.$GetParseMethod(type));
-	};
-	$System_Windows_Markup_$ParseTypeConverter.$GetParseMethod = function(type) {
-		return ss.getMembers(type, 8, 284, 'Parse', [String]);
-	};
-	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Markup.StringTypeConverter
 	var $System_Windows_Markup_$StringTypeConverter = function() {
 		//
@@ -5462,9 +5818,11 @@
 		this.$1$ElementTypeField = null;
 		this.$valueFactory = null;
 		this.$namespaces = null;
+		this.$typeConverter = null;
 		this.$valueFactory = elementFactory;
 		this.set_ElementType(elementTargetType);
 		this.$namespaces = namespaces;
+		this.$typeConverter = $System_Windows_Markup_TypeConverter.GetTypeConverter(elementFactory.get_ElementType(), elementTargetType);
 	};
 	$System_Windows_Markup_ConvertedElementFactory.__typeName = 'System.Windows.Markup.ConvertedElementFactory';
 	global.System.Windows.Markup.ConvertedElementFactory = $System_Windows_Markup_ConvertedElementFactory;
@@ -5721,13 +6079,13 @@
 	};
 	$System_Windows_Markup_ElementMemberInitializer.__typeName = 'System.Windows.Markup.ElementMemberInitializer';
 	$System_Windows_Markup_ElementMemberInitializer.Create = function(memberName, containingType, values, namespaces) {
-		var eventAdapter = $System_Windows_Markup_EventAdapter.CreateAdapter(containingType, memberName);
-		if (ss.isValue(eventAdapter)) {
-			return new $System_Windows_Markup_ElementEventMemberInitializer(eventAdapter, $System_Windows_Markup_ElementMemberInitializer.$GetEventHandlerName(memberName, values));
-		}
 		var propertyAdapter = $System_Windows_Markup_PropertyAdapter.CreateAdapter(containingType, memberName);
 		if (ss.isValue(propertyAdapter)) {
 			return $System_Windows_Markup_ElementPropertyMemberInitializer.Create(propertyAdapter, values, namespaces);
+		}
+		var eventAdapter = $System_Windows_Markup_EventAdapter.CreateAdapter(containingType, memberName);
+		if (ss.isValue(eventAdapter)) {
+			return new $System_Windows_Markup_ElementEventMemberInitializer(eventAdapter, $System_Windows_Markup_ElementMemberInitializer.$GetEventHandlerName(memberName, values));
 		}
 		throw new Granular.Exception('Type "{0}" does not contain a member named "{1}"', [ss.getTypeName(containingType), memberName]);
 	};
@@ -5778,19 +6136,27 @@
 	};
 	$System_Windows_Markup_EventAdapter.__typeName = 'System.Windows.Markup.EventAdapter';
 	$System_Windows_Markup_EventAdapter.CreateAdapter = function(targetType, eventName) {
-		var routedEvent = $System_Windows_Markup_EventAdapter.$GetRoutedEvent(targetType, eventName);
+		var eventAdapter = {};
+		return ($System_Windows_Markup_EventAdapter.$adaptersCache.TryGetValue(new $System_Windows_Markup_TypeMemberKey(targetType, eventName), eventAdapter) ? eventAdapter.$ : null);
+	};
+	$System_Windows_Markup_EventAdapter.$TryCreateAdapter = function(key, adapter) {
+		adapter.$ = null;
+		var routedEvent = $System_Windows_Markup_EventAdapter.$GetRoutedEvent(key.get_Type(), key.get_MemberName());
 		if (ss.isValue(routedEvent)) {
-			return new $System_Windows_Markup_RoutedEventAdapter(routedEvent);
+			adapter.$ = new $System_Windows_Markup_RoutedEventAdapter(routedEvent);
+			return true;
 		}
-		var clrEvent = $System_Windows_Markup_EventAdapter.$GetClrEvent(targetType, eventName);
+		var clrEvent = $System_Windows_Markup_EventAdapter.$GetClrEvent(key.get_Type(), key.get_MemberName());
 		if (ss.isValue(clrEvent)) {
-			return new $System_Windows_Markup_ClrEventAdapter(clrEvent);
+			adapter.$ = new $System_Windows_Markup_ClrEventAdapter(clrEvent);
+			return true;
 		}
-		var eventProperty = $System_Windows_Markup_EventAdapter.$GetEventProperty(targetType, eventName);
+		var eventProperty = $System_Windows_Markup_EventAdapter.$GetEventProperty(key.get_Type(), key.get_MemberName());
 		if (ss.isValue(eventProperty)) {
-			return new $System_Windows_Markup_EventPropertyAdapter(eventProperty);
+			adapter.$ = new $System_Windows_Markup_EventPropertyAdapter(eventProperty);
+			return true;
 		}
-		return null;
+		return false;
 	};
 	$System_Windows_Markup_EventAdapter.$GetRoutedEvent = function(containingType, eventName) {
 		var eventMemberName = eventName.get_MemberName();
@@ -5924,6 +6290,9 @@
 	};
 	$System_Windows_Markup_KnownTypes.__typeName = 'System.Windows.Markup.KnownTypes';
 	$System_Windows_Markup_KnownTypes.GetTypeConverter = function(type) {
+		return $System_Windows_Markup_KnownTypes.$typeConverterCache.GetValue(type);
+	};
+	$System_Windows_Markup_KnownTypes.$ResolveTypeConverter = function(type) {
 		if (ss.referenceEquals(type, Object)) {
 			return $System_Windows_Markup_$ObjectTypeConverter.$Default;
 		}
@@ -5954,9 +6323,6 @@
 		var typeConverterAttribute = ss.safeCast(Enumerable.from(ss.getAttributes(type, $System_Windows_Markup_TypeConverterAttribute, false)).firstOrDefault(null, ss.getDefaultValue(Object)), $System_Windows_Markup_TypeConverterAttribute);
 		if (ss.isValue(typeConverterAttribute)) {
 			return ss.safeCast(ss.createInstance(typeConverterAttribute.get_ConverterType()), $System_Windows_Markup_ITypeConverter);
-		}
-		if ($System_Windows_Markup_$ParseTypeConverter.$ContainsParseMethod(type)) {
-			return new $System_Windows_Markup_$ParseTypeConverter(type);
 		}
 		return null;
 	};
@@ -6003,10 +6369,15 @@
 			if (ss.isValue(nameScope)) {
 				return nameScope;
 			}
-			if (!ss.isInstanceOfType(element, $System_Windows_UIElement)) {
+			if (ss.isInstanceOfType(element, $System_Windows_UIElement)) {
+				element = ss.cast(element, $System_Windows_UIElement).get_LogicalParent();
+			}
+			else if (ss.isInstanceOfType(element, $System_Windows_IContextElement)) {
+				element = ss.safeCast(ss.cast(element, $System_Windows_IContextElement).get_ContextParent(), $System_Windows_DependencyObject);
+			}
+			else {
 				return null;
 			}
-			element = ss.cast(element, $System_Windows_UIElement).get_LogicalParent();
 		}
 		return null;
 	};
@@ -6017,23 +6388,31 @@
 	};
 	$System_Windows_Markup_PropertyAdapter.__typeName = 'System.Windows.Markup.PropertyAdapter';
 	$System_Windows_Markup_PropertyAdapter.CreateAdapter = function(targetType, propertyName) {
-		if (propertyName.get_IsEmpty()) {
-			return null;
+		var propertyAdapter = {};
+		return ($System_Windows_Markup_PropertyAdapter.$adaptersCache.TryGetValue(new $System_Windows_Markup_TypeMemberKey(targetType, propertyName), propertyAdapter) ? propertyAdapter.$ : null);
+	};
+	$System_Windows_Markup_PropertyAdapter.$TryCreateAdapter = function(key, adapter) {
+		adapter.$ = null;
+		if (key.get_MemberName().get_IsEmpty()) {
+			return false;
 		}
-		var dependencyProperty = $System_Windows_DependencyProperty.GetProperty(targetType, propertyName);
+		var dependencyProperty = $System_Windows_DependencyProperty.GetProperty(key.get_Type(), key.get_MemberName());
 		if (ss.isValue(dependencyProperty)) {
-			return new $System_Windows_Markup_DependencyPropertyAdapter(dependencyProperty);
+			adapter.$ = new $System_Windows_Markup_DependencyPropertyAdapter(dependencyProperty);
+			return true;
 		}
-		var clrProperty = $System_Windows_Markup_PropertyAdapter.$GetClrProperty(targetType, propertyName);
+		var clrProperty = $System_Windows_Markup_PropertyAdapter.$GetClrProperty(key.get_Type(), key.get_MemberName());
 		if (ss.isValue(clrProperty)) {
-			return new $System_Windows_Markup_ClrPropertyAdapter(clrProperty, null);
+			adapter.$ = new $System_Windows_Markup_ClrPropertyAdapter(clrProperty, null);
+			return true;
 		}
-		return null;
+		return false;
 	};
 	$System_Windows_Markup_PropertyAdapter.$GetClrProperty = function(containingType, propertyName) {
 		var propertyMemberName = propertyName.get_MemberName();
 		var propertyContainingType = (propertyName.get_IsMemberName() ? $System_Windows_Markup_TypeParser.ParseType(propertyName.get_ContainingTypeName()) : containingType);
-		return Granular.Extensions.TypeExtensions.GetInstanceProperty(propertyContainingType, propertyMemberName);
+		var propertyInfo = Granular.Extensions.TypeExtensions.GetInstanceProperty(propertyContainingType, propertyMemberName);
+		return ((ss.isValue(propertyInfo) && !System.Reflection.PropertyInfoExtensions.IsDelegate(propertyInfo)) ? propertyInfo : null);
 	};
 	global.System.Windows.Markup.PropertyAdapter = $System_Windows_Markup_PropertyAdapter;
 	////////////////////////////////////////////////////////////////////////////////
@@ -6083,14 +6462,25 @@
 	var $System_Windows_Markup_TypeConverter = function() {
 	};
 	$System_Windows_Markup_TypeConverter.__typeName = 'System.Windows.Markup.TypeConverter';
-	$System_Windows_Markup_TypeConverter.TryConvertValue = function(value, type, namespaces, result) {
-		if (ss.isInstanceOfType(value, type)) {
-			result.$ = value;
+	$System_Windows_Markup_TypeConverter.TryGetTypeConverter = function(sourceType, targetType, typeConverter) {
+		if (ss.isAssignableFrom(targetType, sourceType)) {
+			typeConverter.$ = $System_Windows_Markup_TypeConverter.Empty;
 			return true;
 		}
-		var typeConverter = $System_Windows_Markup_KnownTypes.GetTypeConverter(type);
-		if (ss.isValue(typeConverter)) {
-			result.$ = typeConverter.ConvertFrom(namespaces, value);
+		typeConverter.$ = $System_Windows_Markup_KnownTypes.GetTypeConverter(targetType);
+		return ss.isValue(typeConverter.$);
+	};
+	$System_Windows_Markup_TypeConverter.GetTypeConverter = function(sourceType, targetType) {
+		var typeConverter = {};
+		if (!$System_Windows_Markup_TypeConverter.TryGetTypeConverter(sourceType, targetType, typeConverter)) {
+			throw new Granular.Exception('Can\'t create type converter from "{0}" to "{1}"', [ss.getTypeName(sourceType), ss.getTypeName(targetType)]);
+		}
+		return typeConverter.$;
+	};
+	$System_Windows_Markup_TypeConverter.TryConvertValue = function(value, type, namespaces, result) {
+		var typeConverter = {};
+		if ($System_Windows_Markup_TypeConverter.TryGetTypeConverter(ss.getInstanceType(value), type, typeConverter)) {
+			result.$ = typeConverter.$.ConvertFrom(namespaces, value);
 			return true;
 		}
 		result.$ = null;
@@ -6112,6 +6502,18 @@
 	};
 	$System_Windows_Markup_TypeConverterAttribute.__typeName = 'System.Windows.Markup.TypeConverterAttribute';
 	global.System.Windows.Markup.TypeConverterAttribute = $System_Windows_Markup_TypeConverterAttribute;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Markup.TypeMemberKey
+	var $System_Windows_Markup_TypeMemberKey = function(type, memberName) {
+		this.$1$TypeField = null;
+		this.$1$MemberNameField = null;
+		this.$hashCode = 0;
+		this.set_Type(type);
+		this.set_MemberName(memberName);
+		this.$hashCode = ss.getHashCode(type) ^ memberName.getHashCode();
+	};
+	$System_Windows_Markup_TypeMemberKey.__typeName = 'System.Windows.Markup.TypeMemberKey';
+	global.System.Windows.Markup.TypeMemberKey = $System_Windows_Markup_TypeMemberKey;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Markup.TypeParser
 	var $System_Windows_Markup_TypeParser = function() {
@@ -6731,7 +7133,7 @@
 	};
 	$System_Windows_Media_Color.__typeName = 'System.Windows.Media.Color';
 	$System_Windows_Media_Color.op_Equality = function(color1, color2) {
-		return (ss.referenceEquals(color1, null) ? ss.referenceEquals(color2, null) : color1.equals(color2));
+		return ss.staticEquals(color1, color2);
 	};
 	$System_Windows_Media_Color.op_Inequality = function(color1, color2) {
 		return !$System_Windows_Media_Color.op_Equality(color1, color2);
@@ -7321,11 +7723,11 @@
 	};
 	$System_Windows_Media_LinearGradientBrush.__typeName = 'System.Windows.Media.LinearGradientBrush';
 	$System_Windows_Media_LinearGradientBrush.$ctor2 = function(angle, startColor, endColor) {
-		$System_Windows_Media_LinearGradientBrush.$ctor3.call(this, $System_Windows_Point.Zero, $System_Windows_Media_LinearGradientBrush.$GetEndPoint(angle), [new $System_Windows_Media_GradientStop.$ctor1(startColor, 0), new $System_Windows_Media_GradientStop.$ctor1(endColor, 1)]);
+		$System_Windows_Media_LinearGradientBrush.$ctor3.call(this, $System_Windows_Media_LinearGradientBrush.$GetStartPoint(angle), $System_Windows_Media_LinearGradientBrush.$GetEndPoint(angle), [new $System_Windows_Media_GradientStop.$ctor1(startColor, 0), new $System_Windows_Media_GradientStop.$ctor1(endColor, 1)]);
 		//
 	};
 	$System_Windows_Media_LinearGradientBrush.$ctor1 = function(angle, gradientStops) {
-		$System_Windows_Media_LinearGradientBrush.$ctor3.call(this, $System_Windows_Point.Zero, $System_Windows_Media_LinearGradientBrush.$GetEndPoint(angle), gradientStops);
+		$System_Windows_Media_LinearGradientBrush.$ctor3.call(this, $System_Windows_Media_LinearGradientBrush.$GetStartPoint(angle), $System_Windows_Media_LinearGradientBrush.$GetEndPoint(angle), gradientStops);
 		//
 	};
 	$System_Windows_Media_LinearGradientBrush.$ctor4 = function(startPoint, endPoint, startColor, endColor) {
@@ -7337,9 +7739,28 @@
 		this.set_StartPoint(startPoint);
 		this.set_EndPoint(endPoint);
 	};
+	$System_Windows_Media_LinearGradientBrush.$GetStartPoint = function(angle) {
+		var startPoint = {};
+		var endPoint = {};
+		$System_Windows_Media_LinearGradientBrush.$GetPoints(angle, startPoint, endPoint);
+		return startPoint.$;
+	};
 	$System_Windows_Media_LinearGradientBrush.$GetEndPoint = function(angle) {
+		var startPoint = {};
+		var endPoint = {};
+		$System_Windows_Media_LinearGradientBrush.$GetPoints(angle, startPoint, endPoint);
+		return endPoint.$;
+	};
+	$System_Windows_Media_LinearGradientBrush.$GetPoints = function(angle, startPoint, endPoint) {
 		var radians = Math.PI * angle / 180;
-		return new $System_Windows_Point.$ctor1(Math.cos(radians), Math.sin(radians));
+		var x = Math.cos(radians);
+		var y = Math.sin(radians);
+		var scale = 1 / Granular.Extensions.DoubleExtensions.Max(Granular.Extensions.DoubleExtensions.Abs(x), Granular.Extensions.DoubleExtensions.Abs(y));
+		x *= scale;
+		y *= scale;
+		var offset = new $System_Windows_Point.$ctor1(Granular.Extensions.DoubleExtensions.Min(x, 0), Granular.Extensions.DoubleExtensions.Min(y, 0));
+		startPoint.$ = $System_Windows_Point.op_UnaryNegation(offset);
+		endPoint.$ = $System_Windows_Point.op_Subtraction(new $System_Windows_Point.$ctor1(x, y), offset);
 	};
 	global.System.Windows.Media.LinearGradientBrush = $System_Windows_Media_LinearGradientBrush;
 	////////////////////////////////////////////////////////////////////////////////
@@ -7351,6 +7772,7 @@
 		this.$1$M22Field = 0;
 		this.$1$OffsetXField = 0;
 		this.$1$OffsetYField = 0;
+		this.$inverse = null;
 		this.set_M11(m11);
 		this.set_M12(m12);
 		this.set_M21(m21);
@@ -7360,12 +7782,18 @@
 	};
 	$System_Windows_Media_Matrix.__typeName = 'System.Windows.Media.Matrix';
 	$System_Windows_Media_Matrix.op_Equality = function(matrix1, matrix2) {
-		return (ss.referenceEquals(matrix1, null) ? ss.referenceEquals(matrix2, null) : matrix1.equals(matrix2));
+		return ss.staticEquals(matrix1, matrix2);
 	};
 	$System_Windows_Media_Matrix.op_Inequality = function(matrix1, matrix2) {
 		return !$System_Windows_Media_Matrix.op_Equality(matrix1, matrix2);
 	};
 	$System_Windows_Media_Matrix.op_Multiply = function(matrix1, matrix2) {
+		if (matrix1.get_IsIdentity()) {
+			return matrix2;
+		}
+		if (matrix2.get_IsIdentity()) {
+			return matrix1;
+		}
 		var m11 = matrix1.get_M11() * matrix2.get_M11() + matrix1.get_M12() * matrix2.get_M21();
 		var m12 = matrix1.get_M11() * matrix2.get_M12() + matrix1.get_M12() * matrix2.get_M22();
 		var m21 = matrix1.get_M21() * matrix2.get_M11() + matrix1.get_M22() * matrix2.get_M21();
@@ -7375,6 +7803,9 @@
 		return new $System_Windows_Media_Matrix(m11, m12, m21, m22, offsetX, offsetY);
 	};
 	$System_Windows_Media_Matrix.op_Multiply$1 = function(point, matrix) {
+		if (matrix.get_IsIdentity()) {
+			return point;
+		}
 		var x = point.get_X() * matrix.get_M11() + point.get_Y() * matrix.get_M21() + matrix.get_OffsetX();
 		var y = point.get_X() * matrix.get_M12() + point.get_Y() * matrix.get_M22() + matrix.get_OffsetY();
 		return new $System_Windows_Point.$ctor1(x, y);
@@ -7409,6 +7840,114 @@
 		throw new Granular.Exception('Can\'t parse Matrix value "{0}"', [value]);
 	};
 	global.System.Windows.Media.Matrix = $System_Windows_Media_Matrix;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Media.MatrixExtensions
+	var $System_Windows_Media_MatrixExtensions = function() {
+	};
+	$System_Windows_Media_MatrixExtensions.__typeName = 'System.Windows.Media.MatrixExtensions';
+	$System_Windows_Media_MatrixExtensions.IsNullOrIdentity = function(matrix) {
+		return ss.referenceEquals(matrix, null) || matrix.get_IsIdentity();
+	};
+	$System_Windows_Media_MatrixExtensions.GetContainingRect = function(matrix, rect) {
+		var vertices = Enumerable.from($System_Windows_RectExtensions.GetCorners(rect)).select(function(corner) {
+			return $System_Windows_Media_Matrix.op_Multiply$1(corner, matrix);
+		}).toArray();
+		var left = Enumerable.from(vertices).select(function(vertex) {
+			return vertex.get_X();
+		}).min();
+		var right = Enumerable.from(vertices).select(function(vertex1) {
+			return vertex1.get_X();
+		}).max();
+		var top = Enumerable.from(vertices).select(function(vertex2) {
+			return vertex2.get_Y();
+		}).min();
+		var bottom = Enumerable.from(vertices).select(function(vertex3) {
+			return vertex3.get_Y();
+		}).max();
+		return new $System_Windows_Rect.$ctor3(left, top, right - left, bottom - top);
+	};
+	$System_Windows_Media_MatrixExtensions.GetApproximatedRect$1 = function(matrix, size) {
+		return $System_Windows_Media_MatrixExtensions.GetApproximatedRect(matrix, new $System_Windows_Rect(size));
+	};
+	$System_Windows_Media_MatrixExtensions.GetApproximatedRect = function(matrix, rect) {
+		var vertices = Enumerable.from($System_Windows_RectExtensions.GetCorners(rect)).select(function(corner) {
+			return $System_Windows_Media_Matrix.op_Multiply$1(corner, matrix);
+		}).toArray();
+		var verticesX = Enumerable.from(vertices).select(function(vertex) {
+			return vertex.get_X();
+		}).orderBy(function(x) {
+			return x;
+		}).toArray();
+		var verticesY = Enumerable.from(vertices).select(function(vertex1) {
+			return vertex1.get_Y();
+		}).orderBy(function(y) {
+			return y;
+		}).toArray();
+		var left = (verticesX[0] + verticesX[1]) / 2;
+		var right = (verticesX[2] + verticesX[3]) / 2;
+		var top = (verticesY[0] + verticesY[1]) / 2;
+		var bottom = (verticesY[2] + verticesY[3]) / 2;
+		return new $System_Windows_Rect.$ctor3(left, top, right - left, bottom - top);
+	};
+	$System_Windows_Media_MatrixExtensions.GetContainingSize = function(matrix, size) {
+		return $System_Windows_Media_MatrixExtensions.GetContainingRect(matrix, new $System_Windows_Rect(size)).get_Size();
+	};
+	$System_Windows_Media_MatrixExtensions.GetContainedSize = function(matrix, containerSize) {
+		var w = containerSize.get_Width();
+		var h = containerSize.get_Height();
+		// Each width unit of the contained size, will add "a" units to the transformed width and "b" units to the transformed height
+		var transformedWidth = $System_Windows_PointExtensions.Abs($System_Windows_Media_Matrix.op_Multiply$1(new $System_Windows_Point.$ctor1(1, 0), matrix));
+		var a = transformedWidth.get_X();
+		var b = transformedWidth.get_Y();
+		// Each height unit of the contained size, will add "c" units to the transformed width and "d" units to the transformed height
+		var transformedHeight = $System_Windows_PointExtensions.Abs($System_Windows_Media_Matrix.op_Multiply$1(new $System_Windows_Point.$ctor1(0, 1), matrix));
+		var c = transformedHeight.get_X();
+		var d = transformedHeight.get_Y();
+		if (a === 0 && c === 0 || b === 0 && d === 0) {
+			return $System_Windows_Size.Zero;
+		}
+		// Find a contained size (x, y) with maximum area (x * y) where
+		//      w >= a * x + c * y
+		//      h >= b * x + d * y
+		//
+		// The solution is on one of these constrains egeds (where the area derivative is zero) or in the intersection
+		//
+		// The area on the first constrain edge is:
+		//      area1(x) = x * (w - a * x) / c
+		//
+		// The maximum is at:
+		//      area1'(x) = (w - 2 * a * x) / c = 0
+		//      x = w / (2 * a)
+		//      y = Min((w - a * x) / c, (h - b * x) / d)
+		var determinant = a * d - b * c;
+		// Intersection size
+		var size0 = ((determinant !== 0) ? new $System_Windows_Size(Granular.Extensions.DoubleExtensions.Max((w * d - h * c) / determinant, 0), Granular.Extensions.DoubleExtensions.Max((h * a - w * b) / determinant, 0)) : new $System_Windows_Size(0, 0));
+		var GetConstrainedX = function(y) {
+			return Math.min((Granular.Extensions.DoubleExtensions.IsClose(a, 0) ? 0 : ((w - c * y) / a)), (Granular.Extensions.DoubleExtensions.IsClose(b, 0) ? 0 : ((h - d * y) / b)));
+		};
+		var GetConstrainedY = function(x) {
+			return Math.min((Granular.Extensions.DoubleExtensions.IsClose(c, 0) ? 0 : ((w - a * x) / c)), (Granular.Extensions.DoubleExtensions.IsClose(d, 0) ? 0 : ((h - b * x) / d)));
+		};
+		// Maximum size on the first constrain edge
+		var size1 = ((a > c) ? new $System_Windows_Size(w / (2 * a), Granular.Extensions.DoubleExtensions.Max(GetConstrainedY(w / (2 * a)), 0)) : new $System_Windows_Size(Granular.Extensions.DoubleExtensions.Max(GetConstrainedX(w / (2 * c)), 0), w / (2 * c)));
+		// Maximum size on the second constrain edge
+		var size2 = ((b > d) ? new $System_Windows_Size(h / (2 * b), Granular.Extensions.DoubleExtensions.Max(GetConstrainedY(h / (2 * b)), 0)) : new $System_Windows_Size(Granular.Extensions.DoubleExtensions.Max(GetConstrainedX(h / (2 * d)), 0), h / (2 * d)));
+		return $System_Windows_SizeExtensions.MaxArea($System_Windows_SizeExtensions.MaxArea(size0, size1), size2);
+	};
+	global.System.Windows.Media.MatrixExtensions = $System_Windows_Media_MatrixExtensions;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Media.MatrixTransform
+	var $System_Windows_Media_MatrixTransform = function() {
+		$System_Windows_Media_Transform.call(this);
+	};
+	$System_Windows_Media_MatrixTransform.__typeName = 'System.Windows.Media.MatrixTransform';
+	global.System.Windows.Media.MatrixTransform = $System_Windows_Media_MatrixTransform;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Media.MatrixTypeConverter
+	var $System_Windows_Media_MatrixTypeConverter = function() {
+	};
+	$System_Windows_Media_MatrixTypeConverter.__typeName = 'System.Windows.Media.MatrixTypeConverter';
+	global.System.Windows.Media.MatrixTypeConverter = $System_Windows_Media_MatrixTypeConverter;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Media.RadialGradientBrush
 	var $System_Windows_Media_RadialGradientBrush = function() {
@@ -7513,10 +8052,63 @@
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Media.Transform
 	var $System_Windows_Media_Transform = function() {
-		$System_Windows_DependencyObject.call(this);
+		$System_Windows_Media_Animation_Animatable.call(this);
 	};
 	$System_Windows_Media_Transform.__typeName = 'System.Windows.Media.Transform';
+	$System_Windows_Media_Transform.$CreateIdentityTransform = function() {
+		var identityTransform = new $System_$Windows_Media_Transform$IdentityTransform();
+		identityTransform.Freeze();
+		return identityTransform;
+	};
 	global.System.Windows.Media.Transform = $System_Windows_Media_Transform;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Media.TransformExtensions
+	var $System_Windows_Media_TransformExtensions = function() {
+	};
+	$System_Windows_Media_TransformExtensions.__typeName = 'System.Windows.Media.TransformExtensions';
+	$System_Windows_Media_TransformExtensions.IsNullOrIdentity = function(transform) {
+		return ss.referenceEquals(transform, null) || ss.referenceEquals(transform, $System_Windows_Media_Transform.Identity);
+	};
+	global.System.Windows.Media.TransformExtensions = $System_Windows_Media_TransformExtensions;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Media.TransformGroup
+	var $System_Windows_Media_TransformGroup = function() {
+		this.$matrix = null;
+		this.$5$ChildrenField = null;
+		$System_Windows_Media_Transform.call(this);
+		this.$matrix = $System_Windows_Media_Matrix.Identity;
+		this.set_Children(new (ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_Media_Transform]))());
+		this.get_Children().TrySetContextParent(this);
+		this.get_Children().add_Changed(ss.mkdel(this, this.$OnChildChanged));
+	};
+	$System_Windows_Media_TransformGroup.__typeName = 'System.Windows.Media.TransformGroup';
+	global.System.Windows.Media.TransformGroup = $System_Windows_Media_TransformGroup;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Media.TransformTypeConverter
+	var $System_Windows_Media_TransformTypeConverter = function() {
+	};
+	$System_Windows_Media_TransformTypeConverter.__typeName = 'System.Windows.Media.TransformTypeConverter';
+	global.System.Windows.Media.TransformTypeConverter = $System_Windows_Media_TransformTypeConverter;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Media.TranslateTransform
+	var $System_Windows_Media_TranslateTransform = function() {
+		$System_Windows_Media_TranslateTransform.$ctor1.call(this, $System_Windows_Media_Matrix.Identity);
+		//
+	};
+	$System_Windows_Media_TranslateTransform.__typeName = 'System.Windows.Media.TranslateTransform';
+	$System_Windows_Media_TranslateTransform.$ctor2 = function(x, y) {
+		$System_Windows_Media_TranslateTransform.$ctor1.call(this, $System_Windows_Media_Matrix.TranslationMatrix(x, y));
+		//
+	};
+	$System_Windows_Media_TranslateTransform.$ctor1 = function(matrix) {
+		this.$matrix = null;
+		$System_Windows_Media_Transform.call(this);
+		this.$matrix = matrix;
+	};
+	$System_Windows_Media_TranslateTransform.$SetMatrix = function(dependencyObject, e) {
+		ss.cast(dependencyObject, $System_Windows_Media_TranslateTransform).$SetMatrix();
+	};
+	global.System.Windows.Media.TranslateTransform = $System_Windows_Media_TranslateTransform;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Media.Typeface
 	var $System_Windows_Media_Typeface = function(typefaceName, style, weight, stretch) {
@@ -7544,15 +8136,19 @@
 		this.$visualChildren = null;
 		this.$2$VisualChildrenField = null;
 		this.$visualBackground = null;
+		this.$2$VisualBoundsChangedField = null;
 		this.$visualBounds = null;
 		this.$visualClipToBounds = false;
 		this.$visualIsHitTestVisible = false;
 		this.$visualIsVisible = false;
 		this.$visualOpacity = 0;
+		this.$2$VisualTransformChangedField = null;
 		this.$visualTransform = null;
 		this.$visualLevel = 0;
 		this.$visualRenderElements = null;
 		this.$containsContentRenderElement = false;
+		this.$hitTestBounds = null;
+		this.$isHitTestBoundsValid = false;
 		$System_Windows_DependencyObject.call(this);
 		this.$visualChildren = [];
 		this.set_VisualChildren(this.$visualChildren);
@@ -7563,7 +8159,7 @@
 		this.set_VisualIsHitTestVisible(true);
 		this.set_VisualIsVisible(true);
 		this.set_VisualOpacity(1);
-		this.set_VisualTransform($System_Windows_Media_Transform.Identity);
+		this.set_VisualTransform($System_Windows_Media_Matrix.Identity);
 		this.$visualLevel = -1;
 	};
 	$System_Windows_Media_Visual.__typeName = 'System.Windows.Media.Visual';
@@ -7581,6 +8177,51 @@
 			descendant = descendant.get_VisualParent();
 		}
 		return false;
+	};
+	$System_Windows_Media_VisualExtensions.GetVisualPath = function(visual, ancestor) {
+		return new ss.IteratorBlockEnumerable(function() {
+			return (function(visual, ancestor) {
+				var $result, $state = 0, currentVisual;
+				return new ss.IteratorBlockEnumerator(function() {
+					$sm1:
+					for (;;) {
+						switch ($state) {
+							case 0: {
+								$state = -1;
+								currentVisual = visual;
+								$state = 1;
+								continue $sm1;
+							}
+							case 1: {
+								$state = -1;
+								if (!!ss.referenceEquals(currentVisual, ancestor)) {
+									$state = -1;
+									break $sm1;
+								}
+								if (ss.isNullOrUndefined(currentVisual)) {
+									throw new Granular.Exception('Visual "{0}" is not an ancestor of "{1}"', [ancestor, visual]);
+								}
+								$result = currentVisual;
+								$state = 2;
+								return true;
+							}
+							case 2: {
+								$state = -1;
+								currentVisual = currentVisual.get_VisualParent();
+								$state = 1;
+								continue $sm1;
+							}
+							default: {
+								break $sm1;
+							}
+						}
+					}
+					return false;
+				}, function() {
+					return $result;
+				}, null, this);
+			}).call(this, visual, ancestor);
+		}, this);
 	};
 	global.System.Windows.Media.VisualExtensions = $System_Windows_Media_VisualExtensions;
 	////////////////////////////////////////////////////////////////////////////////
@@ -7683,8 +8324,8 @@
 		this.$dependencyObject = dependencyObject;
 		this.$dependencyProperty = dependencyProperty;
 		this.$observableValue = new $System_Windows_Data_ObservableValue();
-		this.$observableValue.add_ValueChanged(ss.mkdel(this, function(sender, e) {
-			Granular.Extensions.EventHandlerExtensions.Raise$4($System_Windows_Data_ObservableValueChangedArgs).call(null, this.$1$ValueChangedField, this, e);
+		this.$observableValue.add_ValueChanged(ss.mkdel(this, function(sender, oldValue, newValue) {
+			$System_Windows_Data_ObservableValueChangedEventHandlerExtensions.Raise(this.$1$ValueChangedField, this, oldValue, newValue);
 		}));
 		this.$layers = new $System_Windows_Media_Animation_AnimationLayerCollection();
 		this.$layers.add_LayerInvalidated(ss.mkdel(this, this.$OnLayerInvalidated));
@@ -7814,7 +8455,7 @@
 		this.$animationOperations = $System_Windows_Media_Animation_$ColorAnimationOperations.$Default;
 		this.$isAccumulable = true;
 		this.set_KeyFrames(new (ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_Media_Animation_ColorKeyFrame]))());
-		this.get_KeyFrames().SetInheritanceParent(this);
+		this.get_KeyFrames().TrySetContextParent(this);
 	};
 	$System_Windows_Media_Animation_ColorAnimationUsingKeyFrames.__typeName = 'System.Windows.Media.Animation.ColorAnimationUsingKeyFrames';
 	global.System.Windows.Media.Animation.ColorAnimationUsingKeyFrames = $System_Windows_Media_Animation_ColorAnimationUsingKeyFrames;
@@ -7881,7 +8522,7 @@
 		this.$animationOperations = $System_Windows_Media_Animation_$DoubleAnimationOperations.$Default;
 		this.$isAccumulable = true;
 		this.set_KeyFrames(new (ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_Media_Animation_DoubleKeyFrame]))());
-		this.get_KeyFrames().SetInheritanceParent(this);
+		this.get_KeyFrames().TrySetContextParent(this);
 	};
 	$System_Windows_Media_Animation_DoubleAnimationUsingKeyFrames.__typeName = 'System.Windows.Media.Animation.DoubleAnimationUsingKeyFrames';
 	global.System.Windows.Media.Animation.DoubleAnimationUsingKeyFrames = $System_Windows_Media_Animation_DoubleAnimationUsingKeyFrames;
@@ -8055,6 +8696,12 @@
 	$System_Windows_Media_Animation_KeyTimeType.__typeName = 'System.Windows.Media.Animation.KeyTimeType';
 	global.System.Windows.Media.Animation.KeyTimeType = $System_Windows_Media_Animation_KeyTimeType;
 	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Media.Animation.KeyTimeTypeConverter
+	var $System_Windows_Media_Animation_KeyTimeTypeConverter = function() {
+	};
+	$System_Windows_Media_Animation_KeyTimeTypeConverter.__typeName = 'System.Windows.Media.Animation.KeyTimeTypeConverter';
+	global.System.Windows.Media.Animation.KeyTimeTypeConverter = $System_Windows_Media_Animation_KeyTimeTypeConverter;
+	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Media.Animation.LinearColorKeyFrame
 	var $System_Windows_Media_Animation_LinearColorKeyFrame = function() {
 		$System_Windows_Media_Animation_ColorKeyFrame.call(this);
@@ -8183,7 +8830,7 @@
 		this.$animationOperations = $System_Windows_Media_Animation_$RectAnimationOperations.$Default;
 		this.$isAccumulable = true;
 		this.set_KeyFrames(new (ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_Media_Animation_RectKeyFrame]))());
-		this.get_KeyFrames().SetInheritanceParent(this);
+		this.get_KeyFrames().TrySetContextParent(this);
 	};
 	$System_Windows_Media_Animation_RectAnimationUsingKeyFrames.__typeName = 'System.Windows.Media.Animation.RectAnimationUsingKeyFrames';
 	global.System.Windows.Media.Animation.RectAnimationUsingKeyFrames = $System_Windows_Media_Animation_RectAnimationUsingKeyFrames;
@@ -8237,6 +8884,12 @@
 		throw new Granular.Exception('Can\'t parse RepeatBehavior value "{0}"', [value]);
 	};
 	global.System.Windows.Media.Animation.RepeatBehavior = $System_Windows_Media_Animation_RepeatBehavior;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Media.Animation.RepeatBehaviorTypeConverter
+	var $System_Windows_Media_Animation_RepeatBehaviorTypeConverter = function() {
+	};
+	$System_Windows_Media_Animation_RepeatBehaviorTypeConverter.__typeName = 'System.Windows.Media.Animation.RepeatBehaviorTypeConverter';
+	global.System.Windows.Media.Animation.RepeatBehaviorTypeConverter = $System_Windows_Media_Animation_RepeatBehaviorTypeConverter;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Media.Animation.RepeatClock
 	var $System_Windows_Media_Animation_RepeatClock = function(clock, iterationsCount) {
@@ -8424,7 +9077,7 @@
 		this.$animationOperations = $System_Windows_Media_Animation_$ThicknessAnimationOperations.$Default;
 		this.$isAccumulable = true;
 		this.set_KeyFrames(new (ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_Media_Animation_ThicknessKeyFrame]))());
-		this.get_KeyFrames().SetInheritanceParent(this);
+		this.get_KeyFrames().TrySetContextParent(this);
 	};
 	$System_Windows_Media_Animation_ThicknessAnimationUsingKeyFrames.__typeName = 'System.Windows.Media.Animation.ThicknessAnimationUsingKeyFrames';
 	global.System.Windows.Media.Animation.ThicknessAnimationUsingKeyFrames = $System_Windows_Media_Animation_ThicknessAnimationUsingKeyFrames;
@@ -8578,7 +9231,7 @@
 		}, function() {
 			return $System_Windows_Media_Animation_AnimationTimeline;
 		}, function() {
-			return [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject];
+			return [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement];
 		});
 		ss.setMetadata($type, { members: [{ name: '.ctor', type: 1, params: [ss.makeGenericType($System_Windows_Media_Animation_IAnimationOperations$1, [T]), Boolean] }, { name: 'GetCurrentValue', type: 8, sname: 'GetCurrentValue', returnType: Object, params: [Object, Object, $System_Windows_Media_Animation_AnimationTimelineClock] }, { name: 'By', type: 16, returnType: T, getter: { name: 'get_By', type: 8, sname: 'get_By', returnType: T, params: [] }, setter: { name: 'set_By', type: 8, sname: 'set_By', returnType: Object, params: [T] } }, { name: 'EasingFunction', type: 16, returnType: $System_Windows_Media_Animation_IEasingFunction, getter: { name: 'get_EasingFunction', type: 8, sname: 'get_EasingFunction', returnType: $System_Windows_Media_Animation_IEasingFunction, params: [] }, setter: { name: 'set_EasingFunction', type: 8, sname: 'set_EasingFunction', returnType: Object, params: [$System_Windows_Media_Animation_IEasingFunction] } }, { name: 'From', type: 16, returnType: T, getter: { name: 'get_From', type: 8, sname: 'get_From', returnType: T, params: [] }, setter: { name: 'set_From', type: 8, sname: 'set_From', returnType: Object, params: [T] } }, { name: 'To', type: 16, returnType: T, getter: { name: 'get_To', type: 8, sname: 'get_To', returnType: T, params: [] }, setter: { name: 'set_To', type: 8, sname: 'set_To', returnType: Object, params: [T] } }, { name: 'ByProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ByProperty' }, { name: 'EasingFunctionProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'EasingFunctionProperty' }, { name: 'FromProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'FromProperty' }, { name: 'ToProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ToProperty' }] });
 		$type.ToProperty = $System_Windows_DependencyProperty.Register('To', T, $type, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
@@ -8650,39 +9303,58 @@
 	var $System_Windows_Threading_Dispatcher = function() {
 		this.$queue = null;
 		this.$disableProcessingRequests = 0;
+		this.$isProcessQueueScheduled = false;
+		this.$disableProcessingToken = null;
 		this.$queue = new (ss.makeGenericType(Granular.Collections.PriorityQueue$2, [$System_Windows_Threading_DispatcherPriority, $System_Windows_Threading_DispatcherOperation]))();
+		this.$disableProcessingToken = new Granular.Disposable(ss.mkdel(this, this.$EnableProcessing));
 	};
 	$System_Windows_Threading_Dispatcher.__typeName = 'System.Windows.Threading.Dispatcher';
 	global.System.Windows.Threading.Dispatcher = $System_Windows_Threading_Dispatcher;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Threading.DispatcherOperation
-	var $System_Windows_Threading_DispatcherOperation = function(action) {
-		$System_Windows_Threading_DispatcherOperation.$ctor2.call(this, 4, action);
+	var $System_Windows_Threading_DispatcherOperation = function(action, priority) {
+		$System_Windows_Threading_DispatcherOperation.$ctor1.call(this, function() {
+			action();
+			return null;
+		}, priority);
 		//
 	};
 	$System_Windows_Threading_DispatcherOperation.__typeName = 'System.Windows.Threading.DispatcherOperation';
-	$System_Windows_Threading_DispatcherOperation.$ctor1 = function(action) {
-		$System_Windows_Threading_DispatcherOperation.$ctor3.call(this, 4, action);
-		//
-	};
-	$System_Windows_Threading_DispatcherOperation.$ctor2 = function(priority, action) {
-		$System_Windows_Threading_DispatcherOperation.$ctor3.call(this, priority, function() {
-			action();
-			return null;
-		});
-		//
-	};
-	$System_Windows_Threading_DispatcherOperation.$ctor3 = function(priority, action) {
+	$System_Windows_Threading_DispatcherOperation.$ctor1 = function(action, priority) {
 		this.$1$CompletedField = null;
 		this.$1$AbortedField = null;
 		this.$1$PriorityField = 0;
 		this.$1$StatusField = 0;
 		this.$1$ResultField = null;
 		this.$action = null;
-		this.set_Priority(priority);
 		this.$action = action;
+		this.set_Priority(priority);
 	};
 	global.System.Windows.Threading.DispatcherOperation = $System_Windows_Threading_DispatcherOperation;
+	////////////////////////////////////////////////////////////////////////////////
+	// System.Windows.Threading.DispatcherOperation
+	var $System_Windows_Threading_DispatcherOperation$1 = function(TResult) {
+		var $type = function(action, priority) {
+			$System_Windows_Threading_DispatcherOperation.$ctor1.call(this, function() {
+				return action();
+			}, priority);
+			//
+		};
+		ss.registerGenericClassInstance($type, $System_Windows_Threading_DispatcherOperation$1, [TResult], {
+			get_Result$1: function() {
+				return ss.cast(this.get_Result(), TResult);
+			}
+		}, function() {
+			return $System_Windows_Threading_DispatcherOperation;
+		}, function() {
+			return [];
+		});
+		ss.setMetadata($type, { members: [{ name: '.ctor', type: 1, params: [Function, $System_Windows_Threading_DispatcherPriority] }, { name: 'Result', type: 16, returnType: TResult, getter: { name: 'get_Result', type: 8, sname: 'get_Result$1', returnType: TResult, params: [] } }] });
+		return $type;
+	};
+	$System_Windows_Threading_DispatcherOperation$1.__typeName = 'System.Windows.Threading.DispatcherOperation$1';
+	ss.initGenericClass($System_Windows_Threading_DispatcherOperation$1, $asm, 1);
+	global.System.Windows.Threading.DispatcherOperation$1 = $System_Windows_Threading_DispatcherOperation$1;
 	////////////////////////////////////////////////////////////////////////////////
 	// System.Windows.Threading.DispatcherOperationStatus
 	var $System_Windows_Threading_DispatcherOperationStatus = function() {
@@ -8766,11 +9438,63 @@
 			return 0;
 		}
 	}, null, [ss.IComparer]);
-	ss.initClass($System_$Windows_Disposable$EmptyDisposable, $asm, {
-		dispose: function() {
-			//
+	ss.initInterface($System_Windows_Data_IObservableValue, $asm, { add_ValueChanged: null, remove_ValueChanged: null, get_Value: null });
+	ss.initClass($System_Windows_Data_ObservableValue, $asm, {
+		add_ValueChanged: function(value) {
+			this.$1$ValueChangedField = ss.delegateCombine(this.$1$ValueChangedField, value);
+		},
+		remove_ValueChanged: function(value) {
+			this.$1$ValueChangedField = ss.delegateRemove(this.$1$ValueChangedField, value);
+		},
+		get_Value: function() {
+			return this.$1$ValueField;
+		},
+		set_Value: function(value) {
+			this.$1$ValueField = value;
+		},
+		get_BaseValue: function() {
+			return this.$baseValue;
+		},
+		set_BaseValue: function(value) {
+			if (ss.referenceEquals(this.$baseValue, value)) {
+				return;
+			}
+			if (ss.isValue(this.$baseObservableValue)) {
+				this.$baseObservableValue.remove_ValueChanged(this.get_$BaseObservableValueChangedEventHandler());
+			}
+			this.$baseValue = value;
+			this.$baseObservableValue = ss.safeCast(value, $System_Windows_Data_IObservableValue);
+			if (ss.isValue(this.$baseObservableValue)) {
+				this.$baseObservableValue.add_ValueChanged(this.get_$BaseObservableValueChangedEventHandler());
+			}
+			var oldValue = this.get_Value();
+			var newValue = (ss.isValue(this.$baseObservableValue) ? this.$baseObservableValue.get_Value() : this.$baseValue);
+			if (Granular.Compatibility.EqualityComparer.Default.areEqual(oldValue, newValue)) {
+				return;
+			}
+			this.set_Value(newValue);
+			$System_Windows_Data_ObservableValueChangedEventHandlerExtensions.Raise(this.$1$ValueChangedField, this, oldValue, newValue);
+		},
+		get_$BaseObservableValueChangedEventHandler: function() {
+			if (ss.staticEquals(this.$baseObservableValueChangedEventHandler, null)) {
+				this.$baseObservableValueChangedEventHandler = ss.mkdel(this, this.$OnBaseObservableValueChanged);
+			}
+			return this.$baseObservableValueChangedEventHandler;
+		},
+		$OnBaseObservableValueChanged: function(sender, oldValue, newValue) {
+			this.set_Value(newValue);
+			$System_Windows_Data_ObservableValueChangedEventHandlerExtensions.Raise(this.$1$ValueChangedField, this, oldValue, newValue);
 		}
-	}, null, [ss.IDisposable]);
+	}, null, [$System_Windows_Data_IObservableValue]);
+	$System_Windows_Data_ObservableValue.$ctor1.prototype = $System_Windows_Data_ObservableValue.prototype;
+	ss.initClass($System_$Windows_DependencyPropertyValueEntry$IndexedObservableValue, $asm, {
+		get_$Index: function() {
+			return this.$2$IndexField;
+		},
+		set_$Index: function(value) {
+			this.$2$IndexField = value;
+		}
+	}, $System_Windows_Data_ObservableValue, [$System_Windows_Data_IObservableValue]);
 	ss.initEnum($System_$Windows_Duration$DurationType, $asm, { $Automatic: 0, $TimeSpan: 1, $Forever: 2 });
 	ss.initClass($System_$Windows_EmbeddedResourceLoader$EmbeddedResourceKey, $asm, {
 		get_$AssemblyName: function() {
@@ -8877,7 +9601,6 @@
 		}
 	}, null, [$System_Windows_IDataTriggerConditionProvider]);
 	ss.initInterface($System_Windows_IExpressionProvider, $asm, { CreateExpression: null });
-	ss.initInterface($System_Windows_Data_IObservableValue, $asm, { add_ValueChanged: null, remove_ValueChanged: null, get_Value: null });
 	ss.initInterface($System_Windows_IExpression, $asm, { SetValue: null }, [$System_Windows_Data_IObservableValue]);
 	ss.initClass($System_$Windows_Setter$ValueOverlapExpression, $asm, {
 		add_ValueChanged: function(value) {
@@ -8900,15 +9623,423 @@
 				return ss.referenceEquals(tuple.item1, owner);
 			}, ss.getDefaultValue(Object)));
 			this.$values.push({ item1: owner, item2: value });
-			this.$observableValue.set_Value(value);
+			this.$observableValue.set_BaseValue(value);
 		},
 		$ClearValue: function(owner) {
 			ss.remove(this.$values, Enumerable.from(this.$values).firstOrDefault(function(tuple) {
 				return ss.referenceEquals(tuple.item1, owner);
 			}, ss.getDefaultValue(Object)));
-			this.$observableValue.set_Value(((this.$values.length > 0) ? Enumerable.from(this.$values).last().item2 : $System_Windows_Data_ObservableValue.UnsetValue));
+			this.$observableValue.set_BaseValue(((this.$values.length > 0) ? Enumerable.from(this.$values).last().item2 : $System_Windows_Data_ObservableValue.UnsetValue));
 		}
 	}, null, [$System_Windows_IExpressionProvider, $System_Windows_Data_IObservableValue, $System_Windows_IExpression]);
+	ss.initClass($System_Windows_DependencyObject, $asm, {
+		add_PropertyChanged: function(value) {
+			this.$1$PropertyChangedField = ss.delegateCombine(this.$1$PropertyChangedField, value);
+		},
+		remove_PropertyChanged: function(value) {
+			this.$1$PropertyChangedField = ss.delegateRemove(this.$1$PropertyChangedField, value);
+		},
+		ContainsValue: function(dependencyProperty) {
+			var entry = {};
+			if (!this.$entries.tryGetValue(dependencyProperty, entry)) {
+				return false;
+			}
+			return entry.$.GetBaseValuePriority() > 2;
+		},
+		ContainsValue$1: function(dependencyPropertyKey) {
+			return this.ContainsValue(dependencyPropertyKey.get_DependencyProperty());
+		},
+		GetValue: function(dependencyProperty) {
+			var entry = {};
+			if (!this.$entries.tryGetValue(dependencyProperty, entry)) {
+				var propertyMetadata = dependencyProperty.GetMetadata(ss.getInstanceType(this));
+				// no need to create a new entry if the value is not inherited or coerced
+				if (!propertyMetadata.get_Inherits() && (ss.staticEquals(propertyMetadata.get_CoerceValueCallback(), null) || !dependencyProperty.get_IsAttached() && !dependencyProperty.IsContainedBy(ss.getInstanceType(this)))) {
+					return propertyMetadata.get_DefaultValue();
+				}
+				entry.$ = this.$CreateDependencyPropertyValueEntry(dependencyProperty, propertyMetadata);
+				this.$entries.add(dependencyProperty, entry.$);
+			}
+			return entry.$.get_Value();
+		},
+		GetValue$1: function(dependencyPropertyKey) {
+			return this.GetValue(dependencyPropertyKey.get_DependencyProperty());
+		},
+		SetValue: function(dependencyProperty, value, source) {
+			this.$SetValue(dependencyProperty, null, value, false, source);
+		},
+		SetValue$1: function(dependencyPropertyKey, value, source) {
+			this.$SetValue(dependencyPropertyKey.get_DependencyProperty(), dependencyPropertyKey, value, false, source);
+		},
+		SetCurrentValue: function(dependencyProperty, value) {
+			this.$SetValue(dependencyProperty, null, value, true, 0);
+		},
+		SetCurrentValue$1: function(dependencyPropertyKey, value) {
+			this.$SetValue(dependencyPropertyKey.get_DependencyProperty(), dependencyPropertyKey, value, true, 0);
+		},
+		$SetValue: function(dependencyProperty, dependencyPropertyKey, value, setCurrentValue, source) {
+			$System_Windows_DependencyObject.$VerifyReadOnlyProperty(dependencyProperty, dependencyPropertyKey);
+			var newExpressionProvider = ss.safeCast(value, $System_Windows_IExpressionProvider);
+			if (ss.isNullOrUndefined(newExpressionProvider) && !dependencyProperty.IsValidValue(value)) {
+				return;
+				// invalid value
+			}
+			var entry = this.$GetInitializedValueEntry(dependencyProperty);
+			var oldExpression = (setCurrentValue ? ss.safeCast($System_Windows_DependencyPropertyValueEntryExtensions.GetBaseValue(entry, false), $System_Windows_IExpression) : ss.safeCast($System_Windows_DependencyPropertyValueEntryExtensions.GetBaseValue$1(entry, source, false), $System_Windows_IExpression));
+			if (ss.isValue(newExpressionProvider)) {
+				value = newExpressionProvider.CreateExpression(this, dependencyProperty);
+			}
+			else if (ss.isValue(oldExpression) && oldExpression.SetValue(value)) {
+				return;
+				// value (current or not) was set in the existing expression, nothing else to do
+			}
+			if (setCurrentValue) {
+				$System_Windows_DependencyPropertyValueEntryExtensions.SetCurrentValue(entry, value);
+				return;
+				// base value isn't changed
+			}
+			if (ss.isInstanceOfType(oldExpression, ss.IDisposable)) {
+				ss.cast(oldExpression, ss.IDisposable).dispose();
+			}
+			$System_Windows_DependencyPropertyValueEntryExtensions.SetBaseValue(entry, source, value);
+			$System_Windows_DependencyPropertyValueEntryExtensions.ClearCurrentValue(entry);
+		},
+		ClearValue: function(dependencyProperty, source) {
+			this.$ClearValue(dependencyProperty, null, source);
+		},
+		ClearValue$1: function(dependencyPropertyKey, source) {
+			this.$ClearValue(dependencyPropertyKey.get_DependencyProperty(), dependencyPropertyKey, source);
+		},
+		$ClearValue: function(dependencyProperty, dependencyPropertyKey, source) {
+			$System_Windows_DependencyObject.$VerifyReadOnlyProperty(dependencyProperty, dependencyPropertyKey);
+			var entry = {};
+			if (!this.$entries.tryGetValue(dependencyProperty, entry)) {
+				return;
+			}
+			var expression = ss.safeCast($System_Windows_DependencyPropertyValueEntryExtensions.GetBaseValue$1(entry.$, source, false), $System_Windows_IExpression);
+			if (ss.isInstanceOfType(expression, ss.IDisposable)) {
+				ss.cast(expression, ss.IDisposable).dispose();
+			}
+			$System_Windows_DependencyPropertyValueEntryExtensions.ClearBaseValue(entry.$, source);
+			$System_Windows_DependencyPropertyValueEntryExtensions.ClearCurrentValue(entry.$);
+		},
+		CoerceValue: function(dependencyProperty) {
+			this.$GetInitializedValueEntry(dependencyProperty).CoerceValue();
+		},
+		GetValueSource: function(dependencyProperty) {
+			var entry = {};
+			if (this.$entries.tryGetValue(dependencyProperty, entry)) {
+				return new $System_Windows_ValueSource(entry.$.GetBaseValuePriority(), ss.isInstanceOfType($System_Windows_DependencyPropertyValueEntryExtensions.GetBaseValue(entry.$, false), $System_Windows_IExpression) || ss.isInstanceOfType($System_Windows_DependencyPropertyValueEntryExtensions.GetCurrentValue(entry.$, false), $System_Windows_IExpression), !ss.referenceEquals($System_Windows_DependencyPropertyValueEntryExtensions.GetCurrentValue(entry.$, true), $System_Windows_Data_ObservableValue.UnsetValue), !ss.referenceEquals($System_Windows_DependencyPropertyValueEntryExtensions.GetAnimationValue(entry.$, true), $System_Windows_Data_ObservableValue.UnsetValue), !Granular.Compatibility.EqualityComparer.Default.areEqual(entry.$.get_Value(), entry.$.GetValue(entry.$.get_ValuePriority(), true)));
+			}
+			var propertyMetadata = dependencyProperty.GetMetadata(ss.getInstanceType(this));
+			var baseValueSource = ((propertyMetadata.get_Inherits() && ss.isValue(this.$inheritanceParent)) ? 2 : 1);
+			return new $System_Windows_ValueSource(baseValueSource, false, false, false, false);
+		},
+		GetBaseValueSource: function(dependencyProperty) {
+			var entry = {};
+			if (this.$entries.tryGetValue(dependencyProperty, entry)) {
+				return entry.$.GetBaseValuePriority();
+			}
+			return ((dependencyProperty.get_Inherits() && ss.isValue(this.$inheritanceParent)) ? 2 : 1);
+		},
+		GetValueEntry: function(dependencyProperty) {
+			return (dependencyProperty.get_IsReadOnly() ? this.$GetInitializedReadOnlyValueEntry(dependencyProperty) : this.$GetInitializedValueEntry(dependencyProperty));
+		},
+		GetValueEntry$1: function(dependencyPropertyKey) {
+			$System_Windows_DependencyObject.$VerifyReadOnlyProperty(dependencyPropertyKey.get_DependencyProperty(), dependencyPropertyKey);
+			return this.$GetInitializedValueEntry(dependencyPropertyKey.get_DependencyProperty());
+		},
+		$GetInitializedValueEntry: function(dependencyProperty) {
+			var entry = {};
+			if (!this.$entries.tryGetValue(dependencyProperty, entry)) {
+				entry.$ = this.$CreateDependencyPropertyValueEntry(dependencyProperty, dependencyProperty.GetMetadata(ss.getInstanceType(this)));
+				this.$entries.add(dependencyProperty, entry.$);
+			}
+			return entry.$;
+		},
+		$GetInitializedReadOnlyValueEntry: function(dependencyProperty) {
+			var readOnlyEntry = {};
+			if (this.$readOnlyEntries.tryGetValue(dependencyProperty, readOnlyEntry)) {
+				return readOnlyEntry.$;
+			}
+			readOnlyEntry.$ = new $System_Windows_ReadOnlyDependencyPropertyValueEntry(this.$GetInitializedValueEntry(dependencyProperty));
+			this.$readOnlyEntries.add(dependencyProperty, readOnlyEntry.$);
+			return readOnlyEntry.$;
+		},
+		$CreateDependencyPropertyValueEntry: function(dependencyProperty, propertyMetadata) {
+			var isContained = dependencyProperty.get_IsAttached() || dependencyProperty.IsContainedBy(ss.getInstanceType(this));
+			var entry = new $System_Windows_DependencyPropertyValueEntry(this, dependencyProperty, (isContained ? propertyMetadata.get_CoerceValueCallback() : null));
+			$System_Windows_DependencyPropertyValueEntryExtensions.SetBaseValue(entry, 1, propertyMetadata.get_DefaultValue());
+			if (isContained) {
+				entry.add_ValueChanged(this.$containedEntryValueChangedEventHandler);
+			}
+			else {
+				entry.add_ValueChanged(this.$entryValueChangedEventHandler);
+			}
+			return entry;
+		},
+		$OnEntryValueChanged: function(sender, e) {
+			this.OnPropertyChanged(e);
+			$System_Windows_DependencyPropertyChangedEventHandlerExtensions.Raise(this.$1$PropertyChangedField, this, e);
+		},
+		$OnContainedEntryValueChanged: function(sender, e) {
+			e.get_Property().$RaiseMetadataPropertyChangedCallback(this, e);
+			this.OnPropertyChanged(e);
+			$System_Windows_DependencyPropertyChangedEventHandlerExtensions.Raise(this.$1$PropertyChangedField, this, e);
+		},
+		OnPropertyChanged: function(e) {
+			//
+		},
+		SetInheritanceParent: function(parent) {
+			if (ss.referenceEquals(this.$inheritanceParent, parent)) {
+				return;
+			}
+			var oldInheritanceParent = this.$inheritanceParent;
+			if (ss.isValue(this.$inheritanceParent)) {
+				this.$inheritanceParent.remove_PropertyChanged(this.$parentPropertyChangedEventHandler);
+			}
+			this.$inheritanceParent = parent;
+			if (ss.isValue(this.$inheritanceParent)) {
+				this.$inheritanceParent.add_PropertyChanged(this.$parentPropertyChangedEventHandler);
+			}
+			if (ss.isNullOrUndefined(this.$inheritanceParent)) {
+				// clear inherited values
+				var $t1 = this.$entries.getEnumerator();
+				try {
+					while ($t1.moveNext()) {
+						var pair = $t1.current();
+						if (pair.key.get_Inherits()) {
+							$System_Windows_DependencyPropertyValueEntryExtensions.ClearBaseValue(pair.value, 2);
+						}
+					}
+				}
+				finally {
+					$t1.dispose();
+				}
+			}
+			else {
+				// update existing inherited values
+				var $t2 = this.$entries.getEnumerator();
+				try {
+					while ($t2.moveNext()) {
+						var pair1 = $t2.current();
+						if (pair1.key.get_Inherits()) {
+							$System_Windows_DependencyPropertyValueEntryExtensions.SetBaseValue(pair1.value, 2, this.$inheritanceParent.GetValue(pair1.key));
+						}
+					}
+				}
+				finally {
+					$t2.dispose();
+				}
+				// add missing inherited values
+				var $t3 = this.$inheritanceParent.$entries.getEnumerator();
+				try {
+					while ($t3.moveNext()) {
+						var pair2 = $t3.current();
+						if (pair2.key.get_Inherits()) {
+							$System_Windows_DependencyPropertyValueEntryExtensions.SetBaseValue(this.$GetInitializedValueEntry(pair2.key), 2, pair2.value.get_Value());
+						}
+					}
+				}
+				finally {
+					$t3.dispose();
+				}
+			}
+			this.OnInheritanceParentChanged(oldInheritanceParent, this.$inheritanceParent);
+		},
+		OnInheritanceParentChanged: function(oldInheritanceParent, newInheritanceParent) {
+			//
+		},
+		$OnParentPropertyChanged: function(sender, e) {
+			if (e.get_Property().get_Inherits()) {
+				$System_Windows_DependencyPropertyValueEntryExtensions.SetBaseValue(this.$GetInitializedValueEntry(e.get_Property()), 2, e.get_NewValue());
+			}
+		}
+	});
+	ss.initInterface($System_Windows_IResourceContainer, $asm, { add_ResourcesChanged: null, remove_ResourcesChanged: null, TryGetResource: null });
+	ss.initInterface($System_Windows_INotifyChanged, $asm, { add_Changed: null, remove_Changed: null });
+	ss.initInterface($System_Windows_IContextElement, $asm, { add_ContextParentChanged: null, remove_ContextParentChanged: null, get_ContextParent: null, TrySetContextParent: null });
+	ss.initClass($System_Windows_Freezable, $asm, {
+		add_ContextParentChanged: function(value) {
+			this.$2$ContextParentChangedField = ss.delegateCombine(this.$2$ContextParentChangedField, value);
+		},
+		remove_ContextParentChanged: function(value) {
+			this.$2$ContextParentChangedField = ss.delegateRemove(this.$2$ContextParentChangedField, value);
+		},
+		get_ContextParent: function() {
+			return this.$contextParent;
+		},
+		set_ContextParent: function(value) {
+			if (ss.referenceEquals(this.$contextParent, value)) {
+				return;
+			}
+			if (ss.isValue(this.$contextParent)) {
+				this.$contextParent.remove_ContextParentChanged(ss.mkdel(this, this.$OnContextParentAncestorChanged));
+			}
+			this.$contextParent = value;
+			if (ss.isValue(this.$contextParent)) {
+				this.$contextParent.add_ContextParentChanged(ss.mkdel(this, this.$OnContextParentAncestorChanged));
+			}
+			Granular.Extensions.EventHandlerExtensions.Raise(this.$2$ContextParentChangedField, this);
+		},
+		add_Changed: function(value) {
+			if (this.get_IsFrozen()) {
+				return;
+			}
+			this.$changed = ss.delegateCombine(this.$changed, value);
+		},
+		remove_Changed: function(value) {
+			if (this.get_IsFrozen()) {
+				return;
+			}
+			this.$changed = ss.delegateRemove(this.$changed, value);
+		},
+		add_ResourcesChanged: function(value) {
+			this.$2$ResourcesChangedField = ss.delegateCombine(this.$2$ResourcesChangedField, value);
+		},
+		remove_ResourcesChanged: function(value) {
+			this.$2$ResourcesChangedField = ss.delegateRemove(this.$2$ResourcesChangedField, value);
+		},
+		get_IsFrozen: function() {
+			return this.$2$IsFrozenField;
+		},
+		set_IsFrozen: function(value) {
+			this.$2$IsFrozenField = value;
+		},
+		get_$ParentResourceContainer: function() {
+			return this.$parentResourceContainer;
+		},
+		set_$ParentResourceContainer: function(value) {
+			if (ss.referenceEquals(this.$parentResourceContainer, value)) {
+				return;
+			}
+			if (ss.isValue(this.$parentResourceContainer)) {
+				this.$parentResourceContainer.remove_ResourcesChanged(ss.mkdel(this, this.$OnParentResourcesChanged));
+			}
+			this.$parentResourceContainer = value;
+			if (ss.isValue(this.$parentResourceContainer)) {
+				this.$parentResourceContainer.add_ResourcesChanged(ss.mkdel(this, this.$OnParentResourcesChanged));
+			}
+			Granular.Extensions.EventHandlerExtensions.Raise$4($System_Windows_ResourcesChangedEventArgs).call(null, this.$2$ResourcesChangedField, this, $System_Windows_ResourcesChangedEventArgs.Reset);
+		},
+		$OnParentResourcesChanged: function(sender, e) {
+			Granular.Extensions.EventHandlerExtensions.Raise$4($System_Windows_ResourcesChangedEventArgs).call(null, this.$2$ResourcesChangedField, this, e);
+		},
+		TryGetResource: function(resourceKey, value) {
+			if (ss.isValue(this.get_$ParentResourceContainer())) {
+				return this.get_$ParentResourceContainer().TryGetResource(resourceKey, value);
+			}
+			value.$ = null;
+			return false;
+		},
+		Freeze: function() {
+			this.set_IsFrozen(true);
+			this.$changed = null;
+			this.set_$ParentResourceContainer(null);
+		},
+		OnPropertyChanged: function(e) {
+			this.$VerifyNotFrozen$1(e.get_Property());
+			if (!e.get_IsSubPropertyChange()) {
+				if (ss.isInstanceOfType(e.get_OldValue(), $System_Windows_IContextElement)) {
+					ss.cast(e.get_OldValue(), $System_Windows_IContextElement).TrySetContextParent(null);
+				}
+				if (ss.isInstanceOfType(e.get_NewValue(), $System_Windows_IContextElement)) {
+					ss.cast(e.get_NewValue(), $System_Windows_IContextElement).TrySetContextParent(this);
+				}
+			}
+			this.RaiseChanged();
+		},
+		$OnSubPropertyChanged: function(sender, e) {
+			this.$VerifyNotFrozen();
+			this.RaiseChanged();
+		},
+		RaiseChanged: function() {
+			Granular.Extensions.EventHandlerExtensions.Raise(this.$changed, this);
+		},
+		TrySetContextParent: function(contextParent) {
+			if (this.get_IsFrozen()) {
+				return false;
+			}
+			this.set_ContextParent(contextParent);
+			this.set_$ParentResourceContainer(ss.safeCast(contextParent, $System_Windows_IResourceContainer));
+			return true;
+		},
+		$OnContextParentAncestorChanged: function(sender, e) {
+			Granular.Extensions.EventHandlerExtensions.Raise(this.$2$ContextParentChangedField, this);
+		},
+		$VerifyNotFrozen: function() {
+			if (this.get_IsFrozen()) {
+				throw new Granular.Exception('"{0}" is frozen and cannot be changed', [this]);
+			}
+		},
+		$VerifyNotFrozen$1: function(changedProperty) {
+			if (this.get_IsFrozen()) {
+				throw new Granular.Exception('"{0}" is frozen, property "{1}" cannot be changed', [this, changedProperty]);
+			}
+		}
+	}, $System_Windows_DependencyObject, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
+	ss.initInterface($System_Windows_Media_Animation_IAnimatable, $asm, { get_RootClock: null, SetAnimationClocks: null, AddAnimationClocks: null, RemoveAnimationClocks: null });
+	ss.initClass($System_Windows_Media_Animation_Animatable, $asm, {
+		get_RootClock: function() {
+			return this.$3$RootClockField;
+		},
+		set_RootClock: function(value) {
+			this.$3$RootClockField = value;
+		},
+		SetAnimationClocks: function(dependencyProperty, animationClocks, layerOwner) {
+			var animationExpression = this.$GetInitializedAnimationExpression(dependencyProperty);
+			animationExpression.SetClocks(animationClocks, layerOwner);
+		},
+		AddAnimationClocks: function(dependencyProperty, animationClocks, layerOwner) {
+			var animationExpression = this.$GetInitializedAnimationExpression(dependencyProperty);
+			animationExpression.AddClocks(animationClocks, layerOwner);
+		},
+		RemoveAnimationClocks: function(dependencyProperty, animationClocks, layerOwner) {
+			var animationExpression = this.$GetInitializedAnimationExpression(dependencyProperty);
+			animationExpression.RemoveClocks(animationClocks, layerOwner);
+		},
+		$GetInitializedAnimationExpression: function(dependencyProperty) {
+			var entry = this.GetValueEntry(dependencyProperty);
+			var animationExpression = ss.safeCast($System_Windows_DependencyPropertyValueEntryExtensions.GetAnimationValue(entry, false), $System_Windows_Media_Animation_AnimationExpression);
+			if (ss.isNullOrUndefined(animationExpression)) {
+				animationExpression = new $System_Windows_Media_Animation_AnimationExpression(this, dependencyProperty);
+				$System_Windows_DependencyPropertyValueEntryExtensions.SetAnimationValue(entry, animationExpression);
+			}
+			return animationExpression;
+		},
+		OnInheritanceParentChanged: function(oldInheritanceParent, newInheritanceParent) {
+			$System_Windows_DependencyObject.prototype.OnInheritanceParentChanged.call(this, oldInheritanceParent, newInheritanceParent);
+			this.set_RootClock((ss.isInstanceOfType(newInheritanceParent, $System_Windows_Media_Animation_IAnimatable) ? ss.cast(newInheritanceParent, $System_Windows_Media_Animation_IAnimatable).get_RootClock() : null));
+		}
+	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable]);
+	ss.initClass($System_Windows_Media_Transform, $asm, { get_Value: null }, $System_Windows_Media_Animation_Animatable, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable]);
+	ss.initClass($System_$Windows_Controls_Adorner$VisualPathTransform, $asm, {
+		get_Value: function() {
+			return this.$value;
+		},
+		dispose: function() {
+			var $t1 = ss.getEnumerator(this.$visualPath);
+			try {
+				while ($t1.moveNext()) {
+					var element = $t1.current();
+					element.remove_VisualTransformChanged(ss.mkdel(this, this.$OnVisualTransformChanged));
+				}
+			}
+			finally {
+				$t1.dispose();
+			}
+		},
+		$OnVisualTransformChanged: function(sender, e) {
+			this.$SetValue$1();
+		},
+		$SetValue$1: function() {
+			var newValue = this.$visual.TransformToAncestor(this.$ancestor);
+			if ($System_Windows_Media_Matrix.op_Inequality(this.$value, newValue)) {
+				this.$value = newValue;
+				this.RaiseChanged();
+			}
+		}
+	}, $System_Windows_Media_Transform, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, ss.IDisposable]);
 	ss.initClass($System_$Windows_Controls_ContentPresenter$DefaultContentTemplate, $asm, {
 		Attach: function(element) {
 			var textBlock = new $System_Windows_Controls_TextBlock();
@@ -8935,8 +10066,14 @@
 		}
 	}, null, [$System_Windows_Data_IValueConverter]);
 	ss.initClass($System_$Windows_Controls_ContentPresenter$UIElementTemplate, $asm, {
+		get_$Content: function() {
+			return this.$1$ContentField;
+		},
+		set_$Content: function(value) {
+			this.$1$ContentField = value;
+		},
 		Attach: function(element) {
-			element.set_TemplateChild(this.$content);
+			element.set_TemplateChild(this.get_$Content());
 		},
 		Detach: function(element) {
 			element.set_TemplateChild(null);
@@ -9219,219 +10356,6 @@
 			return new $System_Windows_Point.$ctor1(currentAlignmentPoint.get_X(), 0);
 		}
 	}, $System_$Windows_Controls_Primitives_Placement$PlacementBase);
-	ss.initClass($System_Windows_DependencyObject, $asm, {
-		add_PropertyChanged: function(value) {
-			this.$1$PropertyChangedField = ss.delegateCombine(this.$1$PropertyChangedField, value);
-		},
-		remove_PropertyChanged: function(value) {
-			this.$1$PropertyChangedField = ss.delegateRemove(this.$1$PropertyChangedField, value);
-		},
-		ContainsValue: function(dependencyProperty) {
-			var entry = {};
-			if (!this.$entries.tryGetValue(dependencyProperty, entry)) {
-				return false;
-			}
-			return entry.$.GetBaseValuePriority() > 2;
-		},
-		ContainsValue$1: function(dependencyPropertyKey) {
-			return this.ContainsValue(dependencyPropertyKey.get_DependencyProperty());
-		},
-		GetValue: function(dependencyProperty) {
-			return this.$GetInitializedValueEntry(dependencyProperty).get_Value();
-		},
-		GetValue$1: function(dependencyPropertyKey) {
-			return this.GetValue(dependencyPropertyKey.get_DependencyProperty());
-		},
-		SetValue: function(dependencyProperty, value, source) {
-			this.$SetValue(dependencyProperty, null, value, false, source);
-		},
-		SetValue$1: function(dependencyPropertyKey, value, source) {
-			this.$SetValue(dependencyPropertyKey.get_DependencyProperty(), dependencyPropertyKey, value, false, source);
-		},
-		SetCurrentValue: function(dependencyProperty, value) {
-			this.$SetValue(dependencyProperty, null, value, true, 0);
-		},
-		SetCurrentValue$1: function(dependencyPropertyKey, value) {
-			this.$SetValue(dependencyPropertyKey.get_DependencyProperty(), dependencyPropertyKey, value, true, 0);
-		},
-		$SetValue: function(dependencyProperty, dependencyPropertyKey, value, setCurrentValue, source) {
-			$System_Windows_DependencyObject.$VerifyReadOnlyProperty(dependencyProperty, dependencyPropertyKey);
-			var newExpressionProvider = ss.safeCast(value, $System_Windows_IExpressionProvider);
-			if (ss.isNullOrUndefined(newExpressionProvider) && !dependencyProperty.IsValidValue(value)) {
-				return;
-				// invalid value
-			}
-			var entry = this.$GetInitializedValueEntry(dependencyProperty);
-			var oldExpression = (setCurrentValue ? ss.safeCast(entry.GetBaseValue(false), $System_Windows_IExpression) : ss.safeCast(entry.GetBaseValue$1(source, false), $System_Windows_IExpression));
-			if (ss.isValue(newExpressionProvider)) {
-				value = newExpressionProvider.CreateExpression(this, dependencyProperty);
-			}
-			else if (ss.isValue(oldExpression) && oldExpression.SetValue(value)) {
-				return;
-				// value (current or not) was set in the existing expression, nothing else to do
-			}
-			if (setCurrentValue) {
-				entry.SetCurrentValue(value);
-				return;
-				// base value isn't changed
-			}
-			if (ss.isInstanceOfType(oldExpression, ss.IDisposable)) {
-				ss.cast(oldExpression, ss.IDisposable).dispose();
-			}
-			entry.SetBaseValue(source, value);
-			entry.ClearCurrentValue();
-		},
-		ClearValue: function(dependencyProperty, source) {
-			this.$ClearValue(dependencyProperty, null, source);
-		},
-		ClearValue$1: function(dependencyPropertyKey, source) {
-			this.$ClearValue(dependencyPropertyKey.get_DependencyProperty(), dependencyPropertyKey, source);
-		},
-		$ClearValue: function(dependencyProperty, dependencyPropertyKey, source) {
-			$System_Windows_DependencyObject.$VerifyReadOnlyProperty(dependencyProperty, dependencyPropertyKey);
-			var entry = {};
-			if (!this.$entries.tryGetValue(dependencyProperty, entry)) {
-				return;
-			}
-			var expression = ss.safeCast(entry.$.GetBaseValue$1(source, false), $System_Windows_IExpression);
-			if (ss.isInstanceOfType(expression, ss.IDisposable)) {
-				ss.cast(expression, ss.IDisposable).dispose();
-			}
-			entry.$.ClearBaseValue(source);
-			entry.$.ClearCurrentValue();
-		},
-		CoerceValue: function(dependencyProperty) {
-			var entry = {};
-			if (this.$entries.tryGetValue(dependencyProperty, entry) && ss.isInstanceOfType(entry.$, $System_Windows_CoercedDependencyPropertyValueEntry)) {
-				ss.cast(entry.$, $System_Windows_CoercedDependencyPropertyValueEntry).CoerceValue();
-			}
-		},
-		GetValueSource: function(dependencyProperty) {
-			var entry = {};
-			if (this.$entries.tryGetValue(dependencyProperty, entry)) {
-				return new $System_Windows_ValueSource(entry.$.GetBaseValuePriority(), ss.isInstanceOfType(entry.$.GetBaseValue(false), $System_Windows_IExpression) || ss.isInstanceOfType(entry.$.GetCurrentValue(false), $System_Windows_IExpression), !ss.referenceEquals(entry.$.GetCurrentValue(true), $System_Windows_Data_ObservableValue.UnsetValue), !ss.referenceEquals(entry.$.GetAnimationValue(true), $System_Windows_Data_ObservableValue.UnsetValue), ss.isInstanceOfType(entry.$, $System_Windows_CoercedDependencyPropertyValueEntry) && ss.cast(entry.$, $System_Windows_CoercedDependencyPropertyValueEntry).get_IsCoerced());
-			}
-			var propertyMetadata = dependencyProperty.GetMetadata(ss.getInstanceType(this));
-			var baseValueSource = ((propertyMetadata.get_Inherits() && ss.isValue(this.$inheritanceParent)) ? 2 : 1);
-			return new $System_Windows_ValueSource(baseValueSource, false, false, false, false);
-		},
-		GetBaseValueSource: function(dependencyProperty) {
-			var entry = {};
-			if (this.$entries.tryGetValue(dependencyProperty, entry)) {
-				return entry.$.GetBaseValuePriority();
-			}
-			return ((dependencyProperty.get_Inherits() && ss.isValue(this.$inheritanceParent)) ? 2 : 1);
-		},
-		GetValueEntry: function(dependencyProperty) {
-			return (dependencyProperty.get_IsReadOnly() ? this.$GetInitializedReadOnlyValueEntry(dependencyProperty) : this.$GetInitializedValueEntry(dependencyProperty));
-		},
-		GetValueEntry$1: function(dependencyPropertyKey) {
-			$System_Windows_DependencyObject.$VerifyReadOnlyProperty(dependencyPropertyKey.get_DependencyProperty(), dependencyPropertyKey);
-			return this.$GetInitializedValueEntry(dependencyPropertyKey.get_DependencyProperty());
-		},
-		$GetInitializedValueEntry: function(dependencyProperty) {
-			var entry = {};
-			if (!this.$entries.tryGetValue(dependencyProperty, entry)) {
-				entry.$ = this.$CreateDependencyPropertyValueEntry(dependencyProperty);
-				this.$entries.add(dependencyProperty, entry.$);
-			}
-			return entry.$;
-		},
-		$GetInitializedReadOnlyValueEntry: function(dependencyProperty) {
-			var readOnlyEntry = {};
-			if (this.$readOnlyEntries.tryGetValue(dependencyProperty, readOnlyEntry)) {
-				return readOnlyEntry.$;
-			}
-			readOnlyEntry.$ = new $System_Windows_ReadOnlyDependencyPropertyValueEntry(this.$GetInitializedValueEntry(dependencyProperty));
-			this.$readOnlyEntries.add(dependencyProperty, readOnlyEntry.$);
-			return readOnlyEntry.$;
-		},
-		$CreateDependencyPropertyValueEntry: function(dependencyProperty) {
-			var entry = new $System_Windows_DependencyPropertyValueEntry(this, dependencyProperty);
-			var propertyMetadata = dependencyProperty.GetMetadata(ss.getInstanceType(this));
-			if (!ss.staticEquals(propertyMetadata.get_CoerceValueCallback(), null)) {
-				entry = new $System_Windows_CoercedDependencyPropertyValueEntry(entry, this, propertyMetadata.get_CoerceValueCallback());
-			}
-			entry.SetBaseValue(1, propertyMetadata.get_DefaultValue());
-			entry.add_ValueChanged(ss.mkdel(this, function(sender, e) {
-				this.$RaisePropertyChanged(new $System_Windows_DependencyPropertyChangedEventArgs(dependencyProperty, e.get_OldValue(), e.get_NewValue()));
-			}));
-			return entry;
-		},
-		$RaisePropertyChanged: function(e) {
-			e.get_Property().$RaiseMetadataPropertyChangedCallback(this, e);
-			this.OnPropertyChanged(e);
-			Granular.Extensions.EventHandlerExtensions.Raise$4($System_Windows_DependencyPropertyChangedEventArgs).call(null, this.$1$PropertyChangedField, this, e);
-		},
-		OnPropertyChanged: function(e) {
-			//
-		},
-		SetInheritanceParent: function(parent) {
-			if (ss.referenceEquals(this.$inheritanceParent, parent)) {
-				return;
-			}
-			var oldInheritanceParent = this.$inheritanceParent;
-			if (ss.isValue(this.$inheritanceParent)) {
-				this.$inheritanceParent.remove_PropertyChanged(ss.mkdel(this, this.$OnParentPropertyChanged));
-			}
-			this.$inheritanceParent = parent;
-			if (ss.isValue(this.$inheritanceParent)) {
-				this.$inheritanceParent.add_PropertyChanged(ss.mkdel(this, this.$OnParentPropertyChanged));
-			}
-			if (ss.isNullOrUndefined(this.$inheritanceParent)) {
-				// clear inherited values
-				var $t1 = this.$entries.getEnumerator();
-				try {
-					while ($t1.moveNext()) {
-						var pair = $t1.current();
-						if (pair.key.get_Inherits()) {
-							pair.value.ClearBaseValue(2);
-						}
-					}
-				}
-				finally {
-					$t1.dispose();
-				}
-			}
-			else {
-				// update existing inherited values
-				var $t2 = this.$entries.getEnumerator();
-				try {
-					while ($t2.moveNext()) {
-						var pair1 = $t2.current();
-						if (pair1.key.get_Inherits()) {
-							pair1.value.SetBaseValue(2, this.$inheritanceParent.GetValue(pair1.key));
-						}
-					}
-				}
-				finally {
-					$t2.dispose();
-				}
-				// add missing inherited values
-				var $t3 = this.$inheritanceParent.$entries.getEnumerator();
-				try {
-					while ($t3.moveNext()) {
-						var pair2 = $t3.current();
-						if (pair2.key.get_Inherits()) {
-							this.$GetInitializedValueEntry(pair2.key).SetBaseValue(2, pair2.value.get_Value());
-						}
-					}
-				}
-				finally {
-					$t3.dispose();
-				}
-			}
-			this.OnInheritanceParentChanged(oldInheritanceParent, this.$inheritanceParent);
-		},
-		OnInheritanceParentChanged: function(oldInheritanceParent, newInheritanceParent) {
-			//
-		},
-		$OnParentPropertyChanged: function(sender, e) {
-			if (e.get_Property().get_Inherits()) {
-				this.$GetInitializedValueEntry(e.get_Property()).SetBaseValue(2, e.get_NewValue());
-			}
-		}
-	});
 	ss.initClass($System_Windows_Media_Visual, $asm, {
 		add_VisualAncestorChanged: function(value) {
 			this.$2$VisualAncestorChangedField = ss.delegateCombine(this.$2$VisualAncestorChangedField, value);
@@ -9465,6 +10389,15 @@
 			this.OnVisualAncestorChanged();
 			Granular.Extensions.EventHandlerExtensions.Raise(this.$2$VisualAncestorChangedField, this);
 		},
+		add_ContextParentChanged: function(value) {
+			this.add_VisualAncestorChanged(value);
+		},
+		remove_ContextParentChanged: function(value) {
+			this.remove_VisualAncestorChanged(value);
+		},
+		get_ContextParent: function() {
+			return this.get_VisualParent();
+		},
 		get_VisualChildren: function() {
 			return this.$2$VisualChildrenField;
 		},
@@ -9496,6 +10429,12 @@
 				$t1.dispose();
 			}
 		},
+		add_VisualBoundsChanged: function(value) {
+			this.$2$VisualBoundsChangedField = ss.delegateCombine(this.$2$VisualBoundsChangedField, value);
+		},
+		remove_VisualBoundsChanged: function(value) {
+			this.$2$VisualBoundsChangedField = ss.delegateRemove(this.$2$VisualBoundsChangedField, value);
+		},
 		get_VisualBounds: function() {
 			return this.$visualBounds;
 		},
@@ -9514,6 +10453,9 @@
 			finally {
 				$t1.dispose();
 			}
+			this.InvalidateHitTestBounds();
+			this.OnVisualBoundsChanged();
+			Granular.Extensions.EventHandlerExtensions.Raise(this.$2$VisualBoundsChangedField, this);
 		},
 		get_VisualClipToBounds: function() {
 			return this.$visualClipToBounds;
@@ -9533,6 +10475,7 @@
 			finally {
 				$t1.dispose();
 			}
+			this.InvalidateHitTestBounds();
 		},
 		get_VisualIsHitTestVisible: function() {
 			return this.$visualIsHitTestVisible;
@@ -9591,11 +10534,17 @@
 				$t1.dispose();
 			}
 		},
+		add_VisualTransformChanged: function(value) {
+			this.$2$VisualTransformChangedField = ss.delegateCombine(this.$2$VisualTransformChangedField, value);
+		},
+		remove_VisualTransformChanged: function(value) {
+			this.$2$VisualTransformChangedField = ss.delegateRemove(this.$2$VisualTransformChangedField, value);
+		},
 		get_VisualTransform: function() {
 			return this.$visualTransform;
 		},
 		set_VisualTransform: function(value) {
-			if (ss.referenceEquals(this.$visualTransform, value)) {
+			if ($System_Windows_Media_Matrix.op_Equality(this.$visualTransform, value)) {
 				return;
 			}
 			this.$visualTransform = value;
@@ -9609,6 +10558,9 @@
 			finally {
 				$t1.dispose();
 			}
+			this.InvalidateHitTestBounds();
+			this.OnVisualTransformChanged();
+			Granular.Extensions.EventHandlerExtensions.Raise(this.$2$VisualTransformChangedField, this);
 		},
 		get_VisualLevel: function() {
 			if (this.$visualLevel === -1) {
@@ -9636,6 +10588,7 @@
 			finally {
 				$t1.dispose();
 			}
+			this.InvalidateHitTestBounds();
 		},
 		RemoveVisualChild: function(child) {
 			if (!ss.referenceEquals(child.get_VisualParent(), this)) {
@@ -9653,6 +10606,7 @@
 			finally {
 				$t1.dispose();
 			}
+			this.InvalidateHitTestBounds();
 		},
 		SetVisualChildIndex: function(child, newIndex) {
 			var oldIndex = ss.indexOf(this.$visualChildren, child);
@@ -9736,20 +10690,67 @@
 		CreateContentRenderElementOverride: function(factory) {
 			return null;
 		},
+		OnVisualBoundsChanged: function() {
+			//
+		},
+		OnVisualTransformChanged: function() {
+			//
+		},
+		$OnVisualTransformValueChanged: function(sender, e) {
+			this.InvalidateHitTestBounds();
+			this.OnVisualTransformChanged();
+			Granular.Extensions.EventHandlerExtensions.Raise(this.$2$VisualTransformChangedField, this);
+		},
+		InvalidateVisualTransform: function() {
+			this.set_VisualTransform(this.GetVisualTransformOverride());
+		},
+		GetVisualTransformOverride: function() {
+			return $System_Windows_Media_Matrix.Identity;
+		},
 		PointToRoot: function(point) {
-			if (ss.isValue(this.get_VisualParent())) {
-				return this.get_VisualParent().PointToRoot($System_Windows_Point.op_Addition(point, this.get_VisualOffset()));
-			}
-			return $System_Windows_Point.op_Addition(point, this.get_VisualOffset());
+			return $System_Windows_Media_Matrix.op_Multiply$1(point, this.TransformToAncestor(null));
 		},
 		PointFromRoot: function(point) {
-			if (ss.isValue(this.get_VisualParent())) {
-				return this.get_VisualParent().PointFromRoot($System_Windows_Point.op_Subtraction(point, this.get_VisualOffset()));
+			return $System_Windows_Media_Matrix.op_Multiply$1(point, this.TransformToAncestor(null).get_Inverse());
+		},
+		TransformToAncestor: function(ancestor) {
+			var transformMatrix = (!$System_Windows_Media_MatrixExtensions.IsNullOrIdentity(this.get_VisualTransform()) ? this.get_VisualTransform() : $System_Windows_Media_Matrix.Identity);
+			var offsetMatrix = ($System_Windows_Point.op_Inequality(this.get_VisualOffset(), $System_Windows_Point.Zero) ? $System_Windows_Media_Matrix.TranslationMatrix(this.get_VisualOffset().get_X(), this.get_VisualOffset().get_Y()) : $System_Windows_Media_Matrix.Identity);
+			var parentMatrix = ((ss.isValue(this.get_VisualParent()) && !ss.referenceEquals(this.get_VisualParent(), ancestor)) ? this.get_VisualParent().TransformToAncestor(ancestor) : $System_Windows_Media_Matrix.Identity);
+			var value = $System_Windows_Media_Matrix.op_Multiply($System_Windows_Media_Matrix.op_Multiply(transformMatrix, offsetMatrix), parentMatrix);
+			return value;
+		},
+		InvalidateHitTestBounds: function() {
+			if (!this.$isHitTestBoundsValid) {
+				return;
 			}
-			return $System_Windows_Point.op_Subtraction(point, this.get_VisualOffset());
+			this.$isHitTestBoundsValid = false;
+			if (ss.isValue(this.get_VisualParent())) {
+				this.get_VisualParent().InvalidateHitTestBounds();
+			}
+		},
+		GetHitTestBounds: function() {
+			if (!this.$isHitTestBoundsValid) {
+				this.$hitTestBounds = this.GetHitTestBoundsOverride();
+				this.$isHitTestBoundsValid = true;
+			}
+			return this.$hitTestBounds;
+		},
+		GetHitTestBoundsOverride: function() {
+			var bounds = new $System_Windows_Rect(this.get_VisualBounds().get_Size());
+			if (!this.get_VisualClipToBounds()) {
+				var $t1 = this.get_VisualChildren();
+				for (var $t2 = 0; $t2 < $t1.length; $t2++) {
+					var child = $t1[$t2];
+					bounds = $System_Windows_RectExtensions.Union(bounds, child.GetHitTestBounds());
+				}
+			}
+			return $System_Windows_RectExtensions.AddOffset($System_Windows_RectExtensions.Transform(bounds, this.get_VisualTransform()), this.get_VisualBounds().get_Location());
+		},
+		TrySetContextParent: function(contextParent) {
+			return false;
 		}
-	}, $System_Windows_DependencyObject);
-	ss.initInterface($System_Windows_Media_Animation_IAnimatable, $asm, { get_RootClock: null, SetAnimationClocks: null, AddAnimationClocks: null, RemoveAnimationClocks: null });
+	}, $System_Windows_DependencyObject, [$System_Windows_IContextElement]);
 	ss.initInterface($System_Windows_IInputElement, $asm, { RaiseEvent: null, GetRelativePosition: null, GetPathFromRoot: null });
 	ss.initClass($System_Windows_UIElement, $asm, {
 		add_LayoutUpdated: function(value) {
@@ -9819,12 +10820,7 @@
 			return ss.unbox(ss.cast(this.GetValue$1($System_Windows_UIElement.$IsVisiblePropertyKey), Boolean));
 		},
 		set_IsVisible: function(value) {
-			if (value) {
-				this.ClearValue$1($System_Windows_UIElement.$IsVisiblePropertyKey, 11);
-			}
-			else {
-				this.SetValue$1($System_Windows_UIElement.$IsVisiblePropertyKey, value, 11);
-			}
+			this.SetValue$1($System_Windows_UIElement.$IsVisiblePropertyKey, value, 11);
 		},
 		get_IsEnabled: function() {
 			return ss.unbox(ss.cast(this.GetValue($System_Windows_UIElement.IsEnabledProperty), Boolean));
@@ -9874,6 +10870,18 @@
 		set_IsKeyboardFocusWithin: function(value) {
 			this.SetValue$1($System_Windows_UIElement.$IsKeyboardFocusWithinPropertyKey, value, 11);
 		},
+		get_RenderTransform: function() {
+			return ss.cast(this.GetValue($System_Windows_UIElement.RenderTransformProperty), $System_Windows_Media_Transform);
+		},
+		set_RenderTransform: function(value) {
+			this.SetValue($System_Windows_UIElement.RenderTransformProperty, value, 11);
+		},
+		get_RenderTransformOrigin: function() {
+			return ss.cast(this.GetValue($System_Windows_UIElement.RenderTransformOriginProperty), $System_Windows_Point);
+		},
+		set_RenderTransformOrigin: function(value) {
+			this.SetValue($System_Windows_UIElement.RenderTransformOriginProperty, value, 11);
+		},
 		get_IsRootElement: function() {
 			return this.$isRootElement;
 		},
@@ -9882,7 +10890,7 @@
 				return;
 			}
 			this.$isRootElement = value;
-			this.$SetIsVisible();
+			this.CoerceValue($System_Windows_UIElement.IsVisibleProperty);
 		},
 		get_RootClock: function() {
 			if (ss.isNullOrUndefined(this.$animatableRootClock)) {
@@ -10011,7 +11019,7 @@
 			return $System_Windows_Size.Empty;
 		},
 		InvalidateMeasure: function() {
-			if (this.$measureInvalidationDisabled > 0 || !this.get_IsMeasureValid() && !this.get_PreviousAvailableSize().get_IsEmpty()) {
+			if (this.$disableMeasureInvalidationRequests > 0 || !this.get_IsMeasureValid() && !this.get_PreviousAvailableSize().get_IsEmpty()) {
 				return;
 			}
 			this.set_IsMeasureValid(false);
@@ -10064,10 +11072,8 @@
 			$System_Windows_LayoutManager.Current.AddArrange(this);
 		},
 		$DisableMeasureInvalidation: function() {
-			this.$measureInvalidationDisabled++;
-			return new $System_Windows_Disposable(ss.mkdel(this, function() {
-				this.$measureInvalidationDisabled--;
-			}));
+			this.$disableMeasureInvalidationRequests++;
+			return this.$disableMeasureInvalidationToken;
 		},
 		$RaiseLayoutUpdated: function() {
 			this.OnLayoutUpdated();
@@ -10078,7 +11084,15 @@
 		},
 		OnVisualParentChanged: function(oldVisualParent, newVisualParent) {
 			this.$SetInheritanceParent();
-			this.$SetIsVisible();
+			this.CoerceValue($System_Windows_UIElement.IsVisibleProperty);
+			this.CoerceValue($System_Windows_UIElement.IsEnabledProperty);
+			this.CoerceValue($System_Windows_UIElement.IsHitTestVisibleProperty);
+			if (ss.isValue(oldVisualParent)) {
+				ss.cast(oldVisualParent, $System_Windows_UIElement).InvalidateMeasure();
+			}
+			if (ss.isValue(newVisualParent)) {
+				ss.cast(newVisualParent, $System_Windows_UIElement).InvalidateMeasure();
+			}
 		},
 		OnLogicalParentChanged: function(oldLogicalParent, newLogicalParent) {
 			//
@@ -10100,18 +11114,24 @@
 		},
 		$GetInitializedAnimationExpression: function(dependencyProperty) {
 			var entry = this.GetValueEntry(dependencyProperty);
-			var animationExpression = ss.safeCast(entry.GetAnimationValue(false), $System_Windows_Media_Animation_AnimationExpression);
+			var animationExpression = ss.safeCast($System_Windows_DependencyPropertyValueEntryExtensions.GetAnimationValue(entry, false), $System_Windows_Media_Animation_AnimationExpression);
 			if (ss.isNullOrUndefined(animationExpression)) {
 				animationExpression = new $System_Windows_Media_Animation_AnimationExpression(this, dependencyProperty);
-				entry.SetAnimationValue(animationExpression);
+				$System_Windows_DependencyPropertyValueEntryExtensions.SetAnimationValue(entry, animationExpression);
 			}
 			return animationExpression;
 		},
+		GetHitTestBoundsOverride: function() {
+			if (!this.get_IsHitTestVisible() || !this.get_IsVisible() || !this.get_IsEnabled()) {
+				return $System_Windows_Rect.Empty;
+			}
+			return $System_Windows_Media_Visual.prototype.GetHitTestBoundsOverride.call(this);
+		},
 		HitTest: function(position) {
-			if (!this.get_IsHitTestVisible() || !this.get_IsEnabled() || !this.get_IsVisible() || this.get_VisualClipToBounds() && !$System_Windows_RectExtensions.Contains(this.get_VisualBounds(), position)) {
+			if (!$System_Windows_RectExtensions.Contains(this.GetHitTestBounds(), position)) {
 				return null;
 			}
-			var relativePosition = $System_Windows_Point.op_Subtraction(position, this.get_VisualOffset());
+			var relativePosition = ($System_Windows_Media_MatrixExtensions.IsNullOrIdentity(this.get_VisualTransform()) ? $System_Windows_Point.op_Subtraction(position, this.get_VisualOffset()) : $System_Windows_Media_Matrix.op_Multiply$1($System_Windows_Point.op_Subtraction(position, this.get_VisualOffset()), this.get_VisualTransform().get_Inverse()));
 			for (var i = this.get_VisualChildren().length - 1; i >= 0; i--) {
 				var childHit = ss.cast(this.get_VisualChildren()[i], $System_Windows_UIElement).HitTest(relativePosition);
 				if (ss.isValue(childHit)) {
@@ -10125,7 +11145,7 @@
 		},
 		Focus: function() {
 			if (!this.get_IsFocused() && this.get_Focusable()) {
-				this.$focus = $System_Windows_Disposable.Combine($System_Windows_Input_Keyboard.Focus(this), $System_Windows_Input_FocusManager.Focus(this));
+				this.$focus = Granular.Disposable.Combine($System_Windows_Input_Keyboard.Focus(this), $System_Windows_Input_FocusManager.Focus(this));
 			}
 		},
 		ClearFocus: function() {
@@ -10142,7 +11162,7 @@
 		},
 		$ForceDefaultValueInheritance: function(e) {
 			// clear modified value if it's equal to a default value that should be inherited
-			if (ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Object]).Default.areEqual(e.get_NewValue(), e.get_Property().GetMetadata(ss.getInstanceType(this)).get_DefaultValue()) && !this.GetValueSource(e.get_Property()).get_IsExpression()) {
+			if (Granular.Compatibility.EqualityComparer.Default.areEqual(e.get_NewValue(), e.get_Property().GetMetadata(ss.getInstanceType(this)).get_DefaultValue()) && !this.GetValueSource(e.get_Property()).get_IsExpression()) {
 				this.ClearValue(e.get_Property(), 11);
 			}
 		},
@@ -10155,8 +11175,7 @@
 					$System_Windows_LayoutManager.Current.AddArrange(this);
 				}
 			}
-			this.set_VisualIsVisible(this.get_Visibility() === 0);
-			this.$SetIsVisible();
+			this.set_IsVisible(this.get_Visibility() === 0);
 		},
 		$OnIsVisibleChanged: function(e) {
 			this.ClearFocus();
@@ -10165,20 +11184,60 @@
 				this.$animatableRootClock.set_IsConnected(this.get_IsVisible());
 			}
 			this.set_VisualIsVisible(this.get_IsVisible());
+			this.$CoerceChildrenInheritedValue($System_Windows_UIElement.IsVisibleProperty);
+			this.InvalidateHitTestBounds();
 		},
 		$OnIsEnabledChanged: function(e) {
-			this.$ForceDefaultValueInheritance(e);
 			this.ClearFocus();
+			this.$CoerceChildrenInheritedValue($System_Windows_UIElement.IsEnabledProperty);
+			this.InvalidateHitTestBounds();
 		},
 		$OnIsHitTestVisibleChanged: function(e) {
-			this.$ForceDefaultValueInheritance(e);
 			this.set_VisualIsHitTestVisible(this.get_IsHitTestVisible());
+			this.$CoerceChildrenInheritedValue($System_Windows_UIElement.IsHitTestVisibleProperty);
+			this.InvalidateHitTestBounds();
+		},
+		$OnClipToBoundsChanged: function(e) {
+			this.set_VisualClipToBounds(ss.unbox(ss.cast(e.get_NewValue(), Boolean)));
+		},
+		$CoerceIsVisible: function(value) {
+			return value && (ss.isValue(this.get_VisualParent()) ? ss.cast(this.get_VisualParent(), $System_Windows_UIElement).get_IsVisible() : this.get_IsRootElement());
+		},
+		$OnRenderTransformChanged: function(e) {
+			this.InvalidateVisualTransform();
+		},
+		$OnRenderTransformOriginChanged: function(e) {
+			if ($System_Windows_Media_TransformExtensions.IsNullOrIdentity(this.get_RenderTransform())) {
+				return;
+			}
+			this.InvalidateVisualTransform();
+		},
+		OnVisualBoundsChanged: function() {
+			if ($System_Windows_Media_TransformExtensions.IsNullOrIdentity(this.get_RenderTransform())) {
+				return;
+			}
+			this.InvalidateVisualTransform();
+		},
+		GetVisualTransformOverride: function() {
+			if ($System_Windows_Media_TransformExtensions.IsNullOrIdentity(this.get_RenderTransform())) {
+				return $System_Windows_Media_Matrix.Identity;
+			}
+			var offsetX = this.get_RenderTransformOrigin().get_X() * this.get_RenderSize().get_Width();
+			var offsetY = this.get_RenderTransformOrigin().get_Y() * this.get_RenderSize().get_Height();
+			return $System_Windows_Media_Matrix.op_Multiply($System_Windows_Media_Matrix.op_Multiply($System_Windows_Media_Matrix.TranslationMatrix(-offsetX, -offsetY), this.get_RenderTransform().get_Value()), $System_Windows_Media_Matrix.TranslationMatrix(offsetX, offsetY));
+		},
+		$CoerceInheritedValue: function(dependencyProperty, value) {
+			return (ss.isValue(this.get_VisualParent()) ? (value && ss.unbox(ss.cast(this.get_VisualParent().GetValue(dependencyProperty), Boolean))) : value);
+		},
+		$CoerceChildrenInheritedValue: function(dependencyProperty) {
+			var $t1 = this.get_VisualChildren();
+			for (var $t2 = 0; $t2 < $t1.length; $t2++) {
+				var child = $t1[$t2];
+				child.CoerceValue(dependencyProperty);
+			}
 		},
 		$OnFocusableChanged: function(e) {
 			this.ClearFocus();
-		},
-		$SetIsVisible: function() {
-			this.set_IsVisible(this.get_Visibility() === 0 && ss.isValue(this.get_VisualParent()) || this.get_IsRootElement());
 		},
 		GetPathFromRoot: function() {
 			var path = [];
@@ -10191,12 +11250,7 @@
 			return path;
 		},
 		GetRelativePosition: function(absolutePosition) {
-			var element = this;
-			while (ss.isValue(element)) {
-				absolutePosition = $System_Windows_Point.op_Subtraction(absolutePosition, element.get_VisualOffset());
-				element = element.get_VisualParent();
-			}
-			return absolutePosition;
+			return this.PointFromRoot(absolutePosition);
 		},
 		add_PreviewMouseMove: function(value) {
 			this.AddHandler($System_Windows_Input_Mouse.PreviewMouseMoveEvent, value, false);
@@ -10381,8 +11435,7 @@
 		OnLostFocus: function(e) {
 			//
 		}
-	}, $System_Windows_Media_Visual, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement]);
-	ss.initInterface($System_Windows_IResourceContainer, $asm, { add_ResourcesChanged: null, remove_ResourcesChanged: null, TryGetResource: null });
+	}, $System_Windows_Media_Visual, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement]);
 	ss.initClass($System_Windows_FrameworkElement, $asm, {
 		add_ResourcesChanged: function(value) {
 			this.$4$ResourcesChangedField = ss.delegateCombine(this.$4$ResourcesChangedField, value);
@@ -10460,13 +11513,13 @@
 			return ss.unbox(ss.cast(this.GetValue$1($System_Windows_FrameworkElement.$ActualWidthPropertyKey), Number));
 		},
 		set_ActualWidth: function(value) {
-			this.$actualWidthValueEntry.SetBaseValue(11, value);
+			$System_Windows_DependencyPropertyValueEntryExtensions.SetBaseValue(this.$actualWidthValueEntry, 11, value);
 		},
 		get_ActualHeight: function() {
 			return ss.unbox(ss.cast(this.GetValue$1($System_Windows_FrameworkElement.$ActualHeightPropertyKey), Number));
 		},
 		set_ActualHeight: function(value) {
-			this.$actualHeightValueEntry.SetBaseValue(11, value);
+			$System_Windows_DependencyPropertyValueEntryExtensions.SetBaseValue(this.$actualHeightValueEntry, 11, value);
 		},
 		get_ActualSize: function() {
 			return this.$4$ActualSizeField;
@@ -10583,6 +11636,12 @@
 		set_ForceCursor: function(value) {
 			this.SetValue($System_Windows_FrameworkElement.ForceCursorProperty, value, 11);
 		},
+		get_LayoutTransform: function() {
+			return ss.cast(this.GetValue($System_Windows_FrameworkElement.LayoutTransformProperty), $System_Windows_Media_Transform);
+		},
+		set_LayoutTransform: function(value) {
+			this.SetValue($System_Windows_FrameworkElement.LayoutTransformProperty, value, 11);
+		},
 		get_Triggers: function() {
 			return this.$4$TriggersField;
 		},
@@ -10609,21 +11668,29 @@
 					this.InvalidateArrange();
 				}
 			}
-			var baseValueSource = this.GetBaseValueSource(e.get_Property());
-			if (baseValueSource !== 1 && baseValueSource !== 2) {
-				if (ss.isInstanceOfType(e.get_OldValue(), $System_Windows_IInheritableObject)) {
-					ss.cast(e.get_OldValue(), $System_Windows_IInheritableObject).SetInheritanceContext(null);
-				}
-				if (ss.isInstanceOfType(e.get_NewValue(), $System_Windows_IInheritableObject)) {
-					ss.cast(e.get_NewValue(), $System_Windows_IInheritableObject).SetInheritanceContext(this);
+			if (!e.get_IsSubPropertyChange()) {
+				var baseValueSource = this.GetBaseValueSource(e.get_Property());
+				if (baseValueSource !== 1 && baseValueSource !== 2) {
+					if (ss.isInstanceOfType(e.get_OldValue(), $System_Windows_IContextElement)) {
+						ss.cast(e.get_OldValue(), $System_Windows_IContextElement).TrySetContextParent(null);
+					}
+					if (ss.isInstanceOfType(e.get_NewValue(), $System_Windows_IContextElement)) {
+						ss.cast(e.get_NewValue(), $System_Windows_IContextElement).TrySetContextParent(this);
+					}
 				}
 			}
 		},
 		MeasureCore: function(availableSize) {
 			availableSize = $System_Windows_Size.op_Subtraction(availableSize, this.get_Margin().get_Size());
+			if (!$System_Windows_Media_MatrixExtensions.IsNullOrIdentity(this.$layoutTransformValue)) {
+				availableSize = $System_Windows_Media_MatrixExtensions.GetContainedSize(this.$layoutTransformValue, availableSize);
+			}
 			availableSize = $System_Windows_SizeExtensions.Bounds($System_Windows_SizeExtensions.Combine(this.get_Size(), availableSize), this.get_MinSize(), this.get_MaxSize());
 			var measuredSize = this.MeasureOverride(availableSize);
 			measuredSize = $System_Windows_SizeExtensions.Bounds($System_Windows_SizeExtensions.Combine(this.get_Size(), measuredSize), this.get_MinSize(), this.get_MaxSize());
+			if (!$System_Windows_Media_MatrixExtensions.IsNullOrIdentity(this.$layoutTransformValue)) {
+				measuredSize = $System_Windows_Media_MatrixExtensions.GetContainingSize(this.$layoutTransformValue, measuredSize);
+			}
 			measuredSize = $System_Windows_Size.op_Addition(measuredSize, this.get_Margin().get_Size());
 			return measuredSize;
 		},
@@ -10631,12 +11698,20 @@
 			return $System_Windows_Size.Zero;
 		},
 		ArrangeCore: function(finalRect) {
-			var finalSize = new $System_Windows_Size(((this.get_HorizontalAlignment() !== 3) ? this.get_DesiredSize().get_Width() : finalRect.get_Width()), ((this.get_VerticalAlignment() !== 3) ? this.get_DesiredSize().get_Height() : finalRect.get_Height()));
+			var finalSize = (this.$isDefaultAlignment ? finalRect.get_Size() : new $System_Windows_Size(((this.get_HorizontalAlignment() !== 3) ? this.get_DesiredSize().get_Width() : finalRect.get_Width()), ((this.get_VerticalAlignment() !== 3) ? this.get_DesiredSize().get_Height() : finalRect.get_Height())));
 			finalSize = $System_Windows_Size.op_Subtraction(finalSize, this.get_Margin().get_Size());
+			if (!$System_Windows_Media_MatrixExtensions.IsNullOrIdentity(this.$layoutTransformValue)) {
+				finalSize = $System_Windows_Media_MatrixExtensions.GetContainedSize(this.$layoutTransformValue, finalSize);
+			}
 			finalSize = $System_Windows_SizeExtensions.Bounds($System_Windows_SizeExtensions.Combine(this.get_Size(), finalSize), this.get_MinSize(), this.get_MaxSize());
 			var arrangedSize = this.ArrangeOverride(finalSize);
-			var alignedOffset = $System_Windows_FrameworkElement.$GetAlignmentOffset(finalRect, $System_Windows_Size.op_Addition(arrangedSize, this.get_Margin().get_Size()), this.get_HorizontalAlignment(), this.get_VerticalAlignment());
-			var visualOffset = $System_Windows_Point.op_Addition(alignedOffset, this.get_Margin().get_Location());
+			var containingRect = new $System_Windows_Rect(arrangedSize);
+			if (!$System_Windows_Media_MatrixExtensions.IsNullOrIdentity(this.$layoutTransformValue)) {
+				containingRect = $System_Windows_Media_MatrixExtensions.GetContainingRect(this.$layoutTransformValue, containingRect);
+			}
+			containingRect = $System_Windows_RectExtensions.AddMargin(containingRect, this.get_Margin());
+			var alignedOffset = $System_Windows_FrameworkElement.$GetAlignmentOffset(finalRect, containingRect.get_Size(), this.get_HorizontalAlignment(), this.get_VerticalAlignment());
+			var visualOffset = $System_Windows_Point.op_Subtraction(alignedOffset, containingRect.get_Location());
 			this.set_VisualBounds(new $System_Windows_Rect.$ctor2(visualOffset, arrangedSize));
 			this.set_ActualWidth(arrangedSize.get_Width());
 			this.set_ActualHeight(arrangedSize.get_Height());
@@ -10743,8 +11818,8 @@
 				while ($t1.moveNext()) {
 					var trigger = $t1.current();
 					trigger.Detach(this, 11);
-					if (ss.isInstanceOfType(trigger, $System_Windows_DependencyObject)) {
-						ss.cast(trigger, $System_Windows_DependencyObject).SetInheritanceParent(null);
+					if (ss.isInstanceOfType(trigger, $System_Windows_IContextElement)) {
+						ss.cast(trigger, $System_Windows_IContextElement).TrySetContextParent(null);
 					}
 				}
 			}
@@ -10755,8 +11830,8 @@
 			try {
 				while ($t2.moveNext()) {
 					var trigger1 = $t2.current();
-					if (ss.isInstanceOfType(trigger1, $System_Windows_DependencyObject)) {
-						ss.cast(trigger1, $System_Windows_DependencyObject).SetInheritanceParent(this);
+					if (ss.isInstanceOfType(trigger1, $System_Windows_IContextElement)) {
+						ss.cast(trigger1, $System_Windows_IContextElement).TrySetContextParent(this);
 					}
 					trigger1.Attach(this, 11);
 				}
@@ -10779,6 +11854,20 @@
 				e.set_Handled(true);
 			}
 		},
+		$OnLayoutTransformChanged: function(e) {
+			var newLayoutTransform = ss.cast(e.get_NewValue(), $System_Windows_Media_Transform);
+			this.$layoutTransformValue = ($System_Windows_Media_TransformExtensions.IsNullOrIdentity(newLayoutTransform) ? null : newLayoutTransform.get_Value());
+			this.InvalidateVisualTransform();
+		},
+		$OnAlignmentChanged: function(e) {
+			this.$isDefaultAlignment = this.get_HorizontalAlignment() === 3 && this.get_VerticalAlignment() === 3;
+		},
+		GetVisualTransformOverride: function() {
+			if ($System_Windows_Media_MatrixExtensions.IsNullOrIdentity(this.$layoutTransformValue)) {
+				return $System_Windows_UIElement.prototype.GetVisualTransformOverride.call(this);
+			}
+			return $System_Windows_Media_Matrix.op_Multiply(this.$layoutTransformValue, $System_Windows_UIElement.prototype.GetVisualTransformOverride.call(this));
+		},
 		$SetSize: function() {
 			this.set_Size(new $System_Windows_Size(this.get_Width(), this.get_Height()));
 		},
@@ -10788,7 +11877,7 @@
 		$SetMaxSize: function() {
 			this.set_MaxSize(new $System_Windows_Size(this.get_MaxWidth(), this.get_MaxHeight()));
 		}
-	}, $System_Windows_UIElement, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_UIElement, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initInterface($System_Windows_Controls_IAdornerLayerHost, $asm, { get_AdornerLayer: null });
 	ss.initClass($System_$Windows_Controls_Primitives_Popup$PopupContainer, $asm, {
 		get_AdornerLayer: function() {
@@ -10844,7 +11933,7 @@
 			}
 			return finalSize;
 		}
-	}, $System_Windows_FrameworkElement, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IAdornerLayerHost]);
+	}, $System_Windows_FrameworkElement, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IAdornerLayerHost]);
 	ss.initClass($System_$Windows_Data_Binding$StringFormatConverter, $asm, {
 		Convert: function(value, targetType, parameter) {
 			return ss.formatString(this.$format, value, parameter);
@@ -11283,6 +12372,12 @@
 		}
 	}, null, [$System_Windows_Markup_IElementInitializer]);
 	ss.initEnum($System_$Windows_Markup_PropertyPathParser$TokenType, $asm, { $Terminal: 0, $Value: 1 });
+	ss.initInterface($System_Windows_Markup_ITypeConverter, $asm, { ConvertFrom: null });
+	ss.initClass($System_$Windows_Markup_TypeConverter$EmptyTypeConverter, $asm, {
+		ConvertFrom: function(namespaces, value) {
+			return value;
+		}
+	}, null, [$System_Windows_Markup_ITypeConverter]);
 	ss.initInterface($System_Windows_Markup_IMarkupExtension, $asm, { ProvideValue: null });
 	ss.initClass($System_$Windows_Markup_XamlTypes$NullProvider, $asm, {
 		ProvideValue: function(context) {
@@ -11300,12 +12395,11 @@
 			return this.get_$Type();
 		}
 	}, null, [$System_Windows_Markup_IMarkupExtension]);
-	ss.initClass($System_Windows_Media_Transform, $asm, { get_Value: null }, $System_Windows_DependencyObject);
-	ss.initClass($System_$Windows_Media_Transform$IdentityTransfrom, $asm, {
+	ss.initClass($System_$Windows_Media_Transform$IdentityTransform, $asm, {
 		get_Value: function() {
 			return $System_Windows_Media_Matrix.Identity;
 		}
-	}, $System_Windows_Media_Transform);
+	}, $System_Windows_Media_Transform, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable]);
 	ss.initClass($System_$Windows_Media_Animation_RootClock$ClockSchedule, $asm, {
 		get_$Clock: function() {
 			return this.$1$ClockField;
@@ -11348,10 +12442,10 @@
 	ss.initInterface($System_Windows_IDataTriggerCondition, $asm, { add_IsMatchedChanged: null, remove_IsMatchedChanged: null, get_IsMatched: null });
 	ss.initClass($System_Windows_$DataTriggerCondition, $asm, {
 		add_IsMatchedChanged: function(value) {
-			this.$2$IsMatchedChangedField = ss.delegateCombine(this.$2$IsMatchedChangedField, value);
+			this.$3$IsMatchedChangedField = ss.delegateCombine(this.$3$IsMatchedChangedField, value);
 		},
 		remove_IsMatchedChanged: function(value) {
-			this.$2$IsMatchedChangedField = ss.delegateRemove(this.$2$IsMatchedChangedField, value);
+			this.$3$IsMatchedChangedField = ss.delegateRemove(this.$3$IsMatchedChangedField, value);
 		},
 		get_IsMatched: function() {
 			return this.$isMatched;
@@ -11361,15 +12455,15 @@
 				return;
 			}
 			this.$isMatched = value;
-			Granular.Extensions.EventHandlerExtensions.Raise(this.$2$IsMatchedChangedField, this);
+			Granular.Extensions.EventHandlerExtensions.Raise(this.$3$IsMatchedChangedField, this);
 		},
 		$Register: function() {
-			this.SetInheritanceParent(this.$element);
+			this.TrySetContextParent(this.$element);
 			this.SetValue($System_Windows_$DataTriggerCondition.$ValueProperty, this.$expressionProvider, 11);
 		},
 		dispose: function() {
 			this.$isDisposed = true;
-			this.SetInheritanceParent(null);
+			this.TrySetContextParent(null);
 			this.ClearValue($System_Windows_$DataTriggerCondition.$ValueProperty, 11);
 		},
 		$OnValueChanged: function(e) {
@@ -11380,9 +12474,9 @@
 				this.$resolvedValue = $System_Windows_$DataTriggerCondition.$GetResolvedValue(this.$value, ss.getInstanceType(e.get_NewValue()));
 				this.$value = null;
 			}
-			this.set_$IsMatched(ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Object]).Default.areEqual(e.get_NewValue(), this.$resolvedValue));
+			this.set_$IsMatched(Granular.Compatibility.EqualityComparer.Default.areEqual(e.get_NewValue(), this.$resolvedValue));
 		}
-	}, $System_Windows_DependencyObject, [$System_Windows_IDataTriggerCondition, ss.IDisposable]);
+	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_IDataTriggerCondition, ss.IDisposable]);
 	ss.initClass($System_Windows_$MultiDataTriggerCondition, $asm, {
 		add_IsMatchedChanged: function(value) {
 			this.$1$IsMatchedChangedField = ss.delegateCombine(this.$1$IsMatchedChangedField, value);
@@ -11457,7 +12551,7 @@
 			Granular.Extensions.EventHandlerExtensions.Raise(this.$1$IsMatchedChangedField, this);
 		},
 		$Register: function() {
-			this.set_$IsMatched(ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Object]).Default.areEqual(this.$element.GetValue(this.$property), this.$value));
+			this.set_$IsMatched(Granular.Compatibility.EqualityComparer.Default.areEqual(this.$element.GetValue(this.$property), this.$value));
 			this.$element.add_PropertyChanged(ss.mkdel(this, this.$OnPropertyChanged));
 		},
 		dispose: function() {
@@ -11467,7 +12561,7 @@
 			if (!ss.referenceEquals(e.get_Property(), this.$property)) {
 				return;
 			}
-			this.set_$IsMatched(ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Object]).Default.areEqual(e.get_NewValue(), this.$value));
+			this.set_$IsMatched(Granular.Compatibility.EqualityComparer.Default.areEqual(e.get_NewValue(), this.$value));
 		}
 	}, null, [$System_Windows_IDataTriggerCondition, ss.IDisposable]);
 	ss.initClass($System_Windows_Application, $asm, {
@@ -11568,57 +12662,6 @@
 	});
 	ss.initClass($System_Windows_ApplicationHostExtensions, $asm, {});
 	ss.initEnum($System_Windows_BaseValueSource, $asm, { Unknown: 0, Default: 1, Inherited: 2, ThemeStyle: 3, ThemeStyleTrigger: 4, Style: 5, TemplateTrigger: 6, StyleTrigger: 7, ImplicitReference: 8, ParentTemplate: 9, ParentTemplateTrigger: 10, Local: 11 });
-	ss.initInterface($System_Windows_IDependencyPropertyValueEntry, $asm, { GetBaseValue: null, GetBaseValue$1: null, SetBaseValue: null, ClearBaseValue: null, GetBaseValuePriority: null, GetCurrentValue: null, SetCurrentValue: null, ClearCurrentValue: null, GetAnimationValue: null, SetAnimationValue: null, ClearAnimationValue: null }, [$System_Windows_Data_IObservableValue]);
-	ss.initClass($System_Windows_CoercedDependencyPropertyValueEntry, $asm, {
-		add_ValueChanged: function(value) {
-			this.$1$ValueChangedField = ss.delegateCombine(this.$1$ValueChangedField, value);
-		},
-		remove_ValueChanged: function(value) {
-			this.$1$ValueChangedField = ss.delegateRemove(this.$1$ValueChangedField, value);
-		},
-		get_Value: function() {
-			return this.$observableValue.get_Value();
-		},
-		get_IsCoerced: function() {
-			return !ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Object]).Default.areEqual(this.get_Value(), this.$source.get_Value());
-		},
-		CoerceValue: function() {
-			this.$observableValue.set_Value((!ss.referenceEquals(this.$source.get_Value(), $System_Windows_Data_ObservableValue.UnsetValue) ? this.$coerceValueCallback(this.$dependencyObject, this.$source.get_Value()) : $System_Windows_Data_ObservableValue.UnsetValue));
-		},
-		GetBaseValue: function(flattened) {
-			return this.$source.GetBaseValue(flattened);
-		},
-		GetBaseValue$1: function(priority, flattened) {
-			return this.$source.GetBaseValue$1(priority, flattened);
-		},
-		SetBaseValue: function(priority, value) {
-			this.$source.SetBaseValue(priority, value);
-		},
-		ClearBaseValue: function(priority) {
-			this.$source.ClearBaseValue(priority);
-		},
-		GetBaseValuePriority: function() {
-			return this.$source.GetBaseValuePriority();
-		},
-		GetCurrentValue: function(flattened) {
-			return this.$source.GetCurrentValue(flattened);
-		},
-		SetCurrentValue: function(value) {
-			this.$source.SetCurrentValue(value);
-		},
-		ClearCurrentValue: function() {
-			this.$source.ClearCurrentValue();
-		},
-		GetAnimationValue: function(flattened) {
-			return this.$source.GetAnimationValue(flattened);
-		},
-		SetAnimationValue: function(value) {
-			this.$source.SetAnimationValue(value);
-		},
-		ClearAnimationValue: function() {
-			this.$source.ClearAnimationValue();
-		}
-	}, null, [$System_Windows_Data_IObservableValue, $System_Windows_IDependencyPropertyValueEntry]);
 	ss.initInterface($System_Windows_IResourceKey, $asm, { get_Assembly: null });
 	ss.initClass($System_Windows_ComponentResourceKey, $asm, {
 		get_Assembly: function() {
@@ -11696,6 +12739,7 @@
 			return $System_Windows_$DataTriggerCondition.$Register(element, this.get_Binding(), this.get_Value());
 		}
 	});
+	ss.initClass($System_Windows_ContentElement, $asm, { GetRenderElement: null, RemoveRenderElement: null }, $System_Windows_DependencyObject);
 	ss.initClass($System_Windows_CornerRadius, $asm, {
 		get_TopLeft: function() {
 			return this.$1$TopLeftField;
@@ -11732,7 +12776,7 @@
 		},
 		equals: function(obj) {
 			var other = ss.safeCast(obj, $System_Windows_CornerRadius);
-			return ss.referenceEquals(this, other) || !ss.referenceEquals(other, null) && ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Number]).Default.areEqual(this.get_TopLeft(), other.get_TopLeft()) && ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Number]).Default.areEqual(this.get_TopRight(), other.get_TopRight()) && ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Number]).Default.areEqual(this.get_BottomRight(), other.get_BottomRight()) && ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Number]).Default.areEqual(this.get_BottomLeft(), other.get_BottomLeft());
+			return ss.referenceEquals(this, other) || !ss.referenceEquals(other, null) && Granular.Compatibility.EqualityComparer.Double.areEqual(this.get_TopLeft(), other.get_TopLeft()) && Granular.Compatibility.EqualityComparer.Double.areEqual(this.get_TopRight(), other.get_TopRight()) && Granular.Compatibility.EqualityComparer.Double.areEqual(this.get_BottomRight(), other.get_BottomRight()) && Granular.Compatibility.EqualityComparer.Double.areEqual(this.get_BottomLeft(), other.get_BottomLeft());
 		},
 		getHashCode: function() {
 			return ss.getHashCode(this.get_TopLeft()) ^ ss.getHashCode(this.get_TopRight()) ^ ss.getHashCode(this.get_BottomRight()) ^ ss.getHashCode(this.get_BottomLeft());
@@ -11740,6 +12784,11 @@
 	});
 	$System_Windows_CornerRadius.$ctor1.prototype = $System_Windows_CornerRadius.prototype;
 	ss.initClass($System_Windows_CornerRadiusExtensions, $asm, {});
+	ss.initClass($System_Windows_CornerRadiusTypeConverter, $asm, {
+		ConvertFrom: function(namespaces, value) {
+			return $System_Windows_CornerRadius.Parse(value.toString().trim());
+		}
+	}, null, [$System_Windows_Markup_ITypeConverter]);
 	ss.initClass($System_Windows_FrameworkTemplate, $asm, {
 		get_FrameworkElementFactory: function() {
 			return this.$2$FrameworkElementFactoryField;
@@ -11807,106 +12856,8 @@
 			this.$key = value;
 		}
 	}, $System_Windows_FrameworkTemplate, [$System_Windows_IFrameworkTemplate]);
-	ss.initInterface($System_Windows_IInheritableObject, $asm, { SetInheritanceContext: null });
-	ss.initClass($System_Windows_Freezable, $asm, {
-		add_Changed: function(value) {
-			this.$2$ChangedField = ss.delegateCombine(this.$2$ChangedField, value);
-		},
-		remove_Changed: function(value) {
-			this.$2$ChangedField = ss.delegateRemove(this.$2$ChangedField, value);
-		},
-		add_ResourcesChanged: function(value) {
-			this.$2$ResourcesChangedField = ss.delegateCombine(this.$2$ResourcesChangedField, value);
-		},
-		remove_ResourcesChanged: function(value) {
-			this.$2$ResourcesChangedField = ss.delegateRemove(this.$2$ResourcesChangedField, value);
-		},
-		get_IsFrozen: function() {
-			return this.$2$IsFrozenField;
-		},
-		set_IsFrozen: function(value) {
-			this.$2$IsFrozenField = value;
-		},
-		get_DataContext: function() {
-			return this.GetValue($System_Windows_Freezable.DataContextProperty);
-		},
-		set_DataContext: function(value) {
-			this.SetValue($System_Windows_Freezable.DataContextProperty, value, 11);
-		},
-		get_$ParentResourceContainer: function() {
-			return this.$parentResourceContainer;
-		},
-		set_$ParentResourceContainer: function(value) {
-			if (ss.referenceEquals(this.$parentResourceContainer, value)) {
-				return;
-			}
-			if (ss.isValue(this.$parentResourceContainer)) {
-				this.$parentResourceContainer.remove_ResourcesChanged(ss.mkdel(this, this.$OnParentResourcesChanged));
-			}
-			this.$parentResourceContainer = value;
-			if (ss.isValue(this.$parentResourceContainer)) {
-				this.$parentResourceContainer.add_ResourcesChanged(ss.mkdel(this, this.$OnParentResourcesChanged));
-			}
-			Granular.Extensions.EventHandlerExtensions.Raise$4($System_Windows_ResourcesChangedEventArgs).call(null, this.$2$ResourcesChangedField, this, $System_Windows_ResourcesChangedEventArgs.Reset);
-		},
-		$OnParentResourcesChanged: function(sender, e) {
-			Granular.Extensions.EventHandlerExtensions.Raise$4($System_Windows_ResourcesChangedEventArgs).call(null, this.$2$ResourcesChangedField, this, e);
-		},
-		TryGetResource: function(resourceKey, value) {
-			if (ss.isValue(this.get_$ParentResourceContainer())) {
-				return this.get_$ParentResourceContainer().TryGetResource(resourceKey, value);
-			}
-			value.$ = null;
-			return false;
-		},
-		Freeze: function() {
-			this.set_IsFrozen(true);
-		},
-		OnInheritanceParentChanged: function(oldInheritanceParent, newInheritanceParent) {
-			this.set_$ParentResourceContainer(ss.safeCast(newInheritanceParent, $System_Windows_IResourceContainer));
-		},
-		OnPropertyChanged: function(e) {
-			if (!ss.isInstanceOfType(this, e.get_Property().get_OwnerType())) {
-				return;
-			}
-			this.$VerifyNotFrozen$1(e.get_Property());
-			if (ss.isInstanceOfType(e.get_OldValue(), $System_Windows_IInheritableObject)) {
-				ss.cast(e.get_OldValue(), $System_Windows_IInheritableObject).SetInheritanceContext(null);
-			}
-			if (ss.isInstanceOfType(e.get_NewValue(), $System_Windows_IInheritableObject)) {
-				ss.cast(e.get_NewValue(), $System_Windows_IInheritableObject).SetInheritanceContext(this);
-			}
-			if (ss.isInstanceOfType(e.get_OldValue(), $System_Windows_Freezable)) {
-				ss.cast(e.get_OldValue(), $System_Windows_Freezable).remove_Changed(ss.mkdel(this, this.$OnSubPropertyChanged));
-			}
-			if (ss.isInstanceOfType(e.get_NewValue(), $System_Windows_Freezable)) {
-				ss.cast(e.get_NewValue(), $System_Windows_Freezable).add_Changed(ss.mkdel(this, this.$OnSubPropertyChanged));
-			}
-			this.RaiseChanged();
-		},
-		$OnSubPropertyChanged: function(sender, e) {
-			this.$VerifyNotFrozen();
-			this.RaiseChanged();
-		},
-		RaiseChanged: function() {
-			Granular.Extensions.EventHandlerExtensions.Raise(this.$2$ChangedField, this);
-		},
-		SetInheritanceContext: function(inheritanceContext) {
-			this.SetInheritanceParent(inheritanceContext);
-		},
-		$VerifyNotFrozen: function() {
-			if (this.get_IsFrozen()) {
-				throw new Granular.Exception('"{0}" is frozen and cannot be changed', [this]);
-			}
-		},
-		$VerifyNotFrozen$1: function(changedProperty) {
-			if (this.get_IsFrozen()) {
-				throw new Granular.Exception('"{0}" is frozen, property "{1}" cannot be changed', [this, changedProperty]);
-			}
-		}
-	}, $System_Windows_DependencyObject, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
 	ss.initInterface($System_Windows_ITrigger, $asm, { Attach: null, Detach: null });
-	ss.initClass($System_Windows_TriggerBase, $asm, { get_TriggerActions: null, Attach: null, Detach: null }, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_ITrigger]);
+	ss.initClass($System_Windows_TriggerBase, $asm, { get_TriggerActions: null, Attach: null, Detach: null }, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_ITrigger]);
 	ss.initClass($System_Windows_DataTriggerBase, $asm, {
 		CreateDataTriggerCondition: null,
 		Attach: function(element, valueSource) {
@@ -11961,7 +12912,7 @@
 				$t1.dispose();
 			}
 		}
-	}, $System_Windows_TriggerBase, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_ITrigger, $System_Windows_IDataTriggerConditionProvider]);
+	}, $System_Windows_TriggerBase, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_ITrigger, $System_Windows_IDataTriggerConditionProvider]);
 	ss.initClass($System_Windows_DataTrigger, $asm, {
 		get_Binding: function() {
 			return this.$5$BindingField;
@@ -11990,7 +12941,7 @@
 			}
 			return $System_Windows_$DataTriggerCondition.$Register(element, this.get_Binding(), this.get_Value());
 		}
-	}, $System_Windows_DataTriggerBase, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_ITrigger, $System_Windows_IDataTriggerConditionProvider]);
+	}, $System_Windows_DataTriggerBase, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_ITrigger, $System_Windows_IDataTriggerConditionProvider]);
 	ss.initClass($System_Windows_DependencyProperty, $asm, {
 		get_Name: function() {
 			return this.$1$NameField;
@@ -12027,6 +12978,12 @@
 		},
 		set_Inherits: function(value) {
 			this.$1$InheritsField = value;
+		},
+		get_IsAttached: function() {
+			return this.$1$IsAttachedField;
+		},
+		set_IsAttached: function(value) {
+			this.$1$IsAttachedField = value;
 		},
 		getHashCode: function() {
 			return this.$hashKey.getHashCode();
@@ -12066,6 +13023,7 @@
 			if (ss.isValue(metadata)) {
 				this.OverrideMetadata(ownerType, metadata);
 			}
+			this.$typeContainsCache.Clear();
 			return this;
 		},
 		GetMetadata: function(type) {
@@ -12080,16 +13038,22 @@
 			}).lastOrDefault(null, ss.getDefaultValue(Function));
 			return (ss.isValue(closestBaseType) ? this.$typeMetadata.get_item(closestBaseType) : this.$ownerMetadata);
 		},
+		IsContainedBy: function(type) {
+			return this.$typeContainsCache.GetValue(type);
+		},
+		$ResolveTypeContains: function(type) {
+			return Enumerable.from($System_Windows_DependencyProperty.GetFlattenedProperties(type)).contains(this);
+		},
 		$RaiseMetadataPropertyChangedCallback: function(dependencyObject, e) {
 			// metadata's changed callback will be raised for
 			// - the original owner metadata
 			// - every attached property metadata
-			// - every metadata that the currently changed object derives from it's owner type
+			// - every metadata that the currently changed object derives from its owner type
 			var $t1 = ss.getEnumerator(this.$GetOrderedTypeMetadata());
 			try {
 				while ($t1.moveNext()) {
 					var type = $t1.current();
-					if (!ss.isInstanceOfType(dependencyObject, type) && (!this.$isAttached || !ss.referenceEquals(type, this.get_OwnerType()))) {
+					if (!ss.isInstanceOfType(dependencyObject, type) && (!this.get_IsAttached() || !ss.referenceEquals(type, this.get_OwnerType()))) {
 						continue;
 					}
 					var propertyMetadata = this.$typeMetadata.get_item(type);
@@ -12143,8 +13107,15 @@
 		},
 		set_OldValue: function(value) {
 			this.$2$OldValueField = value;
+		},
+		get_IsSubPropertyChange: function() {
+			return this.$2$IsSubPropertyChangeField;
+		},
+		set_IsSubPropertyChange: function(value) {
+			this.$2$IsSubPropertyChangeField = value;
 		}
 	}, ss.EventArgs);
+	$System_Windows_DependencyPropertyChangedEventArgs.$ctor1.prototype = $System_Windows_DependencyPropertyChangedEventArgs.$ctor2.prototype = $System_Windows_DependencyPropertyChangedEventArgs.prototype;
 	ss.initClass($System_Windows_DependencyPropertyChangedEventHandlerExtensions, $asm, {});
 	ss.initClass($System_Windows_DependencyPropertyKey, $asm, {
 		get_DependencyProperty: function() {
@@ -12188,7 +13159,6 @@
 			return false;
 		}
 	}, null, [$System_Windows_IPropertyPathElement]);
-	ss.initInterface($System_Windows_Markup_ITypeConverter, $asm, { ConvertFrom: null });
 	ss.initClass($System_Windows_DependencyPropertyTypeConverter, $asm, {
 		ConvertFrom: function(namespaces, value) {
 			var text = value.toString().trim();
@@ -12204,6 +13174,7 @@
 			return dependencyProperty;
 		}
 	}, null, [$System_Windows_Markup_ITypeConverter]);
+	ss.initInterface($System_Windows_IDependencyPropertyValueEntry, $asm, { add_ValueChanged: null, remove_ValueChanged: null, get_Value: null, get_ValuePriority: null, GetValue: null, SetValue: null, GetBaseValuePriority: null, CoerceValue: null });
 	ss.initClass($System_Windows_DependencyPropertyValueEntry, $asm, {
 		add_ValueChanged: function(value) {
 			this.$1$ValueChangedField = ss.delegateCombine(this.$1$ValueChangedField, value);
@@ -12212,99 +13183,134 @@
 			this.$1$ValueChangedField = ss.delegateRemove(this.$1$ValueChangedField, value);
 		},
 		get_Value: function() {
-			return this.$observableValue.get_Value();
+			return this.$value;
 		},
-		GetBaseValue: function(flattened) {
-			for (var i = this.$baseValues.length - 1; i >= 0; i--) {
-				var flattenedValue = $System_Windows_DependencyPropertyValueEntry.$GetFlattenedValue(this.$baseValues[i]);
-				if (!ss.referenceEquals(flattenedValue, $System_Windows_Data_ObservableValue.UnsetValue)) {
-					return (flattened ? flattenedValue : this.$baseValues[i]);
+		set_Value: function(value) {
+			if (ss.isInstanceOfType(this.$value, $System_Windows_INotifyChanged)) {
+				ss.cast(this.$value, $System_Windows_INotifyChanged).remove_Changed(this.get_$NotifyValueChangedEventHandler());
+			}
+			this.$value = value;
+			if (ss.isInstanceOfType(this.$value, $System_Windows_INotifyChanged)) {
+				ss.cast(this.$value, $System_Windows_INotifyChanged).add_Changed(this.get_$NotifyValueChangedEventHandler());
+			}
+		},
+		get_ValuePriority: function() {
+			return this.$1$ValuePriorityField;
+		},
+		set_ValuePriority: function(value) {
+			this.$1$ValuePriorityField = value;
+		},
+		get_$NotifyValueChangedEventHandler: function() {
+			if (ss.staticEquals(this.$notifyValueChangedEventHandler, null)) {
+				this.$notifyValueChangedEventHandler = ss.mkdel(this, this.$OnValueNotifyChanged);
+			}
+			return this.$notifyValueChangedEventHandler;
+		},
+		get_$IndexedObservableValueChangedEventHandler: function() {
+			if (ss.staticEquals(this.$indexedObservableValueChangedEventHandler, null)) {
+				this.$indexedObservableValueChangedEventHandler = ss.mkdel(this, this.$OnIndexedObservableValueChanged);
+			}
+			return this.$indexedObservableValueChangedEventHandler;
+		},
+		GetValue: function(priority, flattened) {
+			if (ss.isValue(this.$observableValues) && ss.isValue(this.$observableValues[priority])) {
+				return (flattened ? this.$observableValues[priority].get_Value() : this.$observableValues[priority].get_BaseValue());
+			}
+			return this.$values[priority];
+		},
+		SetValue: function(priority, value) {
+			if (ss.isValue(this.$observableValues) && ss.isValue(this.$observableValues[priority])) {
+				this.$observableValues[priority].set_BaseValue(value);
+				return;
+			}
+			var oldValue = this.$values[priority];
+			if (ss.isInstanceOfType(value, $System_Windows_Data_IObservableValue)) {
+				if (ss.isNullOrUndefined(this.$observableValues)) {
+					this.$observableValues = new Array(14);
 				}
+				var indexedObservableValue = new $System_$Windows_DependencyPropertyValueEntry$IndexedObservableValue(priority, oldValue);
+				indexedObservableValue.add_ValueChanged(this.get_$IndexedObservableValueChangedEventHandler());
+				this.$observableValues[priority] = indexedObservableValue;
+				this.$values[priority] = $System_Windows_Data_ObservableValue.UnsetValue;
+				indexedObservableValue.set_BaseValue(value);
+				return;
 			}
-			return $System_Windows_Data_ObservableValue.UnsetValue;
-		},
-		GetBaseValue$1: function(priority, flattened) {
-			return (flattened ? $System_Windows_DependencyPropertyValueEntry.$GetFlattenedValue(this.$baseValues[priority]) : this.$baseValues[priority]);
-		},
-		SetBaseValue: function(priority, value) {
-			var oldObservableValue = ss.safeCast(this.$baseValues[priority], $System_Windows_Data_IObservableValue);
-			if (ss.isValue(oldObservableValue)) {
-				oldObservableValue.remove_ValueChanged(ss.mkdel(this, this.$OnObservableValueChanged));
+			if (Granular.Compatibility.EqualityComparer.Default.areEqual(oldValue, value)) {
+				return;
 			}
-			this.$baseValues[priority] = value;
-			var newObservableValue = ss.safeCast(this.$baseValues[priority], $System_Windows_Data_IObservableValue);
-			if (ss.isValue(newObservableValue)) {
-				newObservableValue.add_ValueChanged(ss.mkdel(this, this.$OnObservableValueChanged));
-			}
-			this.$SetValue();
-		},
-		ClearBaseValue: function(priority) {
-			this.SetBaseValue(priority, $System_Windows_Data_ObservableValue.UnsetValue);
+			this.$values[priority] = value;
+			this.$OnValueChanged(priority, value);
 		},
 		GetBaseValuePriority: function() {
-			return Granular.Compatibility.Array.FindLastIndex(Object).call(null, this.$baseValues, function(value) {
-				return !ss.referenceEquals($System_Windows_DependencyPropertyValueEntry.$GetFlattenedValue(value), $System_Windows_Data_ObservableValue.UnsetValue);
-			});
-		},
-		GetCurrentValue: function(flattened) {
-			return (flattened ? $System_Windows_DependencyPropertyValueEntry.$GetFlattenedValue(this.$currentValue) : this.$currentValue);
-		},
-		SetCurrentValue: function(value) {
-			var oldObservableValue = ss.safeCast(this.$currentValue, $System_Windows_Data_IObservableValue);
-			if (ss.isValue(oldObservableValue)) {
-				oldObservableValue.remove_ValueChanged(ss.mkdel(this, this.$OnObservableValueChanged));
+			if (this.$baseValuePriority > $System_Windows_DependencyPropertyValueEntry.BaseValueHighestPriority) {
+				this.$baseValuePriority = $System_Windows_DependencyPropertyValueEntry.BaseValueHighestPriority;
+				while (this.$baseValuePriority > 0 && !this.$IsValueValid(this.GetValue(this.$baseValuePriority, true))) {
+					this.$baseValuePriority--;
+				}
 			}
-			this.$currentValue = value;
-			var newObservableValue = ss.safeCast(this.$currentValue, $System_Windows_Data_IObservableValue);
-			if (ss.isValue(newObservableValue)) {
-				newObservableValue.add_ValueChanged(ss.mkdel(this, this.$OnObservableValueChanged));
-			}
-			this.$SetValue();
+			return this.$baseValuePriority;
 		},
-		ClearCurrentValue: function() {
-			this.SetCurrentValue($System_Windows_Data_ObservableValue.UnsetValue);
-		},
-		GetAnimationValue: function(flattened) {
-			return (flattened ? $System_Windows_DependencyPropertyValueEntry.$GetFlattenedValue(this.$animationValue) : this.$animationValue);
-		},
-		SetAnimationValue: function(value) {
-			var oldObservableValue = ss.safeCast(this.$animationValue, $System_Windows_Data_IObservableValue);
-			if (ss.isValue(oldObservableValue)) {
-				oldObservableValue.remove_ValueChanged(ss.mkdel(this, this.$OnObservableValueChanged));
+		CoerceValue: function() {
+			if (ss.staticEquals(this.$coerceValueCallback, null)) {
+				return;
 			}
-			this.$animationValue = value;
-			var newObservableValue = ss.safeCast(this.$animationValue, $System_Windows_Data_IObservableValue);
-			if (ss.isValue(newObservableValue)) {
-				newObservableValue.add_ValueChanged(ss.mkdel(this, this.$OnObservableValueChanged));
+			var oldValue = this.get_Value();
+			var newValue = this.$coerceValueCallback(this.$dependencyObject, this.GetValue(this.get_ValuePriority(), true));
+			if (Granular.Compatibility.EqualityComparer.Default.areEqual(oldValue, newValue)) {
+				return;
 			}
-			this.$SetValue();
+			this.set_Value(newValue);
+			$System_Windows_DependencyPropertyChangedEventHandlerExtensions.Raise(this.$1$ValueChangedField, this, new $System_Windows_DependencyPropertyChangedEventArgs.$ctor1(this.$dependencyProperty, oldValue, newValue));
 		},
-		ClearAnimationValue: function() {
-			this.$animationValue = $System_Windows_Data_ObservableValue.UnsetValue;
-			this.$SetValue();
+		$OnIndexedObservableValueChanged: function(sender, oldValue, newValue) {
+			this.$OnValueChanged(ss.cast(sender, $System_$Windows_DependencyPropertyValueEntry$IndexedObservableValue).get_$Index(), newValue);
 		},
-		$OnObservableValueChanged: function(sender, e) {
-			this.$SetValue();
+		$OnValueChanged: function(newValuePriority, newValue) {
+			if (this.get_ValuePriority() > newValuePriority) {
+				if (this.$baseValuePriority <= newValuePriority && newValuePriority <= $System_Windows_DependencyPropertyValueEntry.BaseValueHighestPriority) {
+					this.$baseValuePriority = 12;
+					// invalidate baseValuePriority
+				}
+				return;
+			}
+			var oldValue = this.get_Value();
+			var isNewValueValid = this.$IsValueValid(newValue);
+			if (this.get_ValuePriority() === newValuePriority && isNewValueValid && ss.staticEquals(this.$coerceValueCallback, null)) {
+				this.set_Value(newValue);
+				$System_Windows_DependencyPropertyChangedEventHandlerExtensions.Raise(this.$1$ValueChangedField, this, new $System_Windows_DependencyPropertyChangedEventArgs.$ctor1(this.$dependencyProperty, oldValue, newValue));
+				// since this was already the value priority and there is no coercion, Value must have been changed here
+				return;
+			}
+			if (this.get_ValuePriority() < newValuePriority && !isNewValueValid) {
+				return;
+			}
+			while (!isNewValueValid && newValuePriority > 0) {
+				newValuePriority--;
+				newValue = this.GetValue(newValuePriority, true);
+				isNewValueValid = this.$IsValueValid(newValue);
+			}
+			if (this.get_ValuePriority() !== newValuePriority) {
+				this.set_ValuePriority(newValuePriority);
+				this.$baseValuePriority = newValuePriority;
+				// possible invalidation of baseValuePriority
+			}
+			if (!ss.staticEquals(this.$coerceValueCallback, null)) {
+				newValue = this.$coerceValueCallback(this.$dependencyObject, newValue);
+			}
+			if (Granular.Compatibility.EqualityComparer.Default.areEqual(oldValue, newValue)) {
+				return;
+			}
+			this.set_Value(newValue);
+			$System_Windows_DependencyPropertyChangedEventHandlerExtensions.Raise(this.$1$ValueChangedField, this, new $System_Windows_DependencyPropertyChangedEventArgs.$ctor1(this.$dependencyProperty, oldValue, newValue));
 		},
-		$SetValue: function() {
-			var value = this.GetAnimationValue(true);
-			if (ss.referenceEquals(value, $System_Windows_Data_ObservableValue.UnsetValue)) {
-				value = this.GetCurrentValue(true);
-			}
-			if (ss.referenceEquals(value, $System_Windows_Data_ObservableValue.UnsetValue)) {
-				value = this.GetBaseValue(true);
-			}
-			if (ss.referenceEquals(value, $System_Windows_Data_ObservableValue.UnsetValue) || !this.$dependencyProperty.IsValidValue(value)) {
-				value = this.$defaultValue;
-			}
-			this.$observableValue.set_Value(value);
+		$OnValueNotifyChanged: function(sender, e) {
+			$System_Windows_DependencyPropertyChangedEventHandlerExtensions.Raise(this.$1$ValueChangedField, this, new $System_Windows_DependencyPropertyChangedEventArgs(this.$dependencyProperty, this.get_Value()));
+		},
+		$IsValueValid: function(newValue) {
+			return !ss.referenceEquals(newValue, $System_Windows_Data_ObservableValue.UnsetValue) && this.$dependencyProperty.IsValidValue(newValue);
 		}
-	}, null, [$System_Windows_Data_IObservableValue, $System_Windows_IDependencyPropertyValueEntry]);
-	ss.initClass($System_Windows_Disposable, $asm, {
-		dispose: function() {
-			this.$dispose();
-		}
-	}, null, [ss.IDisposable]);
+	}, null, [$System_Windows_IDependencyPropertyValueEntry]);
+	ss.initClass($System_Windows_DependencyPropertyValueEntryExtensions, $asm, {});
 	ss.initClass($System_Windows_Duration, $asm, {
 		get_TimeSpan: function() {
 			return this.$1$TimeSpanField;
@@ -12339,6 +13345,11 @@
 		}
 	});
 	$System_Windows_Duration.$ctor1.prototype = $System_Windows_Duration.prototype;
+	ss.initClass($System_Windows_DurationTypeConverter, $asm, {
+		ConvertFrom: function(namespaces, value) {
+			return $System_Windows_Duration.Parse(value.toString().trim());
+		}
+	}, null, [$System_Windows_Markup_ITypeConverter]);
 	ss.initClass($System_Windows_DynamicResourceExtension, $asm, {
 		get_ResourceKey: function() {
 			return this.$1$ResourceKeyField;
@@ -12445,7 +13456,7 @@
 				$t1.dispose();
 			}
 		}
-	}, $System_Windows_TriggerBase, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_ITrigger]);
+	}, $System_Windows_TriggerBase, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_ITrigger]);
 	ss.initClass($System_Windows_EventTrigger, $asm, {
 		get_RoutedEvent: function() {
 			return this.$5$RoutedEventField;
@@ -12474,7 +13485,7 @@
 			}
 			return $System_$Windows_EventTrigger$EventTriggerCondition.$Register(element, this.get_RoutedEvent());
 		}
-	}, $System_Windows_EventTriggerBase, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_ITrigger]);
+	}, $System_Windows_EventTriggerBase, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_ITrigger]);
 	ss.initClass($System_Windows_FontFamily, $asm, {
 		get_FamilyName: function() {
 			return Enumerable.from(this.get_FamilyNames()).firstOrDefault(null, ss.getDefaultValue(String));
@@ -12487,9 +13498,15 @@
 		}
 	});
 	$System_Windows_FontFamily.$ctor1.prototype = $System_Windows_FontFamily.prototype;
+	ss.initClass($System_Windows_FontFamilyTypeConverter, $asm, {
+		ConvertFrom: function(namespaces, value) {
+			return $System_Windows_FontFamily.Parse(value.toString().trim());
+		}
+	}, null, [$System_Windows_Markup_ITypeConverter]);
 	ss.initEnum($System_Windows_FontStretch, $asm, { Normal: 0, Condensed: 1, Expanded: 2, ExtraCondensed: 3, ExtraExpanded: 4, Medium: 5, SemiCondensed: 6, SemiExpanded: 7, UltraCondensed: 8, UltraExpanded: 9 });
 	ss.initEnum($System_Windows_FontStyle, $asm, { Normal: 0, Italic: 1, Oblique: 2 });
 	ss.initEnum($System_Windows_FontWeight, $asm, { Normal: 0, Black: 1, Bold: 2, DemiBold: 3, ExtraBlack: 4, ExtraBold: 5, ExtraLight: 6, Heavy: 7, Light: 8, Medium: 9, Regular: 10, SemiBold: 11, Thin: 12, UltraBlack: 13, UltraBold: 14, UltraLight: 15 });
+	ss.initClass($System_Windows_FrameworkContentElement, $asm, {}, $System_Windows_ContentElement);
 	ss.initInterface($System_Windows_IFrameworkElementFactory, $asm, { CreateElement: null });
 	ss.initClass($System_Windows_FrameworkElementFactory, $asm, {
 		CreateElement: function(templatedParent) {
@@ -12659,7 +13676,7 @@
 		},
 		BeginUpdateLayout: function() {
 			if (ss.isNullOrUndefined(this.$updateLayoutOperation) || this.$updateLayoutOperation.get_Status() === 2) {
-				this.$updateLayoutOperation = $System_Windows_Threading_Dispatcher.CurrentDispatcher.BeginInvoke$3(4, ss.mkdel(this, this.UpdateLayout));
+				this.$updateLayoutOperation = $System_Windows_Threading_Dispatcher.CurrentDispatcher.InvokeAsync(ss.mkdel(this, this.UpdateLayout), 9);
 			}
 		},
 		UpdateLayout: function() {
@@ -12712,21 +13729,21 @@
 		get_TriggerActions: function() {
 			return this.get_Setters();
 		}
-	}, $System_Windows_DataTriggerBase, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_ITrigger, $System_Windows_IDataTriggerConditionProvider]);
+	}, $System_Windows_DataTriggerBase, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_ITrigger, $System_Windows_IDataTriggerConditionProvider]);
 	ss.initClass($System_Windows_MultiDataTrigger, $asm, {
 		CreateDataTriggerCondition: function(element) {
 			return $System_Windows_$MultiDataTriggerCondition.$Register(element, Enumerable.from(this.get_Conditions()).select(function(condition) {
 				return new $System_$Windows_MultiDataTrigger$MultiDataTriggerConditionProvider(condition);
 			}).toArray());
 		}
-	}, $System_Windows_MultiDataTriggerBase, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_ITrigger, $System_Windows_IDataTriggerConditionProvider]);
+	}, $System_Windows_MultiDataTriggerBase, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_ITrigger, $System_Windows_IDataTriggerConditionProvider]);
 	ss.initClass($System_Windows_MultiTrigger, $asm, {
 		CreateDataTriggerCondition: function(element) {
 			return $System_Windows_$MultiDataTriggerCondition.$Register(element, Enumerable.from(this.get_Conditions()).select(function(condition) {
 				return new $System_$Windows_MultiTrigger$TriggerConditionProvider(condition);
 			}).toArray());
 		}
-	}, $System_Windows_MultiDataTriggerBase, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_ITrigger, $System_Windows_IDataTriggerConditionProvider]);
+	}, $System_Windows_MultiDataTriggerBase, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_ITrigger, $System_Windows_IDataTriggerConditionProvider]);
 	ss.initClass($System_Windows_Point, $asm, {
 		get_X: function() {
 			return this.$1$XField;
@@ -12747,11 +13764,11 @@
 			this.$1$IsEmptyField = value;
 		},
 		toString: function() {
-			return ss.formatString('Point({0}, {1})', this.get_X(), this.get_Y());
+			return ss.formatString('Point({0}, {1})', ss.round(this.get_X(), 2), ss.round(this.get_Y(), 2));
 		},
 		equals: function(obj) {
 			var other = ss.safeCast(obj, $System_Windows_Point);
-			return ss.referenceEquals(this, other) || !ss.referenceEquals(other, null) && ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Number]).Default.areEqual(this.get_X(), other.get_X()) && ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Number]).Default.areEqual(this.get_Y(), other.get_Y());
+			return ss.referenceEquals(this, other) || !ss.referenceEquals(other, null) && Granular.Compatibility.EqualityComparer.Double.areEqual(this.get_X(), other.get_X()) && Granular.Compatibility.EqualityComparer.Double.areEqual(this.get_Y(), other.get_Y());
 		},
 		getHashCode: function() {
 			return ss.getHashCode(this.get_X()) ^ ss.getHashCode(this.get_Y());
@@ -12759,6 +13776,11 @@
 	});
 	$System_Windows_Point.$ctor1.prototype = $System_Windows_Point.prototype;
 	ss.initClass($System_Windows_PointExtensions, $asm, {});
+	ss.initClass($System_Windows_PointTypeConverter, $asm, {
+		ConvertFrom: function(namespaces, value) {
+			return $System_Windows_Point.Parse(value.toString().trim());
+		}
+	}, null, [$System_Windows_Markup_ITypeConverter]);
 	ss.initClass($System_Windows_PropertyPath, $asm, {
 		get_Elements: function() {
 			return this.$1$ElementsField;
@@ -12836,40 +13858,25 @@
 		get_Value: function() {
 			return this.$source.get_Value();
 		},
-		GetBaseValue: function(flattened) {
-			return this.$source.GetBaseValue(flattened);
+		get_ValuePriority: function() {
+			return this.$source.get_ValuePriority();
 		},
-		GetBaseValue$1: function(priority, flattened) {
-			return this.$source.GetBaseValue$1(priority, flattened);
+		GetValue$1: function(flattened) {
+			return this.$source.GetValue(this.$source.get_ValuePriority(), flattened);
 		},
-		SetBaseValue: function(priority, value) {
-			$System_Windows_ReadOnlyDependencyPropertyValueEntry.$ThrowReadOnlyException();
+		GetValue: function(priority, flattened) {
+			return this.$source.GetValue(priority, flattened);
 		},
-		ClearBaseValue: function(priority) {
-			$System_Windows_ReadOnlyDependencyPropertyValueEntry.$ThrowReadOnlyException();
+		SetValue: function(priority, value) {
+			throw new Granular.Exception("Can't modify a readonly dependency property value", []);
 		},
 		GetBaseValuePriority: function() {
 			return this.$source.GetBaseValuePriority();
 		},
-		GetCurrentValue: function(flattened) {
-			return this.$source.GetCurrentValue(flattened);
-		},
-		SetCurrentValue: function(value) {
-			$System_Windows_ReadOnlyDependencyPropertyValueEntry.$ThrowReadOnlyException();
-		},
-		ClearCurrentValue: function() {
-			$System_Windows_ReadOnlyDependencyPropertyValueEntry.$ThrowReadOnlyException();
-		},
-		GetAnimationValue: function(flattened) {
-			return this.$source.GetAnimationValue(flattened);
-		},
-		SetAnimationValue: function(value) {
-			$System_Windows_ReadOnlyDependencyPropertyValueEntry.$ThrowReadOnlyException();
-		},
-		ClearAnimationValue: function() {
-			$System_Windows_ReadOnlyDependencyPropertyValueEntry.$ThrowReadOnlyException();
+		CoerceValue: function() {
+			this.$source.CoerceValue();
 		}
-	}, null, [$System_Windows_Data_IObservableValue, $System_Windows_IDependencyPropertyValueEntry]);
+	}, null, [$System_Windows_IDependencyPropertyValueEntry]);
 	ss.initClass($System_Windows_Rect, $asm, {
 		get_Location: function() {
 			return this.$1$LocationField;
@@ -12938,23 +13945,11 @@
 	});
 	$System_Windows_Rect.$ctor1.prototype = $System_Windows_Rect.$ctor3.prototype = $System_Windows_Rect.$ctor2.prototype = $System_Windows_Rect.prototype;
 	ss.initClass($System_Windows_RectExtensions, $asm, {});
-	ss.initClass($System_Windows_ReentrancyLock, $asm, {
-		get_IsEntered: function() {
-			return this.$1$IsEnteredField;
-		},
-		set_IsEntered: function(value) {
-			this.$1$IsEnteredField = value;
-		},
-		Enter: function() {
-			if (this.get_IsEntered()) {
-				throw new Granular.Exception("Can't enter the scope more than once", []);
-			}
-			this.set_IsEntered(true);
-			return new $System_Windows_Disposable(ss.mkdel(this, function() {
-				this.set_IsEntered(false);
-			}));
+	ss.initClass($System_Windows_RectTypeConverter, $asm, {
+		ConvertFrom: function(namespaces, value) {
+			return $System_Windows_Rect.Parse(value.toString().trim());
 		}
-	});
+	}, null, [$System_Windows_Markup_ITypeConverter]);
 	ss.initClass($System_Windows_ResourceContainerExtensions, $asm, {});
 	ss.initClass($System_Windows_ResourceDictionary, $asm, {
 		add_ResourcesChanged: function(value) {
@@ -13123,12 +14118,12 @@
 			return this.$observableValue.get_Value();
 		},
 		dispose: function() {
-			this.$observableValue.set_Value($System_Windows_Data_ObservableValue.UnsetValue);
+			this.$observableValue.set_BaseValue($System_Windows_Data_ObservableValue.UnsetValue);
 			this.$resourceContainer.remove_ResourcesChanged(ss.mkdel(this, this.$OnResourcesChanged));
 		},
 		$OnResourcesChanged: function(sender, e) {
 			if (e.Contains(this.$resourceKey)) {
-				this.$observableValue.set_Value(this.$GetResourceValue());
+				this.$observableValue.set_BaseValue(this.$GetResourceValue());
 			}
 		},
 		SetValue: function(value) {
@@ -13363,13 +14358,18 @@
 		},
 		equals: function(obj) {
 			var other = ss.safeCast(obj, $System_Windows_Size);
-			return ss.referenceEquals(this, other) || !ss.referenceEquals(other, null) && ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Number]).Default.areEqual(this.get_Width(), other.get_Width()) && ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Number]).Default.areEqual(this.get_Height(), other.get_Height());
+			return ss.referenceEquals(this, other) || !ss.referenceEquals(other, null) && Granular.Compatibility.EqualityComparer.Double.areEqual(this.get_Width(), other.get_Width()) && Granular.Compatibility.EqualityComparer.Double.areEqual(this.get_Height(), other.get_Height());
 		},
 		getHashCode: function() {
 			return ss.getHashCode(this.get_Width()) ^ ss.getHashCode(this.get_Height());
 		}
 	});
 	ss.initClass($System_Windows_SizeExtensions, $asm, {});
+	ss.initClass($System_Windows_SizeTypeConverter, $asm, {
+		ConvertFrom: function(namespaces, value) {
+			return $System_Windows_Size.Parse(value.toString().trim());
+		}
+	}, null, [$System_Windows_Markup_ITypeConverter]);
 	ss.initClass($System_Windows_StartupEventArgs, $asm, {}, ss.EventArgs);
 	ss.initClass($System_Windows_StaticResourceExtension, $asm, {
 		get_ResourceKey: function() {
@@ -13631,17 +14631,14 @@
 			this.$1$SizeField = value;
 		},
 		get_IsUniform: function() {
-			return this.$1$IsUniformField;
-		},
-		set_IsUniform: function(value) {
-			this.$1$IsUniformField = value;
+			return this.get_Left() === this.get_Top() && this.get_Left() === this.get_Right() && this.get_Left() === this.get_Bottom();
 		},
 		toString: function() {
 			return (this.get_IsUniform() ? ss.formatString('Thickness({0})', this.get_Left()) : ss.formatString('Thickness({0}, {1}, {2}, {3})', this.get_Top(), this.get_Right(), this.get_Bottom(), this.get_Left()));
 		},
 		equals: function(obj) {
 			var other = ss.safeCast(obj, $System_Windows_Thickness);
-			return ss.referenceEquals(this, other) || !ss.referenceEquals(other, null) && ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Number]).Default.areEqual(this.get_Left(), other.get_Left()) && ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Number]).Default.areEqual(this.get_Top(), other.get_Top()) && ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Number]).Default.areEqual(this.get_Right(), other.get_Right()) && ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Number]).Default.areEqual(this.get_Bottom(), other.get_Bottom());
+			return ss.referenceEquals(this, other) || !ss.referenceEquals(other, null) && Granular.Compatibility.EqualityComparer.Double.areEqual(this.get_Left(), other.get_Left()) && Granular.Compatibility.EqualityComparer.Double.areEqual(this.get_Top(), other.get_Top()) && Granular.Compatibility.EqualityComparer.Double.areEqual(this.get_Right(), other.get_Right()) && Granular.Compatibility.EqualityComparer.Double.areEqual(this.get_Bottom(), other.get_Bottom());
 		},
 		getHashCode: function() {
 			return ss.getHashCode(this.get_Left()) ^ ss.getHashCode(this.get_Top()) ^ ss.getHashCode(this.get_Right()) ^ ss.getHashCode(this.get_Bottom());
@@ -13649,6 +14646,11 @@
 	});
 	$System_Windows_Thickness.$ctor1.prototype = $System_Windows_Thickness.$ctor2.prototype = $System_Windows_Thickness.$ctor3.prototype = $System_Windows_Thickness.prototype;
 	ss.initClass($System_Windows_ThicknessExtensions, $asm, {});
+	ss.initClass($System_Windows_ThicknessTypeConverter, $asm, {
+		ConvertFrom: function(namespaces, value) {
+			return $System_Windows_Thickness.Parse(value.toString().trim());
+		}
+	}, null, [$System_Windows_Markup_ITypeConverter]);
 	ss.initClass($System_Windows_Trigger, $asm, {
 		get_Property: function() {
 			return this.$5$PropertyField;
@@ -13691,7 +14693,7 @@
 			var source = (Granular.Extensions.StringExtensions.IsNullOrEmpty(this.get_SourceName()) ? element : ss.safeCast($System_Windows_Markup_NameScope.GetTemplateNameScope(element).FindName(this.get_SourceName()), $System_Windows_FrameworkElement));
 			return $System_Windows_$TriggerCondition.$Register(source, dependencyProperty, resolvedValue);
 		}
-	}, $System_Windows_DataTriggerBase, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_ITrigger, $System_Windows_IDataTriggerConditionProvider]);
+	}, $System_Windows_DataTriggerBase, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_ITrigger, $System_Windows_IDataTriggerConditionProvider]);
 	ss.initClass($System_Windows_ValueSource, $asm, {
 		get_BaseValueSource: function() {
 			return this.$1$BaseValueSourceField;
@@ -13739,7 +14741,7 @@
 		set_Storyboard: function(value) {
 			this.SetValue($System_Windows_VisualState.StoryboardProperty, value, 11);
 		}
-	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_VisualStateGroup, $asm, {
 		get_Name: function() {
 			return this.$3$NameField;
@@ -13806,7 +14808,7 @@
 			}
 			this.$currentStoryboard = newStoryboard;
 		}
-	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_VisualStateManager, $asm, {});
 	ss.initClass($System_Windows_VisualStates, $asm, {});
 	ss.initClass($System_Windows_VisualTransition, $asm, {
@@ -13828,7 +14830,7 @@
 		set_Storyboard: function(value) {
 			this.SetValue($System_Windows_VisualTransition.StoryboardProperty, value, 11);
 		}
-	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Controls_Control, $asm, {
 		add_PreviewMouseDoubleClick: function(value) {
 			this.AddHandler($System_Windows_Controls_Control.PreviewMouseDoubleClickEvent, value, false);
@@ -13981,7 +14983,7 @@
 			this.RaiseEvent(eventArgs);
 			return eventArgs.get_Handled();
 		}
-	}, $System_Windows_FrameworkElement, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_FrameworkElement, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initInterface($System_Windows_Controls_IItemContainer, $asm, { PrepareContainerForItem: null, ClearContainerForItem: null });
 	ss.initClass($System_Windows_Controls_ContentControl, $asm, {
 		get_Content: function() {
@@ -14039,7 +15041,7 @@
 				this.ClearValue($System_Windows_Controls_ContentControl.ContentProperty, 11);
 			}
 		}
-	}, $System_Windows_Controls_Control, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
+	}, $System_Windows_Controls_Control, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
 	ss.initInterface($System_Windows_Controls_IPopupLayerHost, $asm, { get_PopupLayer: null });
 	ss.initInterface($System_Windows_Controls_IRadioButtonGroupScope, $asm, { GetRadioButtonGroup: null });
 	ss.initClass($System_Windows_Window, $asm, {
@@ -14094,7 +15096,7 @@
 				this.$presentationSource.set_Title(this.get_Title());
 			}
 		}
-	}, $System_Windows_Controls_ContentControl, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer, $System_Windows_Controls_IPopupLayerHost, $System_Windows_Controls_IAdornerLayerHost, $System_Windows_Controls_IRadioButtonGroupScope]);
+	}, $System_Windows_Controls_ContentControl, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer, $System_Windows_Controls_IPopupLayerHost, $System_Windows_Controls_IAdornerLayerHost, $System_Windows_Controls_IRadioButtonGroupScope]);
 	ss.initClass($System_Windows_Controls_$GridLengthTypeConverter, $asm, {
 		ConvertFrom: function(namespaces, value) {
 			var text = value.toString().trim();
@@ -14439,7 +15441,7 @@
 			this.$measuredLineHeight = $System_Windows_ApplicationHost.get_Current().get_TextMeasurementService().Measure('', fontSize, new $System_Windows_Media_Typeface.$ctor1(fontFamily, 0, 0, 0), Number.POSITIVE_INFINITY).get_Height();
 			return this.$measuredLineHeight;
 		}
-	}, $System_Windows_FrameworkElement, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_FrameworkElement, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initClass($System_Windows_Controls_Adorner, $asm, {
 		get_Child: function() {
 			return this.$child;
@@ -14476,70 +15478,52 @@
 			if (ss.isValue(this.get_Child())) {
 				this.get_Child().Arrange(new $System_Windows_Rect(finalSize));
 			}
+			this.$visualPathTransform.$SetValue$1();
 			return finalSize;
-		}
-	}, $System_Windows_FrameworkElement, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
-	ss.initClass($System_Windows_Controls_AdornerLayer, $asm, {
-		MeasureOverride: function(availableSize) {
-			var $t1 = this.get_VisualChildren();
-			for (var $t2 = 0; $t2 < $t1.length; $t2++) {
-				var adorner = $t1[$t2];
-				adorner.Measure(availableSize);
-			}
-			return $System_Windows_Size.Zero;
 		},
-		ArrangeOverride: function(finalSize) {
+		OnVisualParentChanged: function(oldVisualParent, newVisualParent) {
+			$System_Windows_FrameworkElement.prototype.OnVisualParentChanged.call(this, oldVisualParent, newVisualParent);
+			if (ss.isValue(oldVisualParent)) {
+				this.$visualPathTransform.dispose();
+				this.set_RenderTransform($System_Windows_Media_Transform.Identity);
+			}
+			if (ss.isValue(newVisualParent)) {
+				this.$visualPathTransform = new $System_$Windows_Controls_Adorner$VisualPathTransform(this.get_AdornedElement(), newVisualParent.get_VisualParent());
+				this.set_RenderTransform(this.$visualPathTransform);
+			}
+		},
+		Arrange$1: function() {
+			this.Arrange(new $System_Windows_Rect(this.get_AdornedElement().get_RenderSize()));
+			this.$visualPathTransform.$SetValue$1();
+		}
+	}, $System_Windows_FrameworkElement, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	ss.initClass($System_Windows_Controls_AdornerLayer, $asm, {
+		OnVisualParentChanged: function(oldVisualParent, newVisualParent) {
+			$System_Windows_FrameworkElement.prototype.OnVisualParentChanged.call(this, oldVisualParent, newVisualParent);
+			if (ss.isValue(oldVisualParent)) {
+				ss.cast(oldVisualParent, $System_Windows_UIElement).remove_LayoutUpdated(ss.mkdel(this, this.$OnParentLayoutUpdated));
+			}
+			if (ss.isValue(newVisualParent)) {
+				ss.cast(newVisualParent, $System_Windows_UIElement).add_LayoutUpdated(ss.mkdel(this, this.$OnParentLayoutUpdated));
+			}
+		},
+		$OnParentLayoutUpdated: function(sender, e) {
 			var $t1 = this.get_VisualChildren();
 			for (var $t2 = 0; $t2 < $t1.length; $t2++) {
 				var adorner = $t1[$t2];
-				adorner.Arrange(this.$adornersBounds.get_item(adorner));
+				adorner.Arrange$1();
 			}
-			return finalSize;
 		},
 		Add: function(adorner) {
 			this.AddLogicalChild(adorner);
 			this.AddVisualChild(adorner);
-			this.$adornersBounds.add(adorner, this.$GetAdornerBounds(adorner));
 			this.InvalidateArrange();
 		},
 		Remove: function(adorner) {
 			this.RemoveVisualChild(adorner);
 			this.RemoveLogicalChild(adorner);
-			this.$adornersBounds.remove(adorner);
-		},
-		OnVisualParentChanged: function(oldVisualParent, newVisualParent) {
-			$System_Windows_FrameworkElement.prototype.OnVisualParentChanged.call(this, oldVisualParent, newVisualParent);
-			if (ss.isInstanceOfType(oldVisualParent, $System_Windows_UIElement)) {
-				ss.cast(oldVisualParent, $System_Windows_UIElement).remove_LayoutUpdated(ss.mkdel(this, this.$OnParentLayoutUpdated));
-			}
-			if (ss.isInstanceOfType(newVisualParent, $System_Windows_UIElement)) {
-				ss.cast(newVisualParent, $System_Windows_UIElement).add_LayoutUpdated(ss.mkdel(this, this.$OnParentLayoutUpdated));
-			}
-		},
-		$OnParentLayoutUpdated: function(sender, e) {
-			this.$SetAdornersBounds();
-		},
-		$SetAdornersBounds: function() {
-			var isInvalidated = false;
-			var $t1 = this.get_VisualChildren();
-			for (var $t2 = 0; $t2 < $t1.length; $t2++) {
-				var adorner = $t1[$t2];
-				var newBounds = this.$GetAdornerBounds(adorner);
-				var oldBounds = {};
-				if (!this.$adornersBounds.tryGetValue(adorner, oldBounds) || !$System_Windows_RectExtensions.IsClose(newBounds, oldBounds.$)) {
-					this.$adornersBounds.set_item(adorner, newBounds);
-					isInvalidated = true;
-				}
-			}
-			if (isInvalidated) {
-				this.InvalidateArrange();
-				this.UpdateLayout();
-			}
-		},
-		$GetAdornerBounds: function(adorner) {
-			return new $System_Windows_Rect.$ctor2(this.PointFromRoot(adorner.get_AdornedElement().PointToRoot($System_Windows_Point.Zero)), adorner.get_AdornedElement().get_VisualSize());
 		}
-	}, $System_Windows_FrameworkElement, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_FrameworkElement, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initClass($System_Windows_Controls_Decorator, $asm, {
 		get_Child: function() {
 			return this.$child;
@@ -14572,7 +15556,7 @@
 			}
 			return finalSize;
 		}
-	}, $System_Windows_FrameworkElement, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_FrameworkElement, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initClass($System_Windows_Controls_Border, $asm, {
 		get_Background: function() {
 			return ss.cast(this.GetValue($System_Windows_Controls_Border.BackgroundProperty), $System_Windows_Media_Brush);
@@ -14653,7 +15637,7 @@
 		HitTestOverride: function(position) {
 			return $System_Windows_SizeExtensions.Contains(this.get_VisualSize(), position) && (ss.isValue(this.get_Background()) || ss.isValue(this.get_BorderBrush()) && $System_Windows_Controls_Border.$IsOverBorder(position, this.get_VisualSize(), this.get_BorderThickness(), this.get_CornerRadius()));
 		}
-	}, $System_Windows_Controls_Decorator, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_Controls_Decorator, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initClass($System_Windows_Controls_Primitives_ButtonBase, $asm, {
 		add_Click: function(value) {
 			this.AddHandler($System_Windows_Controls_Primitives_ButtonBase.ClickEvent, value, false);
@@ -14673,13 +15657,28 @@
 		set_IsPressed: function(value) {
 			this.SetValue($System_Windows_Controls_Primitives_ButtonBase.IsPressedProperty, value, 11);
 		},
+		get_Command: function() {
+			return ss.cast(this.GetValue($System_Windows_Controls_Primitives_ButtonBase.CommandProperty), System.Windows.Input.ICommand);
+		},
+		set_Command: function(value) {
+			this.SetValue($System_Windows_Controls_Primitives_ButtonBase.CommandProperty, value, 11);
+		},
+		get_CommandParameter: function() {
+			return this.GetValue($System_Windows_Controls_Primitives_ButtonBase.CommandParameterProperty);
+		},
+		set_CommandParameter: function(value) {
+			this.SetValue($System_Windows_Controls_Primitives_ButtonBase.CommandParameterProperty, value, 11);
+		},
 		RaiseClick: function() {
 			var e = new $System_Windows_RoutedEventArgs($System_Windows_Controls_Primitives_ButtonBase.ClickEvent, this);
 			this.RaiseEvent(e);
 			return e.get_Handled();
 		},
 		OnClick: function(e) {
-			//
+			var command = this.get_Command();
+			if (ss.isValue(command)) {
+				command.Execute(this.get_CommandParameter());
+			}
 		},
 		OnIsPressedChanged: function(e) {
 			//
@@ -14761,9 +15760,21 @@
 		},
 		$GetFocusState: function() {
 			return (this.get_IsFocused() ? $System_Windows_VisualStates.FocusedState : $System_Windows_VisualStates.UnfocusedState);
+		},
+		$OnCommandChanged: function(oldValue, newValue) {
+			if (ss.isValue(oldValue)) {
+				oldValue.remove_CanExecuteChanged(ss.mkdel(this, this.$UpdateCommandStatus));
+			}
+			if (ss.isValue(newValue)) {
+				newValue.add_CanExecuteChanged(ss.mkdel(this, this.$UpdateCommandStatus));
+				this.$UpdateCommandStatus(this, ss.EventArgs.Empty);
+			}
+		},
+		$UpdateCommandStatus: function(sender, e) {
+			this.set_IsEnabled(this.get_Command().CanExecute(this.get_CommandParameter()));
 		}
-	}, $System_Windows_Controls_ContentControl, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
-	ss.initClass($System_Windows_Controls_Button, $asm, {}, $System_Windows_Controls_Primitives_ButtonBase, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
+	}, $System_Windows_Controls_ContentControl, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
+	ss.initClass($System_Windows_Controls_Button, $asm, {}, $System_Windows_Controls_Primitives_ButtonBase, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
 	ss.initClass($System_Windows_Controls_Panel, $asm, {
 		get_Children: function() {
 			return this.$5$ChildrenField;
@@ -14850,7 +15861,7 @@
 		$OnBackgroundChanged: function(e) {
 			this.set_VisualBackground(this.get_Background());
 		}
-	}, $System_Windows_FrameworkElement, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_FrameworkElement, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initClass($System_Windows_Controls_Canvas, $asm, {
 		MeasureOverride: function(availableSize) {
 			var $t1 = this.get_Children().getEnumerator();
@@ -14881,7 +15892,7 @@
 			}
 			return finalSize;
 		}
-	}, $System_Windows_Controls_Panel, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_Controls_Panel, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initClass($System_Windows_Controls_Primitives_ToggleButton, $asm, {
 		add_Checked: function(value) {
 			this.AddHandler($System_Windows_Controls_Primitives_ToggleButton.CheckedEvent, value, false);
@@ -14945,8 +15956,8 @@
 			}
 			return $System_Windows_VisualStates.IndeterminateState;
 		}
-	}, $System_Windows_Controls_Primitives_ButtonBase, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
-	ss.initClass($System_Windows_Controls_CheckBox, $asm, {}, $System_Windows_Controls_Primitives_ToggleButton, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
+	}, $System_Windows_Controls_Primitives_ButtonBase, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
+	ss.initClass($System_Windows_Controls_CheckBox, $asm, {}, $System_Windows_Controls_Primitives_ToggleButton, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
 	ss.initClass($System_Windows_Controls_ColumnDefinition, $asm, {
 		get_Width: function() {
 			return ss.cast(this.GetValue($System_Windows_Controls_ColumnDefinition.WidthProperty), $System_Windows_Controls_GridLength);
@@ -14970,7 +15981,7 @@
 			return ss.unbox(ss.cast(this.$actualWidthValueEntry.get_Value(), Number));
 		},
 		set_ActualWidth: function(value) {
-			this.$actualWidthValueEntry.SetBaseValue(11, value);
+			$System_Windows_DependencyPropertyValueEntryExtensions.SetBaseValue(this.$actualWidthValueEntry, 11, value);
 		},
 		get_$ActualLength: function() {
 			return this.get_ActualWidth();
@@ -14987,7 +15998,7 @@
 		get_$Length: function() {
 			return this.get_Width();
 		}
-	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Controls_$IDefinitionBase]);
+	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Controls_$IDefinitionBase]);
 	ss.initClass($System_Windows_Controls_ContentPresenter, $asm, {
 		get_Content: function() {
 			return this.GetValue($System_Windows_Controls_ContentPresenter.ContentProperty);
@@ -15056,10 +16067,10 @@
 		},
 		$FindTemplate: function() {
 			if (ss.isNullOrUndefined(this.get_Content())) {
-				return $System_Windows_FrameworkTemplate.Empty;
+				return null;
 			}
 			if (ss.isInstanceOfType(this.get_Content(), $System_Windows_UIElement)) {
-				return new $System_$Windows_Controls_ContentPresenter$UIElementTemplate(ss.cast(this.get_Content(), $System_Windows_UIElement));
+				return ((ss.isInstanceOfType(this.get_$Template(), $System_$Windows_Controls_ContentPresenter$UIElementTemplate) && ss.referenceEquals(ss.cast(this.get_$Template(), $System_$Windows_Controls_ContentPresenter$UIElementTemplate).get_$Content(), this.get_Content())) ? this.get_$Template() : new $System_$Windows_Controls_ContentPresenter$UIElementTemplate(ss.cast(this.get_Content(), $System_Windows_UIElement)));
 			}
 			if (ss.isValue(this.get_ContentTemplate())) {
 				return this.get_ContentTemplate();
@@ -15107,7 +16118,7 @@
 			}
 			this.ClearValue($System_Windows_Controls_ContentPresenter.ContentProperty, 11);
 		}
-	}, $System_Windows_FrameworkElement, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
+	}, $System_Windows_FrameworkElement, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
 	ss.initClass($System_Windows_Controls_ControlPropertyMetadata, $asm, {
 		get_AffectsVisualState: function() {
 			return this.$3$AffectsVisualStateField;
@@ -15209,7 +16220,7 @@
 			}
 			return finalSize;
 		}
-	}, $System_Windows_Controls_Panel, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_Controls_Panel, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initEnum($System_Windows_Controls_ExpandDirection, $asm, { Down: 0, Up: 1, Left: 2, Right: 3 });
 	ss.initClass($System_Windows_Controls_HeaderedContentControl, $asm, {
 		get_Header: function() {
@@ -15241,7 +16252,7 @@
 			this.RemoveLogicalChild(e.get_OldValue());
 			this.AddLogicalChild(e.get_NewValue());
 		}
-	}, $System_Windows_Controls_ContentControl, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
+	}, $System_Windows_Controls_ContentControl, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
 	ss.initClass($System_Windows_Controls_Expander, $asm, {
 		add_Expanded: function(value) {
 			this.AddHandler($System_Windows_Controls_Expander.ExpandedEvent, value, false);
@@ -15291,7 +16302,7 @@
 		$GetExpansionState: function() {
 			return (this.get_IsExpanded() ? $System_Windows_VisualStates.ExpandedState : $System_Windows_VisualStates.CollapsedState);
 		}
-	}, $System_Windows_Controls_HeaderedContentControl, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
+	}, $System_Windows_Controls_HeaderedContentControl, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
 	ss.initEnum($System_Windows_Controls_FlowDirection, $asm, { LeftToRight: 0, TopDown: 1, RightToLeft: 2, BottomUp: 3 });
 	ss.initClass($System_Windows_Controls_Grid, $asm, {
 		get_RowDefinitions: function() {
@@ -15432,7 +16443,7 @@
 			rowDefinition.set_$ActualLength(finalHeight);
 			return finalSize;
 		}
-	}, $System_Windows_Controls_Panel, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_Controls_Panel, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initClass($System_Windows_Controls_GridLength, $asm, {
 		get_GridUnitType: function() {
 			return this.$1$GridUnitTypeField;
@@ -15457,7 +16468,7 @@
 		},
 		equals: function(obj) {
 			var other = ss.safeCast(obj, $System_Windows_Controls_GridLength);
-			return ss.referenceEquals(this, other) || !ss.referenceEquals(other, null) && this.get_GridUnitType() === other.get_GridUnitType() && ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Number]).Default.areEqual(this.get_Value(), other.get_Value());
+			return ss.referenceEquals(this, other) || !ss.referenceEquals(other, null) && this.get_GridUnitType() === other.get_GridUnitType() && Granular.Compatibility.EqualityComparer.Double.areEqual(this.get_Value(), other.get_Value());
 		},
 		getHashCode: function() {
 			return ss.getHashCode(this.get_GridUnitType()) ^ ss.getHashCode(this.get_Value());
@@ -15556,7 +16567,7 @@
 		$OnBitmapSourceDownloadFailed: function(sender, e) {
 			this.RaiseEvent(new $System_Windows_RoutedEventArgs($System_Windows_Controls_Image.ImageFailedEvent, this));
 		}
-	}, $System_Windows_FrameworkElement, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_FrameworkElement, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initClass($System_Windows_Controls_InnerCollectionView, $asm, {
 		add_CollectionChanged: function(value) {
 			this.$1$CollectionChangedField = ss.delegateCombine(this.$1$CollectionChangedField, value);
@@ -16091,7 +17102,7 @@
 				this.get_Items().SetItemsSource(this.get_ItemsSource());
 			}
 		}
-	}, $System_Windows_Controls_Control, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IGeneratorHost]);
+	}, $System_Windows_Controls_Control, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IGeneratorHost]);
 	ss.initClass($System_Windows_Controls_ItemsPanelTemplate, $asm, {}, $System_Windows_FrameworkTemplate, [$System_Windows_IFrameworkTemplate]);
 	ss.initClass($System_Windows_Controls_ItemsPresenter, $asm, {
 		get_ItemContainerGenerator: function() {
@@ -16149,7 +17160,7 @@
 			this.ApplyTemplate();
 			this.set_Panel(ss.safeCast(Enumerable.from(this.get_VisualChildren()).firstOrDefault(null, ss.getDefaultValue($System_Windows_Media_Visual)), $System_Windows_Controls_Panel));
 		}
-	}, $System_Windows_FrameworkElement, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_FrameworkElement, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initClass($System_Windows_Controls_Primitives_Selector, $asm, {
 		add_SelectionChanged: function(value) {
 			this.AddHandler($System_Windows_Controls_Primitives_Selector.SelectionChangedEvent, value, false);
@@ -16225,7 +17236,7 @@
 		$OnSelectedValueChanged: function(e) {
 			//
 		}
-	}, $System_Windows_Controls_ItemsControl, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IGeneratorHost]);
+	}, $System_Windows_Controls_ItemsControl, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IGeneratorHost]);
 	ss.initClass($System_Windows_Controls_ListBox, $asm, {
 		get_SelectedItems: function() {
 			return ss.cast(this.GetValue$1($System_Windows_Controls_ListBox.$SelectedItemsPropertyKey), ss.IEnumerable);
@@ -16314,7 +17325,7 @@
 				itemContainer.SetCurrentValue($System_Windows_Controls_Primitives_Selector.IsSelectedProperty, ss.referenceEquals(itemContainer, item) && isSelected);
 			}
 		}
-	}, $System_Windows_Controls_Primitives_Selector, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IGeneratorHost]);
+	}, $System_Windows_Controls_Primitives_Selector, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IGeneratorHost]);
 	ss.initClass($System_Windows_Controls_ListBoxItem, $asm, {
 		add_Selected: function(value) {
 			this.AddHandler($System_Windows_Controls_ListBoxItem.SelectedEvent, value, false);
@@ -16366,7 +17377,7 @@
 		$GetFocusState: function() {
 			return (this.get_IsFocused() ? $System_Windows_VisualStates.FocusedState : $System_Windows_VisualStates.UnfocusedState);
 		}
-	}, $System_Windows_Controls_ContentControl, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
+	}, $System_Windows_Controls_ContentControl, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
 	ss.initEnum($System_Windows_Controls_Orientation, $asm, { Horizontal: 0, Vertical: 1 });
 	ss.initClass($System_Windows_Controls_PasswordBox, $asm, {
 		add_PasswordChanged: function(value) {
@@ -16431,7 +17442,7 @@
 		$GetFocusState: function() {
 			return (this.get_IsFocused() ? $System_Windows_VisualStates.FocusedState : $System_Windows_VisualStates.UnfocusedState);
 		}
-	}, $System_Windows_Controls_Control, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_Controls_Control, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initClass($System_Windows_Controls_PopupLayer, $asm, {
 		add_ClosePopupRequest: function(value) {
 			this.$5$ClosePopupRequestField = ss.delegateCombine(this.$5$ClosePopupRequestField, value);
@@ -16479,7 +17490,7 @@
 		$BringToFront: function(child) {
 			this.SetVisualChildIndex(child, Enumerable.from(this.get_VisualChildren()).count() - 1);
 		}
-	}, $System_Windows_FrameworkElement, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_FrameworkElement, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initClass($System_Windows_Controls_Primitives_RangeBase, $asm, {
 		add_ValueChanged: function(value) {
 			this.AddHandler($System_Windows_Controls_Primitives_RangeBase.ValueChangedEvent, value, false);
@@ -16544,7 +17555,7 @@
 		$GetFocusState: function() {
 			return (this.get_IsKeyboardFocused() ? $System_Windows_VisualStates.FocusedState : $System_Windows_VisualStates.UnfocusedState);
 		}
-	}, $System_Windows_Controls_Control, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_Controls_Control, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initClass($System_Windows_Controls_ProgressBar, $asm, {
 		get_IsIndeterminate: function() {
 			return ss.unbox(ss.cast(this.GetValue($System_Windows_Controls_ProgressBar.IsIndeterminateProperty), Boolean));
@@ -16677,7 +17688,7 @@
 				$System_Windows_Media_Animation_AnimatableExtensions.ClearAnimationClocks(this.$glow, $System_Windows_FrameworkElement.MarginProperty, null);
 			}
 		}
-	}, $System_Windows_Controls_Primitives_RangeBase, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_Controls_Primitives_RangeBase, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initClass($System_Windows_Controls_RadioButton, $asm, {
 		get_GroupName: function() {
 			return ss.cast(this.GetValue($System_Windows_Controls_RadioButton.GroupNameProperty), String);
@@ -16746,7 +17757,7 @@
 			}
 			return group;
 		}
-	}, $System_Windows_Controls_Primitives_ToggleButton, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
+	}, $System_Windows_Controls_Primitives_ToggleButton, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
 	ss.initClass($System_Windows_Controls_RowDefinition, $asm, {
 		get_Height: function() {
 			return ss.cast(this.GetValue($System_Windows_Controls_RowDefinition.HeightProperty), $System_Windows_Controls_GridLength);
@@ -16770,7 +17781,7 @@
 			return ss.unbox(ss.cast(this.$actualHeightValueEntry.get_Value(), Number));
 		},
 		set_ActualHeight: function(value) {
-			this.$actualHeightValueEntry.SetBaseValue(11, value);
+			$System_Windows_DependencyPropertyValueEntryExtensions.SetBaseValue(this.$actualHeightValueEntry, 11, value);
 		},
 		get_$ActualLength: function() {
 			return this.get_ActualHeight();
@@ -16787,7 +17798,7 @@
 		get_$Length: function() {
 			return this.get_Height();
 		}
-	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Controls_$IDefinitionBase]);
+	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Controls_$IDefinitionBase]);
 	ss.initEnum($System_Windows_Controls_ScrollBarVisibility, $asm, { Disabled: 0, Auto: 1, Hidden: 2, Visible: 3 });
 	ss.initClass($System_Windows_Controls_ScrollChangedEventArgs, $asm, {
 		get_Offset: function() {
@@ -16932,7 +17943,7 @@
 		$OnCanContentScrollChanged: function(e) {
 			this.$delegateScrollInfo = this.$GetDelegateScrollInfo();
 		}
-	}, $System_Windows_Controls_ContentPresenter, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer, $System_Windows_Controls_Primitives_IScrollInfo, $System_Windows_Controls_IAdornerLayerHost]);
+	}, $System_Windows_Controls_ContentPresenter, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer, $System_Windows_Controls_Primitives_IScrollInfo, $System_Windows_Controls_IAdornerLayerHost]);
 	ss.initClass($System_Windows_Controls_ScrollEventArgs, $asm, {
 		get_NewValue: function() {
 			return this.$3$NewValueField;
@@ -17158,7 +18169,7 @@
 			this.$SetScrollInfoSizes();
 			return this.get_TemplateChild().get_DesiredSize();
 		}
-	}, $System_Windows_Controls_ContentControl, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
+	}, $System_Windows_Controls_ContentControl, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
 	ss.initClass($System_Windows_Controls_SelectionChangedEventArgs, $asm, {
 		get_AddedItems: function() {
 			return this.$3$AddedItemsField;
@@ -17255,7 +18266,7 @@
 		$ArrangeChild: function(child, finalMainStart, finalCrossStart, finalMainLength, finalCrossLength) {
 			child.Arrange(((this.get_Orientation() === 0) ? new $System_Windows_Rect.$ctor3(finalMainStart, finalCrossStart, finalMainLength, finalCrossLength) : new $System_Windows_Rect.$ctor3(finalCrossStart, finalMainStart, finalCrossLength, finalMainLength)));
 		}
-	}, $System_Windows_Controls_Panel, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_Controls_Panel, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initEnum($System_Windows_Controls_TextAlignment, $asm, { Left: 0, Right: 1, Center: 2, Justify: 3 });
 	ss.initClass($System_Windows_Controls_TextBlock, $asm, {
 		get_Text: function() {
@@ -17408,7 +18419,7 @@
 				$t1.dispose();
 			}
 		}
-	}, $System_Windows_FrameworkElement, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_FrameworkElement, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initClass($System_Windows_Controls_Primitives_TextBoxBase, $asm, {
 		add_SelectionChanged: function(value) {
 			this.AddHandler($System_Windows_Controls_Primitives_TextBoxBase.SelectionChangedEvent, value, false);
@@ -17476,7 +18487,7 @@
 		$GetFocusState: function() {
 			return (this.get_IsFocused() ? $System_Windows_VisualStates.FocusedState : $System_Windows_VisualStates.UnfocusedState);
 		}
-	}, $System_Windows_Controls_Control, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_Controls_Control, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initClass($System_Windows_Controls_TextBox, $asm, {
 		get_Text: function() {
 			return ss.cast(this.GetValue($System_Windows_Controls_TextBox.TextProperty), String);
@@ -17582,7 +18593,7 @@
 			}
 			this.$textBoxView.$ProcessRenderElementKeyEvent(e);
 		}
-	}, $System_Windows_Controls_Primitives_TextBoxBase, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_Controls_Primitives_TextBoxBase, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initClass($System_Windows_Controls_TextChangedEventArgs, $asm, {
 		InvokeEventHandler: function(handler, target) {
 			if (ss.isValue(handler)) {
@@ -17682,7 +18693,7 @@
 			return ss.getEnumerator(this.$children);
 		}
 	}, null, [ss.IEnumerable, ss.IEnumerable, ss.ICollection, ss.IList, Granular.Collections.INotifyCollectionChanged]);
-	ss.initClass($System_Windows_Controls_UserControl, $asm, {}, $System_Windows_Controls_ContentControl, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
+	ss.initClass($System_Windows_Controls_UserControl, $asm, {}, $System_Windows_Controls_ContentControl, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
 	ss.initClass($System_Windows_Controls_WrapPanel, $asm, {
 		get_Orientation: function() {
 			return ss.cast(this.GetValue($System_Windows_Controls_WrapPanel.OrientationProperty), ss.Int32);
@@ -17797,7 +18808,7 @@
 		$GetCrossLength: function(size) {
 			return ((this.get_Orientation() === 0) ? size.get_Height() : size.get_Width());
 		}
-	}, $System_Windows_Controls_Panel, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_Controls_Panel, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initEnum($System_Windows_Controls_Primitives_ClickMode, $asm, { Release: 0, Press: 1 });
 	ss.initClass($System_Windows_Controls_Primitives_DragCompletedEventArgs, $asm, {
 		get_IsCanceled: function() {
@@ -17979,7 +18990,7 @@
 			}
 			return new $System_Windows_Rect.$ctor2(this.get_$PopupLayer().PointFromRoot($System_Windows_ApplicationHostExtensions.GetMouseDeviceFromElement($System_Windows_ApplicationHost.get_Current(), this.get_$PopupLayer()).get_Position()), new $System_Windows_Size(12, 19));
 		}
-	}, $System_Windows_FrameworkElement, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_FrameworkElement, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initClass($System_Windows_Controls_Primitives_RepeatButton, $asm, {
 		get_Delay: function() {
 			return ss.unbox(ss.cast(this.GetValue($System_Windows_Controls_Primitives_RepeatButton.DelayProperty), ss.Int32));
@@ -18011,7 +19022,7 @@
 				this.RaiseClick();
 			}
 		}
-	}, $System_Windows_Controls_Primitives_ButtonBase, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
+	}, $System_Windows_Controls_Primitives_ButtonBase, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer, $System_Windows_Controls_IItemContainer]);
 	ss.initClass($System_Windows_Controls_Primitives_ScrollBar, $asm, {
 		add_Scroll: function(value) {
 			this.AddHandler($System_Windows_Controls_Primitives_ScrollBar.ScrollEvent, value, false);
@@ -18191,7 +19202,7 @@
 		$RaiseScrollEvent: function(scrollEventType) {
 			this.RaiseEvent(new $System_Windows_Controls_ScrollEventArgs($System_Windows_Controls_Primitives_ScrollBar.ScrollEvent, this, scrollEventType, this.get_Value()));
 		}
-	}, $System_Windows_Controls_Primitives_RangeBase, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_Controls_Primitives_RangeBase, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initClass($System_Windows_Controls_Primitives_ScrollInfoExtensions, $asm, {});
 	ss.initClass($System_Windows_Controls_Primitives_Thumb, $asm, {
 		add_DragStarted: function(value) {
@@ -18221,7 +19232,7 @@
 		OnMouseDown: function(e) {
 			if (e.get_ChangedButton() === 0) {
 				e.get_MouseDevice().Capture(this);
-				this.$dragStartPosition = e.get_AbsolutePosition();
+				this.$dragStartPosition = e.GetPosition(ss.cast(this.get_VisualParent(), $System_Windows_IInputElement));
 				this.set_IsDragging(true);
 				var dragStartedEventArgs = new $System_Windows_Controls_Primitives_DragStartedEventArgs($System_Windows_Controls_Primitives_Thumb.DragStartedEvent, this);
 				this.RaiseEvent(dragStartedEventArgs);
@@ -18230,7 +19241,7 @@
 		},
 		OnMouseMove: function(e) {
 			if (this.get_IsDragging()) {
-				var DragDeltaEventArgs = new $System_Windows_Controls_Primitives_DragDeltaEventArgs($System_Windows_Controls_Primitives_Thumb.DragDeltaEvent, this, $System_Windows_Point.op_Subtraction(e.get_AbsolutePosition(), this.$dragStartPosition));
+				var DragDeltaEventArgs = new $System_Windows_Controls_Primitives_DragDeltaEventArgs($System_Windows_Controls_Primitives_Thumb.DragDeltaEvent, this, $System_Windows_Point.op_Subtraction(e.GetPosition(ss.cast(this.get_VisualParent(), $System_Windows_IInputElement)), this.$dragStartPosition));
 				this.RaiseEvent(DragDeltaEventArgs);
 				e.set_Handled(DragDeltaEventArgs.get_Handled());
 			}
@@ -18263,7 +19274,7 @@
 		$GetFocusState: function() {
 			return (this.get_IsKeyboardFocused() ? $System_Windows_VisualStates.FocusedState : $System_Windows_VisualStates.UnfocusedState);
 		}
-	}, $System_Windows_Controls_Control, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_Controls_Control, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initClass($System_Windows_Controls_Primitives_Track, $asm, {
 		get_Orientation: function() {
 			return ss.cast(this.GetValue($System_Windows_Controls_Primitives_Track.OrientationProperty), ss.Int32);
@@ -18383,7 +19394,72 @@
 		$ArrangeChild: function(child, finalMainStart, finalCrossStart, finalMainLength, finalCrossLength) {
 			child.Arrange(((this.get_Orientation() === 0) ? new $System_Windows_Rect.$ctor3(finalMainStart, finalCrossStart, Granular.Extensions.DoubleExtensions.Max(finalMainLength, 0), Granular.Extensions.DoubleExtensions.Max(finalCrossLength, 0)) : new $System_Windows_Rect.$ctor3(finalCrossStart, finalMainStart, Granular.Extensions.DoubleExtensions.Max(finalCrossLength, 0), Granular.Extensions.DoubleExtensions.Max(finalMainLength, 0))));
 		}
-	}, $System_Windows_FrameworkElement, [$System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	}, $System_Windows_FrameworkElement, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
+	ss.initClass($System_Windows_Controls_Primitives_UniformGrid, $asm, {
+		get_Rows: function() {
+			return ss.unbox(ss.cast(this.GetValue($System_Windows_Controls_Primitives_UniformGrid.RowsProperty), ss.Int32));
+		},
+		set_Rows: function(value) {
+			this.SetValue($System_Windows_Controls_Primitives_UniformGrid.RowsProperty, value, 11);
+		},
+		get_Columns: function() {
+			return ss.unbox(ss.cast(this.GetValue($System_Windows_Controls_Primitives_UniformGrid.ColumnsProperty), ss.Int32));
+		},
+		set_Columns: function(value) {
+			this.SetValue($System_Windows_Controls_Primitives_UniformGrid.ColumnsProperty, value, 11);
+		},
+		get_FirstColumn: function() {
+			return ss.unbox(ss.cast(this.GetValue($System_Windows_Controls_Primitives_UniformGrid.FirstColumnProperty), ss.Int32));
+		},
+		set_FirstColumn: function(value) {
+			this.SetValue($System_Windows_Controls_Primitives_UniformGrid.FirstColumnProperty, value, 11);
+		},
+		MeasureOverride: function(availableSize) {
+			var cellsCount = this.get_FirstColumn() + Enumerable.from(this.get_Children()).where(ss.mkdel(this, function(child) {
+				return child.get_Visibility() !== 2;
+			})).count();
+			if (cellsCount === 0) {
+				return $System_Windows_Size.Zero;
+			}
+			this.$actualRows = ((this.get_Rows() > 0) ? this.get_Rows() : ss.Int32.trunc(Granular.Extensions.DoubleExtensions.Max(Math.ceil(((this.get_Columns() > 0) ? (cellsCount / this.get_Columns()) : Math.sqrt(cellsCount))), 1)));
+			this.$actualColumns = ((this.get_Columns() > 0) ? this.get_Columns() : ss.Int32.trunc(Granular.Extensions.DoubleExtensions.Max(Math.ceil(cellsCount / this.$actualRows), 1)));
+			var availableCellSize = new $System_Windows_Size(availableSize.get_Width() / this.$actualColumns, availableSize.get_Height() / this.$actualRows);
+			var desiredCellSize = $System_Windows_Size.Zero;
+			var $t1 = this.get_Children().getEnumerator();
+			try {
+				while ($t1.moveNext()) {
+					var child1 = $t1.current();
+					child1.Measure(availableCellSize);
+					desiredCellSize = $System_Windows_SizeExtensions.Max(desiredCellSize, child1.get_DesiredSize());
+				}
+			}
+			finally {
+				$t1.dispose();
+			}
+			return new $System_Windows_Size(desiredCellSize.get_Width() * this.$actualColumns, desiredCellSize.get_Height() * this.$actualRows);
+		},
+		ArrangeOverride: function(finalSize) {
+			var cellWidth = finalSize.get_Width() / this.$actualColumns;
+			var cellHeight = finalSize.get_Height() / this.$actualRows;
+			var cellIndex = this.get_FirstColumn();
+			var $t1 = this.get_Children().getEnumerator();
+			try {
+				while ($t1.moveNext()) {
+					var child = $t1.current();
+					var columnIndex = cellIndex % this.$actualColumns;
+					var rowIndex = ss.Int32.div(cellIndex, this.$actualColumns);
+					child.Arrange(new $System_Windows_Rect.$ctor3(columnIndex * cellWidth, rowIndex * cellHeight, cellWidth, cellHeight));
+					if (child.get_Visibility() !== 2) {
+						cellIndex++;
+					}
+				}
+			}
+			finally {
+				$t1.dispose();
+			}
+			return finalSize;
+		}
+	}, $System_Windows_Controls_Panel, [$System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_IInputElement, $System_Windows_IResourceContainer]);
 	ss.initClass($System_Windows_Data_Binding, $asm, {
 		get_Path: function() {
 			return this.$1$PathField;
@@ -18455,7 +19531,7 @@
 			return this;
 		},
 		CreateExpression: function(dependencyObject, dependencyProperty) {
-			return new $System_Windows_Data_BindingExpression(dependencyObject, dependencyProperty, $System_Windows_Data_Binding.$GetDataContextRelativePath(this.get_Path() || $System_Windows_PropertyPath.Empty, this.get_Source(), this.get_RelativeSource(), this.get_ElementName()), this.get_Source(), this.get_RelativeSource(), this.get_ElementName(), this.get_Mode(), this.get_UpdateSourceTrigger(), this.get_Converter() || $System_Windows_Data_Binding.$GetStringFormatConverter(this.get_StringFormat()), this.get_ConverterParameter(), this.get_FallbackValue(), this.get_TargetNullValue());
+			return new $System_Windows_Data_BindingExpression(dependencyObject, dependencyProperty, this.get_Path(), this.get_Source(), this.get_RelativeSource(), this.get_ElementName(), this.get_Mode(), this.get_UpdateSourceTrigger(), this.get_Converter() || $System_Windows_Data_Binding.$GetStringFormatConverter(this.get_StringFormat()), this.get_ConverterParameter(), this.get_FallbackValue(), this.get_TargetNullValue());
 		}
 	}, null, [$System_Windows_Markup_IMarkupExtension, $System_Windows_IExpressionProvider]);
 	ss.initClass($System_Windows_Data_BindingExpression, $asm, {
@@ -18548,10 +19624,10 @@
 		},
 		dispose: function() {
 			this.$sourceExpression.dispose();
-			if (ss.isInstanceOfType(this.get_Target(), $System_Windows_Media_Visual)) {
-				ss.cast(this.get_Target(), $System_Windows_Media_Visual).remove_VisualAncestorChanged(ss.mkdel(this, this.$OnTargetVisualAncestorChanged));
+			if (ss.isInstanceOfType(this.$sourceObserver, ss.IDisposable)) {
+				ss.cast(this.$sourceObserver, ss.IDisposable).dispose();
 			}
-			if (ss.isInstanceOfType(this.get_Target(), $System_Windows_UIElement)) {
+			if (this.get_UpdateSourceTrigger() === 2 && this.$isSourceUpdateMode && ss.isInstanceOfType(this.get_Target(), $System_Windows_UIElement)) {
 				ss.cast(this.get_Target(), $System_Windows_UIElement).remove_LostFocus(ss.mkdel(this, this.$OnLostFocus));
 			}
 			this.set_Target(null);
@@ -18559,19 +19635,11 @@
 			this.set_Status(2);
 		},
 		SetValue: function(value) {
-			this.$targetValue.set_Value(value);
+			this.$targetValue.set_BaseValue(value);
 			return true;
 		},
-		$OnTargetVisualAncestorChanged: function(sender, e) {
-			var $t2 = this.$sourceExpression;
-			var $t1 = this.get_Source();
-			if (ss.isNullOrUndefined($t1)) {
-				$t1 = $System_Windows_Data_BindingExpression.$GetRelativeSource(this.get_Target(), this.get_RelativeSource(), this.get_ElementName());
-			}
-			$t2.SetBaseValue($t1);
-		},
 		$UpdateTargetOnSourceChanged: function() {
-			if ($System_Windows_ReentrancyLock.op_Implicit(this.$disableTargetUpdate)) {
+			if (Granular.ReentrancyLock.op_Implicit(this.$disableTargetUpdate)) {
 				return;
 			}
 			{
@@ -18597,11 +19665,11 @@
 			else if (!ss.referenceEquals(value, $System_Windows_Data_ObservableValue.UnsetValue) && ss.isValue(this.get_Converter())) {
 				value = this.get_Converter().Convert(value, this.get_TargetProperty().get_PropertyType(), this.get_ConverterParameter());
 			}
-			this.$targetValue.set_Value(value);
+			this.$targetValue.set_BaseValue(value);
 			this.set_Status((!ss.referenceEquals(value, $System_Windows_Data_ObservableValue.UnsetValue) ? 1 : 3));
 		},
 		$UpdateSourceOnTargetChanged: function() {
-			if ($System_Windows_ReentrancyLock.op_Implicit(this.$disableSourceUpdate)) {
+			if (Granular.ReentrancyLock.op_Implicit(this.$disableSourceUpdate)) {
 				return;
 			}
 			{
@@ -18625,11 +19693,11 @@
 				this.set_Status(4);
 			}
 		},
-		$OnTargetValueChanged: function(sender, e) {
+		$OnTargetValueChanged: function(sender, oldValue, newValue) {
 			if (this.get_UpdateSourceTrigger() === 0 && this.$isSourceUpdateMode) {
 				this.$UpdateSourceOnTargetChanged();
 			}
-			Granular.Extensions.EventHandlerExtensions.Raise$4($System_Windows_Data_ObservableValueChangedArgs).call(null, this.$1$ValueChangedField, this, e);
+			$System_Windows_Data_ObservableValueChangedEventHandlerExtensions.Raise(this.$1$ValueChangedField, this, oldValue, newValue);
 		},
 		$OnLostFocus: function(sender, e) {
 			this.$UpdateSourceOnTargetChanged();
@@ -18654,14 +19722,14 @@
 		SetBaseValue: function(baseValue) {
 			this.$baseValue = baseValue;
 			this.$RegisterNotifiers();
-			this.$observableValue.set_Value(this.$GetValue());
+			this.$observableValue.set_BaseValue(this.$GetValue());
 		},
 		TrySetValue: function(value) {
 			if ($System_Windows_Data_ObservableValue.IsNullOrUnset(this.$baseValue) || ss.isNullOrUndefined(this.$propertySetMethod)) {
 				return false;
 			}
 			ss.midel(this.$propertySetMethod, this.$baseValue).apply(null, Enumerable.from(this.$index).concat([value]).toArray());
-			this.$observableValue.set_Value(this.$GetValue());
+			this.$observableValue.set_BaseValue(this.$GetValue());
 			return true;
 		},
 		$GetValue: function() {
@@ -18690,11 +19758,11 @@
 		},
 		$OnNotifierPropertyChanged: function(sender, e) {
 			if (ss.referenceEquals(e.get_PropertyName(), this.$propertyInfo.name)) {
-				this.$observableValue.set_Value(this.$GetValue());
+				this.$observableValue.set_BaseValue(this.$GetValue());
 			}
 		},
 		$OnNotifierCollectionChanged: function(sender, e) {
-			this.$observableValue.set_Value(this.$GetValue());
+			this.$observableValue.set_BaseValue(this.$GetValue());
 		},
 		dispose: function() {
 			if (ss.isValue(this.$currentPropertyNotifier)) {
@@ -18834,16 +19902,16 @@
 			}
 			var oldItem = Enumerable.from(e.get_OldItems()).firstOrDefault(null, ss.getDefaultValue(Object));
 			var oldIndex = Granular.Compatibility.Array.FindIndex(Object).call(null, oldInnerCollection, function(item) {
-				return ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Object]).Default.areEqual(item, oldItem);
+				return Granular.Compatibility.EqualityComparer.Default.areEqual(item, oldItem);
 			});
 			var newItem = Enumerable.from(e.get_NewItems()).firstOrDefault(null, ss.getDefaultValue(Object));
 			var newIndex = Granular.Compatibility.Array.FindIndex(Object).call(null, this.$innerCollection, function(item1) {
-				return ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Object]).Default.areEqual(item1, newItem);
+				return Granular.Compatibility.EqualityComparer.Default.areEqual(item1, newItem);
 			});
 			if (oldIndex === -1 && newIndex === -1 || ss.referenceEquals(oldItem, newItem) && oldIndex === newIndex) {
 				return;
 			}
-			if (ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Object]).Default.areEqual(oldItem, newItem)) {
+			if (Granular.Compatibility.EqualityComparer.Default.areEqual(oldItem, newItem)) {
 				Granular.Collections.NotifyCollectionChangedEventHandlerExtensions.Raise(this.$1$CollectionChangedField, this, Granular.Collections.NotifyCollectionChangedEventArgs.Move(newItem, oldIndex, newIndex));
 			}
 			else if (oldIndex === newIndex) {
@@ -18864,18 +19932,46 @@
 			}).getEnumerator();
 		}
 	}, null, [ss.IEnumerable, ss.IEnumerable, Granular.Collections.INotifyCollectionChanged, ss.makeGenericType(Granular.Collections.IObservableCollection$1, [Object]), $System_Windows_Data_ICollectionView, ss.IDisposable]);
-	ss.initClass($System_Windows_Data_ConstantObservableValue, $asm, {
+	ss.initClass($System_Windows_Data_ContextSourceObserver, $asm, {
 		add_ValueChanged: function(value) {
+			this.$1$ValueChangedField = ss.delegateCombine(this.$1$ValueChangedField, value);
 		},
 		remove_ValueChanged: function(value) {
+			this.$1$ValueChangedField = ss.delegateRemove(this.$1$ValueChangedField, value);
 		},
 		get_Value: function() {
-			return this.$1$ValueField;
+			return this.$observableValue.get_Value();
 		},
-		set_Value: function(value) {
-			this.$1$ValueField = value;
+		dispose: function() {
+			if (ss.isInstanceOfType(this.$target, $System_Windows_IContextElement)) {
+				ss.cast(this.$target, $System_Windows_IContextElement).remove_ContextParentChanged(ss.mkdel(this, this.$OnTargetContextParentChanged));
+			}
+		},
+		GetBaseValue: null,
+		$OnTargetContextParentChanged: function(sender, e) {
+			this.$observableValue.set_BaseValue(this.GetBaseValue());
 		}
-	}, null, [$System_Windows_Data_IObservableValue]);
+	}, null, [$System_Windows_Data_IObservableValue, ss.IDisposable]);
+	ss.initClass($System_Windows_Data_DataContextSourceObserver, $asm, {
+		add_ValueChanged: function(value) {
+			this.$1$ValueChangedField = ss.delegateCombine(this.$1$ValueChangedField, value);
+		},
+		remove_ValueChanged: function(value) {
+			this.$1$ValueChangedField = ss.delegateRemove(this.$1$ValueChangedField, value);
+		},
+		get_Value: function() {
+			return this.$dataContextValue.get_Value();
+		},
+		dispose: function() {
+			if (ss.isInstanceOfType(this.$target, $System_Windows_IContextElement)) {
+				ss.cast(this.$target, $System_Windows_IContextElement).remove_ContextParentChanged(ss.mkdel(this, this.$OnTargetContextParentChanged));
+			}
+			this.$dataContextValue.dispose();
+		},
+		$OnTargetContextParentChanged: function(sender, e) {
+			this.$frameworkElementValue.set_BaseValue($System_Windows_Data_DataContextSourceObserver.$GetFrameworkElementAncestor(this.$target));
+		}
+	}, null, [$System_Windows_Data_IObservableValue, ss.IDisposable]);
 	ss.initClass($System_Windows_Data_DependencyPropertyObserver, $asm, {
 		add_ValueChanged: function(value) {
 			this.$1$ValueChangedField = ss.delegateCombine(this.$1$ValueChangedField, value);
@@ -18892,7 +19988,7 @@
 		SetBaseValue: function(baseValue) {
 			this.$baseValue = baseValue;
 			this.$RegisterDependencyObject();
-			this.$observableValue.set_Value(this.$GetValue());
+			this.$observableValue.set_BaseValue(this.$GetValue());
 		},
 		TrySetValue: function(value) {
 			var dependencyObject = ss.safeCast(this.$baseValue, $System_Windows_DependencyObject);
@@ -18900,7 +19996,7 @@
 				return false;
 			}
 			dependencyObject.SetValue(this.$dependencyProperty, value, 11);
-			this.$observableValue.set_Value(this.$GetValue());
+			this.$observableValue.set_BaseValue(this.$GetValue());
 			return true;
 		},
 		$GetValue: function() {
@@ -18918,7 +20014,7 @@
 		},
 		$OnDependencyObjectPropertyChanged: function(sender, e) {
 			if (ss.referenceEquals(e.get_Property(), this.$dependencyProperty)) {
-				this.$observableValue.set_Value(this.$GetValue());
+				this.$observableValue.set_BaseValue(this.$GetValue());
 			}
 		},
 		dispose: function() {
@@ -18927,6 +20023,11 @@
 			}
 		}
 	}, null, [$System_Windows_Data_IObservableValue, $System_Windows_Data_IPropertyObserver, ss.IDisposable]);
+	ss.initClass($System_Windows_Data_FindAncestorSourceObserver, $asm, {
+		GetBaseValue: function() {
+			return $System_Windows_Data_FindAncestorSourceObserver.GetAncestor(this.$target$1, this.$ancestorType, this.$ancestorLevel);
+		}
+	}, $System_Windows_Data_ContextSourceObserver, [$System_Windows_Data_IObservableValue, ss.IDisposable]);
 	ss.initClass($System_Windows_Data_IndexPropertyObserver, $asm, {
 		add_ValueChanged: function(value) {
 			this.$1$ValueChangedField = ss.delegateCombine(this.$1$ValueChangedField, value);
@@ -18987,12 +20088,12 @@
 				this.$baseObserver.SetBaseValue(baseValue);
 			}
 			else {
-				this.$observableValue.set_Value(baseValue);
+				this.$observableValue.set_BaseValue(baseValue);
 				this.set_ValueType((ss.isValue(baseValue) ? ss.getInstanceType(baseValue) : null));
 			}
 		},
 		TrySetValue: function(value) {
-			return ss.isValue(this.$delegateObserver) && (ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Object]).Default.areEqual(this.$delegateObserver.get_Value(), value) || this.$delegateObserver.TrySetValue(value));
+			return ss.isValue(this.$delegateObserver) && (Granular.Compatibility.EqualityComparer.Default.areEqual(this.$delegateObserver.get_Value(), value) || this.$delegateObserver.TrySetValue(value));
 		},
 		$SetDelegateObserverBaseValue: function() {
 			var baseValue = this.$baseObserver.get_Value();
@@ -19010,14 +20111,14 @@
 			if (ss.isValue(this.$delegateObserver)) {
 				this.set_ValueType(this.$delegateObserver.get_ValueType());
 				this.$delegateObserver.SetBaseValue(baseValue);
-				this.$delegateObserver.add_ValueChanged(ss.mkdel(this, function(sender, e) {
-					this.$observableValue.set_Value(this.$delegateObserver.get_Value());
+				this.$delegateObserver.add_ValueChanged(ss.mkdel(this, function(sender, oldValue, newValue) {
+					this.$observableValue.set_BaseValue(this.$delegateObserver.get_Value());
 				}));
-				this.$observableValue.set_Value(this.$delegateObserver.get_Value());
+				this.$observableValue.set_BaseValue(this.$delegateObserver.get_Value());
 			}
 			else {
 				this.set_ValueType(null);
-				this.$observableValue.set_Value($System_Windows_Data_ObservableValue.UnsetValue);
+				this.$observableValue.set_BaseValue($System_Windows_Data_ObservableValue.UnsetValue);
 			}
 		},
 		dispose: function() {
@@ -19030,62 +20131,7 @@
 		}
 	}, null, [$System_Windows_Data_IObservableValue, ss.IDisposable]);
 	$System_Windows_Data_ObservableExpression.$ctor2.prototype = $System_Windows_Data_ObservableExpression.$ctor1.prototype = $System_Windows_Data_ObservableExpression.$ctor3.prototype = $System_Windows_Data_ObservableExpression.prototype;
-	ss.initClass($System_Windows_Data_ObservableValue, $asm, {
-		add_ValueChanged: function(value) {
-			this.$1$ValueChangedField = ss.delegateCombine(this.$1$ValueChangedField, value);
-		},
-		remove_ValueChanged: function(value) {
-			this.$1$ValueChangedField = ss.delegateRemove(this.$1$ValueChangedField, value);
-		},
-		get_Value: function() {
-			return this.$value;
-		},
-		set_Value: function(value) {
-			if (ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Object]).Default.areEqual(this.$value, value)) {
-				return;
-			}
-			var e = new $System_Windows_Data_ObservableValueChangedArgs(this.$value, value);
-			var oldObservableValue = ss.safeCast(this.$value, $System_Windows_Data_IObservableValue);
-			if (ss.isValue(oldObservableValue)) {
-				oldObservableValue.remove_ValueChanged(ss.mkdel(this, this.$OnObservableValueChanged));
-			}
-			this.$value = value;
-			var newObservableValue = ss.safeCast(this.$value, $System_Windows_Data_IObservableValue);
-			if (ss.isValue(newObservableValue)) {
-				newObservableValue.add_ValueChanged(ss.mkdel(this, this.$OnObservableValueChanged));
-			}
-			Granular.Extensions.EventHandlerExtensions.Raise$4($System_Windows_Data_ObservableValueChangedArgs).call(null, this.$1$ValueChangedField, this, e);
-		},
-		$OnObservableValueChanged: function(sender, e) {
-			Granular.Extensions.EventHandlerExtensions.Raise$4($System_Windows_Data_ObservableValueChangedArgs).call(null, this.$1$ValueChangedField, this, e);
-		}
-	}, null, [$System_Windows_Data_IObservableValue]);
-	$System_Windows_Data_ObservableValue.$ctor1.prototype = $System_Windows_Data_ObservableValue.prototype;
-	ss.initClass($System_Windows_Data_ObservableValueChangedArgs, $asm, {
-		get_NewValue: function() {
-			return this.$2$NewValueField;
-		},
-		set_NewValue: function(value) {
-			this.$2$NewValueField = value;
-		},
-		get_OldValue: function() {
-			return this.$2$OldValueField;
-		},
-		set_OldValue: function(value) {
-			this.$2$OldValueField = value;
-		}
-	}, ss.EventArgs);
-	ss.initClass($System_Windows_Data_ReadOnlyObservableValue, $asm, {
-		add_ValueChanged: function(value) {
-			this.$1$ValueChangedField = ss.delegateCombine(this.$1$ValueChangedField, value);
-		},
-		remove_ValueChanged: function(value) {
-			this.$1$ValueChangedField = ss.delegateRemove(this.$1$ValueChangedField, value);
-		},
-		get_Value: function() {
-			return this.$source.get_Value();
-		}
-	}, null, [$System_Windows_Data_IObservableValue]);
+	ss.initClass($System_Windows_Data_ObservableValueChangedEventHandlerExtensions, $asm, {});
 	ss.initClass($System_Windows_Data_RelativeSource, $asm, {
 		get_Mode: function() {
 			return this.$1$ModeField;
@@ -19107,9 +20153,37 @@
 		},
 		ProvideValue: function(context) {
 			return this;
+		},
+		CreateSourceObserver: function(target) {
+			switch (this.get_Mode()) {
+				case 0: {
+					return new $System_Windows_Data_TemplatedParentSourceObserver(target);
+				}
+				case 1: {
+					return new $System_Windows_Data_StaticObservableValue(target);
+				}
+				case 2: {
+					return new $System_Windows_Data_FindAncestorSourceObserver(target, this.get_AncestorType(), this.get_AncestorLevel());
+				}
+			}
+			throw new Granular.Exception('Unexpected RelativeSourceMode "{0}"', [this.get_Mode()]);
 		}
 	}, null, [$System_Windows_Markup_IMarkupExtension]);
 	ss.initEnum($System_Windows_Data_RelativeSourceMode, $asm, { TemplatedParent: 0, Self: 1, FindAncestor: 2 });
+	ss.initClass($System_Windows_Data_ScopeElementSourceObserver, $asm, {
+		GetBaseValue: function() {
+			return $System_Windows_Data_ScopeElementSourceObserver.$GetScopeElement(this.$target$1, this.$elementName);
+		}
+	}, $System_Windows_Data_ContextSourceObserver, [$System_Windows_Data_IObservableValue, ss.IDisposable]);
+	ss.initClass($System_Windows_Data_StaticObservableValue, $asm, {
+		add_ValueChanged: function(value) {
+		},
+		remove_ValueChanged: function(value) {
+		},
+		get_Value: function() {
+			return this.$value;
+		}
+	}, null, [$System_Windows_Data_IObservableValue]);
 	ss.initClass($System_Windows_Data_TemplateBindingExtension, $asm, {
 		get_Property: function() {
 			return this.$1$PropertyField;
@@ -19140,7 +20214,136 @@
 			return $t1;
 		}
 	}, null, [$System_Windows_Markup_IMarkupExtension]);
+	ss.initClass($System_Windows_Data_TemplatedParentSourceObserver, $asm, {
+		GetBaseValue: function() {
+			return $System_Windows_Data_TemplatedParentSourceObserver.$GetTemplatedParent(this.$target$1);
+		}
+	}, $System_Windows_Data_ContextSourceObserver, [$System_Windows_Data_IObservableValue, ss.IDisposable]);
 	ss.initEnum($System_Windows_Data_UpdateSourceTrigger, $asm, { Default: 0, PropertyChanged: 1, LostFocus: 2, Explicit: 3 });
+	ss.initClass($System_Windows_Documents_TextElement, $asm, {
+		get_Background: function() {
+			return ss.cast(this.GetValue($System_Windows_Documents_TextElement.BackgroundProperty), $System_Windows_Media_Brush);
+		},
+		set_Background: function(value) {
+			this.SetValue($System_Windows_Documents_TextElement.BackgroundProperty, value, 11);
+		},
+		get_Foreground: function() {
+			return ss.cast(this.GetValue($System_Windows_Documents_TextElement.ForegroundProperty), $System_Windows_Media_Brush);
+		},
+		set_Foreground: function(value) {
+			this.SetValue($System_Windows_Documents_TextElement.ForegroundProperty, value, 11);
+		},
+		get_FontFamily: function() {
+			return ss.cast(this.GetValue($System_Windows_Documents_TextElement.FontFamilyProperty), $System_Windows_FontFamily);
+		},
+		set_FontFamily: function(value) {
+			this.SetValue($System_Windows_Documents_TextElement.FontFamilyProperty, value, 11);
+		},
+		get_FontSize: function() {
+			return ss.unbox(ss.cast(this.GetValue($System_Windows_Documents_TextElement.FontSizeProperty), Number));
+		},
+		set_FontSize: function(value) {
+			this.SetValue($System_Windows_Documents_TextElement.FontSizeProperty, value, 11);
+		},
+		get_FontStyle: function() {
+			return ss.cast(this.GetValue($System_Windows_Documents_TextElement.FontStyleProperty), ss.Int32);
+		},
+		set_FontStyle: function(value) {
+			this.SetValue($System_Windows_Documents_TextElement.FontStyleProperty, value, 11);
+		},
+		get_FontWeight: function() {
+			return ss.cast(this.GetValue($System_Windows_Documents_TextElement.FontWeightProperty), ss.Int32);
+		},
+		set_FontWeight: function(value) {
+			this.SetValue($System_Windows_Documents_TextElement.FontWeightProperty, value, 11);
+		},
+		get_FontStretch: function() {
+			return ss.cast(this.GetValue($System_Windows_Documents_TextElement.FontStretchProperty), ss.Int32);
+		},
+		set_FontStretch: function(value) {
+			this.SetValue($System_Windows_Documents_TextElement.FontStretchProperty, value, 11);
+		}
+	}, $System_Windows_FrameworkContentElement);
+	ss.initClass($System_Windows_Documents_Block, $asm, {
+		get_BorderBrush: function() {
+			return ss.cast(this.GetValue($System_Windows_Documents_Block.BorderBrushProperty), $System_Windows_Media_Brush);
+		},
+		set_BorderBrush: function(value) {
+			this.SetValue($System_Windows_Documents_Block.BorderBrushProperty, value, 11);
+		},
+		get_BorderThickness: function() {
+			return ss.cast(this.GetValue($System_Windows_Documents_Block.BorderThicknessProperty), $System_Windows_Thickness);
+		},
+		set_BorderThickness: function(value) {
+			this.SetValue($System_Windows_Documents_Block.BorderThicknessProperty, value, 11);
+		},
+		get_LineHeight: function() {
+			return ss.unbox(ss.cast(this.GetValue($System_Windows_Documents_Block.LineHeightProperty), Number));
+		},
+		set_LineHeight: function(value) {
+			this.SetValue($System_Windows_Documents_Block.LineHeightProperty, value, 11);
+		},
+		get_Padding: function() {
+			return ss.cast(this.GetValue($System_Windows_Documents_Block.PaddingProperty), $System_Windows_Thickness);
+		},
+		set_Padding: function(value) {
+			this.SetValue($System_Windows_Documents_Block.PaddingProperty, value, 11);
+		},
+		get_TextAlignment: function() {
+			return ss.cast(this.GetValue($System_Windows_Documents_Block.TextAlignmentProperty), ss.Int32);
+		},
+		set_TextAlignment: function(value) {
+			this.SetValue($System_Windows_Documents_Block.TextAlignmentProperty, value, 11);
+		},
+		get_SiblingBlocks: function() {
+			return this.$5$SiblingBlocksField;
+		},
+		set_SiblingBlocks: function(value) {
+			this.$5$SiblingBlocksField = value;
+		},
+		GetRenderElement: function(factory) {
+			return null;
+		},
+		RemoveRenderElement: function(factory) {
+			//
+		}
+	}, $System_Windows_Documents_TextElement);
+	ss.initClass($System_Windows_Documents_Inline, $asm, {
+		get_SiblingInlines: function() {
+			return this.$5$SiblingInlinesField;
+		},
+		set_SiblingInlines: function(value) {
+			this.$5$SiblingInlinesField = value;
+		}
+	}, $System_Windows_Documents_TextElement);
+	ss.initClass($System_Windows_Documents_InlineConverter, $asm, {
+		ConvertFrom: function(namespaces, value) {
+			return new $System_Windows_Documents_Run.$ctor1(ss.cast(value, String));
+		}
+	}, null, [$System_Windows_Markup_ITypeConverter]);
+	ss.initClass($System_Windows_Documents_Paragraph, $asm, {
+		get_Inlines: function() {
+			return this.$6$InlinesField;
+		},
+		set_Inlines: function(value) {
+			this.$6$InlinesField = value;
+		}
+	}, $System_Windows_Documents_Block);
+	ss.initClass($System_Windows_Documents_Run, $asm, {
+		get_Text: function() {
+			return ss.cast(this.GetValue($System_Windows_Documents_Run.TextProperty), String);
+		},
+		set_Text: function(value) {
+			this.SetValue($System_Windows_Documents_Run.TextProperty, value, 11);
+		},
+		GetRenderElement: function(factory) {
+			return null;
+		},
+		RemoveRenderElement: function(factory) {
+			//
+		}
+	}, $System_Windows_Documents_Inline);
+	$System_Windows_Documents_Run.$ctor1.prototype = $System_Windows_Documents_Run.prototype;
 	ss.initClass($System_Windows_Input_Cursor, $asm, {
 		get_CursorType: function() {
 			return this.$1$CursorTypeField;
@@ -19284,7 +20487,7 @@
 		},
 		Focus: function(element) {
 			this.set_Target(element);
-			return new $System_Windows_Disposable(ss.mkdel(this, function() {
+			return new Granular.Disposable(ss.mkdel(this, function() {
 				if (ss.referenceEquals(this.get_Target(), element)) {
 					this.set_Target(null);
 				}
@@ -19781,17 +20984,12 @@
 	}, null, [$System_Windows_Markup_ITypeConverter]);
 	ss.initClass($System_Windows_Markup_$Int32TypeConverter, $asm, {
 		ConvertFrom: function(namespaces, value) {
-			return parseInt(ss.cast(value, String));
+			return parseInt(value.toString());
 		}
 	}, null, [$System_Windows_Markup_ITypeConverter]);
 	ss.initClass($System_Windows_Markup_$ObjectTypeConverter, $asm, {
 		ConvertFrom: function(namespaces, value) {
 			return value;
-		}
-	}, null, [$System_Windows_Markup_ITypeConverter]);
-	ss.initClass($System_Windows_Markup_$ParseTypeConverter, $asm, {
-		ConvertFrom: function(namespaces, value) {
-			return ss.midel(this.$parseMethod, null)(value.toString().trim());
 		}
 	}, null, [$System_Windows_Markup_ITypeConverter]);
 	ss.initClass($System_Windows_Markup_$StringTypeConverter, $asm, {
@@ -19868,7 +21066,7 @@
 			this.$1$ElementTypeField = value;
 		},
 		CreateElement: function(context) {
-			return $System_Windows_Markup_TypeConverter.ConvertValue(this.$valueFactory.CreateElement(context), this.get_ElementType(), this.$namespaces);
+			return this.$typeConverter.ConvertFrom(this.$namespaces, this.$valueFactory.CreateElement(context));
 		}
 	}, null, [$System_Windows_Markup_IElementFactory]);
 	ss.initClass($System_Windows_Markup_DependencyPropertyAdapter, $asm, {
@@ -20184,6 +21382,30 @@
 			this.$2$ConverterTypeField = value;
 		}
 	});
+	ss.initClass($System_Windows_Markup_TypeMemberKey, $asm, {
+		get_Type: function() {
+			return this.$1$TypeField;
+		},
+		set_Type: function(value) {
+			this.$1$TypeField = value;
+		},
+		get_MemberName: function() {
+			return this.$1$MemberNameField;
+		},
+		set_MemberName: function(value) {
+			this.$1$MemberNameField = value;
+		},
+		equals: function(obj) {
+			var other = ss.safeCast(obj, $System_Windows_Markup_TypeMemberKey);
+			return ss.referenceEquals(this, other) || !ss.referenceEquals(other, null) && ss.staticEquals(this.get_Type(), other.get_Type()) && ss.staticEquals(this.get_MemberName(), other.get_MemberName());
+		},
+		getHashCode: function() {
+			return this.$hashCode;
+		},
+		toString: function() {
+			return ss.formatString('{0}.{1}', ss.getTypeFullName(this.get_Type()), this.get_MemberName().get_LocalName());
+		}
+	});
 	ss.initClass($System_Windows_Markup_TypeParser, $asm, {});
 	ss.initClass($System_Windows_Markup_ValueProvider, $asm, {
 		ProvideValue: function() {
@@ -20213,39 +21435,6 @@
 			this.$2$AssemblyNameField = value;
 		}
 	});
-	ss.initClass($System_Windows_Media_Animation_Animatable, $asm, {
-		get_RootClock: function() {
-			return this.$3$RootClockField;
-		},
-		set_RootClock: function(value) {
-			this.$3$RootClockField = value;
-		},
-		SetAnimationClocks: function(dependencyProperty, animationClocks, layerOwner) {
-			var animationExpression = this.$GetInitializedAnimationExpression(dependencyProperty);
-			animationExpression.SetClocks(animationClocks, layerOwner);
-		},
-		AddAnimationClocks: function(dependencyProperty, animationClocks, layerOwner) {
-			var animationExpression = this.$GetInitializedAnimationExpression(dependencyProperty);
-			animationExpression.AddClocks(animationClocks, layerOwner);
-		},
-		RemoveAnimationClocks: function(dependencyProperty, animationClocks, layerOwner) {
-			var animationExpression = this.$GetInitializedAnimationExpression(dependencyProperty);
-			animationExpression.RemoveClocks(animationClocks, layerOwner);
-		},
-		$GetInitializedAnimationExpression: function(dependencyProperty) {
-			var entry = this.GetValueEntry(dependencyProperty);
-			var animationExpression = ss.safeCast(entry.GetAnimationValue(false), $System_Windows_Media_Animation_AnimationExpression);
-			if (ss.isNullOrUndefined(animationExpression)) {
-				animationExpression = new $System_Windows_Media_Animation_AnimationExpression(this, dependencyProperty);
-				entry.SetAnimationValue(animationExpression);
-			}
-			return animationExpression;
-		},
-		OnInheritanceParentChanged: function(oldInheritanceParent, newInheritanceParent) {
-			$System_Windows_Freezable.prototype.OnInheritanceParentChanged.call(this, oldInheritanceParent, newInheritanceParent);
-			this.set_RootClock((ss.isInstanceOfType(newInheritanceParent, $System_Windows_Media_Animation_IAnimatable) ? ss.cast(newInheritanceParent, $System_Windows_Media_Animation_IAnimatable).get_RootClock() : null));
-		}
-	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IAnimatable]);
 	ss.initClass($System_Windows_Media_Brush, $asm, {
 		get_Opacity: function() {
 			return ss.unbox(ss.cast(this.GetValue($System_Windows_Media_Brush.OpacityProperty), Number));
@@ -20253,12 +21442,15 @@
 		set_Opacity: function(value) {
 			this.SetValue($System_Windows_Media_Brush.OpacityProperty, value, 11);
 		}
-	}, $System_Windows_Media_Animation_Animatable, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IAnimatable]);
+	}, $System_Windows_Media_Animation_Animatable, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable]);
 	ss.initClass($System_Windows_Media_Brushes, $asm, {});
 	ss.initEnum($System_Windows_Media_BrushMappingMode, $asm, { Absolute: 0, RelativeToBoundingBox: 1 });
 	ss.initClass($System_Windows_Media_BrushTypeConverter, $asm, {
 		ConvertFrom: function(namespaces, value) {
-			return new $System_Windows_Media_SolidColorBrush.$ctor1(ss.cast(this.$colorTypeConverter.ConvertFrom(namespaces, value), $System_Windows_Media_Color));
+			if (ss.isInstanceOfType(value, String)) {
+				return new $System_Windows_Media_SolidColorBrush.$ctor1(ss.cast(this.$colorTypeConverter.ConvertFrom(namespaces, value), $System_Windows_Media_Color));
+			}
+			throw new Granular.Exception('Can\'t convert "{0}" to Color', [value]);
 		}
 	}, null, [$System_Windows_Markup_ITypeConverter]);
 	ss.initClass($System_Windows_Media_Color, $asm, {
@@ -20312,6 +21504,9 @@
 				if (ss.startsWithString(stringValue, '#') && stringValue.length === 7) {
 					return $System_Windows_Media_Color.FromUInt32(4278190080 | Granular.Compatibility.Convert.ToUInt32(stringValue.substring(1), 16));
 				}
+				if (ss.startsWithString(stringValue, '#') && stringValue.length === 4) {
+					return $System_Windows_Media_Color.FromUInt32(4278190080 | Granular.Compatibility.Convert.ToUInt32(ss.formatString('{0}{0}{1}{1}{2}{2}', String.fromCharCode(stringValue.charCodeAt(1)), String.fromCharCode(stringValue.charCodeAt(2)), String.fromCharCode(stringValue.charCodeAt(3))), 16));
+				}
 				var propertyInfo = ss.getMembers($System_Windows_Media_Colors, 16, 24 | 256, stringValue);
 				if (ss.isValue(propertyInfo)) {
 					return ss.midel(propertyInfo.getter, null).apply(null, []);
@@ -20327,13 +21522,19 @@
 		set_SpreadMethod: function(value) {
 			this.SetValue($System_Windows_Media_GradientBrush.SpreadMethodProperty, value, 11);
 		},
+		get_MappingMode: function() {
+			return ss.cast(this.GetValue($System_Windows_Media_GradientBrush.MappingModeProperty), ss.Int32);
+		},
+		set_MappingMode: function(value) {
+			this.SetValue($System_Windows_Media_GradientBrush.MappingModeProperty, value, 11);
+		},
 		get_GradientStops: function() {
 			return ss.cast(this.GetValue($System_Windows_Media_GradientBrush.GradientStopsProperty), $System_Windows_Media_GradientStopCollection);
 		},
 		set_GradientStops: function(value) {
 			this.SetValue($System_Windows_Media_GradientBrush.GradientStopsProperty, value, 11);
 		}
-	}, $System_Windows_Media_Brush, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IAnimatable]);
+	}, $System_Windows_Media_Brush, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable]);
 	$System_Windows_Media_GradientBrush.$ctor1.prototype = $System_Windows_Media_GradientBrush.prototype;
 	ss.initEnum($System_Windows_Media_GradientSpreadMethod, $asm, { Pad: 0, Reflect: 1, Repeat: 2 });
 	ss.initClass($System_Windows_Media_GradientStop, $asm, {
@@ -20349,9 +21550,9 @@
 		set_Offset: function(value) {
 			this.SetValue($System_Windows_Media_GradientStop.OffsetProperty, value, 11);
 		}
-	}, $System_Windows_Media_Animation_Animatable, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IAnimatable]);
+	}, $System_Windows_Media_Animation_Animatable, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable]);
 	$System_Windows_Media_GradientStop.$ctor1.prototype = $System_Windows_Media_GradientStop.prototype;
-	ss.initClass($System_Windows_Media_GradientStopCollection, $asm, {}, ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_Media_GradientStop]), [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, ss.IEnumerable, ss.IEnumerable, Granular.Collections.INotifyCollectionChanged, ss.makeGenericType(Granular.Collections.IObservableCollection$1, [$System_Windows_Media_GradientStop]), ss.ICollection, ss.IList]);
+	ss.initClass($System_Windows_Media_GradientStopCollection, $asm, {}, ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_Media_GradientStop]), [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, ss.IEnumerable, ss.IEnumerable, Granular.Collections.INotifyCollectionChanged, ss.makeGenericType(Granular.Collections.IObservableCollection$1, [$System_Windows_Media_GradientStop]), ss.ICollection, ss.IList]);
 	$System_Windows_Media_GradientStopCollection.$ctor1.prototype = $System_Windows_Media_GradientStopCollection.prototype;
 	ss.initInterface($System_Windows_Media_IBorderRenderElement, $asm, { get_Background: null, set_Background: null, get_BorderThickness: null, set_BorderThickness: null, get_BorderBrush: null, set_BorderBrush: null, get_Bounds: null, set_Bounds: null, get_CornerRadius: null, set_CornerRadius: null, get_IsHitTestVisible: null, set_IsHitTestVisible: null });
 	ss.initInterface($System_Windows_Media_IDrawingRenderElement, $asm, { DrawLine: null });
@@ -20381,7 +21582,7 @@
 		set_ViewportUnits: function(value) {
 			this.SetValue($System_Windows_Media_TileBrush.ViewportUnitsProperty, value, 11);
 		}
-	}, $System_Windows_Media_Brush, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IAnimatable]);
+	}, $System_Windows_Media_Brush, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable]);
 	ss.initClass($System_Windows_Media_ImageBrush, $asm, {
 		get_ImageSource: function() {
 			return ss.cast(this.GetValue($System_Windows_Media_ImageBrush.ImageSourceProperty), String);
@@ -20389,13 +21590,13 @@
 		set_ImageSource: function(value) {
 			this.SetValue($System_Windows_Media_ImageBrush.ImageSourceProperty, value, 11);
 		}
-	}, $System_Windows_Media_TileBrush, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IAnimatable]);
+	}, $System_Windows_Media_TileBrush, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable]);
 	ss.initClass($System_Windows_Media_ImageSource, $asm, {
 		get_RenderImageSource: null,
 		get_Size: function() {
 			return (ss.isValue(this.get_RenderImageSource()) ? this.get_RenderImageSource().get_Size() : $System_Windows_Size.Empty);
 		}
-	}, $System_Windows_Media_Animation_Animatable, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IAnimatable]);
+	}, $System_Windows_Media_Animation_Animatable, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable]);
 	ss.initClass($System_Windows_Media_ImageSourceTypeConverter, $asm, {
 		ConvertFrom: function(namespaces, value) {
 			var $t1 = new $System_Windows_Media_Imaging_BitmapImage();
@@ -20420,24 +21621,8 @@
 		},
 		set_EndPoint: function(value) {
 			this.SetValue($System_Windows_Media_LinearGradientBrush.EndPointProperty, value, 11);
-		},
-		get_Angle: function() {
-			return ss.unbox(ss.cast(this.GetValue($System_Windows_Media_LinearGradientBrush.AngleProperty), Number));
-		},
-		set_Angle: function(value) {
-			this.SetValue($System_Windows_Media_LinearGradientBrush.AngleProperty, value, 11);
-		},
-		$SetAngle: function() {
-			if ($System_Windows_PointExtensions.IsClose(this.get_StartPoint(), this.get_EndPoint())) {
-				this.set_Angle(0);
-			}
-			else {
-				var offset = $System_Windows_Point.op_Subtraction(this.get_EndPoint(), this.get_StartPoint());
-				var $t1 = offset.get_Y();
-				this.set_Angle((($t1 > 0) ? 1 : (($t1 < 0) ? -1 : 0)) * Math.acos(offset.get_X() / Math.sqrt(offset.get_X() * offset.get_X() + offset.get_Y() * offset.get_Y())) * 180 / Math.PI);
-			}
 		}
-	}, $System_Windows_Media_GradientBrush, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IAnimatable]);
+	}, $System_Windows_Media_GradientBrush, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable]);
 	$System_Windows_Media_LinearGradientBrush.$ctor2.prototype = $System_Windows_Media_LinearGradientBrush.$ctor1.prototype = $System_Windows_Media_LinearGradientBrush.$ctor4.prototype = $System_Windows_Media_LinearGradientBrush.$ctor3.prototype = $System_Windows_Media_LinearGradientBrush.prototype;
 	ss.initClass($System_Windows_Media_Matrix, $asm, {
 		get_M11: function() {
@@ -20477,7 +21662,7 @@
 			this.$1$OffsetYField = value;
 		},
 		get_IsIdentity: function() {
-			return this.get_M11() === 1 && this.get_M12() === 0 && this.get_M21() === 0 && this.get_M22() === 1 && this.get_OffsetX() === 0 && this.get_OffsetY() === 0;
+			return ss.referenceEquals(this, $System_Windows_Media_Matrix.Identity) || this.get_M11() === 1 && this.get_M12() === 0 && this.get_M21() === 0 && this.get_M22() === 1 && this.get_OffsetX() === 0 && this.get_OffsetY() === 0;
 		},
 		get_IsTranslation: function() {
 			return this.get_M11() === 1 && this.get_M12() === 0 && this.get_M21() === 0 && this.get_M22() === 1;
@@ -20485,29 +21670,56 @@
 		get_IsScaling: function() {
 			return this.get_M12() === 0 && this.get_M21() === 0 && this.get_OffsetX() === 0 && this.get_OffsetY() === 0;
 		},
+		get_Inverse: function() {
+			if ($System_Windows_Media_Matrix.op_Equality(this.$inverse, null)) {
+				this.$inverse = this.$GetInverseMatrix();
+			}
+			return this.$inverse;
+		},
 		toString: function() {
 			if (this.get_IsIdentity()) {
 				return 'IdentityMatrix';
 			}
 			if (this.get_IsTranslation()) {
-				return ss.formatString('TranslationMatrix({0}, {1})', this.get_OffsetX(), this.get_OffsetY());
+				return ss.formatString('TranslationMatrix({0}, {1})', ss.round(this.get_OffsetX(), 2), ss.round(this.get_OffsetY(), 2));
 			}
 			if (this.get_IsScaling()) {
-				return ss.formatString('ScalingMatrix({0}, {1})', this.get_M11(), this.get_M22());
+				return ss.formatString('ScalingMatrix({0}, {1})', ss.round(this.get_M11(), 2), ss.round(this.get_M22(), 2));
 			}
-			return ss.formatString('Matrix({0}, {1}, {2}, {3}, {4}, {5})', this.get_M11(), this.get_M12(), this.get_M21(), this.get_M22(), this.get_OffsetX(), this.get_OffsetY());
+			return ss.formatString('Matrix({0}, {1}, {2}, {3}, {4}, {5})', ss.round(this.get_M11(), 2), ss.round(this.get_M12(), 2), ss.round(this.get_M21(), 2), ss.round(this.get_M22(), 2), ss.round(this.get_OffsetX(), 2), ss.round(this.get_OffsetY(), 2));
 		},
 		equals: function(obj) {
 			var other = ss.safeCast(obj, $System_Windows_Media_Matrix);
-			return ss.referenceEquals(this, other) || !ss.referenceEquals(other, null) && ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Number]).Default.areEqual(this.get_M11(), other.get_M11()) && ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Number]).Default.areEqual(this.get_M12(), other.get_M12()) && ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Number]).Default.areEqual(this.get_M21(), other.get_M21()) && ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Number]).Default.areEqual(this.get_M22(), other.get_M22()) && ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Number]).Default.areEqual(this.get_OffsetX(), other.get_OffsetX()) && ss.makeGenericType(Granular.Compatibility.EqualityComparer$1, [Number]).Default.areEqual(this.get_OffsetY(), other.get_OffsetY());
+			return ss.referenceEquals(this, other) || !ss.referenceEquals(other, null) && Granular.Compatibility.EqualityComparer.Double.areEqual(this.get_M11(), other.get_M11()) && Granular.Compatibility.EqualityComparer.Double.areEqual(this.get_M12(), other.get_M12()) && Granular.Compatibility.EqualityComparer.Double.areEqual(this.get_M21(), other.get_M21()) && Granular.Compatibility.EqualityComparer.Double.areEqual(this.get_M22(), other.get_M22()) && Granular.Compatibility.EqualityComparer.Double.areEqual(this.get_OffsetX(), other.get_OffsetX()) && Granular.Compatibility.EqualityComparer.Double.areEqual(this.get_OffsetY(), other.get_OffsetY());
 		},
 		getHashCode: function() {
 			return ss.getHashCode(this.get_M11()) ^ ss.getHashCode(this.get_M12()) ^ ss.getHashCode(this.get_M21()) ^ ss.getHashCode(this.get_M22()) ^ ss.getHashCode(this.get_OffsetX()) ^ ss.getHashCode(this.get_OffsetY());
 		},
 		IsClose: function(matrix) {
 			return Granular.Extensions.DoubleExtensions.IsClose(this.get_M11(), matrix.get_M11()) && Granular.Extensions.DoubleExtensions.IsClose(this.get_M12(), matrix.get_M12()) && Granular.Extensions.DoubleExtensions.IsClose(this.get_M21(), matrix.get_M21()) && Granular.Extensions.DoubleExtensions.IsClose(this.get_M22(), matrix.get_M22()) && Granular.Extensions.DoubleExtensions.IsClose(this.get_OffsetX(), matrix.get_OffsetX()) && Granular.Extensions.DoubleExtensions.IsClose(this.get_OffsetY(), matrix.get_OffsetY());
+		},
+		$GetInverseMatrix: function() {
+			var determinant = this.get_M11() * this.get_M22() - this.get_M12() * this.get_M21();
+			return new $System_Windows_Media_Matrix(this.get_M22() / determinant, -this.get_M12() / determinant, -this.get_M21() / determinant, this.get_M11() / determinant, (this.get_M21() * this.get_OffsetY() - this.get_M22() * this.get_OffsetX()) / determinant, -(this.get_M11() * this.get_OffsetY() - this.get_M12() * this.get_OffsetX()) / determinant);
 		}
 	});
+	ss.initClass($System_Windows_Media_MatrixExtensions, $asm, {});
+	ss.initClass($System_Windows_Media_MatrixTransform, $asm, {
+		get_Value: function() {
+			return this.get_Matrix();
+		},
+		get_Matrix: function() {
+			return ss.cast(this.GetValue($System_Windows_Media_MatrixTransform.MatrixProperty), $System_Windows_Media_Matrix);
+		},
+		set_Matrix: function(value) {
+			this.SetValue($System_Windows_Media_MatrixTransform.MatrixProperty, value, 11);
+		}
+	}, $System_Windows_Media_Transform, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable]);
+	ss.initClass($System_Windows_Media_MatrixTypeConverter, $asm, {
+		ConvertFrom: function(namespaces, value) {
+			return $System_Windows_Media_Matrix.Parse(value.toString().trim());
+		}
+	}, null, [$System_Windows_Markup_ITypeConverter]);
 	ss.initClass($System_Windows_Media_RadialGradientBrush, $asm, {
 		get_Center: function() {
 			return ss.cast(this.GetValue($System_Windows_Media_RadialGradientBrush.CenterProperty), $System_Windows_Point);
@@ -20533,7 +21745,7 @@
 		set_RadiusY: function(value) {
 			this.SetValue($System_Windows_Media_RadialGradientBrush.RadiusYProperty, value, 11);
 		}
-	}, $System_Windows_Media_GradientBrush, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IAnimatable]);
+	}, $System_Windows_Media_GradientBrush, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable]);
 	$System_Windows_Media_RadialGradientBrush.$ctor2.prototype = $System_Windows_Media_RadialGradientBrush.$ctor1.prototype = $System_Windows_Media_RadialGradientBrush.prototype;
 	ss.initEnum($System_Windows_Media_RenderImageState, $asm, { Idle: 0, DownloadProgress: 1, DownloadCompleted: 2, DownloadFailed: 3 });
 	ss.initEnum($System_Windows_Media_RenderImageType, $asm, { Unknown: 0, Gif: 1, Jpeg: 2, Png: 3, Svg: 4 });
@@ -20562,7 +21774,7 @@
 		$SetMatrix: function() {
 			this.$matrix = $System_Windows_Media_Matrix.RotationMatrix(Math.PI * this.get_Angle() / 180, this.get_CenterX(), this.get_CenterY());
 		}
-	}, $System_Windows_Media_Transform);
+	}, $System_Windows_Media_Transform, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable]);
 	ss.initClass($System_Windows_Media_ScaleTransform, $asm, {
 		get_Value: function() {
 			return this.$matrix;
@@ -20594,7 +21806,7 @@
 		$SetMatrix: function() {
 			this.$matrix = $System_Windows_Media_Matrix.ScalingMatrix(this.get_ScaleX(), this.get_ScaleY(), this.get_CenterX(), this.get_CenterY());
 		}
-	}, $System_Windows_Media_Transform);
+	}, $System_Windows_Media_Transform, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable]);
 	ss.initClass($System_Windows_Media_SkewTransform, $asm, {
 		get_Value: function() {
 			return this.$matrix;
@@ -20626,7 +21838,7 @@
 		$SetMatrix: function() {
 			this.$matrix = $System_Windows_Media_Matrix.SkewMatrix(Math.PI * this.get_AngleX() / 180, Math.PI * this.get_AngleY() / 180, this.get_CenterX(), this.get_CenterY());
 		}
-	}, $System_Windows_Media_Transform);
+	}, $System_Windows_Media_Transform, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable]);
 	ss.initClass($System_Windows_Media_SolidColorBrush, $asm, {
 		get_Color: function() {
 			return ss.cast(this.GetValue($System_Windows_Media_SolidColorBrush.ColorProperty), $System_Windows_Media_Color);
@@ -20637,11 +21849,59 @@
 		toString: function() {
 			return ss.formatString('SolidColorBrush({0})', this.get_Color());
 		}
-	}, $System_Windows_Media_Brush, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IAnimatable]);
+	}, $System_Windows_Media_Brush, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable]);
 	$System_Windows_Media_SolidColorBrush.$ctor1.prototype = $System_Windows_Media_SolidColorBrush.prototype;
 	ss.initEnum($System_Windows_Media_Stretch, $asm, { None: 0, Fill: 1, Uniform: 2, UniformToFill: 3 });
 	ss.initEnum($System_Windows_Media_StretchDirection, $asm, { UpOnly: 0, DownOnly: 1, Both: 2 });
 	ss.initEnum($System_Windows_Media_TileMode, $asm, { None: 0, Tile: 1 });
+	ss.initClass($System_Windows_Media_TransformExtensions, $asm, {});
+	ss.initClass($System_Windows_Media_TransformGroup, $asm, {
+		get_Value: function() {
+			return this.$matrix;
+		},
+		get_Children: function() {
+			return this.$5$ChildrenField;
+		},
+		set_Children: function(value) {
+			this.$5$ChildrenField = value;
+		},
+		$OnChildChanged: function(sender, e) {
+			this.$matrix = Enumerable.from(this.get_Children()).select(function(child) {
+				return child.get_Value();
+			}).defaultIfEmpty($System_Windows_Media_Matrix.Identity).aggregate(function(matrix1, matrix2) {
+				return $System_Windows_Media_Matrix.op_Multiply(matrix1, matrix2);
+			});
+			this.RaiseChanged();
+		}
+	}, $System_Windows_Media_Transform, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable]);
+	ss.initClass($System_Windows_Media_TransformTypeConverter, $asm, {
+		ConvertFrom: function(namespaces, value) {
+			var $t1 = new $System_Windows_Media_MatrixTransform();
+			$t1.set_Matrix($System_Windows_Media_Matrix.Parse(value.toString()));
+			return $t1;
+		}
+	}, null, [$System_Windows_Markup_ITypeConverter]);
+	ss.initClass($System_Windows_Media_TranslateTransform, $asm, {
+		get_Value: function() {
+			return this.$matrix;
+		},
+		get_X: function() {
+			return ss.unbox(ss.cast(this.GetValue($System_Windows_Media_TranslateTransform.XProperty), Number));
+		},
+		set_X: function(value) {
+			this.SetValue($System_Windows_Media_TranslateTransform.XProperty, value, 11);
+		},
+		get_Y: function() {
+			return ss.unbox(ss.cast(this.GetValue($System_Windows_Media_TranslateTransform.YProperty), Number));
+		},
+		set_Y: function(value) {
+			this.SetValue($System_Windows_Media_TranslateTransform.YProperty, value, 11);
+		},
+		$SetMatrix: function() {
+			this.$matrix = $System_Windows_Media_Matrix.TranslationMatrix(this.get_X(), this.get_Y());
+		}
+	}, $System_Windows_Media_Transform, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable]);
+	$System_Windows_Media_TranslateTransform.$ctor2.prototype = $System_Windows_Media_TranslateTransform.$ctor1.prototype = $System_Windows_Media_TranslateTransform.prototype;
 	ss.initClass($System_Windows_Media_Typeface, $asm, {
 		get_FontFamily: function() {
 			return this.$1$FontFamilyField;
@@ -20876,14 +22136,14 @@
 			this.$layers.RemoveClocks(clocks, $System_Windows_Media_Animation_AnimationLayerKey.FromLayerOwner(layerOwner));
 		},
 		$SetAnimationValue: function() {
-			this.$observableValue.set_Value((this.$layers.get_HasValue() ? this.$layers.GetValue(this.$GetAnimationBaseValue()) : $System_Windows_Data_ObservableValue.UnsetValue));
+			this.$observableValue.set_BaseValue((this.$layers.get_HasValue() ? this.$layers.GetValue(this.$GetAnimationBaseValue()) : $System_Windows_Data_ObservableValue.UnsetValue));
 		},
 		$GetAnimationBaseValue: function() {
 			if (ss.isNullOrUndefined(this.$dependencyObject)) {
 				return $System_Windows_Data_ObservableValue.UnsetValue;
 			}
 			var entry = this.$dependencyObject.GetValueEntry(this.$dependencyProperty);
-			return entry.GetBaseValue(true);
+			return $System_Windows_DependencyPropertyValueEntryExtensions.GetBaseValue(entry, true);
 		},
 		$OnLayerInvalidated: function(sender, e) {
 			this.$SetAnimationValue();
@@ -21092,10 +22352,10 @@
 				return;
 			}
 			this.$parent = value;
-			this.SetInheritanceParent(value);
+			this.TrySetContextParent(value);
 		},
 		CreateClock: null
-	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_AnimationTimeline, $asm, {
 		get_IsAdditive: function() {
 			return ss.unbox(ss.cast(this.GetValue($System_Windows_Media_Animation_AnimationTimeline.IsAdditiveProperty), Boolean));
@@ -21113,7 +22373,7 @@
 		CreateClock: function() {
 			return new $System_Windows_Media_Animation_AnimationTimelineClock(this);
 		}
-	}, $System_Windows_Media_Animation_Timeline, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_Timeline, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_TimelineClock, $asm, {
 		add_Invalidated: function(value) {
 			this.$1$InvalidatedField = ss.delegateCombine(this.$1$InvalidatedField, value);
@@ -21234,7 +22494,7 @@
 			throw new Granular.Exception('Unexpected EasingMode "{0}"', [this.get_EasingMode()]);
 		},
 		EaseOverride: null
-	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IEasingFunction]);
+	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IEasingFunction]);
 	ss.initClass($System_Windows_Media_Animation_BackEase, $asm, {
 		get_Amplitude: function() {
 			return ss.unbox(ss.cast(this.GetValue($System_Windows_Media_Animation_BackEase.AmplitudeProperty), Number));
@@ -21245,7 +22505,7 @@
 		EaseOverride: function(normalizedTime) {
 			return Math.pow(normalizedTime, 3) - normalizedTime * Granular.Extensions.DoubleExtensions.Max(this.get_Amplitude(), 0) * Math.sin(Math.PI * normalizedTime);
 		}
-	}, $System_Windows_Media_Animation_EasingFunctionBase, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IEasingFunction]);
+	}, $System_Windows_Media_Animation_EasingFunctionBase, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IEasingFunction]);
 	ss.initClass($System_Windows_Media_Animation_BeginStoryboard, $asm, {
 		get_Storyboard: function() {
 			return ss.cast(this.GetValue($System_Windows_Media_Animation_BeginStoryboard.StoryboardProperty), $System_Windows_Media_Animation_Storyboard);
@@ -21306,13 +22566,13 @@
 				this.get_Storyboard().SkipToFill(target);
 			}
 		}
-	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_ITriggerAction]);
+	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_ITriggerAction]);
 	ss.initClass($System_Windows_Media_Animation_CircleEase, $asm, {
 		EaseOverride: function(normalizedTime) {
 			normalizedTime = Granular.Extensions.DoubleExtensions.Bounds(normalizedTime, 0, 1);
 			return 1 - Math.sqrt(1 - normalizedTime * normalizedTime);
 		}
-	}, $System_Windows_Media_Animation_EasingFunctionBase, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IEasingFunction]);
+	}, $System_Windows_Media_Animation_EasingFunctionBase, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IEasingFunction]);
 	ss.initEnum($System_Windows_Media_Animation_ClockProgressState, $asm, { BeforeStarted: 0, Active: 1, AfterEnded: 2 });
 	ss.initClass($System_Windows_Media_Animation_ClockState, $asm, {
 		get_ProgressState: function() {
@@ -21416,7 +22676,7 @@
 			}
 			return this.$animationOperations.Add(baseValue, this.$animationOperations.Interpolate(from, to, progress));
 		}
-	}, $System_Windows_Media_Animation_AnimationTimeline, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_AnimationTimeline, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_ColorAnimationUsingKeyFrames, $asm, {
 		get_KeyFrames: function() {
 			return this.$5$KeyFramesField;
@@ -21477,7 +22737,7 @@
 				return keyFrame1.get_KeyTime().get_TimeSpan();
 			}).defaultIfEmpty(new ss.TimeSpan(1 * 10000000)));
 		}
-	}, $System_Windows_Media_Animation_AnimationTimeline, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_AnimationTimeline, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_ColorKeyFrame, $asm, {
 		get_Value: function() {
 			return ss.cast(this.GetValue($System_Windows_Media_Animation_ColorKeyFrame.ValueProperty), $System_Windows_Media_Color);
@@ -21492,17 +22752,17 @@
 			this.SetValue($System_Windows_Media_Animation_ColorKeyFrame.KeyTimeProperty, value, 11);
 		},
 		InterpolateValue: null
-	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_CubicEase, $asm, {
 		EaseOverride: function(normalizedTime) {
 			return normalizedTime * normalizedTime * normalizedTime;
 		}
-	}, $System_Windows_Media_Animation_EasingFunctionBase, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IEasingFunction]);
+	}, $System_Windows_Media_Animation_EasingFunctionBase, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IEasingFunction]);
 	ss.initClass($System_Windows_Media_Animation_DiscreteColorKeyFrame, $asm, {
 		InterpolateValue: function(baseValue, keyFrameProgress) {
 			return ((keyFrameProgress < 1) ? baseValue : this.get_Value());
 		}
-	}, $System_Windows_Media_Animation_ColorKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_ColorKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_DoubleKeyFrame, $asm, {
 		get_Value: function() {
 			return ss.cast(this.GetValue($System_Windows_Media_Animation_DoubleKeyFrame.ValueProperty), Number);
@@ -21517,12 +22777,12 @@
 			this.SetValue($System_Windows_Media_Animation_DoubleKeyFrame.KeyTimeProperty, value, 11);
 		},
 		InterpolateValue: null
-	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_DiscreteDoubleKeyFrame, $asm, {
 		InterpolateValue: function(baseValue, keyFrameProgress) {
 			return ((keyFrameProgress < 1) ? baseValue : this.get_Value());
 		}
-	}, $System_Windows_Media_Animation_DoubleKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_DoubleKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_RectKeyFrame, $asm, {
 		get_Value: function() {
 			return ss.cast(this.GetValue($System_Windows_Media_Animation_RectKeyFrame.ValueProperty), $System_Windows_Rect);
@@ -21537,12 +22797,12 @@
 			this.SetValue($System_Windows_Media_Animation_RectKeyFrame.KeyTimeProperty, value, 11);
 		},
 		InterpolateValue: null
-	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_DiscreteRectKeyFrame, $asm, {
 		InterpolateValue: function(baseValue, keyFrameProgress) {
 			return ((keyFrameProgress < 1) ? baseValue : this.get_Value());
 		}
-	}, $System_Windows_Media_Animation_RectKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_RectKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_ThicknessKeyFrame, $asm, {
 		get_Value: function() {
 			return ss.cast(this.GetValue($System_Windows_Media_Animation_ThicknessKeyFrame.ValueProperty), $System_Windows_Thickness);
@@ -21557,12 +22817,12 @@
 			this.SetValue($System_Windows_Media_Animation_ThicknessKeyFrame.KeyTimeProperty, value, 11);
 		},
 		InterpolateValue: null
-	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_DiscreteThicknessKeyFrame, $asm, {
 		InterpolateValue: function(baseValue, keyFrameProgress) {
 			return ((keyFrameProgress < 1) ? baseValue : this.get_Value());
 		}
-	}, $System_Windows_Media_Animation_ThicknessKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_ThicknessKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_DoubleAnimation, $asm, {
 		get_To: function() {
 			return ss.cast(this.GetValue($System_Windows_Media_Animation_DoubleAnimation.ToProperty), Number);
@@ -21633,7 +22893,7 @@
 			}
 			return this.$animationOperations.Add(baseValue, this.$animationOperations.Interpolate(from, to, progress));
 		}
-	}, $System_Windows_Media_Animation_AnimationTimeline, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_AnimationTimeline, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_DoubleAnimationUsingKeyFrames, $asm, {
 		get_KeyFrames: function() {
 			return this.$5$KeyFramesField;
@@ -21694,7 +22954,7 @@
 				return keyFrame1.get_KeyTime().get_TimeSpan();
 			}).defaultIfEmpty(new ss.TimeSpan(1 * 10000000)));
 		}
-	}, $System_Windows_Media_Animation_AnimationTimeline, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_AnimationTimeline, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_DurationClock, $asm, {
 		get_FirstTick: function() {
 			return this.$1$FirstTickField;
@@ -21753,7 +23013,7 @@
 			}
 			return $System_Windows_Media_Animation_$ColorAnimationOperations.$Default.Interpolate(baseValue, this.get_Value(), keyFrameProgress);
 		}
-	}, $System_Windows_Media_Animation_ColorKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_ColorKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_EasingDoubleKeyFrame, $asm, {
 		get_EasingFunction: function() {
 			return ss.cast(this.GetValue($System_Windows_Media_Animation_EasingDoubleKeyFrame.EasingFunctionProperty), $System_Windows_Media_Animation_IEasingFunction);
@@ -21767,7 +23027,7 @@
 			}
 			return $System_Windows_Media_Animation_$DoubleAnimationOperations.$Default.Interpolate(baseValue, this.get_Value(), keyFrameProgress);
 		}
-	}, $System_Windows_Media_Animation_DoubleKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_DoubleKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initEnum($System_Windows_Media_Animation_EasingMode, $asm, { EaseIn: 0, EaseOut: 1, EaseInOut: 2 });
 	ss.initClass($System_Windows_Media_Animation_EasingRectKeyFrame, $asm, {
 		get_EasingFunction: function() {
@@ -21782,7 +23042,7 @@
 			}
 			return $System_Windows_Media_Animation_$RectAnimationOperations.$Default.Interpolate(baseValue, this.get_Value(), keyFrameProgress);
 		}
-	}, $System_Windows_Media_Animation_RectKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_RectKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_EasingThicknessKeyFrame, $asm, {
 		get_EasingFunction: function() {
 			return ss.cast(this.GetValue($System_Windows_Media_Animation_EasingThicknessKeyFrame.EasingFunctionProperty), $System_Windows_Media_Animation_IEasingFunction);
@@ -21796,7 +23056,7 @@
 			}
 			return $System_Windows_Media_Animation_$ThicknessAnimationOperations.$Default.Interpolate(baseValue, this.get_Value(), keyFrameProgress);
 		}
-	}, $System_Windows_Media_Animation_ThicknessKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_ThicknessKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_ElasticEase, $asm, {
 		get_Oscillations: function() {
 			return ss.unbox(ss.cast(this.GetValue($System_Windows_Media_Animation_ElasticEase.OscillationsProperty), Number));
@@ -21814,7 +23074,7 @@
 			var springiness = Granular.Extensions.DoubleExtensions.Max(this.get_Springiness(), 0);
 			return (Granular.Extensions.DoubleExtensions.IsClose(springiness, 0) ? normalizedTime : ((Math.exp(springiness * normalizedTime) - 1) / (Math.exp(springiness) - 1))) * Math.sin((Math.PI * 2 * Granular.Extensions.DoubleExtensions.Max(this.get_Oscillations(), 0) + Math.PI * 0.5) * normalizedTime);
 		}
-	}, $System_Windows_Media_Animation_EasingFunctionBase, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IEasingFunction]);
+	}, $System_Windows_Media_Animation_EasingFunctionBase, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IEasingFunction]);
 	ss.initClass($System_Windows_Media_Animation_ExponentialEase, $asm, {
 		get_Exponent: function() {
 			return ss.unbox(ss.cast(this.GetValue($System_Windows_Media_Animation_ExponentialEase.ExponentProperty), Number));
@@ -21825,7 +23085,7 @@
 		EaseOverride: function(normalizedTime) {
 			return (Granular.Extensions.DoubleExtensions.IsClose(this.get_Exponent(), 0) ? normalizedTime : ((Math.exp(this.get_Exponent() * normalizedTime) - 1) / (Math.exp(this.get_Exponent()) - 1)));
 		}
-	}, $System_Windows_Media_Animation_EasingFunctionBase, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IEasingFunction]);
+	}, $System_Windows_Media_Animation_EasingFunctionBase, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IEasingFunction]);
 	ss.initEnum($System_Windows_Media_Animation_FillBehavior, $asm, { HoldEnd: 0, Stop: 1 });
 	ss.initEnum($System_Windows_Media_Animation_HandoffBehavior, $asm, { SnapshotAndReplace: 0, Compose: 1 });
 	ss.initClass($System_Windows_Media_Animation_KeyTime, $asm, {
@@ -21868,26 +23128,31 @@
 		}
 	});
 	ss.initEnum($System_Windows_Media_Animation_KeyTimeType, $asm, { Uniform: 0, Percent: 1, TimeSpan: 2, Paced: 3 });
+	ss.initClass($System_Windows_Media_Animation_KeyTimeTypeConverter, $asm, {
+		ConvertFrom: function(namespaces, value) {
+			return $System_Windows_Media_Animation_KeyTime.Parse(value.toString().trim());
+		}
+	}, null, [$System_Windows_Markup_ITypeConverter]);
 	ss.initClass($System_Windows_Media_Animation_LinearColorKeyFrame, $asm, {
 		InterpolateValue: function(baseValue, keyFrameProgress) {
 			return $System_Windows_Media_Animation_$ColorAnimationOperations.$Default.Interpolate(baseValue, this.get_Value(), keyFrameProgress);
 		}
-	}, $System_Windows_Media_Animation_ColorKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_ColorKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_LinearDoubleKeyFrame, $asm, {
 		InterpolateValue: function(baseValue, keyFrameProgress) {
 			return $System_Windows_Media_Animation_$DoubleAnimationOperations.$Default.Interpolate(baseValue, this.get_Value(), keyFrameProgress);
 		}
-	}, $System_Windows_Media_Animation_DoubleKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_DoubleKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_LinearRectKeyFrame, $asm, {
 		InterpolateValue: function(baseValue, keyFrameProgress) {
 			return $System_Windows_Media_Animation_$RectAnimationOperations.$Default.Interpolate(baseValue, this.get_Value(), keyFrameProgress);
 		}
-	}, $System_Windows_Media_Animation_RectKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_RectKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_LinearThicknessKeyFrame, $asm, {
 		InterpolateValue: function(baseValue, keyFrameProgress) {
 			return $System_Windows_Media_Animation_$ThicknessAnimationOperations.$Default.Interpolate(baseValue, this.get_Value(), keyFrameProgress);
 		}
-	}, $System_Windows_Media_Animation_ThicknessKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_ThicknessKeyFrame, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_OffsetClock, $asm, {
 		get_FirstTick: function() {
 			return new ss.TimeSpan(this.$offset.ticks + this.$clock.get_FirstTick().ticks);
@@ -21988,12 +23253,12 @@
 				$t2.dispose();
 			}
 		}
-	}, $System_Windows_Media_Animation_Timeline, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_Timeline, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_ParallelTimeline, $asm, {
 		CreateGroupClock: function(children) {
 			return new $System_Windows_Media_Animation_ParallelTimelineClock(this, children);
 		}
-	}, $System_Windows_Media_Animation_TimelineGroup, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_TimelineGroup, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_TimelineGroupClock, $asm, {
 		get_Children: function() {
 			return this.$2$ChildrenField;
@@ -22021,7 +23286,7 @@
 			var nameScope = $System_Windows_Markup_NameScope.GetContainingNameScope(target);
 			return (ss.isValue(nameScope) ? ss.safeCast(nameScope.FindName(this.get_BeginStoryboardName()), $System_Windows_Media_Animation_BeginStoryboard) : null);
 		}
-	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_ITriggerAction]);
+	}, $System_Windows_Freezable, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_ITriggerAction]);
 	ss.initClass($System_Windows_Media_Animation_PauseStoryboard, $asm, {
 		Apply: function(target, valueSource) {
 			var beginStoryboard = this.GetBeginStoryboard(target);
@@ -22029,7 +23294,7 @@
 				beginStoryboard.Pause(target);
 			}
 		}
-	}, $System_Windows_Media_Animation_StoryboardAction, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_ITriggerAction]);
+	}, $System_Windows_Media_Animation_StoryboardAction, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_ITriggerAction]);
 	ss.initClass($System_Windows_Media_Animation_PowerEase, $asm, {
 		get_Power: function() {
 			return ss.unbox(ss.cast(this.GetValue($System_Windows_Media_Animation_PowerEase.PowerProperty), Number));
@@ -22040,22 +23305,22 @@
 		EaseOverride: function(normalizedTime) {
 			return Math.pow(normalizedTime, Granular.Extensions.DoubleExtensions.Max(this.get_Power(), 0));
 		}
-	}, $System_Windows_Media_Animation_EasingFunctionBase, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IEasingFunction]);
+	}, $System_Windows_Media_Animation_EasingFunctionBase, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IEasingFunction]);
 	ss.initClass($System_Windows_Media_Animation_QuadraticEase, $asm, {
 		EaseOverride: function(normalizedTime) {
 			return normalizedTime * normalizedTime;
 		}
-	}, $System_Windows_Media_Animation_EasingFunctionBase, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IEasingFunction]);
+	}, $System_Windows_Media_Animation_EasingFunctionBase, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IEasingFunction]);
 	ss.initClass($System_Windows_Media_Animation_QuarticEase, $asm, {
 		EaseOverride: function(normalizedTime) {
 			return normalizedTime * normalizedTime * normalizedTime * normalizedTime;
 		}
-	}, $System_Windows_Media_Animation_EasingFunctionBase, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IEasingFunction]);
+	}, $System_Windows_Media_Animation_EasingFunctionBase, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IEasingFunction]);
 	ss.initClass($System_Windows_Media_Animation_QuinticEase, $asm, {
 		EaseOverride: function(normalizedTime) {
 			return normalizedTime * normalizedTime * normalizedTime * normalizedTime * normalizedTime;
 		}
-	}, $System_Windows_Media_Animation_EasingFunctionBase, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IEasingFunction]);
+	}, $System_Windows_Media_Animation_EasingFunctionBase, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IEasingFunction]);
 	ss.initClass($System_Windows_Media_Animation_RectAnimation, $asm, {
 		get_To: function() {
 			return ss.cast(this.GetValue($System_Windows_Media_Animation_RectAnimation.ToProperty), $System_Windows_Rect);
@@ -22126,7 +23391,7 @@
 			}
 			return this.$animationOperations.Add(baseValue, this.$animationOperations.Interpolate(from, to, progress));
 		}
-	}, $System_Windows_Media_Animation_AnimationTimeline, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_AnimationTimeline, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_RectAnimationUsingKeyFrames, $asm, {
 		get_KeyFrames: function() {
 			return this.$5$KeyFramesField;
@@ -22187,7 +23452,7 @@
 				return keyFrame1.get_KeyTime().get_TimeSpan();
 			}).defaultIfEmpty(new ss.TimeSpan(1 * 10000000)));
 		}
-	}, $System_Windows_Media_Animation_AnimationTimeline, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_AnimationTimeline, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_RemoveStoryboard, $asm, {
 		Apply: function(target, valueSource) {
 			var beginStoryboard = this.GetBeginStoryboard(target);
@@ -22197,7 +23462,7 @@
 				beginStoryboard.Remove(target, nameScope, layerOwner);
 			}
 		}
-	}, $System_Windows_Media_Animation_StoryboardAction, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_ITriggerAction]);
+	}, $System_Windows_Media_Animation_StoryboardAction, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_ITriggerAction]);
 	ss.initClass($System_Windows_Media_Animation_RepeatBehavior, $asm, {
 		get_Count: function() {
 			return this.$1$CountField;
@@ -22212,6 +23477,11 @@
 			this.$1$DurationField = value;
 		}
 	});
+	ss.initClass($System_Windows_Media_Animation_RepeatBehaviorTypeConverter, $asm, {
+		ConvertFrom: function(namespaces, value) {
+			return $System_Windows_Media_Animation_RepeatBehavior.Parse(value.toString().trim());
+		}
+	}, null, [$System_Windows_Markup_ITypeConverter]);
 	ss.initClass($System_Windows_Media_Animation_RepeatClock, $asm, {
 		get_FirstTick: function() {
 			return this.$1$FirstTickField;
@@ -22318,7 +23588,7 @@
 				beginStoryboard.Resume(target);
 			}
 		}
-	}, $System_Windows_Media_Animation_StoryboardAction, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_ITriggerAction]);
+	}, $System_Windows_Media_Animation_StoryboardAction, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_ITriggerAction]);
 	ss.initClass($System_Windows_Media_Animation_ReverseClock, $asm, {
 		get_FirstTick: function() {
 			return this.$clock.get_FirstTick();
@@ -22378,9 +23648,7 @@
 				this.$scheduledTick.dispose();
 			}
 			this.$scheduledTick = $System_Windows_ApplicationHost.get_Current().get_TaskScheduler().ScheduleTask(Granular.Extensions.TimeSpanExtensions.Max(new ss.TimeSpan(tickTime.ticks - this.get_Time().ticks), new ss.TimeSpan(0)), ss.mkdel(this, function() {
-				$System_Windows_Threading_Dispatcher.CurrentDispatcher.BeginInvoke$4(7, ss.mkdel(this, function() {
-					return this.Tick();
-				}));
+				$System_Windows_Threading_Dispatcher.CurrentDispatcher.InvokeAsync(ss.mkdel(this, this.Tick), 7);
 			}));
 			this.$scheduledTickTime = tickTime;
 		},
@@ -22475,13 +23743,13 @@
 		CreateGroupClock: function(children) {
 			return new $System_Windows_Media_Animation_SequentialTimelineClock(this, children);
 		}
-	}, $System_Windows_Media_Animation_TimelineGroup, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_TimelineGroup, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_SequentialTimelineClock, $asm, {}, $System_Windows_Media_Animation_TimelineGroupClock, [$System_Windows_Media_Animation_IClock]);
 	ss.initClass($System_Windows_Media_Animation_SineEase, $asm, {
 		EaseOverride: function(normalizedTime) {
 			return 1 - Math.sin(Math.PI * 0.5 * (1 - normalizedTime));
 		}
-	}, $System_Windows_Media_Animation_EasingFunctionBase, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IEasingFunction]);
+	}, $System_Windows_Media_Animation_EasingFunctionBase, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IEasingFunction]);
 	ss.initClass($System_Windows_Media_Animation_SkipToFillStoryboard, $asm, {
 		Apply: function(target, valueSource) {
 			var beginStoryboard = this.GetBeginStoryboard(target);
@@ -22489,7 +23757,7 @@
 				beginStoryboard.SkipToFill(target);
 			}
 		}
-	}, $System_Windows_Media_Animation_StoryboardAction, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_ITriggerAction]);
+	}, $System_Windows_Media_Animation_StoryboardAction, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_ITriggerAction]);
 	ss.initClass($System_Windows_Media_Animation_StopStoryboard, $asm, {
 		Apply: function(target, valueSource) {
 			var beginStoryboard = this.GetBeginStoryboard(target);
@@ -22497,7 +23765,7 @@
 				beginStoryboard.Stop(target);
 			}
 		}
-	}, $System_Windows_Media_Animation_StoryboardAction, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_ITriggerAction]);
+	}, $System_Windows_Media_Animation_StoryboardAction, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_ITriggerAction]);
 	ss.initClass($System_Windows_Media_Animation_Storyboard, $asm, {
 		Begin: function(containingObject, nameScope, handoffBehavior, layerOwner) {
 			this.Stop(containingObject);
@@ -22616,7 +23884,7 @@
 			var targetProperty = {};
 			return (($System_Windows_Media_Animation_Storyboard.$TryGetPropertyPathTarget(root, propertyPath, target, targetProperty) && ss.isInstanceOfType(target.$, $System_Windows_Media_Animation_IAnimatable)) ? new $System_$Windows_Media_Animation_Storyboard$TargetKey(ss.cast(target.$, $System_Windows_Media_Animation_IAnimatable), targetProperty.$) : null);
 		}
-	}, $System_Windows_Media_Animation_ParallelTimeline, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_ParallelTimeline, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_ThicknessAnimation, $asm, {
 		get_To: function() {
 			return ss.cast(this.GetValue($System_Windows_Media_Animation_ThicknessAnimation.ToProperty), $System_Windows_Thickness);
@@ -22647,15 +23915,15 @@
 			var baseValue = this.$animationOperations.get_Zero();
 			var from;
 			var to;
-			if (ss.isValue(this.get_From())) {
-				if (ss.isValue(this.get_To())) {
+			if ($System_Windows_Thickness.op_Inequality(this.get_From(), null)) {
+				if ($System_Windows_Thickness.op_Inequality(this.get_To(), null)) {
 					if (this.get_IsAdditive() && this.$isAccumulable) {
 						baseValue = ss.cast(defaultOriginValue, $System_Windows_Thickness);
 					}
 					from = this.get_From();
 					to = this.get_To();
 				}
-				else if (ss.isValue(this.get_By())) {
+				else if ($System_Windows_Thickness.op_Inequality(this.get_By(), null)) {
 					if (this.get_IsAdditive() && this.$isAccumulable) {
 						baseValue = ss.cast(defaultOriginValue, $System_Windows_Thickness);
 					}
@@ -22667,11 +23935,11 @@
 					to = ss.cast(defaultDestinationValue, $System_Windows_Thickness);
 				}
 			}
-			else if (ss.isValue(this.get_To())) {
+			else if ($System_Windows_Thickness.op_Inequality(this.get_To(), null)) {
 				from = ss.cast(defaultOriginValue, $System_Windows_Thickness);
 				to = this.get_To();
 			}
-			else if (ss.isValue(this.get_By())) {
+			else if ($System_Windows_Thickness.op_Inequality(this.get_By(), null)) {
 				if (this.$isAccumulable) {
 					baseValue = ss.cast(defaultOriginValue, $System_Windows_Thickness);
 				}
@@ -22687,7 +23955,7 @@
 			}
 			return this.$animationOperations.Add(baseValue, this.$animationOperations.Interpolate(from, to, progress));
 		}
-	}, $System_Windows_Media_Animation_AnimationTimeline, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_AnimationTimeline, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initClass($System_Windows_Media_Animation_ThicknessAnimationUsingKeyFrames, $asm, {
 		get_KeyFrames: function() {
 			return this.$5$KeyFramesField;
@@ -22748,7 +24016,7 @@
 				return keyFrame1.get_KeyTime().get_TimeSpan();
 			}).defaultIfEmpty(new ss.TimeSpan(1 * 10000000)));
 		}
-	}, $System_Windows_Media_Animation_AnimationTimeline, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject]);
+	}, $System_Windows_Media_Animation_AnimationTimeline, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement]);
 	ss.initEnum($System_Windows_Media_Imaging_BitmapCacheOption, $asm, { OnDemand: 0, Default: 0, OnLoad: 1 });
 	ss.initClass($System_Windows_Media_Imaging_BitmapSource, $asm, {
 		add_DownloadProgress: function(value) {
@@ -22808,7 +24076,7 @@
 				}
 			}
 		}
-	}, $System_Windows_Media_ImageSource, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IAnimatable]);
+	}, $System_Windows_Media_ImageSource, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable]);
 	$System_Windows_Media_Imaging_BitmapSource.$ctor1.prototype = $System_Windows_Media_Imaging_BitmapSource.prototype;
 	ss.initClass($System_Windows_Media_Imaging_BitmapImage, $asm, {
 		get_UriSource: function() {
@@ -22875,55 +24143,86 @@
 				this.SetRenderImageState(this.$renderImageSource$1.get_State());
 			}
 		}
-	}, $System_Windows_Media_Imaging_BitmapSource, [$System_Windows_IResourceContainer, $System_Windows_IInheritableObject, $System_Windows_Media_Animation_IAnimatable, $System_Windows_Markup_ISupportInitialize]);
+	}, $System_Windows_Media_Imaging_BitmapSource, [$System_Windows_IResourceContainer, $System_Windows_INotifyChanged, $System_Windows_IContextElement, $System_Windows_Media_Animation_IAnimatable, $System_Windows_Markup_ISupportInitialize]);
 	$System_Windows_Media_Imaging_BitmapImage.$ctor1.prototype = $System_Windows_Media_Imaging_BitmapImage.prototype;
 	ss.initClass($System_Windows_Threading_Dispatcher, $asm, {
-		BeginInvoke: function(action) {
-			return this.BeginInvoke$3(4, action);
+		Invoke: function(callback, priority) {
+			this.$Invoke(new $System_Windows_Threading_DispatcherOperation(callback, priority));
 		},
-		BeginInvoke$1: function(action) {
-			return this.BeginInvoke$4(4, action);
+		Invoke$1: function(TResult) {
+			return function(callback, priority) {
+				var dispatcherOperation = new (ss.makeGenericType($System_Windows_Threading_DispatcherOperation$1, [TResult]))(callback, priority);
+				this.$Invoke(dispatcherOperation);
+				return dispatcherOperation.get_Result$1();
+			};
 		},
-		BeginInvoke$4: function(priority, action) {
-			var operation = new $System_Windows_Threading_DispatcherOperation.$ctor3(priority, action);
-			this.BeginInvoke$2(operation);
-			return operation;
-		},
-		BeginInvoke$3: function(priority, action) {
-			var operation = new $System_Windows_Threading_DispatcherOperation.$ctor2(priority, action);
-			this.BeginInvoke$2(operation);
-			return operation;
-		},
-		BeginInvoke$2: function(operation) {
+		$Invoke: function(operation) {
 			this.$queue.Enqueue(operation.get_Priority(), operation);
-			this.ProcessQueue();
+			var currentOperation = {};
+			while (this.$TryDequeue(currentOperation)) {
+				currentOperation.$.Invoke();
+				if (ss.referenceEquals(currentOperation.$, operation)) {
+					return;
+				}
+			}
+			if (this.$disableProcessingRequests > 0) {
+				throw new Granular.Exception("Can't invoke an operation while the dispatcher processing is disabled", []);
+			}
+			throw new Granular.Exception("Can't invoke an inactive or aborted operation", []);
 		},
-		ProcessQueue: function() {
-			var operation = {};
+		InvokeAsync: function(callback, priority) {
+			var dispatcherOperation = new $System_Windows_Threading_DispatcherOperation(callback, priority);
+			this.$InvokeAsync(dispatcherOperation);
+			return dispatcherOperation;
+		},
+		InvokeAsync$1: function(TResult) {
+			return function(callback, priority) {
+				var dispatcherOperation = new (ss.makeGenericType($System_Windows_Threading_DispatcherOperation$1, [TResult]))(callback, priority);
+				this.$InvokeAsync(dispatcherOperation);
+				return dispatcherOperation;
+			};
+		},
+		$InvokeAsync: function(operation) {
+			this.$queue.Enqueue(operation.get_Priority(), operation);
+			this.$ProcessQueueAsync();
+		},
+		$ProcessQueueAsync: function() {
+			if (this.$isProcessQueueScheduled) {
+				return;
+			}
+			this.$isProcessQueueScheduled = true;
+			$System_Windows_Threading_TaskSchedulerExtensions.ScheduleTask($System_Windows_ApplicationHost.get_Current().get_TaskScheduler(), ss.mkdel(this, function() {
+				this.$isProcessQueueScheduled = false;
+				var operation = {};
+				if (!this.$TryDequeue(operation)) {
+					return;
+				}
+				if (operation.$.get_Status() === 0) {
+					operation.$.Invoke();
+					this.$ProcessQueueAsync();
+				}
+			}));
+		},
+		$TryDequeue: function(operation) {
 			while (this.$disableProcessingRequests === 0 && this.$queue.TryPeek(operation) && operation.$.get_Priority() !== 0) {
 				this.$queue.Dequeue();
 				if (operation.$.get_Status() !== 0) {
 					continue;
 				}
-				var token = { $: $System_Windows_Threading_TaskSchedulerExtensions.ScheduleTask($System_Windows_ApplicationHost.get_Current().get_TaskScheduler(), ss.mkdel(operation.$, operation.$.Invoke)) };
-				if (operation.$.get_Status() === 0) {
-					operation.$.add_Completed(ss.mkdel(this, function(sender, e) {
-						this.ProcessQueue();
-					}));
-					operation.$.add_Aborted(ss.mkdel({ token: token, $this: this }, function(sender1, e1) {
-						this.token.$.dispose();
-						this.$this.ProcessQueue();
-					}));
-					return;
-				}
+				return true;
 			}
+			operation.$ = null;
+			return false;
 		},
 		DisableProcessing: function() {
 			this.$disableProcessingRequests++;
-			return new $System_Windows_Disposable(ss.mkdel(this, function() {
-				this.$disableProcessingRequests--;
-				this.ProcessQueue();
-			}));
+			return this.$disableProcessingToken;
+		},
+		$EnableProcessing: function() {
+			this.$disableProcessingRequests--;
+			if (this.$disableProcessingRequests === 0) {
+				this.$ProcessQueueAsync();
+			}
 		}
 	});
 	ss.initClass($System_Windows_Threading_DispatcherOperation, $asm, {
@@ -22974,7 +24273,7 @@
 			Granular.Extensions.EventHandlerExtensions.Raise(this.$1$CompletedField, this);
 		}
 	});
-	$System_Windows_Threading_DispatcherOperation.$ctor1.prototype = $System_Windows_Threading_DispatcherOperation.$ctor2.prototype = $System_Windows_Threading_DispatcherOperation.$ctor3.prototype = $System_Windows_Threading_DispatcherOperation.prototype;
+	$System_Windows_Threading_DispatcherOperation.$ctor1.prototype = $System_Windows_Threading_DispatcherOperation.prototype;
 	ss.initEnum($System_Windows_Threading_DispatcherOperationStatus, $asm, { Pending: 0, Aborted: 1, Completed: 2, Executing: 3 });
 	ss.initEnum($System_Windows_Threading_DispatcherPriority, $asm, { Invalid: -1, Inactive: 0, SystemIdle: 1, ApplicationIdle: 2, ContextIdle: 3, Background: 4, Input: 5, Loaded: 6, Render: 7, DataBind: 8, Normal: 9, Send: 10 });
 	ss.initClass($System_Windows_Threading_DispatcherTimer, $asm, {
@@ -23028,9 +24327,9 @@
 				return;
 			}
 			this.$scheduledTask = this.$scheduler.ScheduleTask(this.get_Interval(), ss.mkdel(this, function() {
-				this.$dispatcher.BeginInvoke$4(this.get_Priority(), ss.mkdel(this, function() {
-					return Granular.Extensions.EventHandlerExtensions.Raise(this.$1$TickField, this);
-				}));
+				this.$dispatcher.InvokeAsync(ss.mkdel(this, function() {
+					Granular.Extensions.EventHandlerExtensions.Raise(this.$1$TickField, this);
+				}), this.get_Priority());
 				this.$ScheduleTask();
 			}));
 		},
@@ -23046,7 +24345,7 @@
 	ss.initClass($System_Windows_Threading_TaskSchedulerExtensions, $asm, {});
 	ss.setMetadata($System_$Windows_DependencyProperty$DependencyPropertyHashKey, { members: [{ name: '.ctor', type: 1, params: [Function, String] }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'Name', type: 16, returnType: String, getter: { name: 'get_Name', type: 8, sname: 'get_$Name', returnType: String, params: [] }, setter: { name: 'set_Name', type: 8, sname: 'set_$Name', returnType: Object, params: [String] } }, { name: 'Owner', type: 16, returnType: Function, getter: { name: 'get_Owner', type: 8, sname: 'get_$Owner', returnType: Function, params: [] }, setter: { name: 'set_Owner', type: 8, sname: 'set_$Owner', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_$Windows_DependencyProperty$TypeComparer, { members: [{ name: 'Compare', type: 8, sname: 'compare', returnType: ss.Int32, params: [Function, Function] }, { name: 'Default', isStatic: true, type: 4, returnType: $System_$Windows_DependencyProperty$TypeComparer, sname: '$Default' }] });
-	ss.setMetadata($System_$Windows_Disposable$EmptyDisposable, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Dispose', type: 8, sname: 'dispose', returnType: Object, params: [] }] });
+	ss.setMetadata($System_$Windows_DependencyPropertyValueEntry$IndexedObservableValue, { members: [{ name: '.ctor', type: 1, params: [ss.Int32, Object] }, { name: 'Index', type: 16, returnType: ss.Int32, getter: { name: 'get_Index', type: 8, sname: 'get_$Index', returnType: ss.Int32, params: [] }, setter: { name: 'set_Index', type: 8, sname: 'set_$Index', returnType: Object, params: [ss.Int32] } }] });
 	ss.setMetadata($System_$Windows_EmbeddedResourceLoader$EmbeddedResourceKey, { members: [{ name: '.ctor', type: 1, params: [String, String] }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'AssemblyName', type: 16, returnType: String, getter: { name: 'get_AssemblyName', type: 8, sname: 'get_$AssemblyName', returnType: String, params: [] }, setter: { name: 'set_AssemblyName', type: 8, sname: 'set_$AssemblyName', returnType: Object, params: [String] } }, { name: 'ResourcePath', type: 16, returnType: String, getter: { name: 'get_ResourcePath', type: 8, sname: 'get_$ResourcePath', returnType: String, params: [] }, setter: { name: 'set_ResourcePath', type: 8, sname: 'set_$ResourcePath', returnType: Object, params: [String] } }] });
 	ss.setMetadata($System_$Windows_EventManager$ClassHandlerKey, { members: [{ name: '.ctor', type: 1, params: [Function, $System_Windows_RoutedEvent] }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'ClassType', type: 16, returnType: Function, getter: { name: 'get_ClassType', type: 8, sname: 'get_$ClassType', returnType: Function, params: [] }, setter: { name: 'set_ClassType', type: 8, sname: 'set_$ClassType', returnType: Object, params: [Function] } }, { name: 'RoutedEvent', type: 16, returnType: $System_Windows_RoutedEvent, getter: { name: 'get_RoutedEvent', type: 8, sname: 'get_$RoutedEvent', returnType: $System_Windows_RoutedEvent, params: [] }, setter: { name: 'set_RoutedEvent', type: 8, sname: 'set_$RoutedEvent', returnType: Object, params: [$System_Windows_RoutedEvent] } }] });
 	ss.setMetadata($System_$Windows_EventManager$RoutedEventKey, { members: [{ name: '.ctor', type: 1, params: [Function, String] }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'Name', type: 16, returnType: String, getter: { name: 'get_Name', type: 8, sname: 'get_$Name', returnType: String, params: [] }, setter: { name: 'set_Name', type: 8, sname: 'set_$Name', returnType: Object, params: [String] } }, { name: 'Owner', type: 16, returnType: Function, getter: { name: 'get_Owner', type: 8, sname: 'get_$Owner', returnType: Function, params: [] }, setter: { name: 'set_Owner', type: 8, sname: 'set_$Owner', returnType: Object, params: [Function] } }] });
@@ -23055,9 +24354,10 @@
 	ss.setMetadata($System_$Windows_MultiDataTrigger$MultiDataTriggerConditionProvider, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_Condition] }, { name: 'CreateDataTriggerCondition', type: 8, sname: 'CreateDataTriggerCondition', returnType: $System_Windows_IDataTriggerCondition, params: [$System_Windows_FrameworkElement] }] });
 	ss.setMetadata($System_$Windows_MultiTrigger$TriggerConditionProvider, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_Condition] }, { name: 'CreateDataTriggerCondition', type: 8, sname: 'CreateDataTriggerCondition', returnType: $System_Windows_IDataTriggerCondition, params: [$System_Windows_FrameworkElement] }] });
 	ss.setMetadata($System_$Windows_Setter$ValueOverlapExpression, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ClearValue', type: 8, sname: '$ClearValue', returnType: Object, params: [Object] }, { name: 'CreateExpression', type: 8, sname: 'CreateExpression', returnType: $System_Windows_IExpression, params: [$System_Windows_DependencyObject, $System_Windows_DependencyProperty] }, { name: 'SetValue', type: 8, sname: 'SetValue', returnType: Boolean, params: [Object] }, { name: 'SetValue', type: 8, sname: '$SetValue', returnType: Object, params: [Object, Object] }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] } }, { name: 'ValueChanged', type: 2, adder: { name: 'add_ValueChanged', type: 8, sname: 'add_ValueChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ValueChanged', type: 8, sname: 'remove_ValueChanged', returnType: Object, params: [Function] } }] });
+	ss.setMetadata($System_$Windows_Controls_Adorner$VisualPathTransform, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_Media_Visual, $System_Windows_Media_Visual] }, { name: 'Dispose', type: 8, sname: 'dispose', returnType: Object, params: [] }, { name: 'SetValue', type: 8, sname: '$SetValue$1', returnType: Object, params: [] }, { name: 'Value', type: 16, returnType: $System_Windows_Media_Matrix, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: $System_Windows_Media_Matrix, params: [] } }] });
 	ss.setMetadata($System_$Windows_Controls_ContentPresenter$DefaultContentTemplate, { members: [{ name: 'Attach', type: 8, sname: 'Attach', returnType: Object, params: [$System_Windows_FrameworkElement] }, { name: 'Detach', type: 8, sname: 'Detach', returnType: Object, params: [$System_Windows_FrameworkElement] }, { name: 'Default', isStatic: true, type: 4, returnType: $System_Windows_IFrameworkTemplate, sname: '$Default' }] });
 	ss.setMetadata($System_$Windows_Controls_ContentPresenter$DefaultContentTemplate$ToStringConverter, { members: [{ name: 'Convert', type: 8, sname: 'Convert', returnType: Object, params: [Object, Function, Object] }, { name: 'ConvertBack', type: 8, sname: 'ConvertBack', returnType: Object, params: [Object, Function, Object] }, { name: 'Default', isStatic: true, type: 4, returnType: $System_$Windows_Controls_ContentPresenter$DefaultContentTemplate$ToStringConverter, sname: '$Default' }] });
-	ss.setMetadata($System_$Windows_Controls_ContentPresenter$UIElementTemplate, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_UIElement] }, { name: 'Attach', type: 8, sname: 'Attach', returnType: Object, params: [$System_Windows_FrameworkElement] }, { name: 'Detach', type: 8, sname: 'Detach', returnType: Object, params: [$System_Windows_FrameworkElement] }] });
+	ss.setMetadata($System_$Windows_Controls_ContentPresenter$UIElementTemplate, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_UIElement] }, { name: 'Attach', type: 8, sname: 'Attach', returnType: Object, params: [$System_Windows_FrameworkElement] }, { name: 'Detach', type: 8, sname: 'Detach', returnType: Object, params: [$System_Windows_FrameworkElement] }, { name: 'Content', type: 16, returnType: $System_Windows_UIElement, getter: { name: 'get_Content', type: 8, sname: 'get_$Content', returnType: $System_Windows_UIElement, params: [] }, setter: { name: 'set_Content', type: 8, sname: 'set_$Content', returnType: Object, params: [$System_Windows_UIElement] } }] });
 	ss.setMetadata($System_$Windows_Controls_ItemContainerGenerator$GeneratedItemContainer, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_FrameworkElement, Object, ss.Int32] }, { name: 'Container', type: 16, returnType: $System_Windows_FrameworkElement, getter: { name: 'get_Container', type: 8, sname: 'get_$Container', returnType: $System_Windows_FrameworkElement, params: [] }, setter: { name: 'set_Container', type: 8, sname: 'set_$Container', returnType: Object, params: [$System_Windows_FrameworkElement] } }, { name: 'Index', type: 16, returnType: ss.Int32, getter: { name: 'get_Index', type: 8, sname: 'get_$Index', returnType: ss.Int32, params: [] }, setter: { name: 'set_Index', type: 8, sname: 'set_$Index', returnType: Object, params: [ss.Int32] } }, { name: 'Item', type: 16, returnType: Object, getter: { name: 'get_Item', type: 8, sname: 'get_$Item', returnType: Object, params: [] }, setter: { name: 'set_Item', type: 8, sname: 'set_$Item', returnType: Object, params: [Object] } }] });
 	ss.setMetadata($System_$Windows_Controls_ItemsControl$DefaultItemsPanelTemplate, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Attach', type: 8, sname: 'Attach', returnType: Object, params: [$System_Windows_FrameworkElement] }, { name: 'Detach', type: 8, sname: 'Detach', returnType: Object, params: [$System_Windows_FrameworkElement] }] });
 	ss.setMetadata($System_$Windows_Controls_ListBox$ExtendedSelectionBehavior, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_Controls_ListBox] }, { name: 'SetClickSelection', type: 8, sname: '$SetClickSelection', returnType: Object, params: [$System_Windows_Controls_ListBoxItem, $System_Windows_Input_ModifierKeys] }, { name: 'SetFocusChangeSelection', type: 8, sname: '$SetFocusChangeSelection', returnType: Object, params: [$System_Windows_Controls_ListBoxItem, $System_Windows_Input_ModifierKeys] }] });
@@ -23101,9 +24401,10 @@
 	ss.setMetadata($System_$Windows_Markup_ElementDictionaryContentInitializer$ValueProviderFactory, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_Markup_IElementFactory] }, { name: 'CreateElement', type: 8, sname: 'CreateElement', returnType: Object, params: [$System_Windows_Markup_InitializeContext] }, { name: 'ElementType', type: 16, returnType: Function, getter: { name: 'get_ElementType', type: 8, sname: 'get_ElementType', returnType: Function, params: [] } }] });
 	ss.setMetadata($System_$Windows_Markup_ElementInitializer$EmptyElementInitializer, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'InitializeElement', type: 8, sname: 'InitializeElement', returnType: Object, params: [Object, $System_Windows_Markup_InitializeContext] }] });
 	ss.setMetadata($System_$Windows_Markup_ElementPropertyMemberInitializer$ElementPropertyMemberFactoryInitializer, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_Markup_IPropertyAdapter, $System_Windows_Markup_IElementInitializer] }, { name: 'InitializeElement', type: 8, sname: 'InitializeElement', returnType: Object, params: [Object, $System_Windows_Markup_InitializeContext] }] });
+	ss.setMetadata($System_$Windows_Markup_TypeConverter$EmptyTypeConverter, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }] });
 	ss.setMetadata($System_$Windows_Markup_XamlTypes$NullProvider, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ProvideValue', type: 8, sname: 'ProvideValue', returnType: Object, params: [$System_Windows_Markup_InitializeContext] }] });
 	ss.setMetadata($System_$Windows_Markup_XamlTypes$TypeProvider, { attr: [new $System_Windows_Markup_MarkupExtensionParameterAttribute('Type', 0)], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ProvideValue', type: 8, sname: 'ProvideValue', returnType: Object, params: [$System_Windows_Markup_InitializeContext] }, { name: 'Type', type: 16, returnType: Function, getter: { name: 'get_Type', type: 8, sname: 'get_$Type', returnType: Function, params: [] }, setter: { name: 'set_Type', type: 8, sname: 'set_$Type', returnType: Object, params: [Function] } }] });
-	ss.setMetadata($System_$Windows_Media_Transform$IdentityTransfrom, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Value', type: 16, returnType: $System_Windows_Media_Matrix, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: $System_Windows_Media_Matrix, params: [] } }] });
+	ss.setMetadata($System_$Windows_Media_Transform$IdentityTransform, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Value', type: 16, returnType: $System_Windows_Media_Matrix, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: $System_Windows_Media_Matrix, params: [] } }] });
 	ss.setMetadata($System_$Windows_Media_Animation_RootClock$ClockSchedule, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_Media_Animation_IClock] }, { name: 'Tick', type: 8, sname: '$Tick', returnType: Object, params: [ss.TimeSpan] }, { name: 'Clock', type: 16, returnType: $System_Windows_Media_Animation_IClock, getter: { name: 'get_Clock', type: 8, sname: 'get_$Clock', returnType: $System_Windows_Media_Animation_IClock, params: [] }, setter: { name: 'set_Clock', type: 8, sname: 'set_$Clock', returnType: Object, params: [$System_Windows_Media_Animation_IClock] } }, { name: 'NextTick', type: 16, returnType: ss.TimeSpan, getter: { name: 'get_NextTick', type: 8, sname: 'get_$NextTick', returnType: ss.TimeSpan, params: [] }, setter: { name: 'set_NextTick', type: 8, sname: 'set_$NextTick', returnType: Object, params: [ss.TimeSpan] } }] });
 	ss.setMetadata($System_$Windows_Media_Animation_Storyboard$TargetKey, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_Media_Animation_IAnimatable, $System_Windows_DependencyProperty] }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'Target', type: 16, returnType: $System_Windows_Media_Animation_IAnimatable, getter: { name: 'get_Target', type: 8, sname: 'get_$Target', returnType: $System_Windows_Media_Animation_IAnimatable, params: [] }, setter: { name: 'set_Target', type: 8, sname: 'set_$Target', returnType: Object, params: [$System_Windows_Media_Animation_IAnimatable] } }, { name: 'TargetProperty', type: 16, returnType: $System_Windows_DependencyProperty, getter: { name: 'get_TargetProperty', type: 8, sname: 'get_$TargetProperty', returnType: $System_Windows_DependencyProperty, params: [] }, setter: { name: 'set_TargetProperty', type: 8, sname: 'set_$TargetProperty', returnType: Object, params: [$System_Windows_DependencyProperty] } }] });
 	ss.setMetadata($System_Windows_$DataTriggerCondition, { members: [{ name: 'Dispose', type: 8, sname: 'dispose', returnType: Object, params: [] }, { name: 'Register', isStatic: true, type: 8, sname: '$Register', returnType: $System_Windows_$DataTriggerCondition, params: [$System_Windows_FrameworkElement, $System_Windows_IExpressionProvider, Object] }, { name: 'IsMatched', type: 16, returnType: Boolean, getter: { name: 'get_IsMatched', type: 8, sname: 'get_IsMatched', returnType: Boolean, params: [] }, setter: { name: 'set_IsMatched', type: 8, sname: 'set_$IsMatched', returnType: Object, params: [Boolean] } }, { name: 'IsMatchedChanged', type: 2, adder: { name: 'add_IsMatchedChanged', type: 8, sname: 'add_IsMatchedChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_IsMatchedChanged', type: 8, sname: 'remove_IsMatchedChanged', returnType: Object, params: [Function] } }] });
@@ -23113,24 +24414,26 @@
 	ss.setMetadata($System_Windows_ApplicationHost, { members: [{ name: 'Initialize', isStatic: true, type: 8, sname: 'Initialize', returnType: Object, params: [$System_Windows_IApplicationHost] }, { name: 'Current', isStatic: true, type: 16, returnType: $System_Windows_IApplicationHost, getter: { name: 'get_Current', isStatic: true, type: 8, sname: 'get_Current', returnType: $System_Windows_IApplicationHost, params: [] } }] });
 	ss.setMetadata($System_Windows_ApplicationHostAttribute, { members: [{ name: '.ctor', type: 1, params: [Function] }, { name: 'Type', type: 16, returnType: Function, getter: { name: 'get_Type', type: 8, sname: 'get_Type', returnType: Function, params: [] }, setter: { name: 'set_Type', type: 8, sname: 'set_Type', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_ApplicationHostExtensions, { members: [{ name: 'GetKeyboardDeviceFromElement', isStatic: true, type: 8, sname: 'GetKeyboardDeviceFromElement', returnType: $System_Windows_Input_KeyboardDevice, params: [$System_Windows_IApplicationHost, $System_Windows_FrameworkElement] }, { name: 'GetMouseDeviceFromElement', isStatic: true, type: 8, sname: 'GetMouseDeviceFromElement', returnType: $System_Windows_Input_MouseDevice, params: [$System_Windows_IApplicationHost, $System_Windows_FrameworkElement] }] });
-	ss.setMetadata($System_Windows_CoercedDependencyPropertyValueEntry, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_IDependencyPropertyValueEntry, $System_Windows_DependencyObject, Function] }, { name: 'ClearAnimationValue', type: 8, sname: 'ClearAnimationValue', returnType: Object, params: [] }, { name: 'ClearBaseValue', type: 8, sname: 'ClearBaseValue', returnType: Object, params: [ss.Int32] }, { name: 'ClearCurrentValue', type: 8, sname: 'ClearCurrentValue', returnType: Object, params: [] }, { name: 'CoerceValue', type: 8, sname: 'CoerceValue', returnType: Object, params: [] }, { name: 'GetAnimationValue', type: 8, sname: 'GetAnimationValue', returnType: Object, params: [Boolean] }, { name: 'GetBaseValue', type: 8, sname: 'GetBaseValue', returnType: Object, params: [Boolean] }, { name: 'GetBaseValue', type: 8, sname: 'GetBaseValue$1', returnType: Object, params: [ss.Int32, Boolean] }, { name: 'GetBaseValuePriority', type: 8, sname: 'GetBaseValuePriority', returnType: ss.Int32, params: [] }, { name: 'GetCurrentValue', type: 8, sname: 'GetCurrentValue', returnType: Object, params: [Boolean] }, { name: 'SetAnimationValue', type: 8, sname: 'SetAnimationValue', returnType: Object, params: [Object] }, { name: 'SetBaseValue', type: 8, sname: 'SetBaseValue', returnType: Object, params: [ss.Int32, Object] }, { name: 'SetCurrentValue', type: 8, sname: 'SetCurrentValue', returnType: Object, params: [Object] }, { name: 'IsCoerced', type: 16, returnType: Boolean, getter: { name: 'get_IsCoerced', type: 8, sname: 'get_IsCoerced', returnType: Boolean, params: [] } }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] } }, { name: 'ValueChanged', type: 2, adder: { name: 'add_ValueChanged', type: 8, sname: 'add_ValueChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ValueChanged', type: 8, sname: 'remove_ValueChanged', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_ComponentResourceKey, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'ProvideValue', type: 8, sname: 'ProvideValue', returnType: Object, params: [$System_Windows_Markup_InitializeContext] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'Assembly', type: 16, returnType: Object, getter: { name: 'get_Assembly', type: 8, sname: 'get_Assembly', returnType: Object, params: [] } }, { name: 'ResourceId', type: 16, returnType: Object, getter: { name: 'get_ResourceId', type: 8, sname: 'get_ResourceId', returnType: Object, params: [] }, setter: { name: 'set_ResourceId', type: 8, sname: 'set_ResourceId', returnType: Object, params: [Object] } }, { name: 'TypeInTargetAssembly', type: 16, returnType: Function, getter: { name: 'get_TypeInTargetAssembly', type: 8, sname: 'get_TypeInTargetAssembly', returnType: Function, params: [] }, setter: { name: 'set_TypeInTargetAssembly', type: 8, sname: 'set_TypeInTargetAssembly', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_Condition, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'CreateDataTriggerCondition', type: 8, sname: 'CreateDataTriggerCondition', returnType: $System_Windows_IDataTriggerCondition, params: [$System_Windows_FrameworkElement] }, { name: 'CreateTriggerCondition', type: 8, sname: 'CreateTriggerCondition', returnType: $System_Windows_IDataTriggerCondition, params: [$System_Windows_FrameworkElement] }, { name: 'Binding', type: 16, returnType: $System_Windows_Data_Binding, getter: { name: 'get_Binding', type: 8, sname: 'get_Binding', returnType: $System_Windows_Data_Binding, params: [] }, setter: { name: 'set_Binding', type: 8, sname: 'set_Binding', returnType: Object, params: [$System_Windows_Data_Binding] } }, { name: 'Property', type: 16, returnType: $System_Windows_IPropertyPathElement, getter: { name: 'get_Property', type: 8, sname: 'get_Property', returnType: $System_Windows_IPropertyPathElement, params: [] }, setter: { name: 'set_Property', type: 8, sname: 'set_Property', returnType: Object, params: [$System_Windows_IPropertyPathElement] } }, { name: 'SourceName', type: 16, returnType: String, getter: { name: 'get_SourceName', type: 8, sname: 'get_SourceName', returnType: String, params: [] }, setter: { name: 'set_SourceName', type: 8, sname: 'set_SourceName', returnType: Object, params: [String] } }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] }, setter: { name: 'set_Value', type: 8, sname: 'set_Value', returnType: Object, params: [Object] } }] });
-	ss.setMetadata($System_Windows_CornerRadius, { members: [{ name: '.ctor', type: 1, params: [Number] }, { name: '.ctor', type: 1, params: [Number, Number, Number, Number], sname: '$ctor1' }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'Parse', isStatic: true, type: 8, sname: 'Parse', returnType: $System_Windows_CornerRadius, params: [String] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'op_Equality', isStatic: true, type: 8, sname: 'op_Equality', returnType: Boolean, params: [$System_Windows_CornerRadius, $System_Windows_CornerRadius] }, { name: 'op_Inequality', isStatic: true, type: 8, sname: 'op_Inequality', returnType: Boolean, params: [$System_Windows_CornerRadius, $System_Windows_CornerRadius] }, { name: 'BottomLeft', type: 16, returnType: Number, getter: { name: 'get_BottomLeft', type: 8, sname: 'get_BottomLeft', returnType: Number, params: [] }, setter: { name: 'set_BottomLeft', type: 8, sname: 'set_BottomLeft', returnType: Object, params: [Number] } }, { name: 'BottomRight', type: 16, returnType: Number, getter: { name: 'get_BottomRight', type: 8, sname: 'get_BottomRight', returnType: Number, params: [] }, setter: { name: 'set_BottomRight', type: 8, sname: 'set_BottomRight', returnType: Object, params: [Number] } }, { name: 'IsUniform', type: 16, returnType: Boolean, getter: { name: 'get_IsUniform', type: 8, sname: 'get_IsUniform', returnType: Boolean, params: [] }, setter: { name: 'set_IsUniform', type: 8, sname: 'set_IsUniform', returnType: Object, params: [Boolean] } }, { name: 'TopLeft', type: 16, returnType: Number, getter: { name: 'get_TopLeft', type: 8, sname: 'get_TopLeft', returnType: Number, params: [] }, setter: { name: 'set_TopLeft', type: 8, sname: 'set_TopLeft', returnType: Object, params: [Number] } }, { name: 'TopRight', type: 16, returnType: Number, getter: { name: 'get_TopRight', type: 8, sname: 'get_TopRight', returnType: Number, params: [] }, setter: { name: 'set_TopRight', type: 8, sname: 'set_TopRight', returnType: Object, params: [Number] } }, { name: 'Zero', isStatic: true, type: 4, returnType: $System_Windows_CornerRadius, sname: 'Zero' }] });
+	ss.setMetadata($System_Windows_ContentElement, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'GetRenderElement', type: 8, sname: 'GetRenderElement', returnType: Object, params: [$System_Windows_Media_IRenderElementFactory] }, { name: 'RemoveRenderElement', type: 8, sname: 'RemoveRenderElement', returnType: Object, params: [$System_Windows_Media_IRenderElementFactory] }] });
+	ss.setMetadata($System_Windows_CornerRadius, { attr: [new $System_Windows_Markup_TypeConverterAttribute($System_Windows_CornerRadiusTypeConverter)], members: [{ name: '.ctor', type: 1, params: [Number] }, { name: '.ctor', type: 1, params: [Number, Number, Number, Number], sname: '$ctor1' }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'Parse', isStatic: true, type: 8, sname: 'Parse', returnType: $System_Windows_CornerRadius, params: [String] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'op_Equality', isStatic: true, type: 8, sname: 'op_Equality', returnType: Boolean, params: [$System_Windows_CornerRadius, $System_Windows_CornerRadius] }, { name: 'op_Inequality', isStatic: true, type: 8, sname: 'op_Inequality', returnType: Boolean, params: [$System_Windows_CornerRadius, $System_Windows_CornerRadius] }, { name: 'BottomLeft', type: 16, returnType: Number, getter: { name: 'get_BottomLeft', type: 8, sname: 'get_BottomLeft', returnType: Number, params: [] }, setter: { name: 'set_BottomLeft', type: 8, sname: 'set_BottomLeft', returnType: Object, params: [Number] } }, { name: 'BottomRight', type: 16, returnType: Number, getter: { name: 'get_BottomRight', type: 8, sname: 'get_BottomRight', returnType: Number, params: [] }, setter: { name: 'set_BottomRight', type: 8, sname: 'set_BottomRight', returnType: Object, params: [Number] } }, { name: 'IsUniform', type: 16, returnType: Boolean, getter: { name: 'get_IsUniform', type: 8, sname: 'get_IsUniform', returnType: Boolean, params: [] }, setter: { name: 'set_IsUniform', type: 8, sname: 'set_IsUniform', returnType: Object, params: [Boolean] } }, { name: 'TopLeft', type: 16, returnType: Number, getter: { name: 'get_TopLeft', type: 8, sname: 'get_TopLeft', returnType: Number, params: [] }, setter: { name: 'set_TopLeft', type: 8, sname: 'set_TopLeft', returnType: Object, params: [Number] } }, { name: 'TopRight', type: 16, returnType: Number, getter: { name: 'get_TopRight', type: 8, sname: 'get_TopRight', returnType: Number, params: [] }, setter: { name: 'set_TopRight', type: 8, sname: 'set_TopRight', returnType: Object, params: [Number] } }, { name: 'Zero', isStatic: true, type: 4, returnType: $System_Windows_CornerRadius, sname: 'Zero' }] });
 	ss.setMetadata($System_Windows_CornerRadiusExtensions, { members: [{ name: 'DefaultIfNull', isStatic: true, type: 8, sname: 'DefaultIfNull', returnType: $System_Windows_CornerRadius, params: [$System_Windows_CornerRadius, $System_Windows_CornerRadius] }] });
+	ss.setMetadata($System_Windows_CornerRadiusTypeConverter, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }] });
 	ss.setMetadata($System_Windows_DataTemplate, { attr: [new $System_Windows_Markup_DictionaryKeyPropertyAttribute('Key')], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'DataType', type: 16, returnType: Function, getter: { name: 'get_DataType', type: 8, sname: 'get_DataType', returnType: Function, params: [] }, setter: { name: 'set_DataType', type: 8, sname: 'set_DataType', returnType: Object, params: [Function] } }, { name: 'Key', type: 16, returnType: Object, getter: { name: 'get_Key', type: 8, sname: 'get_Key', returnType: Object, params: [] }, setter: { name: 'set_Key', type: 8, sname: 'set_Key', returnType: Object, params: [Object] } }] });
 	ss.setMetadata($System_Windows_DataTrigger, { attr: [new $System_Windows_Markup_ContentPropertyAttribute('Setters')], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'CreateDataTriggerCondition', type: 8, sname: 'CreateDataTriggerCondition', returnType: $System_Windows_IDataTriggerCondition, params: [$System_Windows_FrameworkElement] }, { name: 'Binding', type: 16, returnType: $System_Windows_Data_Binding, getter: { name: 'get_Binding', type: 8, sname: 'get_Binding', returnType: $System_Windows_Data_Binding, params: [] }, setter: { name: 'set_Binding', type: 8, sname: 'set_Binding', returnType: Object, params: [$System_Windows_Data_Binding] } }, { name: 'Setters', type: 16, returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITriggerAction]), getter: { name: 'get_Setters', type: 8, sname: 'get_Setters', returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITriggerAction]), params: [] }, setter: { name: 'set_Setters', type: 8, sname: 'set_Setters', returnType: Object, params: [ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITriggerAction])] } }, { name: 'TriggerActions', type: 16, returnType: ss.IEnumerable, getter: { name: 'get_TriggerActions', type: 8, sname: 'get_TriggerActions', returnType: ss.IEnumerable, params: [] } }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] }, setter: { name: 'set_Value', type: 8, sname: 'set_Value', returnType: Object, params: [Object] } }] });
 	ss.setMetadata($System_Windows_DataTriggerBase, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Attach', type: 8, sname: 'Attach', returnType: Object, params: [$System_Windows_FrameworkElement, $System_Windows_BaseValueSource] }, { name: 'CreateDataTriggerCondition', type: 8, sname: 'CreateDataTriggerCondition', returnType: $System_Windows_IDataTriggerCondition, params: [$System_Windows_FrameworkElement] }, { name: 'Detach', type: 8, sname: 'Detach', returnType: Object, params: [$System_Windows_FrameworkElement, $System_Windows_BaseValueSource] }] });
 	ss.setMetadata($System_Windows_DependencyObject, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ClearValue', type: 8, sname: 'ClearValue', returnType: Object, params: [$System_Windows_DependencyProperty, $System_Windows_BaseValueSource] }, { name: 'ClearValue', type: 8, sname: 'ClearValue$1', returnType: Object, params: [$System_Windows_DependencyPropertyKey, $System_Windows_BaseValueSource] }, { name: 'CoerceValue', type: 8, sname: 'CoerceValue', returnType: Object, params: [$System_Windows_DependencyProperty] }, { name: 'ContainsValue', type: 8, sname: 'ContainsValue', returnType: Boolean, params: [$System_Windows_DependencyProperty] }, { name: 'ContainsValue', type: 8, sname: 'ContainsValue$1', returnType: Boolean, params: [$System_Windows_DependencyPropertyKey] }, { name: 'GetBaseValueSource', type: 8, sname: 'GetBaseValueSource', returnType: $System_Windows_BaseValueSource, params: [$System_Windows_DependencyProperty] }, { name: 'GetValue', type: 8, sname: 'GetValue', returnType: Object, params: [$System_Windows_DependencyProperty] }, { name: 'GetValue', type: 8, sname: 'GetValue$1', returnType: Object, params: [$System_Windows_DependencyPropertyKey] }, { name: 'GetValueEntry', type: 8, sname: 'GetValueEntry', returnType: $System_Windows_IDependencyPropertyValueEntry, params: [$System_Windows_DependencyProperty] }, { name: 'GetValueEntry', type: 8, sname: 'GetValueEntry$1', returnType: $System_Windows_IDependencyPropertyValueEntry, params: [$System_Windows_DependencyPropertyKey] }, { name: 'GetValueSource', type: 8, sname: 'GetValueSource', returnType: $System_Windows_ValueSource, params: [$System_Windows_DependencyProperty] }, { name: 'OnInheritanceParentChanged', type: 8, sname: 'OnInheritanceParentChanged', returnType: Object, params: [$System_Windows_DependencyObject, $System_Windows_DependencyObject] }, { name: 'OnPropertyChanged', type: 8, sname: 'OnPropertyChanged', returnType: Object, params: [$System_Windows_DependencyPropertyChangedEventArgs] }, { name: 'SetCurrentValue', type: 8, sname: 'SetCurrentValue', returnType: Object, params: [$System_Windows_DependencyProperty, Object] }, { name: 'SetCurrentValue', type: 8, sname: 'SetCurrentValue$1', returnType: Object, params: [$System_Windows_DependencyPropertyKey, Object] }, { name: 'SetInheritanceParent', type: 8, sname: 'SetInheritanceParent', returnType: Object, params: [$System_Windows_DependencyObject] }, { name: 'SetValue', type: 8, sname: 'SetValue', returnType: Object, params: [$System_Windows_DependencyProperty, Object, $System_Windows_BaseValueSource] }, { name: 'SetValue', type: 8, sname: 'SetValue$1', returnType: Object, params: [$System_Windows_DependencyPropertyKey, Object, $System_Windows_BaseValueSource] }, { name: 'PropertyChanged', type: 2, adder: { name: 'add_PropertyChanged', type: 8, sname: 'add_PropertyChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_PropertyChanged', type: 8, sname: 'remove_PropertyChanged', returnType: Object, params: [Function] } }] });
-	ss.setMetadata($System_Windows_DependencyProperty, { attr: [new $System_Windows_Markup_TypeConverterAttribute($System_Windows_DependencyPropertyTypeConverter)], members: [{ name: 'AddOwner', type: 8, sname: 'AddOwner', returnType: $System_Windows_DependencyProperty, params: [Function, $System_Windows_PropertyMetadata] }, { name: 'GetFlattenedProperties', isStatic: true, type: 8, sname: 'GetFlattenedProperties', returnType: ss.IEnumerable, params: [Function] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'GetMetadata', type: 8, sname: 'GetMetadata', returnType: $System_Windows_PropertyMetadata, params: [Function] }, { name: 'GetOwnedProperty', isStatic: true, type: 8, sname: 'GetOwnedProperty', returnType: $System_Windows_DependencyProperty, params: [Function, String] }, { name: 'GetProperties', isStatic: true, type: 8, sname: 'GetProperties', returnType: ss.IEnumerable, params: [Function] }, { name: 'GetProperty', isStatic: true, type: 8, sname: 'GetProperty', returnType: $System_Windows_DependencyProperty, params: [Function, System.Xaml.XamlName] }, { name: 'GetSingleProperty', isStatic: true, type: 8, sname: 'GetSingleProperty', returnType: $System_Windows_DependencyProperty, params: [Function, String] }, { name: 'IsValidReadOnlyKey', isStatic: true, type: 8, sname: 'IsValidReadOnlyKey', returnType: Boolean, params: [$System_Windows_DependencyPropertyKey] }, { name: 'IsValidValue', type: 8, sname: 'IsValidValue', returnType: Boolean, params: [Object] }, { name: 'OverrideMetadata', type: 8, sname: 'OverrideMetadata', returnType: Object, params: [Function, $System_Windows_PropertyMetadata] }, { name: 'Register', isStatic: true, type: 8, sname: 'Register', returnType: $System_Windows_DependencyProperty, params: [String, Function, Function, $System_Windows_PropertyMetadata, Function] }, { name: 'RegisterAttached', isStatic: true, type: 8, sname: 'RegisterAttached', returnType: $System_Windows_DependencyProperty, params: [String, Function, Function, $System_Windows_PropertyMetadata, Function] }, { name: 'RegisterAttachedReadOnly', isStatic: true, type: 8, sname: 'RegisterAttachedReadOnly', returnType: $System_Windows_DependencyPropertyKey, params: [String, Function, Function, $System_Windows_PropertyMetadata, Function] }, { name: 'RegisterReadOnly', isStatic: true, type: 8, sname: 'RegisterReadOnly', returnType: $System_Windows_DependencyPropertyKey, params: [String, Function, Function, $System_Windows_PropertyMetadata, Function] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'Inherits', type: 16, returnType: Boolean, getter: { name: 'get_Inherits', type: 8, sname: 'get_Inherits', returnType: Boolean, params: [] }, setter: { name: 'set_Inherits', type: 8, sname: 'set_Inherits', returnType: Object, params: [Boolean] } }, { name: 'IsReadOnly', type: 16, returnType: Boolean, getter: { name: 'get_IsReadOnly', type: 8, sname: 'get_IsReadOnly', returnType: Boolean, params: [] }, setter: { name: 'set_IsReadOnly', type: 8, sname: 'set_IsReadOnly', returnType: Object, params: [Boolean] } }, { name: 'Name', type: 16, returnType: String, getter: { name: 'get_Name', type: 8, sname: 'get_Name', returnType: String, params: [] }, setter: { name: 'set_Name', type: 8, sname: 'set_Name', returnType: Object, params: [String] } }, { name: 'OwnerType', type: 16, returnType: Function, getter: { name: 'get_OwnerType', type: 8, sname: 'get_OwnerType', returnType: Function, params: [] }, setter: { name: 'set_OwnerType', type: 8, sname: 'set_OwnerType', returnType: Object, params: [Function] } }, { name: 'PropertyType', type: 16, returnType: Function, getter: { name: 'get_PropertyType', type: 8, sname: 'get_PropertyType', returnType: Function, params: [] }, setter: { name: 'set_PropertyType', type: 8, sname: 'set_PropertyType', returnType: Object, params: [Function] } }, { name: 'ValidateValueCallback', type: 16, returnType: Function, getter: { name: 'get_ValidateValueCallback', type: 8, sname: 'get_ValidateValueCallback', returnType: Function, params: [] }, setter: { name: 'set_ValidateValueCallback', type: 8, sname: 'set_ValidateValueCallback', returnType: Object, params: [Function] } }] });
-	ss.setMetadata($System_Windows_DependencyPropertyChangedEventArgs, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_DependencyProperty, Object, Object] }, { name: 'NewValue', type: 16, returnType: Object, getter: { name: 'get_NewValue', type: 8, sname: 'get_NewValue', returnType: Object, params: [] }, setter: { name: 'set_NewValue', type: 8, sname: 'set_NewValue', returnType: Object, params: [Object] } }, { name: 'OldValue', type: 16, returnType: Object, getter: { name: 'get_OldValue', type: 8, sname: 'get_OldValue', returnType: Object, params: [] }, setter: { name: 'set_OldValue', type: 8, sname: 'set_OldValue', returnType: Object, params: [Object] } }, { name: 'Property', type: 16, returnType: $System_Windows_DependencyProperty, getter: { name: 'get_Property', type: 8, sname: 'get_Property', returnType: $System_Windows_DependencyProperty, params: [] }, setter: { name: 'set_Property', type: 8, sname: 'set_Property', returnType: Object, params: [$System_Windows_DependencyProperty] } }] });
-	ss.setMetadata($System_Windows_DependencyPropertyChangedEventHandlerExtensions, { members: [{ name: 'Raise', isStatic: true, type: 8, sname: 'Raise', returnType: Object, params: [Function, Object, $System_Windows_DependencyPropertyChangedEventArgs] }] });
+	ss.setMetadata($System_Windows_DependencyProperty, { attr: [new $System_Windows_Markup_TypeConverterAttribute($System_Windows_DependencyPropertyTypeConverter)], members: [{ name: 'AddOwner', type: 8, sname: 'AddOwner', returnType: $System_Windows_DependencyProperty, params: [Function, $System_Windows_PropertyMetadata] }, { name: 'GetFlattenedProperties', isStatic: true, type: 8, sname: 'GetFlattenedProperties', returnType: ss.IEnumerable, params: [Function] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'GetMetadata', type: 8, sname: 'GetMetadata', returnType: $System_Windows_PropertyMetadata, params: [Function] }, { name: 'GetOwnedProperty', isStatic: true, type: 8, sname: 'GetOwnedProperty', returnType: $System_Windows_DependencyProperty, params: [Function, String] }, { name: 'GetProperties', isStatic: true, type: 8, sname: 'GetProperties', returnType: ss.IEnumerable, params: [Function] }, { name: 'GetProperty', isStatic: true, type: 8, sname: 'GetProperty', returnType: $System_Windows_DependencyProperty, params: [Function, System.Xaml.XamlName] }, { name: 'GetSingleProperty', isStatic: true, type: 8, sname: 'GetSingleProperty', returnType: $System_Windows_DependencyProperty, params: [Function, String] }, { name: 'IsContainedBy', type: 8, sname: 'IsContainedBy', returnType: Boolean, params: [Function] }, { name: 'IsValidReadOnlyKey', isStatic: true, type: 8, sname: 'IsValidReadOnlyKey', returnType: Boolean, params: [$System_Windows_DependencyPropertyKey] }, { name: 'IsValidValue', type: 8, sname: 'IsValidValue', returnType: Boolean, params: [Object] }, { name: 'OverrideMetadata', type: 8, sname: 'OverrideMetadata', returnType: Object, params: [Function, $System_Windows_PropertyMetadata] }, { name: 'Register', isStatic: true, type: 8, sname: 'Register', returnType: $System_Windows_DependencyProperty, params: [String, Function, Function, $System_Windows_PropertyMetadata, Function] }, { name: 'RegisterAttached', isStatic: true, type: 8, sname: 'RegisterAttached', returnType: $System_Windows_DependencyProperty, params: [String, Function, Function, $System_Windows_PropertyMetadata, Function] }, { name: 'RegisterAttachedReadOnly', isStatic: true, type: 8, sname: 'RegisterAttachedReadOnly', returnType: $System_Windows_DependencyPropertyKey, params: [String, Function, Function, $System_Windows_PropertyMetadata, Function] }, { name: 'RegisterReadOnly', isStatic: true, type: 8, sname: 'RegisterReadOnly', returnType: $System_Windows_DependencyPropertyKey, params: [String, Function, Function, $System_Windows_PropertyMetadata, Function] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'Inherits', type: 16, returnType: Boolean, getter: { name: 'get_Inherits', type: 8, sname: 'get_Inherits', returnType: Boolean, params: [] }, setter: { name: 'set_Inherits', type: 8, sname: 'set_Inherits', returnType: Object, params: [Boolean] } }, { name: 'IsAttached', type: 16, returnType: Boolean, getter: { name: 'get_IsAttached', type: 8, sname: 'get_IsAttached', returnType: Boolean, params: [] }, setter: { name: 'set_IsAttached', type: 8, sname: 'set_IsAttached', returnType: Object, params: [Boolean] } }, { name: 'IsReadOnly', type: 16, returnType: Boolean, getter: { name: 'get_IsReadOnly', type: 8, sname: 'get_IsReadOnly', returnType: Boolean, params: [] }, setter: { name: 'set_IsReadOnly', type: 8, sname: 'set_IsReadOnly', returnType: Object, params: [Boolean] } }, { name: 'Name', type: 16, returnType: String, getter: { name: 'get_Name', type: 8, sname: 'get_Name', returnType: String, params: [] }, setter: { name: 'set_Name', type: 8, sname: 'set_Name', returnType: Object, params: [String] } }, { name: 'OwnerType', type: 16, returnType: Function, getter: { name: 'get_OwnerType', type: 8, sname: 'get_OwnerType', returnType: Function, params: [] }, setter: { name: 'set_OwnerType', type: 8, sname: 'set_OwnerType', returnType: Object, params: [Function] } }, { name: 'PropertyType', type: 16, returnType: Function, getter: { name: 'get_PropertyType', type: 8, sname: 'get_PropertyType', returnType: Function, params: [] }, setter: { name: 'set_PropertyType', type: 8, sname: 'set_PropertyType', returnType: Object, params: [Function] } }, { name: 'ValidateValueCallback', type: 16, returnType: Function, getter: { name: 'get_ValidateValueCallback', type: 8, sname: 'get_ValidateValueCallback', returnType: Function, params: [] }, setter: { name: 'set_ValidateValueCallback', type: 8, sname: 'set_ValidateValueCallback', returnType: Object, params: [Function] } }] });
+	ss.setMetadata($System_Windows_DependencyPropertyChangedEventArgs, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_DependencyProperty, Object] }, { name: '.ctor', type: 1, params: [$System_Windows_DependencyProperty, Object, Object], sname: '$ctor1' }, { name: 'IsSubPropertyChange', type: 16, returnType: Boolean, getter: { name: 'get_IsSubPropertyChange', type: 8, sname: 'get_IsSubPropertyChange', returnType: Boolean, params: [] }, setter: { name: 'set_IsSubPropertyChange', type: 8, sname: 'set_IsSubPropertyChange', returnType: Object, params: [Boolean] } }, { name: 'NewValue', type: 16, returnType: Object, getter: { name: 'get_NewValue', type: 8, sname: 'get_NewValue', returnType: Object, params: [] }, setter: { name: 'set_NewValue', type: 8, sname: 'set_NewValue', returnType: Object, params: [Object] } }, { name: 'OldValue', type: 16, returnType: Object, getter: { name: 'get_OldValue', type: 8, sname: 'get_OldValue', returnType: Object, params: [] }, setter: { name: 'set_OldValue', type: 8, sname: 'set_OldValue', returnType: Object, params: [Object] } }, { name: 'Property', type: 16, returnType: $System_Windows_DependencyProperty, getter: { name: 'get_Property', type: 8, sname: 'get_Property', returnType: $System_Windows_DependencyProperty, params: [] }, setter: { name: 'set_Property', type: 8, sname: 'set_Property', returnType: Object, params: [$System_Windows_DependencyProperty] } }] });
+	ss.setMetadata($System_Windows_DependencyPropertyChangedEventHandlerExtensions, { attr: [new System.Diagnostics.DebuggerNonUserCodeAttribute()], members: [{ name: 'Raise', isStatic: true, type: 8, sname: 'Raise', returnType: Object, params: [Function, Object, $System_Windows_DependencyPropertyChangedEventArgs] }] });
 	ss.setMetadata($System_Windows_DependencyPropertyKey, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_DependencyProperty] }, { name: 'DependencyProperty', type: 16, returnType: $System_Windows_DependencyProperty, getter: { name: 'get_DependencyProperty', type: 8, sname: 'get_DependencyProperty', returnType: $System_Windows_DependencyProperty, params: [] }, setter: { name: 'set_DependencyProperty', type: 8, sname: 'set_DependencyProperty', returnType: Object, params: [$System_Windows_DependencyProperty] } }] });
 	ss.setMetadata($System_Windows_DependencyPropertyPathElement, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_DependencyProperty] }, { name: 'CreatePropertyObserver', type: 8, sname: 'CreatePropertyObserver', returnType: $System_Windows_Data_IPropertyObserver, params: [Function] }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'DependencyProperty', type: 16, returnType: $System_Windows_DependencyProperty, getter: { name: 'get_DependencyProperty', type: 8, sname: 'get_DependencyProperty', returnType: $System_Windows_DependencyProperty, params: [] }, setter: { name: 'set_DependencyProperty', type: 8, sname: 'set_DependencyProperty', returnType: Object, params: [$System_Windows_DependencyProperty] } }] });
 	ss.setMetadata($System_Windows_DependencyPropertyTypeConverter, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }] });
-	ss.setMetadata($System_Windows_DependencyPropertyValueEntry, { attr: [new System.Diagnostics.DebuggerNonUserCodeAttribute()], members: [{ name: '.ctor', type: 1, params: [$System_Windows_DependencyObject, $System_Windows_DependencyProperty] }, { name: 'ClearAnimationValue', type: 8, sname: 'ClearAnimationValue', returnType: Object, params: [] }, { name: 'ClearBaseValue', type: 8, sname: 'ClearBaseValue', returnType: Object, params: [ss.Int32] }, { name: 'ClearCurrentValue', type: 8, sname: 'ClearCurrentValue', returnType: Object, params: [] }, { name: 'GetAnimationValue', type: 8, sname: 'GetAnimationValue', returnType: Object, params: [Boolean] }, { name: 'GetBaseValue', type: 8, sname: 'GetBaseValue', returnType: Object, params: [Boolean] }, { name: 'GetBaseValue', type: 8, sname: 'GetBaseValue$1', returnType: Object, params: [ss.Int32, Boolean] }, { name: 'GetBaseValuePriority', type: 8, sname: 'GetBaseValuePriority', returnType: ss.Int32, params: [] }, { name: 'GetCurrentValue', type: 8, sname: 'GetCurrentValue', returnType: Object, params: [Boolean] }, { name: 'SetAnimationValue', type: 8, sname: 'SetAnimationValue', returnType: Object, params: [Object] }, { name: 'SetBaseValue', type: 8, sname: 'SetBaseValue', returnType: Object, params: [ss.Int32, Object] }, { name: 'SetCurrentValue', type: 8, sname: 'SetCurrentValue', returnType: Object, params: [Object] }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] } }, { name: 'ValueChanged', type: 2, adder: { name: 'add_ValueChanged', type: 8, sname: 'add_ValueChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ValueChanged', type: 8, sname: 'remove_ValueChanged', returnType: Object, params: [Function] } }] });
-	ss.setMetadata($System_Windows_Disposable, { members: [{ name: '.ctor', type: 1, params: [Function] }, { name: 'Combine', isStatic: true, type: 8, sname: 'Combine', returnType: ss.IDisposable, params: [ss.IDisposable, ss.IDisposable] }, { name: 'Dispose', type: 8, sname: 'dispose', returnType: Object, params: [] }, { name: 'Empty', isStatic: true, type: 4, returnType: ss.IDisposable, sname: 'Empty' }] });
-	ss.setMetadata($System_Windows_Duration, { members: [{ name: '.ctor', type: 1, params: [ss.TimeSpan] }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'Parse', isStatic: true, type: 8, sname: 'Parse', returnType: $System_Windows_Duration, params: [String] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'HasTimeSpan', type: 16, returnType: Boolean, getter: { name: 'get_HasTimeSpan', type: 8, sname: 'get_HasTimeSpan', returnType: Boolean, params: [] } }, { name: 'IsAutomatic', type: 16, returnType: Boolean, getter: { name: 'get_IsAutomatic', type: 8, sname: 'get_IsAutomatic', returnType: Boolean, params: [] } }, { name: 'IsForever', type: 16, returnType: Boolean, getter: { name: 'get_IsForever', type: 8, sname: 'get_IsForever', returnType: Boolean, params: [] } }, { name: 'TimeSpan', type: 16, returnType: ss.TimeSpan, getter: { name: 'get_TimeSpan', type: 8, sname: 'get_TimeSpan', returnType: ss.TimeSpan, params: [] }, setter: { name: 'set_TimeSpan', type: 8, sname: 'set_TimeSpan', returnType: Object, params: [ss.TimeSpan] } }, { name: 'Automatic', isStatic: true, type: 4, returnType: $System_Windows_Duration, sname: 'Automatic' }, { name: 'Forever', isStatic: true, type: 4, returnType: $System_Windows_Duration, sname: 'Forever' }] });
+	ss.setMetadata($System_Windows_DependencyPropertyValueEntry, { attr: [new System.Diagnostics.DebuggerNonUserCodeAttribute()], members: [{ name: '.ctor', type: 1, params: [$System_Windows_DependencyObject, $System_Windows_DependencyProperty, Function] }, { name: 'CoerceValue', type: 8, sname: 'CoerceValue', returnType: Object, params: [] }, { name: 'GetBaseValuePriority', type: 8, sname: 'GetBaseValuePriority', returnType: ss.Int32, params: [] }, { name: 'GetValue', type: 8, sname: 'GetValue', returnType: Object, params: [ss.Int32, Boolean] }, { name: 'SetValue', type: 8, sname: 'SetValue', returnType: Object, params: [ss.Int32, Object] }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] }, setter: { name: 'set_Value', type: 8, sname: 'set_Value', returnType: Object, params: [Object] } }, { name: 'ValuePriority', type: 16, returnType: ss.Int32, getter: { name: 'get_ValuePriority', type: 8, sname: 'get_ValuePriority', returnType: ss.Int32, params: [] }, setter: { name: 'set_ValuePriority', type: 8, sname: 'set_ValuePriority', returnType: Object, params: [ss.Int32] } }, { name: 'AnimationValuePriority', isStatic: true, type: 4, returnType: ss.Int32, sname: 'AnimationValuePriority' }, { name: 'BaseValueHighestPriority', isStatic: true, type: 4, returnType: ss.Int32, sname: 'BaseValueHighestPriority' }, { name: 'BaseValuePriorities', isStatic: true, type: 4, returnType: ss.Int32, sname: 'BaseValuePriorities' }, { name: 'CurrentValuePriority', isStatic: true, type: 4, returnType: ss.Int32, sname: 'CurrentValuePriority' }, { name: 'ValuePriorities', isStatic: true, type: 4, returnType: ss.Int32, sname: 'ValuePriorities' }, { name: 'ValueChanged', type: 2, adder: { name: 'add_ValueChanged', type: 8, sname: 'add_ValueChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ValueChanged', type: 8, sname: 'remove_ValueChanged', returnType: Object, params: [Function] } }] });
+	ss.setMetadata($System_Windows_DependencyPropertyValueEntryExtensions, { attr: [new System.Diagnostics.DebuggerNonUserCodeAttribute()], members: [{ name: 'ClearAnimationValue', isStatic: true, type: 8, sname: 'ClearAnimationValue', returnType: Object, params: [$System_Windows_IDependencyPropertyValueEntry] }, { name: 'ClearBaseValue', isStatic: true, type: 8, sname: 'ClearBaseValue', returnType: Object, params: [$System_Windows_IDependencyPropertyValueEntry, ss.Int32] }, { name: 'ClearCurrentValue', isStatic: true, type: 8, sname: 'ClearCurrentValue', returnType: Object, params: [$System_Windows_IDependencyPropertyValueEntry] }, { name: 'GetAnimationValue', isStatic: true, type: 8, sname: 'GetAnimationValue', returnType: Object, params: [$System_Windows_IDependencyPropertyValueEntry, Boolean] }, { name: 'GetBaseValue', isStatic: true, type: 8, sname: 'GetBaseValue', returnType: Object, params: [$System_Windows_IDependencyPropertyValueEntry, Boolean] }, { name: 'GetBaseValue', isStatic: true, type: 8, sname: 'GetBaseValue$1', returnType: Object, params: [$System_Windows_IDependencyPropertyValueEntry, ss.Int32, Boolean] }, { name: 'GetCurrentValue', isStatic: true, type: 8, sname: 'GetCurrentValue', returnType: Object, params: [$System_Windows_IDependencyPropertyValueEntry, Boolean] }, { name: 'SetAnimationValue', isStatic: true, type: 8, sname: 'SetAnimationValue', returnType: Object, params: [$System_Windows_IDependencyPropertyValueEntry, Object] }, { name: 'SetBaseValue', isStatic: true, type: 8, sname: 'SetBaseValue', returnType: Object, params: [$System_Windows_IDependencyPropertyValueEntry, ss.Int32, Object] }, { name: 'SetCurrentValue', isStatic: true, type: 8, sname: 'SetCurrentValue', returnType: Object, params: [$System_Windows_IDependencyPropertyValueEntry, Object] }] });
+	ss.setMetadata($System_Windows_Duration, { attr: [new $System_Windows_Markup_TypeConverterAttribute($System_Windows_DurationTypeConverter)], members: [{ name: '.ctor', type: 1, params: [ss.TimeSpan] }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'Parse', isStatic: true, type: 8, sname: 'Parse', returnType: $System_Windows_Duration, params: [String] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'HasTimeSpan', type: 16, returnType: Boolean, getter: { name: 'get_HasTimeSpan', type: 8, sname: 'get_HasTimeSpan', returnType: Boolean, params: [] } }, { name: 'IsAutomatic', type: 16, returnType: Boolean, getter: { name: 'get_IsAutomatic', type: 8, sname: 'get_IsAutomatic', returnType: Boolean, params: [] } }, { name: 'IsForever', type: 16, returnType: Boolean, getter: { name: 'get_IsForever', type: 8, sname: 'get_IsForever', returnType: Boolean, params: [] } }, { name: 'TimeSpan', type: 16, returnType: ss.TimeSpan, getter: { name: 'get_TimeSpan', type: 8, sname: 'get_TimeSpan', returnType: ss.TimeSpan, params: [] }, setter: { name: 'set_TimeSpan', type: 8, sname: 'set_TimeSpan', returnType: Object, params: [ss.TimeSpan] } }, { name: 'Automatic', isStatic: true, type: 4, returnType: $System_Windows_Duration, sname: 'Automatic' }, { name: 'Forever', isStatic: true, type: 4, returnType: $System_Windows_Duration, sname: 'Forever' }] });
+	ss.setMetadata($System_Windows_DurationTypeConverter, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }] });
 	ss.setMetadata($System_Windows_DynamicResourceExtension, { attr: [new $System_Windows_Markup_MarkupExtensionParameterAttribute('ResourceKey', 0)], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ProvideValue', type: 8, sname: 'ProvideValue', returnType: Object, params: [$System_Windows_Markup_InitializeContext] }, { name: 'ResourceKey', type: 16, returnType: Object, getter: { name: 'get_ResourceKey', type: 8, sname: 'get_ResourceKey', returnType: Object, params: [] }, setter: { name: 'set_ResourceKey', type: 8, sname: 'set_ResourceKey', returnType: Object, params: [Object] } }] });
 	ss.setMetadata($System_Windows_EmbeddedResourceLoader, { members: [{ name: 'LoadResourceData', isStatic: true, type: 8, sname: 'LoadResourceData', returnType: Array, params: [String] }, { name: 'LoadResourceData', isStatic: true, type: 8, sname: 'LoadResourceData$1', returnType: Array, params: [String, String] }, { name: 'LoadResourceElement', isStatic: true, type: 8, sname: 'LoadResourceElement', returnType: Object, params: [String] }, { name: 'LoadResourceElement', isStatic: true, type: 8, sname: 'LoadResourceElement$1', returnType: Object, params: [String, String] }] });
 	ss.setMetadata($System_Windows_EventManager, { members: [{ name: 'AddOwner', isStatic: true, type: 8, sname: 'AddOwner', returnType: Object, params: [$System_Windows_RoutedEvent, Function] }, { name: 'FindRoutedEvent', isStatic: true, type: 8, sname: 'FindRoutedEvent', returnType: $System_Windows_RoutedEvent, params: [Function, String] }, { name: 'GetClassHandlers', isStatic: true, type: 8, sname: 'GetClassHandlers', returnType: ss.IEnumerable, params: [Function, $System_Windows_RoutedEvent] }, { name: 'GetFlattenedClassHandlers', isStatic: true, type: 8, sname: 'GetFlattenedClassHandlers', returnType: ss.IEnumerable, params: [Function, $System_Windows_RoutedEvent] }, { name: 'GetOwnedRoutedEvent', isStatic: true, type: 8, sname: 'GetOwnedRoutedEvent', returnType: $System_Windows_RoutedEvent, params: [Function, String] }, { name: 'GetRoutedEvent', isStatic: true, type: 8, sname: 'GetRoutedEvent', returnType: $System_Windows_RoutedEvent, params: [System.Xaml.XamlName] }, { name: 'GetRoutedEvents', isStatic: true, type: 8, sname: 'GetRoutedEvents', returnType: ss.IEnumerable, params: [Function, Boolean] }, { name: 'GetRoutedEvents', isStatic: true, type: 8, sname: 'GetRoutedEvents$1', returnType: ss.IEnumerable, params: [Function, String, Boolean] }, { name: 'RegisterClassHandler', isStatic: true, type: 8, sname: 'RegisterClassHandler', returnType: Object, params: [Function, $System_Windows_RoutedEvent, Function, Boolean] }, { name: 'RegisterRoutedEvent', isStatic: true, type: 8, sname: 'RegisterRoutedEvent', returnType: $System_Windows_RoutedEvent, params: [String, $System_Windows_RoutingStrategy, Function, Function] }] });
@@ -23139,27 +24442,30 @@
 	ss.setMetadata($System_Windows_EventSetter, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Apply', type: 8, sname: 'Apply', returnType: Object, params: [$System_Windows_FrameworkElement, $System_Windows_BaseValueSource] }, { name: 'Clean', type: 8, sname: 'Clean', returnType: Object, params: [$System_Windows_FrameworkElement, $System_Windows_BaseValueSource] }, { name: 'IsActionOverlaps', type: 8, sname: 'IsActionOverlaps', returnType: Boolean, params: [$System_Windows_ITriggerAction] }, { name: 'Event', type: 16, returnType: $System_Windows_RoutedEvent, getter: { name: 'get_Event', type: 8, sname: 'get_Event', returnType: $System_Windows_RoutedEvent, params: [] }, setter: { name: 'set_Event', type: 8, sname: 'set_Event', returnType: Object, params: [$System_Windows_RoutedEvent] } }, { name: 'HandledEventsToo', type: 16, returnType: Boolean, getter: { name: 'get_HandledEventsToo', type: 8, sname: 'get_HandledEventsToo', returnType: Boolean, params: [] }, setter: { name: 'set_HandledEventsToo', type: 8, sname: 'set_HandledEventsToo', returnType: Object, params: [Boolean] } }, { name: 'Handler', type: 16, returnType: Function, getter: { name: 'get_Handler', type: 8, sname: 'get_Handler', returnType: Function, params: [] }, setter: { name: 'set_Handler', type: 8, sname: 'set_Handler', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_EventTrigger, { attr: [new $System_Windows_Markup_ContentPropertyAttribute('Actions')], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'CreateEventTriggerCondition', type: 8, sname: 'CreateEventTriggerCondition', returnType: $System_Windows_IEventTriggerCondition, params: [$System_Windows_FrameworkElement] }, { name: 'Actions', type: 16, returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITriggerAction]), getter: { name: 'get_Actions', type: 8, sname: 'get_Actions', returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITriggerAction]), params: [] }, setter: { name: 'set_Actions', type: 8, sname: 'set_Actions', returnType: Object, params: [ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITriggerAction])] } }, { name: 'RoutedEvent', type: 16, returnType: $System_Windows_RoutedEvent, getter: { name: 'get_RoutedEvent', type: 8, sname: 'get_RoutedEvent', returnType: $System_Windows_RoutedEvent, params: [] }, setter: { name: 'set_RoutedEvent', type: 8, sname: 'set_RoutedEvent', returnType: Object, params: [$System_Windows_RoutedEvent] } }, { name: 'SourceName', type: 16, returnType: String, getter: { name: 'get_SourceName', type: 8, sname: 'get_SourceName', returnType: String, params: [] }, setter: { name: 'set_SourceName', type: 8, sname: 'set_SourceName', returnType: Object, params: [String] } }, { name: 'TriggerActions', type: 16, returnType: ss.IEnumerable, getter: { name: 'get_TriggerActions', type: 8, sname: 'get_TriggerActions', returnType: ss.IEnumerable, params: [] } }] });
 	ss.setMetadata($System_Windows_EventTriggerBase, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Attach', type: 8, sname: 'Attach', returnType: Object, params: [$System_Windows_FrameworkElement, $System_Windows_BaseValueSource] }, { name: 'CreateEventTriggerCondition', type: 8, sname: 'CreateEventTriggerCondition', returnType: $System_Windows_IEventTriggerCondition, params: [$System_Windows_FrameworkElement] }, { name: 'Detach', type: 8, sname: 'Detach', returnType: Object, params: [$System_Windows_FrameworkElement, $System_Windows_BaseValueSource] }] });
-	ss.setMetadata($System_Windows_FontFamily, { members: [{ name: '.ctor', type: 1, params: [ss.IEnumerable] }, { name: '.ctor', type: 1, params: [String], sname: '$ctor1' }, { name: 'Parse', isStatic: true, type: 8, sname: 'Parse', returnType: $System_Windows_FontFamily, params: [String] }, { name: 'FamilyName', type: 16, returnType: String, getter: { name: 'get_FamilyName', type: 8, sname: 'get_FamilyName', returnType: String, params: [] } }, { name: 'FamilyNames', type: 16, returnType: ss.IEnumerable, getter: { name: 'get_FamilyNames', type: 8, sname: 'get_FamilyNames', returnType: ss.IEnumerable, params: [] }, setter: { name: 'set_FamilyNames', type: 8, sname: 'set_FamilyNames', returnType: Object, params: [ss.IEnumerable] } }, { name: 'Default', isStatic: true, type: 4, returnType: $System_Windows_FontFamily, sname: 'Default' }] });
-	ss.setMetadata($System_Windows_FrameworkElement, { attr: [new $System_Windows_Markup_RuntimeNamePropertyAttribute('Name')], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ApplyTemplate', type: 8, sname: 'ApplyTemplate', returnType: Boolean, params: [] }, { name: 'ArrangeCore', type: 8, sname: 'ArrangeCore', returnType: Object, params: [$System_Windows_Rect] }, { name: 'ArrangeOverride', type: 8, sname: 'ArrangeOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'GetTemplate', type: 8, sname: 'GetTemplate', returnType: $System_Windows_IFrameworkTemplate, params: [] }, { name: 'MeasureCore', type: 8, sname: 'MeasureCore', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'MeasureOverride', type: 8, sname: 'MeasureOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'OnApplyTemplate', type: 8, sname: 'OnApplyTemplate', returnType: Object, params: [] }, { name: 'OnInitialized', type: 8, sname: 'OnInitialized', returnType: Object, params: [] }, { name: 'OnLogicalParentChanged', type: 8, sname: 'OnLogicalParentChanged', returnType: Object, params: [$System_Windows_UIElement, $System_Windows_UIElement] }, { name: 'OnPropertyChanged', type: 8, sname: 'OnPropertyChanged', returnType: Object, params: [$System_Windows_DependencyPropertyChangedEventArgs] }, { name: 'OnQueryCursor', type: 8, sname: 'OnQueryCursor', returnType: Object, params: [$System_Windows_Input_QueryCursorEventArgs] }, { name: 'OnResourcesChanged', type: 8, sname: 'OnResourcesChanged', returnType: Object, params: [$System_Windows_ResourcesChangedEventArgs] }, { name: 'OnTemplateChildChanged', type: 8, sname: 'OnTemplateChildChanged', returnType: Object, params: [] }, { name: 'OnVisualParentChanged', type: 8, sname: 'OnVisualParentChanged', returnType: Object, params: [$System_Windows_Media_Visual, $System_Windows_Media_Visual] }, { name: 'SetResourceInheritanceParent', type: 8, sname: 'SetResourceInheritanceParent', returnType: Object, params: [$System_Windows_IResourceContainer] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'ActualHeight', type: 16, returnType: Number, getter: { name: 'get_ActualHeight', type: 8, sname: 'get_ActualHeight', returnType: Number, params: [] }, setter: { name: 'set_ActualHeight', type: 8, sname: 'set_ActualHeight', returnType: Object, params: [Number] } }, { name: 'ActualSize', type: 16, returnType: $System_Windows_Size, getter: { name: 'get_ActualSize', type: 8, sname: 'get_ActualSize', returnType: $System_Windows_Size, params: [] }, setter: { name: 'set_ActualSize', type: 8, sname: 'set_ActualSize', returnType: Object, params: [$System_Windows_Size] } }, { name: 'ActualWidth', type: 16, returnType: Number, getter: { name: 'get_ActualWidth', type: 8, sname: 'get_ActualWidth', returnType: Number, params: [] }, setter: { name: 'set_ActualWidth', type: 8, sname: 'set_ActualWidth', returnType: Object, params: [Number] } }, { name: 'Cursor', type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_Cursor', type: 8, sname: 'get_Cursor', returnType: $System_Windows_Input_Cursor, params: [] }, setter: { name: 'set_Cursor', type: 8, sname: 'set_Cursor', returnType: Object, params: [$System_Windows_Input_Cursor] } }, { name: 'DataContext', type: 16, returnType: Object, getter: { name: 'get_DataContext', type: 8, sname: 'get_DataContext', returnType: Object, params: [] }, setter: { name: 'set_DataContext', type: 8, sname: 'set_DataContext', returnType: Object, params: [Object] } }, { name: 'FocusVisualStyle', type: 16, returnType: $System_Windows_Style, getter: { name: 'get_FocusVisualStyle', type: 8, sname: 'get_FocusVisualStyle', returnType: $System_Windows_Style, params: [] }, setter: { name: 'set_FocusVisualStyle', type: 8, sname: 'set_FocusVisualStyle', returnType: Object, params: [$System_Windows_Style] } }, { name: 'ForceCursor', type: 16, returnType: Boolean, getter: { name: 'get_ForceCursor', type: 8, sname: 'get_ForceCursor', returnType: Boolean, params: [] }, setter: { name: 'set_ForceCursor', type: 8, sname: 'set_ForceCursor', returnType: Object, params: [Boolean] } }, { name: 'Height', type: 16, returnType: Number, getter: { name: 'get_Height', type: 8, sname: 'get_Height', returnType: Number, params: [] }, setter: { name: 'set_Height', type: 8, sname: 'set_Height', returnType: Object, params: [Number] } }, { name: 'HorizontalAlignment', type: 16, returnType: $System_Windows_HorizontalAlignment, getter: { name: 'get_HorizontalAlignment', type: 8, sname: 'get_HorizontalAlignment', returnType: $System_Windows_HorizontalAlignment, params: [] }, setter: { name: 'set_HorizontalAlignment', type: 8, sname: 'set_HorizontalAlignment', returnType: Object, params: [$System_Windows_HorizontalAlignment] } }, { name: 'IsInitialized', type: 16, returnType: Boolean, getter: { name: 'get_IsInitialized', type: 8, sname: 'get_IsInitialized', returnType: Boolean, params: [] }, setter: { name: 'set_IsInitialized', type: 8, sname: 'set_IsInitialized', returnType: Object, params: [Boolean] } }, { name: 'Margin', type: 16, returnType: $System_Windows_Thickness, getter: { name: 'get_Margin', type: 8, sname: 'get_Margin', returnType: $System_Windows_Thickness, params: [] }, setter: { name: 'set_Margin', type: 8, sname: 'set_Margin', returnType: Object, params: [$System_Windows_Thickness] } }, { name: 'MaxHeight', type: 16, returnType: Number, getter: { name: 'get_MaxHeight', type: 8, sname: 'get_MaxHeight', returnType: Number, params: [] }, setter: { name: 'set_MaxHeight', type: 8, sname: 'set_MaxHeight', returnType: Object, params: [Number] } }, { name: 'MaxSize', type: 16, returnType: $System_Windows_Size, getter: { name: 'get_MaxSize', type: 8, sname: 'get_MaxSize', returnType: $System_Windows_Size, params: [] }, setter: { name: 'set_MaxSize', type: 8, sname: 'set_MaxSize', returnType: Object, params: [$System_Windows_Size] } }, { name: 'MaxWidth', type: 16, returnType: Number, getter: { name: 'get_MaxWidth', type: 8, sname: 'get_MaxWidth', returnType: Number, params: [] }, setter: { name: 'set_MaxWidth', type: 8, sname: 'set_MaxWidth', returnType: Object, params: [Number] } }, { name: 'MinHeight', type: 16, returnType: Number, getter: { name: 'get_MinHeight', type: 8, sname: 'get_MinHeight', returnType: Number, params: [] }, setter: { name: 'set_MinHeight', type: 8, sname: 'set_MinHeight', returnType: Object, params: [Number] } }, { name: 'MinSize', type: 16, returnType: $System_Windows_Size, getter: { name: 'get_MinSize', type: 8, sname: 'get_MinSize', returnType: $System_Windows_Size, params: [] }, setter: { name: 'set_MinSize', type: 8, sname: 'set_MinSize', returnType: Object, params: [$System_Windows_Size] } }, { name: 'MinWidth', type: 16, returnType: Number, getter: { name: 'get_MinWidth', type: 8, sname: 'get_MinWidth', returnType: Number, params: [] }, setter: { name: 'set_MinWidth', type: 8, sname: 'set_MinWidth', returnType: Object, params: [Number] } }, { name: 'Name', type: 16, returnType: String, getter: { name: 'get_Name', type: 8, sname: 'get_Name', returnType: String, params: [] }, setter: { name: 'set_Name', type: 8, sname: 'set_Name', returnType: Object, params: [String] } }, { name: 'Resources', type: 16, returnType: $System_Windows_ResourceDictionary, getter: { name: 'get_Resources', type: 8, sname: 'get_Resources', returnType: $System_Windows_ResourceDictionary, params: [] }, setter: { name: 'set_Resources', type: 8, sname: 'set_Resources', returnType: Object, params: [$System_Windows_ResourceDictionary] } }, { name: 'Size', type: 16, returnType: $System_Windows_Size, getter: { name: 'get_Size', type: 8, sname: 'get_Size', returnType: $System_Windows_Size, params: [] }, setter: { name: 'set_Size', type: 8, sname: 'set_Size', returnType: Object, params: [$System_Windows_Size] } }, { name: 'Style', type: 16, returnType: $System_Windows_Style, getter: { name: 'get_Style', type: 8, sname: 'get_Style', returnType: $System_Windows_Style, params: [] }, setter: { name: 'set_Style', type: 8, sname: 'set_Style', returnType: Object, params: [$System_Windows_Style] } }, { name: 'TemplateChild', type: 16, returnType: $System_Windows_UIElement, getter: { name: 'get_TemplateChild', type: 8, sname: 'get_TemplateChild', returnType: $System_Windows_UIElement, params: [] }, setter: { name: 'set_TemplateChild', type: 8, sname: 'set_TemplateChild', returnType: Object, params: [$System_Windows_UIElement] } }, { name: 'TemplatedParent', type: 16, returnType: $System_Windows_FrameworkElement, getter: { name: 'get_TemplatedParent', type: 8, sname: 'get_TemplatedParent', returnType: $System_Windows_FrameworkElement, params: [] }, setter: { name: 'set_TemplatedParent', type: 8, sname: 'set_TemplatedParent', returnType: Object, params: [$System_Windows_FrameworkElement] } }, { name: 'Triggers', type: 16, returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITrigger]), getter: { name: 'get_Triggers', type: 8, sname: 'get_Triggers', returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITrigger]), params: [] }, setter: { name: 'set_Triggers', type: 8, sname: 'set_Triggers', returnType: Object, params: [ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITrigger])] } }, { name: 'VerticalAlignment', type: 16, returnType: $System_Windows_VerticalAlignment, getter: { name: 'get_VerticalAlignment', type: 8, sname: 'get_VerticalAlignment', returnType: $System_Windows_VerticalAlignment, params: [] }, setter: { name: 'set_VerticalAlignment', type: 8, sname: 'set_VerticalAlignment', returnType: Object, params: [$System_Windows_VerticalAlignment] } }, { name: 'Width', type: 16, returnType: Number, getter: { name: 'get_Width', type: 8, sname: 'get_Width', returnType: Number, params: [] }, setter: { name: 'set_Width', type: 8, sname: 'set_Width', returnType: Object, params: [Number] } }, { name: 'ActualHeightProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ActualHeightProperty' }, { name: 'ActualWidthProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ActualWidthProperty' }, { name: 'CursorProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'CursorProperty' }, { name: 'DataContextProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'DataContextProperty' }, { name: 'FocusVisualStyleProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'FocusVisualStyleProperty' }, { name: 'ForceCursorProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ForceCursorProperty' }, { name: 'HeightProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'HeightProperty' }, { name: 'HorizontalAlignmentProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'HorizontalAlignmentProperty' }, { name: 'InitializedEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'InitializedEvent' }, { name: 'MarginProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'MarginProperty' }, { name: 'MaxHeightProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'MaxHeightProperty' }, { name: 'MaxWidthProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'MaxWidthProperty' }, { name: 'MinHeightProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'MinHeightProperty' }, { name: 'MinWidthProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'MinWidthProperty' }, { name: 'StyleProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'StyleProperty' }, { name: 'VerticalAlignmentProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'VerticalAlignmentProperty' }, { name: 'WidthProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'WidthProperty' }, { name: 'DataContextChanged', type: 2, adder: { name: 'add_DataContextChanged', type: 8, sname: 'add_DataContextChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_DataContextChanged', type: 8, sname: 'remove_DataContextChanged', returnType: Object, params: [Function] } }, { name: 'Initialized', type: 2, adder: { name: 'add_Initialized', type: 8, sname: 'add_Initialized', returnType: Object, params: [Function] }, remover: { name: 'remove_Initialized', type: 8, sname: 'remove_Initialized', returnType: Object, params: [Function] } }, { name: 'ResourcesChanged', type: 2, adder: { name: 'add_ResourcesChanged', type: 8, sname: 'add_ResourcesChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ResourcesChanged', type: 8, sname: 'remove_ResourcesChanged', returnType: Object, params: [Function] } }] });
+	ss.setMetadata($System_Windows_FontFamily, { attr: [new $System_Windows_Markup_TypeConverterAttribute($System_Windows_FontFamilyTypeConverter)], members: [{ name: '.ctor', type: 1, params: [ss.IEnumerable] }, { name: '.ctor', type: 1, params: [String], sname: '$ctor1' }, { name: 'Parse', isStatic: true, type: 8, sname: 'Parse', returnType: $System_Windows_FontFamily, params: [String] }, { name: 'FamilyName', type: 16, returnType: String, getter: { name: 'get_FamilyName', type: 8, sname: 'get_FamilyName', returnType: String, params: [] } }, { name: 'FamilyNames', type: 16, returnType: ss.IEnumerable, getter: { name: 'get_FamilyNames', type: 8, sname: 'get_FamilyNames', returnType: ss.IEnumerable, params: [] }, setter: { name: 'set_FamilyNames', type: 8, sname: 'set_FamilyNames', returnType: Object, params: [ss.IEnumerable] } }, { name: 'Default', isStatic: true, type: 4, returnType: $System_Windows_FontFamily, sname: 'Default' }] });
+	ss.setMetadata($System_Windows_FontFamilyTypeConverter, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }] });
+	ss.setMetadata($System_Windows_FrameworkContentElement, { members: [{ name: '.ctor', type: 1, params: [] }] });
+	ss.setMetadata($System_Windows_FrameworkElement, { attr: [new $System_Windows_Markup_RuntimeNamePropertyAttribute('Name')], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ApplyTemplate', type: 8, sname: 'ApplyTemplate', returnType: Boolean, params: [] }, { name: 'ArrangeCore', type: 8, sname: 'ArrangeCore', returnType: Object, params: [$System_Windows_Rect] }, { name: 'ArrangeOverride', type: 8, sname: 'ArrangeOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'GetTemplate', type: 8, sname: 'GetTemplate', returnType: $System_Windows_IFrameworkTemplate, params: [] }, { name: 'GetVisualTransformOverride', type: 8, sname: 'GetVisualTransformOverride', returnType: $System_Windows_Media_Matrix, params: [] }, { name: 'MeasureCore', type: 8, sname: 'MeasureCore', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'MeasureOverride', type: 8, sname: 'MeasureOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'OnApplyTemplate', type: 8, sname: 'OnApplyTemplate', returnType: Object, params: [] }, { name: 'OnInitialized', type: 8, sname: 'OnInitialized', returnType: Object, params: [] }, { name: 'OnLogicalParentChanged', type: 8, sname: 'OnLogicalParentChanged', returnType: Object, params: [$System_Windows_UIElement, $System_Windows_UIElement] }, { name: 'OnPropertyChanged', type: 8, sname: 'OnPropertyChanged', returnType: Object, params: [$System_Windows_DependencyPropertyChangedEventArgs] }, { name: 'OnQueryCursor', type: 8, sname: 'OnQueryCursor', returnType: Object, params: [$System_Windows_Input_QueryCursorEventArgs] }, { name: 'OnResourcesChanged', type: 8, sname: 'OnResourcesChanged', returnType: Object, params: [$System_Windows_ResourcesChangedEventArgs] }, { name: 'OnTemplateChildChanged', type: 8, sname: 'OnTemplateChildChanged', returnType: Object, params: [] }, { name: 'OnVisualParentChanged', type: 8, sname: 'OnVisualParentChanged', returnType: Object, params: [$System_Windows_Media_Visual, $System_Windows_Media_Visual] }, { name: 'SetResourceInheritanceParent', type: 8, sname: 'SetResourceInheritanceParent', returnType: Object, params: [$System_Windows_IResourceContainer] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'ActualHeight', type: 16, returnType: Number, getter: { name: 'get_ActualHeight', type: 8, sname: 'get_ActualHeight', returnType: Number, params: [] }, setter: { name: 'set_ActualHeight', type: 8, sname: 'set_ActualHeight', returnType: Object, params: [Number] } }, { name: 'ActualSize', type: 16, returnType: $System_Windows_Size, getter: { name: 'get_ActualSize', type: 8, sname: 'get_ActualSize', returnType: $System_Windows_Size, params: [] }, setter: { name: 'set_ActualSize', type: 8, sname: 'set_ActualSize', returnType: Object, params: [$System_Windows_Size] } }, { name: 'ActualWidth', type: 16, returnType: Number, getter: { name: 'get_ActualWidth', type: 8, sname: 'get_ActualWidth', returnType: Number, params: [] }, setter: { name: 'set_ActualWidth', type: 8, sname: 'set_ActualWidth', returnType: Object, params: [Number] } }, { name: 'Cursor', type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_Cursor', type: 8, sname: 'get_Cursor', returnType: $System_Windows_Input_Cursor, params: [] }, setter: { name: 'set_Cursor', type: 8, sname: 'set_Cursor', returnType: Object, params: [$System_Windows_Input_Cursor] } }, { name: 'DataContext', type: 16, returnType: Object, getter: { name: 'get_DataContext', type: 8, sname: 'get_DataContext', returnType: Object, params: [] }, setter: { name: 'set_DataContext', type: 8, sname: 'set_DataContext', returnType: Object, params: [Object] } }, { name: 'FocusVisualStyle', type: 16, returnType: $System_Windows_Style, getter: { name: 'get_FocusVisualStyle', type: 8, sname: 'get_FocusVisualStyle', returnType: $System_Windows_Style, params: [] }, setter: { name: 'set_FocusVisualStyle', type: 8, sname: 'set_FocusVisualStyle', returnType: Object, params: [$System_Windows_Style] } }, { name: 'ForceCursor', type: 16, returnType: Boolean, getter: { name: 'get_ForceCursor', type: 8, sname: 'get_ForceCursor', returnType: Boolean, params: [] }, setter: { name: 'set_ForceCursor', type: 8, sname: 'set_ForceCursor', returnType: Object, params: [Boolean] } }, { name: 'Height', type: 16, returnType: Number, getter: { name: 'get_Height', type: 8, sname: 'get_Height', returnType: Number, params: [] }, setter: { name: 'set_Height', type: 8, sname: 'set_Height', returnType: Object, params: [Number] } }, { name: 'HorizontalAlignment', type: 16, returnType: $System_Windows_HorizontalAlignment, getter: { name: 'get_HorizontalAlignment', type: 8, sname: 'get_HorizontalAlignment', returnType: $System_Windows_HorizontalAlignment, params: [] }, setter: { name: 'set_HorizontalAlignment', type: 8, sname: 'set_HorizontalAlignment', returnType: Object, params: [$System_Windows_HorizontalAlignment] } }, { name: 'IsInitialized', type: 16, returnType: Boolean, getter: { name: 'get_IsInitialized', type: 8, sname: 'get_IsInitialized', returnType: Boolean, params: [] }, setter: { name: 'set_IsInitialized', type: 8, sname: 'set_IsInitialized', returnType: Object, params: [Boolean] } }, { name: 'LayoutTransform', type: 16, returnType: $System_Windows_Media_Transform, getter: { name: 'get_LayoutTransform', type: 8, sname: 'get_LayoutTransform', returnType: $System_Windows_Media_Transform, params: [] }, setter: { name: 'set_LayoutTransform', type: 8, sname: 'set_LayoutTransform', returnType: Object, params: [$System_Windows_Media_Transform] } }, { name: 'Margin', type: 16, returnType: $System_Windows_Thickness, getter: { name: 'get_Margin', type: 8, sname: 'get_Margin', returnType: $System_Windows_Thickness, params: [] }, setter: { name: 'set_Margin', type: 8, sname: 'set_Margin', returnType: Object, params: [$System_Windows_Thickness] } }, { name: 'MaxHeight', type: 16, returnType: Number, getter: { name: 'get_MaxHeight', type: 8, sname: 'get_MaxHeight', returnType: Number, params: [] }, setter: { name: 'set_MaxHeight', type: 8, sname: 'set_MaxHeight', returnType: Object, params: [Number] } }, { name: 'MaxSize', type: 16, returnType: $System_Windows_Size, getter: { name: 'get_MaxSize', type: 8, sname: 'get_MaxSize', returnType: $System_Windows_Size, params: [] }, setter: { name: 'set_MaxSize', type: 8, sname: 'set_MaxSize', returnType: Object, params: [$System_Windows_Size] } }, { name: 'MaxWidth', type: 16, returnType: Number, getter: { name: 'get_MaxWidth', type: 8, sname: 'get_MaxWidth', returnType: Number, params: [] }, setter: { name: 'set_MaxWidth', type: 8, sname: 'set_MaxWidth', returnType: Object, params: [Number] } }, { name: 'MinHeight', type: 16, returnType: Number, getter: { name: 'get_MinHeight', type: 8, sname: 'get_MinHeight', returnType: Number, params: [] }, setter: { name: 'set_MinHeight', type: 8, sname: 'set_MinHeight', returnType: Object, params: [Number] } }, { name: 'MinSize', type: 16, returnType: $System_Windows_Size, getter: { name: 'get_MinSize', type: 8, sname: 'get_MinSize', returnType: $System_Windows_Size, params: [] }, setter: { name: 'set_MinSize', type: 8, sname: 'set_MinSize', returnType: Object, params: [$System_Windows_Size] } }, { name: 'MinWidth', type: 16, returnType: Number, getter: { name: 'get_MinWidth', type: 8, sname: 'get_MinWidth', returnType: Number, params: [] }, setter: { name: 'set_MinWidth', type: 8, sname: 'set_MinWidth', returnType: Object, params: [Number] } }, { name: 'Name', type: 16, returnType: String, getter: { name: 'get_Name', type: 8, sname: 'get_Name', returnType: String, params: [] }, setter: { name: 'set_Name', type: 8, sname: 'set_Name', returnType: Object, params: [String] } }, { name: 'Resources', type: 16, returnType: $System_Windows_ResourceDictionary, getter: { name: 'get_Resources', type: 8, sname: 'get_Resources', returnType: $System_Windows_ResourceDictionary, params: [] }, setter: { name: 'set_Resources', type: 8, sname: 'set_Resources', returnType: Object, params: [$System_Windows_ResourceDictionary] } }, { name: 'Size', type: 16, returnType: $System_Windows_Size, getter: { name: 'get_Size', type: 8, sname: 'get_Size', returnType: $System_Windows_Size, params: [] }, setter: { name: 'set_Size', type: 8, sname: 'set_Size', returnType: Object, params: [$System_Windows_Size] } }, { name: 'Style', type: 16, returnType: $System_Windows_Style, getter: { name: 'get_Style', type: 8, sname: 'get_Style', returnType: $System_Windows_Style, params: [] }, setter: { name: 'set_Style', type: 8, sname: 'set_Style', returnType: Object, params: [$System_Windows_Style] } }, { name: 'TemplateChild', type: 16, returnType: $System_Windows_UIElement, getter: { name: 'get_TemplateChild', type: 8, sname: 'get_TemplateChild', returnType: $System_Windows_UIElement, params: [] }, setter: { name: 'set_TemplateChild', type: 8, sname: 'set_TemplateChild', returnType: Object, params: [$System_Windows_UIElement] } }, { name: 'TemplatedParent', type: 16, returnType: $System_Windows_FrameworkElement, getter: { name: 'get_TemplatedParent', type: 8, sname: 'get_TemplatedParent', returnType: $System_Windows_FrameworkElement, params: [] }, setter: { name: 'set_TemplatedParent', type: 8, sname: 'set_TemplatedParent', returnType: Object, params: [$System_Windows_FrameworkElement] } }, { name: 'Triggers', type: 16, returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITrigger]), getter: { name: 'get_Triggers', type: 8, sname: 'get_Triggers', returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITrigger]), params: [] }, setter: { name: 'set_Triggers', type: 8, sname: 'set_Triggers', returnType: Object, params: [ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITrigger])] } }, { name: 'VerticalAlignment', type: 16, returnType: $System_Windows_VerticalAlignment, getter: { name: 'get_VerticalAlignment', type: 8, sname: 'get_VerticalAlignment', returnType: $System_Windows_VerticalAlignment, params: [] }, setter: { name: 'set_VerticalAlignment', type: 8, sname: 'set_VerticalAlignment', returnType: Object, params: [$System_Windows_VerticalAlignment] } }, { name: 'Width', type: 16, returnType: Number, getter: { name: 'get_Width', type: 8, sname: 'get_Width', returnType: Number, params: [] }, setter: { name: 'set_Width', type: 8, sname: 'set_Width', returnType: Object, params: [Number] } }, { name: 'ActualHeightProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ActualHeightProperty' }, { name: 'ActualWidthProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ActualWidthProperty' }, { name: 'CursorProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'CursorProperty' }, { name: 'DataContextProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'DataContextProperty' }, { name: 'FocusVisualStyleProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'FocusVisualStyleProperty' }, { name: 'ForceCursorProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ForceCursorProperty' }, { name: 'HeightProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'HeightProperty' }, { name: 'HorizontalAlignmentProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'HorizontalAlignmentProperty' }, { name: 'InitializedEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'InitializedEvent' }, { name: 'LayoutTransformProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'LayoutTransformProperty' }, { name: 'MarginProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'MarginProperty' }, { name: 'MaxHeightProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'MaxHeightProperty' }, { name: 'MaxWidthProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'MaxWidthProperty' }, { name: 'MinHeightProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'MinHeightProperty' }, { name: 'MinWidthProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'MinWidthProperty' }, { name: 'StyleProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'StyleProperty' }, { name: 'VerticalAlignmentProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'VerticalAlignmentProperty' }, { name: 'WidthProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'WidthProperty' }, { name: 'DataContextChanged', type: 2, adder: { name: 'add_DataContextChanged', type: 8, sname: 'add_DataContextChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_DataContextChanged', type: 8, sname: 'remove_DataContextChanged', returnType: Object, params: [Function] } }, { name: 'Initialized', type: 2, adder: { name: 'add_Initialized', type: 8, sname: 'add_Initialized', returnType: Object, params: [Function] }, remover: { name: 'remove_Initialized', type: 8, sname: 'remove_Initialized', returnType: Object, params: [Function] } }, { name: 'ResourcesChanged', type: 2, adder: { name: 'add_ResourcesChanged', type: 8, sname: 'add_ResourcesChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ResourcesChanged', type: 8, sname: 'remove_ResourcesChanged', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_FrameworkElementFactory, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_Markup_IElementFactory, $System_Windows_Markup_InitializeContext] }, { name: 'CreateElement', type: 8, sname: 'CreateElement', returnType: $System_Windows_FrameworkElement, params: [$System_Windows_FrameworkElement] }] });
 	ss.setMetadata($System_Windows_FrameworkPropertyMetadata, { members: [{ name: '.ctor', type: 1, params: [Object, Function, Function, Boolean, Boolean, Boolean, Boolean, $System_Windows_Data_UpdateSourceTrigger] }, { name: 'AffectsArrange', type: 16, returnType: Boolean, getter: { name: 'get_AffectsArrange', type: 8, sname: 'get_AffectsArrange', returnType: Boolean, params: [] }, setter: { name: 'set_AffectsArrange', type: 8, sname: 'set_AffectsArrange', returnType: Object, params: [Boolean] } }, { name: 'AffectsMeasure', type: 16, returnType: Boolean, getter: { name: 'get_AffectsMeasure', type: 8, sname: 'get_AffectsMeasure', returnType: Boolean, params: [] }, setter: { name: 'set_AffectsMeasure', type: 8, sname: 'set_AffectsMeasure', returnType: Object, params: [Boolean] } }, { name: 'BindsTwoWayByDefault', type: 16, returnType: Boolean, getter: { name: 'get_BindsTwoWayByDefault', type: 8, sname: 'get_BindsTwoWayByDefault', returnType: Boolean, params: [] }, setter: { name: 'set_BindsTwoWayByDefault', type: 8, sname: 'set_BindsTwoWayByDefault', returnType: Object, params: [Boolean] } }, { name: 'DefaultUpdateSourceTrigger', type: 16, returnType: $System_Windows_Data_UpdateSourceTrigger, getter: { name: 'get_DefaultUpdateSourceTrigger', type: 8, sname: 'get_DefaultUpdateSourceTrigger', returnType: $System_Windows_Data_UpdateSourceTrigger, params: [] }, setter: { name: 'set_DefaultUpdateSourceTrigger', type: 8, sname: 'set_DefaultUpdateSourceTrigger', returnType: Object, params: [$System_Windows_Data_UpdateSourceTrigger] } }] });
 	ss.setMetadata($System_Windows_FrameworkTemplate, { attr: [new $System_Windows_Markup_ContentPropertyAttribute('FrameworkElementFactory')], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Attach', type: 8, sname: 'Attach', returnType: Object, params: [$System_Windows_FrameworkElement] }, { name: 'Detach', type: 8, sname: 'Detach', returnType: Object, params: [$System_Windows_FrameworkElement] }, { name: 'FrameworkElementFactory', type: 16, returnType: $System_Windows_IFrameworkElementFactory, getter: { name: 'get_FrameworkElementFactory', type: 8, sname: 'get_FrameworkElementFactory', returnType: $System_Windows_IFrameworkElementFactory, params: [] }, setter: { name: 'set_FrameworkElementFactory', type: 8, sname: 'set_FrameworkElementFactory', returnType: Object, params: [$System_Windows_IFrameworkElementFactory] } }, { name: 'Triggers', type: 16, returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITrigger]), getter: { name: 'get_Triggers', type: 8, sname: 'get_Triggers', returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITrigger]), params: [] }, setter: { name: 'set_Triggers', type: 8, sname: 'set_Triggers', returnType: Object, params: [ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITrigger])] } }, { name: 'Empty', isStatic: true, type: 4, returnType: $System_Windows_IFrameworkTemplate, sname: 'Empty' }] });
 	ss.setMetadata($System_Windows_FrameworkTemplateExtensions, { members: [{ name: 'FindName', isStatic: true, type: 8, sname: 'FindName', returnType: Object, params: [$System_Windows_FrameworkTemplate, String, $System_Windows_FrameworkElement] }] });
-	ss.setMetadata($System_Windows_Freezable, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Freeze', type: 8, sname: 'Freeze', returnType: Object, params: [] }, { name: 'OnInheritanceParentChanged', type: 8, sname: 'OnInheritanceParentChanged', returnType: Object, params: [$System_Windows_DependencyObject, $System_Windows_DependencyObject] }, { name: 'OnPropertyChanged', type: 8, sname: 'OnPropertyChanged', returnType: Object, params: [$System_Windows_DependencyPropertyChangedEventArgs] }, { name: 'RaiseChanged', type: 8, sname: 'RaiseChanged', returnType: Object, params: [] }, { name: 'SetInheritanceContext', type: 8, sname: 'SetInheritanceContext', returnType: Object, params: [$System_Windows_DependencyObject] }, { name: 'DataContext', type: 16, returnType: Object, getter: { name: 'get_DataContext', type: 8, sname: 'get_DataContext', returnType: Object, params: [] }, setter: { name: 'set_DataContext', type: 8, sname: 'set_DataContext', returnType: Object, params: [Object] } }, { name: 'IsFrozen', type: 16, returnType: Boolean, getter: { name: 'get_IsFrozen', type: 8, sname: 'get_IsFrozen', returnType: Boolean, params: [] }, setter: { name: 'set_IsFrozen', type: 8, sname: 'set_IsFrozen', returnType: Object, params: [Boolean] } }, { name: 'DataContextProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'DataContextProperty' }, { name: 'Changed', type: 2, adder: { name: 'add_Changed', type: 8, sname: 'add_Changed', returnType: Object, params: [Function] }, remover: { name: 'remove_Changed', type: 8, sname: 'remove_Changed', returnType: Object, params: [Function] } }, { name: 'ResourcesChanged', type: 2, adder: { name: 'add_ResourcesChanged', type: 8, sname: 'add_ResourcesChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ResourcesChanged', type: 8, sname: 'remove_ResourcesChanged', returnType: Object, params: [Function] } }] });
-	ss.setMetadata($System_Windows_FreezableCollection$1, { members: [{ name: '.ctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [ss.IEnumerable], sname: '$ctor1' }, { name: 'Add', type: 8, sname: 'add', returnType: Object, params: [Object] }, { name: 'Clear', type: 8, sname: 'clear', returnType: Object, params: [] }, { name: 'Contains', type: 8, sname: 'contains', returnType: Boolean, params: [Object] }, { name: 'CopyTo', type: 8, sname: 'CopyTo', returnType: Object, params: [Array, ss.Int32] }, { name: 'GetEnumerator', type: 8, sname: 'getEnumerator', returnType: ss.IEnumerator, params: [] }, { name: 'IndexOf', type: 8, sname: 'indexOf', returnType: ss.Int32, params: [Object] }, { name: 'Insert', type: 8, sname: 'insert', returnType: Object, params: [ss.Int32, Object] }, { name: 'OnInheritanceParentChanged', type: 8, sname: 'OnInheritanceParentChanged', returnType: Object, params: [$System_Windows_DependencyObject, $System_Windows_DependencyObject] }, { name: 'Remove', type: 8, sname: 'remove', returnType: Boolean, params: [Object] }, { name: 'RemoveAt', type: 8, sname: 'removeAt', returnType: Object, params: [ss.Int32] }, { name: 'Count', type: 16, returnType: ss.Int32, getter: { name: 'get_Count', type: 8, sname: 'get_count', returnType: ss.Int32, params: [] } }, { name: 'IsReadOnly', type: 16, returnType: Boolean, getter: { name: 'get_IsReadOnly', type: 8, sname: 'get_IsReadOnly', returnType: Boolean, params: [] } }, { name: 'Item', type: 16, returnType: Object, params: [ss.Int32], getter: { name: 'get_Item', type: 8, sname: 'get_item', returnType: Object, params: [ss.Int32] }, setter: { name: 'set_Item', type: 8, sname: 'set_item', returnType: Object, params: [ss.Int32, Object] } }, { name: 'CollectionChanged', type: 2, adder: { name: 'add_CollectionChanged', type: 8, sname: 'add_CollectionChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_CollectionChanged', type: 8, sname: 'remove_CollectionChanged', returnType: Object, params: [Function] } }] });
+	ss.setMetadata($System_Windows_Freezable, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Freeze', type: 8, sname: 'Freeze', returnType: Object, params: [] }, { name: 'OnPropertyChanged', type: 8, sname: 'OnPropertyChanged', returnType: Object, params: [$System_Windows_DependencyPropertyChangedEventArgs] }, { name: 'RaiseChanged', type: 8, sname: 'RaiseChanged', returnType: Object, params: [] }, { name: 'TrySetContextParent', type: 8, sname: 'TrySetContextParent', returnType: Boolean, params: [$System_Windows_IContextElement] }, { name: 'ContextParent', type: 16, returnType: $System_Windows_IContextElement, getter: { name: 'get_ContextParent', type: 8, sname: 'get_ContextParent', returnType: $System_Windows_IContextElement, params: [] }, setter: { name: 'set_ContextParent', type: 8, sname: 'set_ContextParent', returnType: Object, params: [$System_Windows_IContextElement] } }, { name: 'IsFrozen', type: 16, returnType: Boolean, getter: { name: 'get_IsFrozen', type: 8, sname: 'get_IsFrozen', returnType: Boolean, params: [] }, setter: { name: 'set_IsFrozen', type: 8, sname: 'set_IsFrozen', returnType: Object, params: [Boolean] } }, { name: 'Changed', type: 2, adder: { name: 'add_Changed', type: 8, sname: 'add_Changed', returnType: Object, params: [Function] }, remover: { name: 'remove_Changed', type: 8, sname: 'remove_Changed', returnType: Object, params: [Function] } }, { name: 'ContextParentChanged', type: 2, adder: { name: 'add_ContextParentChanged', type: 8, sname: 'add_ContextParentChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ContextParentChanged', type: 8, sname: 'remove_ContextParentChanged', returnType: Object, params: [Function] } }, { name: 'ResourcesChanged', type: 2, adder: { name: 'add_ResourcesChanged', type: 8, sname: 'add_ResourcesChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ResourcesChanged', type: 8, sname: 'remove_ResourcesChanged', returnType: Object, params: [Function] } }] });
+	ss.setMetadata($System_Windows_FreezableCollection$1, { members: [{ name: '.ctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [ss.IEnumerable], sname: '$ctor1' }, { name: 'Add', type: 8, sname: 'add', returnType: Object, params: [Object] }, { name: 'Clear', type: 8, sname: 'clear', returnType: Object, params: [] }, { name: 'Contains', type: 8, sname: 'contains', returnType: Boolean, params: [Object] }, { name: 'CopyTo', type: 8, sname: 'CopyTo', returnType: Object, params: [Array, ss.Int32] }, { name: 'GetEnumerator', type: 8, sname: 'getEnumerator', returnType: ss.IEnumerator, params: [] }, { name: 'IndexOf', type: 8, sname: 'indexOf', returnType: ss.Int32, params: [Object] }, { name: 'Insert', type: 8, sname: 'insert', returnType: Object, params: [ss.Int32, Object] }, { name: 'Remove', type: 8, sname: 'remove', returnType: Boolean, params: [Object] }, { name: 'RemoveAt', type: 8, sname: 'removeAt', returnType: Object, params: [ss.Int32] }, { name: 'Count', type: 16, returnType: ss.Int32, getter: { name: 'get_Count', type: 8, sname: 'get_count', returnType: ss.Int32, params: [] } }, { name: 'IsReadOnly', type: 16, returnType: Boolean, getter: { name: 'get_IsReadOnly', type: 8, sname: 'get_IsReadOnly', returnType: Boolean, params: [] } }, { name: 'Item', type: 16, returnType: Object, params: [ss.Int32], getter: { name: 'get_Item', type: 8, sname: 'get_item', returnType: Object, params: [ss.Int32] }, setter: { name: 'set_Item', type: 8, sname: 'set_item', returnType: Object, params: [ss.Int32, Object] } }, { name: 'CollectionChanged', type: 2, adder: { name: 'add_CollectionChanged', type: 8, sname: 'add_CollectionChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_CollectionChanged', type: 8, sname: 'remove_CollectionChanged', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_IApplicationHost, { members: [{ name: 'Run', type: 8, sname: 'Run', returnType: Object, params: [Function] }, { name: 'PresentationSourceFactory', type: 16, returnType: $System_Windows_IPresentationSourceFactory, getter: { name: 'get_PresentationSourceFactory', type: 8, sname: 'get_PresentationSourceFactory', returnType: $System_Windows_IPresentationSourceFactory, params: [] } }, { name: 'RenderImageSourceFactory', type: 16, returnType: $System_Windows_IRenderImageSourceFactory, getter: { name: 'get_RenderImageSourceFactory', type: 8, sname: 'get_RenderImageSourceFactory', returnType: $System_Windows_IRenderImageSourceFactory, params: [] } }, { name: 'TaskScheduler', type: 16, returnType: $System_Windows_Threading_ITaskScheduler, getter: { name: 'get_TaskScheduler', type: 8, sname: 'get_TaskScheduler', returnType: $System_Windows_Threading_ITaskScheduler, params: [] } }, { name: 'TextMeasurementService', type: 16, returnType: $System_Windows_ITextMeasurementService, getter: { name: 'get_TextMeasurementService', type: 8, sname: 'get_TextMeasurementService', returnType: $System_Windows_ITextMeasurementService, params: [] } }] });
+	ss.setMetadata($System_Windows_IContextElement, { members: [{ name: 'TrySetContextParent', type: 8, sname: 'TrySetContextParent', returnType: Boolean, params: [$System_Windows_IContextElement] }, { name: 'ContextParent', type: 16, returnType: $System_Windows_IContextElement, getter: { name: 'get_ContextParent', type: 8, sname: 'get_ContextParent', returnType: $System_Windows_IContextElement, params: [] } }, { name: 'ContextParentChanged', type: 2, adder: { name: 'add_ContextParentChanged', type: 8, sname: 'add_ContextParentChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ContextParentChanged', type: 8, sname: 'remove_ContextParentChanged', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_IDataTriggerCondition, { members: [{ name: 'IsMatched', type: 16, returnType: Boolean, getter: { name: 'get_IsMatched', type: 8, sname: 'get_IsMatched', returnType: Boolean, params: [] } }, { name: 'IsMatchedChanged', type: 2, adder: { name: 'add_IsMatchedChanged', type: 8, sname: 'add_IsMatchedChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_IsMatchedChanged', type: 8, sname: 'remove_IsMatchedChanged', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_IDataTriggerConditionProvider, { members: [{ name: 'CreateDataTriggerCondition', type: 8, sname: 'CreateDataTriggerCondition', returnType: $System_Windows_IDataTriggerCondition, params: [$System_Windows_FrameworkElement] }] });
-	ss.setMetadata($System_Windows_IDependencyPropertyValueEntry, { members: [{ name: 'ClearAnimationValue', type: 8, sname: 'ClearAnimationValue', returnType: Object, params: [] }, { name: 'ClearBaseValue', type: 8, sname: 'ClearBaseValue', returnType: Object, params: [ss.Int32] }, { name: 'ClearCurrentValue', type: 8, sname: 'ClearCurrentValue', returnType: Object, params: [] }, { name: 'GetAnimationValue', type: 8, sname: 'GetAnimationValue', returnType: Object, params: [Boolean] }, { name: 'GetBaseValue', type: 8, sname: 'GetBaseValue', returnType: Object, params: [Boolean] }, { name: 'GetBaseValue', type: 8, sname: 'GetBaseValue$1', returnType: Object, params: [ss.Int32, Boolean] }, { name: 'GetBaseValuePriority', type: 8, sname: 'GetBaseValuePriority', returnType: ss.Int32, params: [] }, { name: 'GetCurrentValue', type: 8, sname: 'GetCurrentValue', returnType: Object, params: [Boolean] }, { name: 'SetAnimationValue', type: 8, sname: 'SetAnimationValue', returnType: Object, params: [Object] }, { name: 'SetBaseValue', type: 8, sname: 'SetBaseValue', returnType: Object, params: [ss.Int32, Object] }, { name: 'SetCurrentValue', type: 8, sname: 'SetCurrentValue', returnType: Object, params: [Object] }] });
+	ss.setMetadata($System_Windows_IDependencyPropertyValueEntry, { members: [{ name: 'CoerceValue', type: 8, sname: 'CoerceValue', returnType: Object, params: [] }, { name: 'GetBaseValuePriority', type: 8, sname: 'GetBaseValuePriority', returnType: ss.Int32, params: [] }, { name: 'GetValue', type: 8, sname: 'GetValue', returnType: Object, params: [ss.Int32, Boolean] }, { name: 'SetValue', type: 8, sname: 'SetValue', returnType: Object, params: [ss.Int32, Object] }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] } }, { name: 'ValuePriority', type: 16, returnType: ss.Int32, getter: { name: 'get_ValuePriority', type: 8, sname: 'get_ValuePriority', returnType: ss.Int32, params: [] } }, { name: 'ValueChanged', type: 2, adder: { name: 'add_ValueChanged', type: 8, sname: 'add_ValueChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ValueChanged', type: 8, sname: 'remove_ValueChanged', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_IEventTriggerCondition, { members: [{ name: 'EventRaised', type: 2, adder: { name: 'add_EventRaised', type: 8, sname: 'add_EventRaised', returnType: Object, params: [Function] }, remover: { name: 'remove_EventRaised', type: 8, sname: 'remove_EventRaised', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_IExpression, { members: [{ name: 'SetValue', type: 8, sname: 'SetValue', returnType: Boolean, params: [Object] }] });
 	ss.setMetadata($System_Windows_IExpressionProvider, { members: [{ name: 'CreateExpression', type: 8, sname: 'CreateExpression', returnType: $System_Windows_IExpression, params: [$System_Windows_DependencyObject, $System_Windows_DependencyProperty] }] });
 	ss.setMetadata($System_Windows_IFrameworkElementFactory, { members: [{ name: 'CreateElement', type: 8, sname: 'CreateElement', returnType: $System_Windows_FrameworkElement, params: [$System_Windows_FrameworkElement] }] });
 	ss.setMetadata($System_Windows_IFrameworkTemplate, { members: [{ name: 'Attach', type: 8, sname: 'Attach', returnType: Object, params: [$System_Windows_FrameworkElement] }, { name: 'Detach', type: 8, sname: 'Detach', returnType: Object, params: [$System_Windows_FrameworkElement] }] });
-	ss.setMetadata($System_Windows_IInheritableObject, { members: [{ name: 'SetInheritanceContext', type: 8, sname: 'SetInheritanceContext', returnType: Object, params: [$System_Windows_DependencyObject] }] });
 	ss.setMetadata($System_Windows_IInputElement, { members: [{ name: 'GetPathFromRoot', type: 8, sname: 'GetPathFromRoot', returnType: ss.IEnumerable, params: [] }, { name: 'GetRelativePosition', type: 8, sname: 'GetRelativePosition', returnType: $System_Windows_Point, params: [$System_Windows_Point] }, { name: 'RaiseEvent', type: 8, sname: 'RaiseEvent', returnType: Object, params: [$System_Windows_RoutedEventArgs] }] });
 	ss.setMetadata($System_Windows_IInputElementExtensions, { members: [{ name: 'RaiseEvents', isStatic: true, type: 8, sname: 'RaiseEvents', returnType: Boolean, params: [$System_Windows_IInputElement, $System_Windows_RoutedEventArgs, $System_Windows_RoutedEventArgs] }] });
 	ss.setMetadata($System_Windows_IndexPropertyPathElement, { members: [{ name: '.ctor', type: 1, params: [System.Xaml.XamlName, ss.IEnumerable, System.Xaml.XamlNamespaces] }, { name: 'CreatePropertyObserver', type: 8, sname: 'CreatePropertyObserver', returnType: $System_Windows_Data_IPropertyObserver, params: [Function] }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'ParseIndexValues', type: 8, sname: 'ParseIndexValues', returnType: ss.IEnumerable, params: [Object] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'IndexRawValues', type: 16, returnType: ss.IEnumerable, getter: { name: 'get_IndexRawValues', type: 8, sname: 'get_IndexRawValues', returnType: ss.IEnumerable, params: [] }, setter: { name: 'set_IndexRawValues', type: 8, sname: 'set_IndexRawValues', returnType: Object, params: [ss.IEnumerable] } }, { name: 'PropertyName', type: 16, returnType: System.Xaml.XamlName, getter: { name: 'get_PropertyName', type: 8, sname: 'get_PropertyName', returnType: System.Xaml.XamlName, params: [] }, setter: { name: 'set_PropertyName', type: 8, sname: 'set_PropertyName', returnType: Object, params: [System.Xaml.XamlName] } }] });
+	ss.setMetadata($System_Windows_INotifyChanged, { members: [{ name: 'Changed', type: 2, adder: { name: 'add_Changed', type: 8, sname: 'add_Changed', returnType: Object, params: [Function] }, remover: { name: 'remove_Changed', type: 8, sname: 'remove_Changed', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_IPresentationSource, { members: [{ name: 'GetTimestamp', type: 8, sname: 'GetTimestamp', returnType: ss.Int32, params: [] }, { name: 'HitTest', type: 8, sname: 'HitTest', returnType: $System_Windows_IInputElement, params: [$System_Windows_Point] }, { name: 'KeyboardDevice', type: 16, returnType: $System_Windows_Input_KeyboardDevice, getter: { name: 'get_KeyboardDevice', type: 8, sname: 'get_KeyboardDevice', returnType: $System_Windows_Input_KeyboardDevice, params: [] } }, { name: 'MouseDevice', type: 16, returnType: $System_Windows_Input_MouseDevice, getter: { name: 'get_MouseDevice', type: 8, sname: 'get_MouseDevice', returnType: $System_Windows_Input_MouseDevice, params: [] } }, { name: 'RootElement', type: 16, returnType: $System_Windows_UIElement, getter: { name: 'get_RootElement', type: 8, sname: 'get_RootElement', returnType: $System_Windows_UIElement, params: [] } }, { name: 'Title', type: 16, returnType: String, getter: { name: 'get_Title', type: 8, sname: 'get_Title', returnType: String, params: [] }, setter: { name: 'set_Title', type: 8, sname: 'set_Title', returnType: Object, params: [String] } }, { name: 'HitTestInvalidated', type: 2, adder: { name: 'add_HitTestInvalidated', type: 8, sname: 'add_HitTestInvalidated', returnType: Object, params: [Function] }, remover: { name: 'remove_HitTestInvalidated', type: 8, sname: 'remove_HitTestInvalidated', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_IPresentationSourceFactory, { members: [{ name: 'CreatePresentationSource', type: 8, sname: 'CreatePresentationSource', returnType: $System_Windows_IPresentationSource, params: [$System_Windows_UIElement] }, { name: 'GetPresentationSourceFromElement', type: 8, sname: 'GetPresentationSourceFromElement', returnType: $System_Windows_IPresentationSource, params: [$System_Windows_UIElement] }] });
 	ss.setMetadata($System_Windows_IPropertyPathElement, { attr: [new $System_Windows_Markup_TypeConverterAttribute($System_Windows_PropertyPathElementTypeConverter)], members: [{ name: 'CreatePropertyObserver', type: 8, sname: 'CreatePropertyObserver', returnType: $System_Windows_Data_IPropertyObserver, params: [Function] }] });
@@ -23173,8 +24479,9 @@
 	ss.setMetadata($System_Windows_MultiDataTrigger, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'CreateDataTriggerCondition', type: 8, sname: 'CreateDataTriggerCondition', returnType: $System_Windows_IDataTriggerCondition, params: [$System_Windows_FrameworkElement] }] });
 	ss.setMetadata($System_Windows_MultiDataTriggerBase, { attr: [new $System_Windows_Markup_ContentPropertyAttribute('Setters')], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Conditions', type: 16, returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_Condition]), getter: { name: 'get_Conditions', type: 8, sname: 'get_Conditions', returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_Condition]), params: [] }, setter: { name: 'set_Conditions', type: 8, sname: 'set_Conditions', returnType: Object, params: [ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_Condition])] } }, { name: 'Setters', type: 16, returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITriggerAction]), getter: { name: 'get_Setters', type: 8, sname: 'get_Setters', returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITriggerAction]), params: [] }, setter: { name: 'set_Setters', type: 8, sname: 'set_Setters', returnType: Object, params: [ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITriggerAction])] } }, { name: 'TriggerActions', type: 16, returnType: ss.IEnumerable, getter: { name: 'get_TriggerActions', type: 8, sname: 'get_TriggerActions', returnType: ss.IEnumerable, params: [] } }] });
 	ss.setMetadata($System_Windows_MultiTrigger, { attr: [new $System_Windows_Markup_ContentPropertyAttribute('Setters')], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'CreateDataTriggerCondition', type: 8, sname: 'CreateDataTriggerCondition', returnType: $System_Windows_IDataTriggerCondition, params: [$System_Windows_FrameworkElement] }] });
-	ss.setMetadata($System_Windows_Point, { members: [{ name: '.ctor', type: 1, params: [Number, Number], sname: '$ctor1' }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'IsNullOrEmpty', isStatic: true, type: 8, sname: 'IsNullOrEmpty', returnType: Boolean, params: [$System_Windows_Point] }, { name: 'Parse', isStatic: true, type: 8, sname: 'Parse', returnType: $System_Windows_Point, params: [String] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'op_Addition', isStatic: true, type: 8, sname: 'op_Addition', returnType: $System_Windows_Point, params: [$System_Windows_Point, $System_Windows_Point] }, { name: 'op_Division', isStatic: true, type: 8, sname: 'op_Division', returnType: $System_Windows_Point, params: [$System_Windows_Point, Number] }, { name: 'op_Equality', isStatic: true, type: 8, sname: 'op_Equality', returnType: Boolean, params: [$System_Windows_Point, $System_Windows_Point] }, { name: 'op_Inequality', isStatic: true, type: 8, sname: 'op_Inequality', returnType: Boolean, params: [$System_Windows_Point, $System_Windows_Point] }, { name: 'op_Multiply', isStatic: true, type: 8, sname: 'op_Multiply', returnType: $System_Windows_Point, params: [Number, $System_Windows_Point] }, { name: 'op_Multiply', isStatic: true, type: 8, sname: 'op_Multiply$1', returnType: $System_Windows_Point, params: [$System_Windows_Point, Number] }, { name: 'op_Subtraction', isStatic: true, type: 8, sname: 'op_Subtraction', returnType: $System_Windows_Point, params: [$System_Windows_Point, $System_Windows_Point] }, { name: 'op_UnaryNegation', isStatic: true, type: 8, sname: 'op_UnaryNegation', returnType: $System_Windows_Point, params: [$System_Windows_Point] }, { name: 'IsEmpty', type: 16, returnType: Boolean, getter: { name: 'get_IsEmpty', type: 8, sname: 'get_IsEmpty', returnType: Boolean, params: [] }, setter: { name: 'set_IsEmpty', type: 8, sname: 'set_IsEmpty', returnType: Object, params: [Boolean] } }, { name: 'X', type: 16, returnType: Number, getter: { name: 'get_X', type: 8, sname: 'get_X', returnType: Number, params: [] }, setter: { name: 'set_X', type: 8, sname: 'set_X', returnType: Object, params: [Number] } }, { name: 'Y', type: 16, returnType: Number, getter: { name: 'get_Y', type: 8, sname: 'get_Y', returnType: Number, params: [] }, setter: { name: 'set_Y', type: 8, sname: 'set_Y', returnType: Object, params: [Number] } }, { name: 'Empty', isStatic: true, type: 4, returnType: $System_Windows_Point, sname: 'Empty' }, { name: 'Zero', isStatic: true, type: 4, returnType: $System_Windows_Point, sname: 'Zero' }] });
-	ss.setMetadata($System_Windows_PointExtensions, { members: [{ name: 'Bounds', isStatic: true, type: 8, sname: 'Bounds', returnType: $System_Windows_Point, params: [$System_Windows_Point, $System_Windows_Point, $System_Windows_Point] }, { name: 'DefaultIfNullOrEmpty', isStatic: true, type: 8, sname: 'DefaultIfNullOrEmpty', returnType: $System_Windows_Point, params: [$System_Windows_Point, $System_Windows_Point] }, { name: 'GetLength', isStatic: true, type: 8, sname: 'GetLength', returnType: Number, params: [$System_Windows_Point] }, { name: 'GetLengthSqr', isStatic: true, type: 8, sname: 'GetLengthSqr', returnType: Number, params: [$System_Windows_Point] }, { name: 'IsClose', isStatic: true, type: 8, sname: 'IsClose', returnType: Boolean, params: [$System_Windows_Point, $System_Windows_Point] }, { name: 'IsNullOrEmpty', isStatic: true, type: 8, sname: 'IsNullOrEmpty', returnType: Boolean, params: [$System_Windows_Point] }, { name: 'Max', isStatic: true, type: 8, sname: 'Max', returnType: $System_Windows_Point, params: [$System_Windows_Point, $System_Windows_Point] }, { name: 'Min', isStatic: true, type: 8, sname: 'Min', returnType: $System_Windows_Point, params: [$System_Windows_Point, $System_Windows_Point] }] });
+	ss.setMetadata($System_Windows_Point, { attr: [new $System_Windows_Markup_TypeConverterAttribute($System_Windows_PointTypeConverter)], members: [{ name: '.ctor', type: 1, params: [Number, Number], sname: '$ctor1' }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'IsNullOrEmpty', isStatic: true, type: 8, sname: 'IsNullOrEmpty', returnType: Boolean, params: [$System_Windows_Point] }, { name: 'Parse', isStatic: true, type: 8, sname: 'Parse', returnType: $System_Windows_Point, params: [String] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'op_Addition', isStatic: true, type: 8, sname: 'op_Addition', returnType: $System_Windows_Point, params: [$System_Windows_Point, $System_Windows_Point] }, { name: 'op_Division', isStatic: true, type: 8, sname: 'op_Division', returnType: $System_Windows_Point, params: [$System_Windows_Point, Number] }, { name: 'op_Equality', isStatic: true, type: 8, sname: 'op_Equality', returnType: Boolean, params: [$System_Windows_Point, $System_Windows_Point] }, { name: 'op_Inequality', isStatic: true, type: 8, sname: 'op_Inequality', returnType: Boolean, params: [$System_Windows_Point, $System_Windows_Point] }, { name: 'op_Multiply', isStatic: true, type: 8, sname: 'op_Multiply', returnType: $System_Windows_Point, params: [Number, $System_Windows_Point] }, { name: 'op_Multiply', isStatic: true, type: 8, sname: 'op_Multiply$1', returnType: $System_Windows_Point, params: [$System_Windows_Point, Number] }, { name: 'op_Multiply', isStatic: true, type: 8, sname: 'op_Multiply$2', returnType: $System_Windows_Point, params: [$System_Windows_Point, $System_Windows_Size] }, { name: 'op_Multiply', isStatic: true, type: 8, sname: 'op_Multiply$3', returnType: $System_Windows_Point, params: [$System_Windows_Size, $System_Windows_Point] }, { name: 'op_Subtraction', isStatic: true, type: 8, sname: 'op_Subtraction', returnType: $System_Windows_Point, params: [$System_Windows_Point, $System_Windows_Point] }, { name: 'op_UnaryNegation', isStatic: true, type: 8, sname: 'op_UnaryNegation', returnType: $System_Windows_Point, params: [$System_Windows_Point] }, { name: 'IsEmpty', type: 16, returnType: Boolean, getter: { name: 'get_IsEmpty', type: 8, sname: 'get_IsEmpty', returnType: Boolean, params: [] }, setter: { name: 'set_IsEmpty', type: 8, sname: 'set_IsEmpty', returnType: Object, params: [Boolean] } }, { name: 'X', type: 16, returnType: Number, getter: { name: 'get_X', type: 8, sname: 'get_X', returnType: Number, params: [] }, setter: { name: 'set_X', type: 8, sname: 'set_X', returnType: Object, params: [Number] } }, { name: 'Y', type: 16, returnType: Number, getter: { name: 'get_Y', type: 8, sname: 'get_Y', returnType: Number, params: [] }, setter: { name: 'set_Y', type: 8, sname: 'set_Y', returnType: Object, params: [Number] } }, { name: 'Empty', isStatic: true, type: 4, returnType: $System_Windows_Point, sname: 'Empty' }, { name: 'Zero', isStatic: true, type: 4, returnType: $System_Windows_Point, sname: 'Zero' }] });
+	ss.setMetadata($System_Windows_PointExtensions, { members: [{ name: 'Abs', isStatic: true, type: 8, sname: 'Abs', returnType: $System_Windows_Point, params: [$System_Windows_Point] }, { name: 'Bounds', isStatic: true, type: 8, sname: 'Bounds', returnType: $System_Windows_Point, params: [$System_Windows_Point, $System_Windows_Point, $System_Windows_Point] }, { name: 'DefaultIfNullOrEmpty', isStatic: true, type: 8, sname: 'DefaultIfNullOrEmpty', returnType: $System_Windows_Point, params: [$System_Windows_Point, $System_Windows_Point] }, { name: 'GetAngle', isStatic: true, type: 8, sname: 'GetAngle', returnType: Number, params: [$System_Windows_Point] }, { name: 'GetLength', isStatic: true, type: 8, sname: 'GetLength', returnType: Number, params: [$System_Windows_Point] }, { name: 'GetLengthSqr', isStatic: true, type: 8, sname: 'GetLengthSqr', returnType: Number, params: [$System_Windows_Point] }, { name: 'IsClose', isStatic: true, type: 8, sname: 'IsClose', returnType: Boolean, params: [$System_Windows_Point, $System_Windows_Point] }, { name: 'IsNullOrEmpty', isStatic: true, type: 8, sname: 'IsNullOrEmpty', returnType: Boolean, params: [$System_Windows_Point] }, { name: 'Max', isStatic: true, type: 8, sname: 'Max', returnType: $System_Windows_Point, params: [$System_Windows_Point, $System_Windows_Point] }, { name: 'Min', isStatic: true, type: 8, sname: 'Min', returnType: $System_Windows_Point, params: [$System_Windows_Point, $System_Windows_Point] }] });
+	ss.setMetadata($System_Windows_PointTypeConverter, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }] });
 	ss.setMetadata($System_Windows_PropertyMetadata, { members: [{ name: '.ctor', type: 1, params: [Object, Function, Function, Boolean] }, { name: 'CoerceValueCallback', type: 16, returnType: Function, getter: { name: 'get_CoerceValueCallback', type: 8, sname: 'get_CoerceValueCallback', returnType: Function, params: [] }, setter: { name: 'set_CoerceValueCallback', type: 8, sname: 'set_CoerceValueCallback', returnType: Object, params: [Function] } }, { name: 'DefaultValue', type: 16, returnType: Object, getter: { name: 'get_DefaultValue', type: 8, sname: 'get_DefaultValue', returnType: Object, params: [] }, setter: { name: 'set_DefaultValue', type: 8, sname: 'set_DefaultValue', returnType: Object, params: [Object] } }, { name: 'Inherits', type: 16, returnType: Boolean, getter: { name: 'get_Inherits', type: 8, sname: 'get_Inherits', returnType: Boolean, params: [] }, setter: { name: 'set_Inherits', type: 8, sname: 'set_Inherits', returnType: Object, params: [Boolean] } }, { name: 'PropertyChangedCallback', type: 16, returnType: Function, getter: { name: 'get_PropertyChangedCallback', type: 8, sname: 'get_PropertyChangedCallback', returnType: Function, params: [] }, setter: { name: 'set_PropertyChangedCallback', type: 8, sname: 'set_PropertyChangedCallback', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_PropertyPath, { attr: [new $System_Windows_Markup_TypeConverterAttribute($System_Windows_PropertyPathTypeConverter)], members: [{ name: '.ctor', type: 1, params: [ss.IEnumerable] }, { name: 'FromDependencyProperty', isStatic: true, type: 8, sname: 'FromDependencyProperty', returnType: $System_Windows_PropertyPath, params: [$System_Windows_DependencyProperty] }, { name: 'Parse', isStatic: true, type: 8, sname: 'Parse', returnType: $System_Windows_PropertyPath, params: [String, System.Xaml.XamlNamespaces] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'Elements', type: 16, returnType: ss.IEnumerable, getter: { name: 'get_Elements', type: 8, sname: 'get_Elements', returnType: ss.IEnumerable, params: [] }, setter: { name: 'set_Elements', type: 8, sname: 'set_Elements', returnType: Object, params: [ss.IEnumerable] } }, { name: 'IsEmpty', type: 16, returnType: Boolean, getter: { name: 'get_IsEmpty', type: 8, sname: 'get_IsEmpty', returnType: Boolean, params: [] } }, { name: 'Empty', isStatic: true, type: 4, returnType: $System_Windows_PropertyPath, sname: 'Empty' }] });
 	ss.setMetadata($System_Windows_PropertyPathElement, { members: [{ name: '.ctor', type: 1, params: [System.Xaml.XamlName] }, { name: 'CreatePropertyObserver', type: 8, sname: 'CreatePropertyObserver', returnType: $System_Windows_Data_IPropertyObserver, params: [Function] }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'PropertyName', type: 16, returnType: System.Xaml.XamlName, getter: { name: 'get_PropertyName', type: 8, sname: 'get_PropertyName', returnType: System.Xaml.XamlName, params: [] }, setter: { name: 'set_PropertyName', type: 8, sname: 'set_PropertyName', returnType: Object, params: [System.Xaml.XamlName] } }] });
@@ -23182,10 +24489,10 @@
 	ss.setMetadata($System_Windows_PropertyPathElementTypeConverter, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }] });
 	ss.setMetadata($System_Windows_PropertyPathExtensions, { members: [{ name: 'GetBasePropertyPath', isStatic: true, type: 8, sname: 'GetBasePropertyPath', returnType: $System_Windows_PropertyPath, params: [$System_Windows_PropertyPath] }, { name: 'Insert', isStatic: true, type: 8, sname: 'Insert', returnType: $System_Windows_PropertyPath, params: [$System_Windows_PropertyPath, ss.Int32, $System_Windows_IPropertyPathElement] }] });
 	ss.setMetadata($System_Windows_PropertyPathTypeConverter, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }] });
-	ss.setMetadata($System_Windows_ReadOnlyDependencyPropertyValueEntry, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_IDependencyPropertyValueEntry] }, { name: 'ClearAnimationValue', type: 8, sname: 'ClearAnimationValue', returnType: Object, params: [] }, { name: 'ClearBaseValue', type: 8, sname: 'ClearBaseValue', returnType: Object, params: [ss.Int32] }, { name: 'ClearCurrentValue', type: 8, sname: 'ClearCurrentValue', returnType: Object, params: [] }, { name: 'GetAnimationValue', type: 8, sname: 'GetAnimationValue', returnType: Object, params: [Boolean] }, { name: 'GetBaseValue', type: 8, sname: 'GetBaseValue', returnType: Object, params: [Boolean] }, { name: 'GetBaseValue', type: 8, sname: 'GetBaseValue$1', returnType: Object, params: [ss.Int32, Boolean] }, { name: 'GetBaseValuePriority', type: 8, sname: 'GetBaseValuePriority', returnType: ss.Int32, params: [] }, { name: 'GetCurrentValue', type: 8, sname: 'GetCurrentValue', returnType: Object, params: [Boolean] }, { name: 'SetAnimationValue', type: 8, sname: 'SetAnimationValue', returnType: Object, params: [Object] }, { name: 'SetBaseValue', type: 8, sname: 'SetBaseValue', returnType: Object, params: [ss.Int32, Object] }, { name: 'SetCurrentValue', type: 8, sname: 'SetCurrentValue', returnType: Object, params: [Object] }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] } }, { name: 'ValueChanged', type: 2, adder: { name: 'add_ValueChanged', type: 8, sname: 'add_ValueChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ValueChanged', type: 8, sname: 'remove_ValueChanged', returnType: Object, params: [Function] } }] });
-	ss.setMetadata($System_Windows_Rect, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_Size] }, { name: '.ctor', type: 1, params: [Number, Number], sname: '$ctor1' }, { name: '.ctor', type: 1, params: [$System_Windows_Point, $System_Windows_Size], sname: '$ctor2' }, { name: '.ctor', type: 1, params: [Number, Number, Number, Number], sname: '$ctor3' }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'IsNullOrEmpty', isStatic: true, type: 8, sname: 'IsNullOrEmpty', returnType: Boolean, params: [$System_Windows_Rect] }, { name: 'Parse', isStatic: true, type: 8, sname: 'Parse', returnType: $System_Windows_Rect, params: [String] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'op_Equality', isStatic: true, type: 8, sname: 'op_Equality', returnType: Boolean, params: [$System_Windows_Rect, $System_Windows_Rect] }, { name: 'op_Inequality', isStatic: true, type: 8, sname: 'op_Inequality', returnType: Boolean, params: [$System_Windows_Rect, $System_Windows_Rect] }, { name: 'Bottom', type: 16, returnType: Number, getter: { name: 'get_Bottom', type: 8, sname: 'get_Bottom', returnType: Number, params: [] }, setter: { name: 'set_Bottom', type: 8, sname: 'set_Bottom', returnType: Object, params: [Number] } }, { name: 'Height', type: 16, returnType: Number, getter: { name: 'get_Height', type: 8, sname: 'get_Height', returnType: Number, params: [] }, setter: { name: 'set_Height', type: 8, sname: 'set_Height', returnType: Object, params: [Number] } }, { name: 'IsEmpty', type: 16, returnType: Boolean, getter: { name: 'get_IsEmpty', type: 8, sname: 'get_IsEmpty', returnType: Boolean, params: [] }, setter: { name: 'set_IsEmpty', type: 8, sname: 'set_IsEmpty', returnType: Object, params: [Boolean] } }, { name: 'Left', type: 16, returnType: Number, getter: { name: 'get_Left', type: 8, sname: 'get_Left', returnType: Number, params: [] }, setter: { name: 'set_Left', type: 8, sname: 'set_Left', returnType: Object, params: [Number] } }, { name: 'Location', type: 16, returnType: $System_Windows_Point, getter: { name: 'get_Location', type: 8, sname: 'get_Location', returnType: $System_Windows_Point, params: [] }, setter: { name: 'set_Location', type: 8, sname: 'set_Location', returnType: Object, params: [$System_Windows_Point] } }, { name: 'Right', type: 16, returnType: Number, getter: { name: 'get_Right', type: 8, sname: 'get_Right', returnType: Number, params: [] }, setter: { name: 'set_Right', type: 8, sname: 'set_Right', returnType: Object, params: [Number] } }, { name: 'Size', type: 16, returnType: $System_Windows_Size, getter: { name: 'get_Size', type: 8, sname: 'get_Size', returnType: $System_Windows_Size, params: [] }, setter: { name: 'set_Size', type: 8, sname: 'set_Size', returnType: Object, params: [$System_Windows_Size] } }, { name: 'Top', type: 16, returnType: Number, getter: { name: 'get_Top', type: 8, sname: 'get_Top', returnType: Number, params: [] }, setter: { name: 'set_Top', type: 8, sname: 'set_Top', returnType: Object, params: [Number] } }, { name: 'Width', type: 16, returnType: Number, getter: { name: 'get_Width', type: 8, sname: 'get_Width', returnType: Number, params: [] }, setter: { name: 'set_Width', type: 8, sname: 'set_Width', returnType: Object, params: [Number] } }, { name: 'Empty', isStatic: true, type: 4, returnType: $System_Windows_Rect, sname: 'Empty' }, { name: 'Zero', isStatic: true, type: 4, returnType: $System_Windows_Rect, sname: 'Zero' }] });
-	ss.setMetadata($System_Windows_RectExtensions, { members: [{ name: 'AddMargin', isStatic: true, type: 8, sname: 'AddMargin', returnType: $System_Windows_Rect, params: [$System_Windows_Rect, $System_Windows_Thickness] }, { name: 'AddOffset', isStatic: true, type: 8, sname: 'AddOffset', returnType: $System_Windows_Rect, params: [$System_Windows_Rect, $System_Windows_Point] }, { name: 'Contains', isStatic: true, type: 8, sname: 'Contains', returnType: Boolean, params: [$System_Windows_Rect, $System_Windows_Point] }, { name: 'DefaultIfNullOrEmpty', isStatic: true, type: 8, sname: 'DefaultIfNullOrEmpty', returnType: $System_Windows_Rect, params: [$System_Windows_Rect, $System_Windows_Rect] }, { name: 'GetBottomLeft', isStatic: true, type: 8, sname: 'GetBottomLeft', returnType: $System_Windows_Point, params: [$System_Windows_Rect] }, { name: 'GetBottomRight', isStatic: true, type: 8, sname: 'GetBottomRight', returnType: $System_Windows_Point, params: [$System_Windows_Rect] }, { name: 'GetTopLeft', isStatic: true, type: 8, sname: 'GetTopLeft', returnType: $System_Windows_Point, params: [$System_Windows_Rect] }, { name: 'GetTopRight', isStatic: true, type: 8, sname: 'GetTopRight', returnType: $System_Windows_Point, params: [$System_Windows_Rect] }, { name: 'IsClose', isStatic: true, type: 8, sname: 'IsClose', returnType: Boolean, params: [$System_Windows_Rect, $System_Windows_Rect] }, { name: 'IsNullOrEmpty', isStatic: true, type: 8, sname: 'IsNullOrEmpty', returnType: Boolean, params: [$System_Windows_Rect] }, { name: 'Transform', isStatic: true, type: 8, sname: 'Transform', returnType: $System_Windows_Rect, params: [$System_Windows_Rect, $System_Windows_Media_Matrix] }] });
-	ss.setMetadata($System_Windows_ReentrancyLock, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Enter', type: 8, sname: 'Enter', returnType: ss.IDisposable, params: [] }, { name: 'op_Implicit', isStatic: true, type: 8, sname: 'op_Implicit', returnType: Boolean, params: [$System_Windows_ReentrancyLock] }, { name: 'IsEntered', type: 16, returnType: Boolean, getter: { name: 'get_IsEntered', type: 8, sname: 'get_IsEntered', returnType: Boolean, params: [] }, setter: { name: 'set_IsEntered', type: 8, sname: 'set_IsEntered', returnType: Object, params: [Boolean] } }] });
+	ss.setMetadata($System_Windows_ReadOnlyDependencyPropertyValueEntry, { attr: [new System.Diagnostics.DebuggerNonUserCodeAttribute()], members: [{ name: '.ctor', type: 1, params: [$System_Windows_IDependencyPropertyValueEntry] }, { name: 'CoerceValue', type: 8, sname: 'CoerceValue', returnType: Object, params: [] }, { name: 'GetBaseValuePriority', type: 8, sname: 'GetBaseValuePriority', returnType: ss.Int32, params: [] }, { name: 'GetValue', type: 8, sname: 'GetValue$1', returnType: Object, params: [Boolean] }, { name: 'GetValue', type: 8, sname: 'GetValue', returnType: Object, params: [ss.Int32, Boolean] }, { name: 'SetValue', type: 8, sname: 'SetValue', returnType: Object, params: [ss.Int32, Object] }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] } }, { name: 'ValuePriority', type: 16, returnType: ss.Int32, getter: { name: 'get_ValuePriority', type: 8, sname: 'get_ValuePriority', returnType: ss.Int32, params: [] } }, { name: 'ValueChanged', type: 2, adder: { name: 'add_ValueChanged', type: 8, sname: 'add_ValueChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ValueChanged', type: 8, sname: 'remove_ValueChanged', returnType: Object, params: [Function] } }] });
+	ss.setMetadata($System_Windows_Rect, { attr: [new $System_Windows_Markup_TypeConverterAttribute($System_Windows_RectTypeConverter)], members: [{ name: '.ctor', type: 1, params: [$System_Windows_Size] }, { name: '.ctor', type: 1, params: [Number, Number], sname: '$ctor1' }, { name: '.ctor', type: 1, params: [$System_Windows_Point, $System_Windows_Size], sname: '$ctor2' }, { name: '.ctor', type: 1, params: [Number, Number, Number, Number], sname: '$ctor3' }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'IsNullOrEmpty', isStatic: true, type: 8, sname: 'IsNullOrEmpty', returnType: Boolean, params: [$System_Windows_Rect] }, { name: 'Parse', isStatic: true, type: 8, sname: 'Parse', returnType: $System_Windows_Rect, params: [String] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'op_Equality', isStatic: true, type: 8, sname: 'op_Equality', returnType: Boolean, params: [$System_Windows_Rect, $System_Windows_Rect] }, { name: 'op_Inequality', isStatic: true, type: 8, sname: 'op_Inequality', returnType: Boolean, params: [$System_Windows_Rect, $System_Windows_Rect] }, { name: 'Bottom', type: 16, returnType: Number, getter: { name: 'get_Bottom', type: 8, sname: 'get_Bottom', returnType: Number, params: [] }, setter: { name: 'set_Bottom', type: 8, sname: 'set_Bottom', returnType: Object, params: [Number] } }, { name: 'Height', type: 16, returnType: Number, getter: { name: 'get_Height', type: 8, sname: 'get_Height', returnType: Number, params: [] }, setter: { name: 'set_Height', type: 8, sname: 'set_Height', returnType: Object, params: [Number] } }, { name: 'IsEmpty', type: 16, returnType: Boolean, getter: { name: 'get_IsEmpty', type: 8, sname: 'get_IsEmpty', returnType: Boolean, params: [] }, setter: { name: 'set_IsEmpty', type: 8, sname: 'set_IsEmpty', returnType: Object, params: [Boolean] } }, { name: 'Left', type: 16, returnType: Number, getter: { name: 'get_Left', type: 8, sname: 'get_Left', returnType: Number, params: [] }, setter: { name: 'set_Left', type: 8, sname: 'set_Left', returnType: Object, params: [Number] } }, { name: 'Location', type: 16, returnType: $System_Windows_Point, getter: { name: 'get_Location', type: 8, sname: 'get_Location', returnType: $System_Windows_Point, params: [] }, setter: { name: 'set_Location', type: 8, sname: 'set_Location', returnType: Object, params: [$System_Windows_Point] } }, { name: 'Right', type: 16, returnType: Number, getter: { name: 'get_Right', type: 8, sname: 'get_Right', returnType: Number, params: [] }, setter: { name: 'set_Right', type: 8, sname: 'set_Right', returnType: Object, params: [Number] } }, { name: 'Size', type: 16, returnType: $System_Windows_Size, getter: { name: 'get_Size', type: 8, sname: 'get_Size', returnType: $System_Windows_Size, params: [] }, setter: { name: 'set_Size', type: 8, sname: 'set_Size', returnType: Object, params: [$System_Windows_Size] } }, { name: 'Top', type: 16, returnType: Number, getter: { name: 'get_Top', type: 8, sname: 'get_Top', returnType: Number, params: [] }, setter: { name: 'set_Top', type: 8, sname: 'set_Top', returnType: Object, params: [Number] } }, { name: 'Width', type: 16, returnType: Number, getter: { name: 'get_Width', type: 8, sname: 'get_Width', returnType: Number, params: [] }, setter: { name: 'set_Width', type: 8, sname: 'set_Width', returnType: Object, params: [Number] } }, { name: 'Empty', isStatic: true, type: 4, returnType: $System_Windows_Rect, sname: 'Empty' }, { name: 'Zero', isStatic: true, type: 4, returnType: $System_Windows_Rect, sname: 'Zero' }] });
+	ss.setMetadata($System_Windows_RectExtensions, { members: [{ name: 'AddMargin', isStatic: true, type: 8, sname: 'AddMargin', returnType: $System_Windows_Rect, params: [$System_Windows_Rect, $System_Windows_Thickness] }, { name: 'AddOffset', isStatic: true, type: 8, sname: 'AddOffset', returnType: $System_Windows_Rect, params: [$System_Windows_Rect, $System_Windows_Point] }, { name: 'Contains', isStatic: true, type: 8, sname: 'Contains', returnType: Boolean, params: [$System_Windows_Rect, $System_Windows_Point] }, { name: 'Contains', isStatic: true, type: 8, sname: 'Contains$1', returnType: Boolean, params: [$System_Windows_Rect, $System_Windows_Rect] }, { name: 'DefaultIfNullOrEmpty', isStatic: true, type: 8, sname: 'DefaultIfNullOrEmpty', returnType: $System_Windows_Rect, params: [$System_Windows_Rect, $System_Windows_Rect] }, { name: 'GetBottomLeft', isStatic: true, type: 8, sname: 'GetBottomLeft', returnType: $System_Windows_Point, params: [$System_Windows_Rect] }, { name: 'GetBottomRight', isStatic: true, type: 8, sname: 'GetBottomRight', returnType: $System_Windows_Point, params: [$System_Windows_Rect] }, { name: 'GetCorners', isStatic: true, type: 8, sname: 'GetCorners', returnType: ss.IEnumerable, params: [$System_Windows_Rect] }, { name: 'GetTopLeft', isStatic: true, type: 8, sname: 'GetTopLeft', returnType: $System_Windows_Point, params: [$System_Windows_Rect] }, { name: 'GetTopRight', isStatic: true, type: 8, sname: 'GetTopRight', returnType: $System_Windows_Point, params: [$System_Windows_Rect] }, { name: 'IsClose', isStatic: true, type: 8, sname: 'IsClose', returnType: Boolean, params: [$System_Windows_Rect, $System_Windows_Rect] }, { name: 'IsNullOrEmpty', isStatic: true, type: 8, sname: 'IsNullOrEmpty', returnType: Boolean, params: [$System_Windows_Rect] }, { name: 'Transform', isStatic: true, type: 8, sname: 'Transform', returnType: $System_Windows_Rect, params: [$System_Windows_Rect, $System_Windows_Media_Matrix] }, { name: 'Union', isStatic: true, type: 8, sname: 'Union', returnType: $System_Windows_Rect, params: [$System_Windows_Rect, $System_Windows_Rect] }] });
+	ss.setMetadata($System_Windows_RectTypeConverter, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }] });
 	ss.setMetadata($System_Windows_ResourceContainerExtensions, { members: [{ name: 'FindResource', isStatic: true, type: 8, sname: 'FindResource', returnType: Object, params: [$System_Windows_IResourceContainer, Object] }] });
 	ss.setMetadata($System_Windows_ResourceDictionary, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Add', type: 8, sname: 'Add', returnType: Object, params: [Object] }, { name: 'Add', type: 8, sname: 'add', returnType: Object, params: [Object, Object] }, { name: 'Clear', type: 8, sname: 'Clear', returnType: Object, params: [] }, { name: 'Contains', type: 8, sname: 'Contains', returnType: Boolean, params: [Object] }, { name: 'Contains', type: 8, sname: 'Contains$1', returnType: Boolean, params: [Object] }, { name: 'ContainsKey', type: 8, sname: 'containsKey', returnType: Boolean, params: [Object] }, { name: 'CopyTo', type: 8, sname: 'CopyTo', returnType: Object, params: [Array, ss.Int32] }, { name: 'GetEnumerator', type: 8, sname: 'getEnumerator', returnType: ss.IEnumerator, params: [] }, { name: 'GetValue', type: 8, sname: 'GetValue', returnType: Object, params: [Object] }, { name: 'Remove', type: 8, sname: 'Remove', returnType: Boolean, params: [Object] }, { name: 'Remove', type: 8, sname: 'Remove$1', returnType: Boolean, params: [Object] }, { name: 'Remove', type: 8, sname: 'remove', returnType: Boolean, params: [Object] }, { name: 'Count', type: 16, returnType: ss.Int32, getter: { name: 'get_Count', type: 8, sname: 'get_count', returnType: ss.Int32, params: [] } }, { name: 'IsReadOnly', type: 16, returnType: Boolean, getter: { name: 'get_IsReadOnly', type: 8, sname: 'get_IsReadOnly', returnType: Boolean, params: [] } }, { name: 'Item', type: 16, returnType: Object, params: [Object], getter: { name: 'get_Item', type: 8, sname: 'get_item', returnType: Object, params: [Object] }, setter: { name: 'set_Item', type: 8, sname: 'set_item', returnType: Object, params: [Object, Object] } }, { name: 'Keys', type: 16, returnType: ss.ICollection, getter: { name: 'get_Keys', type: 8, sname: 'get_keys', returnType: ss.ICollection, params: [] } }, { name: 'MergedDictionaries', type: 16, returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ResourceDictionary]), getter: { name: 'get_MergedDictionaries', type: 8, sname: 'get_MergedDictionaries', returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ResourceDictionary]), params: [] }, setter: { name: 'set_MergedDictionaries', type: 8, sname: 'set_MergedDictionaries', returnType: Object, params: [ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ResourceDictionary])] } }, { name: 'Source', type: 16, returnType: String, getter: { name: 'get_Source', type: 8, sname: 'get_Source', returnType: String, params: [] }, setter: { name: 'set_Source', type: 8, sname: 'set_Source', returnType: Object, params: [String] } }, { name: 'Values', type: 16, returnType: ss.ICollection, getter: { name: 'get_Values', type: 8, sname: 'get_values', returnType: ss.ICollection, params: [] } }, { name: 'ResourcesChanged', type: 2, adder: { name: 'add_ResourcesChanged', type: 8, sname: 'add_ResourcesChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ResourcesChanged', type: 8, sname: 'remove_ResourcesChanged', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_ResourceReferenceExpression, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_IResourceContainer, Object] }, { name: 'Dispose', type: 8, sname: 'dispose', returnType: Object, params: [] }, { name: 'SetValue', type: 8, sname: 'SetValue', returnType: Boolean, params: [Object] }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] } }, { name: 'ValueChanged', type: 2, adder: { name: 'add_ValueChanged', type: 8, sname: 'add_ValueChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ValueChanged', type: 8, sname: 'remove_ValueChanged', returnType: Object, params: [Function] } }] });
@@ -23197,8 +24504,9 @@
 	ss.setMetadata($System_Windows_RoutedEventTypeConverter, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }] });
 	ss.setMetadata($System_Windows_RoutedPropertyChangedEventArgs$1, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_RoutedEvent, Object, Object, Object] }, { name: 'InvokeEventHandler', type: 8, sname: 'InvokeEventHandler', returnType: Object, params: [Function, Object] }, { name: 'NewValue', type: 16, returnType: Object, getter: { name: 'get_NewValue', type: 8, sname: 'get_NewValue', returnType: Object, params: [] }, setter: { name: 'set_NewValue', type: 8, sname: 'set_NewValue', returnType: Object, params: [Object] } }, { name: 'OldValue', type: 16, returnType: Object, getter: { name: 'get_OldValue', type: 8, sname: 'get_OldValue', returnType: Object, params: [] }, setter: { name: 'set_OldValue', type: 8, sname: 'set_OldValue', returnType: Object, params: [Object] } }] });
 	ss.setMetadata($System_Windows_Setter, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Apply', type: 8, sname: 'Apply', returnType: Object, params: [$System_Windows_FrameworkElement, $System_Windows_BaseValueSource] }, { name: 'Clean', type: 8, sname: 'Clean', returnType: Object, params: [$System_Windows_FrameworkElement, $System_Windows_BaseValueSource] }, { name: 'IsActionOverlaps', type: 8, sname: 'IsActionOverlaps', returnType: Boolean, params: [$System_Windows_ITriggerAction] }, { name: 'Property', type: 16, returnType: $System_Windows_IPropertyPathElement, getter: { name: 'get_Property', type: 8, sname: 'get_Property', returnType: $System_Windows_IPropertyPathElement, params: [] }, setter: { name: 'set_Property', type: 8, sname: 'set_Property', returnType: Object, params: [$System_Windows_IPropertyPathElement] } }, { name: 'TargetName', type: 16, returnType: String, getter: { name: 'get_TargetName', type: 8, sname: 'get_TargetName', returnType: String, params: [] }, setter: { name: 'set_TargetName', type: 8, sname: 'set_TargetName', returnType: Object, params: [String] } }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] }, setter: { name: 'set_Value', type: 8, sname: 'set_Value', returnType: Object, params: [Object] } }] });
-	ss.setMetadata($System_Windows_Size, { members: [{ name: '.ctor', type: 1, params: [Number, Number] }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'FromHeight', isStatic: true, type: 8, sname: 'FromHeight', returnType: $System_Windows_Size, params: [Number] }, { name: 'FromWidth', isStatic: true, type: 8, sname: 'FromWidth', returnType: $System_Windows_Size, params: [Number] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'IsNullOrEmpty', isStatic: true, type: 8, sname: 'IsNullOrEmpty', returnType: Boolean, params: [$System_Windows_Size] }, { name: 'Parse', isStatic: true, type: 8, sname: 'Parse', returnType: $System_Windows_Size, params: [String] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'op_Addition', isStatic: true, type: 8, sname: 'op_Addition', returnType: $System_Windows_Size, params: [$System_Windows_Size, $System_Windows_Size] }, { name: 'op_Division', isStatic: true, type: 8, sname: 'op_Division', returnType: $System_Windows_Size, params: [$System_Windows_Size, Number] }, { name: 'op_Equality', isStatic: true, type: 8, sname: 'op_Equality', returnType: Boolean, params: [$System_Windows_Size, $System_Windows_Size] }, { name: 'op_Inequality', isStatic: true, type: 8, sname: 'op_Inequality', returnType: Boolean, params: [$System_Windows_Size, $System_Windows_Size] }, { name: 'op_Multiply', isStatic: true, type: 8, sname: 'op_Multiply', returnType: $System_Windows_Size, params: [Number, $System_Windows_Size] }, { name: 'op_Multiply', isStatic: true, type: 8, sname: 'op_Multiply$1', returnType: $System_Windows_Size, params: [$System_Windows_Size, Number] }, { name: 'op_Subtraction', isStatic: true, type: 8, sname: 'op_Subtraction', returnType: $System_Windows_Size, params: [$System_Windows_Size, $System_Windows_Size] }, { name: 'op_UnaryNegation', isStatic: true, type: 8, sname: 'op_UnaryNegation', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'Height', type: 16, returnType: Number, getter: { name: 'get_Height', type: 8, sname: 'get_Height', returnType: Number, params: [] }, setter: { name: 'set_Height', type: 8, sname: 'set_Height', returnType: Object, params: [Number] } }, { name: 'IsEmpty', type: 16, returnType: Boolean, getter: { name: 'get_IsEmpty', type: 8, sname: 'get_IsEmpty', returnType: Boolean, params: [] }, setter: { name: 'set_IsEmpty', type: 8, sname: 'set_IsEmpty', returnType: Object, params: [Boolean] } }, { name: 'IsHeightEmpty', type: 16, returnType: Boolean, getter: { name: 'get_IsHeightEmpty', type: 8, sname: 'get_IsHeightEmpty', returnType: Boolean, params: [] }, setter: { name: 'set_IsHeightEmpty', type: 8, sname: 'set_IsHeightEmpty', returnType: Object, params: [Boolean] } }, { name: 'IsPartiallyEmpty', type: 16, returnType: Boolean, getter: { name: 'get_IsPartiallyEmpty', type: 8, sname: 'get_IsPartiallyEmpty', returnType: Boolean, params: [] }, setter: { name: 'set_IsPartiallyEmpty', type: 8, sname: 'set_IsPartiallyEmpty', returnType: Object, params: [Boolean] } }, { name: 'IsWidthEmpty', type: 16, returnType: Boolean, getter: { name: 'get_IsWidthEmpty', type: 8, sname: 'get_IsWidthEmpty', returnType: Boolean, params: [] }, setter: { name: 'set_IsWidthEmpty', type: 8, sname: 'set_IsWidthEmpty', returnType: Object, params: [Boolean] } }, { name: 'Width', type: 16, returnType: Number, getter: { name: 'get_Width', type: 8, sname: 'get_Width', returnType: Number, params: [] }, setter: { name: 'set_Width', type: 8, sname: 'set_Width', returnType: Object, params: [Number] } }, { name: 'Empty', isStatic: true, type: 4, returnType: $System_Windows_Size, sname: 'Empty' }, { name: 'Infinity', isStatic: true, type: 4, returnType: $System_Windows_Size, sname: 'Infinity' }, { name: 'Zero', isStatic: true, type: 4, returnType: $System_Windows_Size, sname: 'Zero' }] });
-	ss.setMetadata($System_Windows_SizeExtensions, { members: [{ name: 'Bounds', isStatic: true, type: 8, sname: 'Bounds', returnType: $System_Windows_Size, params: [$System_Windows_Size, $System_Windows_Size, $System_Windows_Size] }, { name: 'Combine', isStatic: true, type: 8, sname: 'Combine', returnType: $System_Windows_Size, params: [$System_Windows_Size, $System_Windows_Size] }, { name: 'Contains', isStatic: true, type: 8, sname: 'Contains', returnType: Boolean, params: [$System_Windows_Size, $System_Windows_Point] }, { name: 'DefaultIfNullOrEmpty', isStatic: true, type: 8, sname: 'DefaultIfNullOrEmpty', returnType: $System_Windows_Size, params: [$System_Windows_Size, $System_Windows_Size] }, { name: 'IsClose', isStatic: true, type: 8, sname: 'IsClose', returnType: Boolean, params: [$System_Windows_Size, $System_Windows_Size] }, { name: 'IsNullOrEmpty', isStatic: true, type: 8, sname: 'IsNullOrEmpty', returnType: Boolean, params: [$System_Windows_Size] }, { name: 'Max', isStatic: true, type: 8, sname: 'Max', returnType: $System_Windows_Size, params: [$System_Windows_Size, $System_Windows_Size] }, { name: 'Min', isStatic: true, type: 8, sname: 'Min', returnType: $System_Windows_Size, params: [$System_Windows_Size, $System_Windows_Size] }, { name: 'ToPoint', isStatic: true, type: 8, sname: 'ToPoint', returnType: $System_Windows_Point, params: [$System_Windows_Size] }] });
+	ss.setMetadata($System_Windows_Size, { attr: [new $System_Windows_Markup_TypeConverterAttribute($System_Windows_SizeTypeConverter)], members: [{ name: '.ctor', type: 1, params: [Number, Number] }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'FromHeight', isStatic: true, type: 8, sname: 'FromHeight', returnType: $System_Windows_Size, params: [Number] }, { name: 'FromWidth', isStatic: true, type: 8, sname: 'FromWidth', returnType: $System_Windows_Size, params: [Number] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'IsNullOrEmpty', isStatic: true, type: 8, sname: 'IsNullOrEmpty', returnType: Boolean, params: [$System_Windows_Size] }, { name: 'Parse', isStatic: true, type: 8, sname: 'Parse', returnType: $System_Windows_Size, params: [String] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'op_Addition', isStatic: true, type: 8, sname: 'op_Addition', returnType: $System_Windows_Size, params: [$System_Windows_Size, $System_Windows_Size] }, { name: 'op_Division', isStatic: true, type: 8, sname: 'op_Division', returnType: $System_Windows_Size, params: [$System_Windows_Size, Number] }, { name: 'op_Equality', isStatic: true, type: 8, sname: 'op_Equality', returnType: Boolean, params: [$System_Windows_Size, $System_Windows_Size] }, { name: 'op_Inequality', isStatic: true, type: 8, sname: 'op_Inequality', returnType: Boolean, params: [$System_Windows_Size, $System_Windows_Size] }, { name: 'op_Multiply', isStatic: true, type: 8, sname: 'op_Multiply', returnType: $System_Windows_Size, params: [Number, $System_Windows_Size] }, { name: 'op_Multiply', isStatic: true, type: 8, sname: 'op_Multiply$1', returnType: $System_Windows_Size, params: [$System_Windows_Size, Number] }, { name: 'op_Subtraction', isStatic: true, type: 8, sname: 'op_Subtraction', returnType: $System_Windows_Size, params: [$System_Windows_Size, $System_Windows_Size] }, { name: 'op_UnaryNegation', isStatic: true, type: 8, sname: 'op_UnaryNegation', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'Height', type: 16, returnType: Number, getter: { name: 'get_Height', type: 8, sname: 'get_Height', returnType: Number, params: [] }, setter: { name: 'set_Height', type: 8, sname: 'set_Height', returnType: Object, params: [Number] } }, { name: 'IsEmpty', type: 16, returnType: Boolean, getter: { name: 'get_IsEmpty', type: 8, sname: 'get_IsEmpty', returnType: Boolean, params: [] }, setter: { name: 'set_IsEmpty', type: 8, sname: 'set_IsEmpty', returnType: Object, params: [Boolean] } }, { name: 'IsHeightEmpty', type: 16, returnType: Boolean, getter: { name: 'get_IsHeightEmpty', type: 8, sname: 'get_IsHeightEmpty', returnType: Boolean, params: [] }, setter: { name: 'set_IsHeightEmpty', type: 8, sname: 'set_IsHeightEmpty', returnType: Object, params: [Boolean] } }, { name: 'IsPartiallyEmpty', type: 16, returnType: Boolean, getter: { name: 'get_IsPartiallyEmpty', type: 8, sname: 'get_IsPartiallyEmpty', returnType: Boolean, params: [] }, setter: { name: 'set_IsPartiallyEmpty', type: 8, sname: 'set_IsPartiallyEmpty', returnType: Object, params: [Boolean] } }, { name: 'IsWidthEmpty', type: 16, returnType: Boolean, getter: { name: 'get_IsWidthEmpty', type: 8, sname: 'get_IsWidthEmpty', returnType: Boolean, params: [] }, setter: { name: 'set_IsWidthEmpty', type: 8, sname: 'set_IsWidthEmpty', returnType: Object, params: [Boolean] } }, { name: 'Width', type: 16, returnType: Number, getter: { name: 'get_Width', type: 8, sname: 'get_Width', returnType: Number, params: [] }, setter: { name: 'set_Width', type: 8, sname: 'set_Width', returnType: Object, params: [Number] } }, { name: 'Empty', isStatic: true, type: 4, returnType: $System_Windows_Size, sname: 'Empty' }, { name: 'Infinity', isStatic: true, type: 4, returnType: $System_Windows_Size, sname: 'Infinity' }, { name: 'Zero', isStatic: true, type: 4, returnType: $System_Windows_Size, sname: 'Zero' }] });
+	ss.setMetadata($System_Windows_SizeExtensions, { members: [{ name: 'Bounds', isStatic: true, type: 8, sname: 'Bounds', returnType: $System_Windows_Size, params: [$System_Windows_Size, $System_Windows_Size, $System_Windows_Size] }, { name: 'Combine', isStatic: true, type: 8, sname: 'Combine', returnType: $System_Windows_Size, params: [$System_Windows_Size, $System_Windows_Size] }, { name: 'Contains', isStatic: true, type: 8, sname: 'Contains', returnType: Boolean, params: [$System_Windows_Size, $System_Windows_Point] }, { name: 'DefaultIfNullOrEmpty', isStatic: true, type: 8, sname: 'DefaultIfNullOrEmpty', returnType: $System_Windows_Size, params: [$System_Windows_Size, $System_Windows_Size] }, { name: 'IsClose', isStatic: true, type: 8, sname: 'IsClose', returnType: Boolean, params: [$System_Windows_Size, $System_Windows_Size] }, { name: 'IsNullOrEmpty', isStatic: true, type: 8, sname: 'IsNullOrEmpty', returnType: Boolean, params: [$System_Windows_Size] }, { name: 'Max', isStatic: true, type: 8, sname: 'Max', returnType: $System_Windows_Size, params: [$System_Windows_Size, $System_Windows_Size] }, { name: 'MaxArea', isStatic: true, type: 8, sname: 'MaxArea', returnType: $System_Windows_Size, params: [$System_Windows_Size, $System_Windows_Size] }, { name: 'Min', isStatic: true, type: 8, sname: 'Min', returnType: $System_Windows_Size, params: [$System_Windows_Size, $System_Windows_Size] }, { name: 'ToPoint', isStatic: true, type: 8, sname: 'ToPoint', returnType: $System_Windows_Point, params: [$System_Windows_Size] }] });
+	ss.setMetadata($System_Windows_SizeTypeConverter, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }] });
 	ss.setMetadata($System_Windows_StartupEventArgs, { members: [{ name: 'Empty', isStatic: true, type: 4, returnType: $System_Windows_StartupEventArgs, sname: 'Empty' }] });
 	ss.setMetadata($System_Windows_StaticResourceExtension, { attr: [new $System_Windows_Markup_MarkupExtensionParameterAttribute('ResourceKey', 0)], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ProvideValue', type: 8, sname: 'ProvideValue', returnType: Object, params: [$System_Windows_Markup_InitializeContext] }, { name: 'ResourceKey', type: 16, returnType: Object, getter: { name: 'get_ResourceKey', type: 8, sname: 'get_ResourceKey', returnType: Object, params: [] }, setter: { name: 'set_ResourceKey', type: 8, sname: 'set_ResourceKey', returnType: Object, params: [Object] } }] });
 	ss.setMetadata($System_Windows_Style, { attr: [new $System_Windows_Markup_ContentPropertyAttribute('Setters'), new $System_Windows_Markup_DictionaryKeyPropertyAttribute('Key')], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Attach', type: 8, sname: 'Attach', returnType: Object, params: [$System_Windows_FrameworkElement] }, { name: 'Attach', type: 8, sname: 'Attach$1', returnType: Object, params: [$System_Windows_FrameworkElement, Function] }, { name: 'Detach', type: 8, sname: 'Detach', returnType: Object, params: [$System_Windows_FrameworkElement] }, { name: 'Detach', type: 8, sname: 'Detach$1', returnType: Object, params: [$System_Windows_FrameworkElement, Function] }, { name: 'BasedOn', type: 16, returnType: $System_Windows_Style, getter: { name: 'get_BasedOn', type: 8, sname: 'get_BasedOn', returnType: $System_Windows_Style, params: [] }, setter: { name: 'set_BasedOn', type: 8, sname: 'set_BasedOn', returnType: Object, params: [$System_Windows_Style] } }, { name: 'Key', type: 16, returnType: Object, getter: { name: 'get_Key', type: 8, sname: 'get_Key', returnType: Object, params: [] }, setter: { name: 'set_Key', type: 8, sname: 'set_Key', returnType: Object, params: [Object] } }, { name: 'Setters', type: 16, returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITriggerAction]), getter: { name: 'get_Setters', type: 8, sname: 'get_Setters', returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITriggerAction]), params: [] }, setter: { name: 'set_Setters', type: 8, sname: 'set_Setters', returnType: Object, params: [ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITriggerAction])] } }, { name: 'TargetType', type: 16, returnType: Function, getter: { name: 'get_TargetType', type: 8, sname: 'get_TargetType', returnType: Function, params: [] }, setter: { name: 'set_TargetType', type: 8, sname: 'set_TargetType', returnType: Object, params: [Function] } }, { name: 'Triggers', type: 16, returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITrigger]), getter: { name: 'get_Triggers', type: 8, sname: 'get_Triggers', returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITrigger]), params: [] }, setter: { name: 'set_Triggers', type: 8, sname: 'set_Triggers', returnType: Object, params: [ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITrigger])] } }] });
@@ -23208,11 +24516,12 @@
 	ss.setMetadata($System_Windows_TemplatePartAttribute, { members: [{ name: '.ctor', type: 1, params: [String, Function] }, { name: 'Name', type: 16, returnType: String, getter: { name: 'get_Name', type: 8, sname: 'get_Name', returnType: String, params: [] }, setter: { name: 'set_Name', type: 8, sname: 'set_Name', returnType: Object, params: [String] } }, { name: 'Type', type: 16, returnType: Function, getter: { name: 'get_Type', type: 8, sname: 'get_Type', returnType: Function, params: [] }, setter: { name: 'set_Type', type: 8, sname: 'set_Type', returnType: Object, params: [Function] } }], attrAllowMultiple: true });
 	ss.setMetadata($System_Windows_TemplateVisualStateAttribute, { members: [{ name: '.ctor', type: 1, params: [String, String] }, { name: 'GroupName', type: 16, returnType: String, getter: { name: 'get_GroupName', type: 8, sname: 'get_GroupName', returnType: String, params: [] }, setter: { name: 'set_GroupName', type: 8, sname: 'set_GroupName', returnType: Object, params: [String] } }, { name: 'Name', type: 16, returnType: String, getter: { name: 'get_Name', type: 8, sname: 'get_Name', returnType: String, params: [] }, setter: { name: 'set_Name', type: 8, sname: 'set_Name', returnType: Object, params: [String] } }], attrAllowMultiple: true });
 	ss.setMetadata($System_Windows_ThemeInfoAttribute, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_ResourceDictionaryLocation] }, { name: '.ctor', type: 1, params: [$System_Windows_ResourceDictionaryLocation, $System_Windows_ResourceDictionaryLocation], sname: '$ctor1' }, { name: 'GenericDictionaryLocation', type: 16, returnType: $System_Windows_ResourceDictionaryLocation, getter: { name: 'get_GenericDictionaryLocation', type: 8, sname: 'get_GenericDictionaryLocation', returnType: $System_Windows_ResourceDictionaryLocation, params: [] }, setter: { name: 'set_GenericDictionaryLocation', type: 8, sname: 'set_GenericDictionaryLocation', returnType: Object, params: [$System_Windows_ResourceDictionaryLocation] } }] });
-	ss.setMetadata($System_Windows_Thickness, { members: [{ name: '.ctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [Number], sname: '$ctor1' }, { name: '.ctor', type: 1, params: [Number, Number], sname: '$ctor2' }, { name: '.ctor', type: 1, params: [Number, Number, Number, Number], sname: '$ctor3' }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'Parse', isStatic: true, type: 8, sname: 'Parse', returnType: $System_Windows_Thickness, params: [String] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'op_Addition', isStatic: true, type: 8, sname: 'op_Addition', returnType: $System_Windows_Thickness, params: [$System_Windows_Thickness, $System_Windows_Thickness] }, { name: 'op_Implicit', isStatic: true, type: 8, sname: 'op_Implicit', returnType: $System_Windows_Thickness, params: [Number] }, { name: 'op_Multiply', isStatic: true, type: 8, sname: 'op_Multiply', returnType: $System_Windows_Thickness, params: [Number, $System_Windows_Thickness] }, { name: 'op_Multiply', isStatic: true, type: 8, sname: 'op_Multiply$1', returnType: $System_Windows_Thickness, params: [$System_Windows_Thickness, Number] }, { name: 'op_Subtraction', isStatic: true, type: 8, sname: 'op_Subtraction', returnType: $System_Windows_Thickness, params: [$System_Windows_Thickness, $System_Windows_Thickness] }, { name: 'op_UnaryNegation', isStatic: true, type: 8, sname: 'op_UnaryNegation', returnType: $System_Windows_Thickness, params: [$System_Windows_Thickness] }, { name: 'Bottom', type: 16, returnType: Number, getter: { name: 'get_Bottom', type: 8, sname: 'get_Bottom', returnType: Number, params: [] }, setter: { name: 'set_Bottom', type: 8, sname: 'set_Bottom', returnType: Object, params: [Number] } }, { name: 'IsUniform', type: 16, returnType: Boolean, getter: { name: 'get_IsUniform', type: 8, sname: 'get_IsUniform', returnType: Boolean, params: [] }, setter: { name: 'set_IsUniform', type: 8, sname: 'set_IsUniform', returnType: Object, params: [Boolean] } }, { name: 'Left', type: 16, returnType: Number, getter: { name: 'get_Left', type: 8, sname: 'get_Left', returnType: Number, params: [] }, setter: { name: 'set_Left', type: 8, sname: 'set_Left', returnType: Object, params: [Number] } }, { name: 'Location', type: 16, returnType: $System_Windows_Point, getter: { name: 'get_Location', type: 8, sname: 'get_Location', returnType: $System_Windows_Point, params: [] }, setter: { name: 'set_Location', type: 8, sname: 'set_Location', returnType: Object, params: [$System_Windows_Point] } }, { name: 'Right', type: 16, returnType: Number, getter: { name: 'get_Right', type: 8, sname: 'get_Right', returnType: Number, params: [] }, setter: { name: 'set_Right', type: 8, sname: 'set_Right', returnType: Object, params: [Number] } }, { name: 'Size', type: 16, returnType: $System_Windows_Size, getter: { name: 'get_Size', type: 8, sname: 'get_Size', returnType: $System_Windows_Size, params: [] }, setter: { name: 'set_Size', type: 8, sname: 'set_Size', returnType: Object, params: [$System_Windows_Size] } }, { name: 'Top', type: 16, returnType: Number, getter: { name: 'get_Top', type: 8, sname: 'get_Top', returnType: Number, params: [] }, setter: { name: 'set_Top', type: 8, sname: 'set_Top', returnType: Object, params: [Number] } }, { name: 'Zero', isStatic: true, type: 4, returnType: $System_Windows_Thickness, sname: 'Zero' }] });
+	ss.setMetadata($System_Windows_Thickness, { attr: [new $System_Windows_Markup_TypeConverterAttribute($System_Windows_ThicknessTypeConverter)], members: [{ name: '.ctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [Number], sname: '$ctor1' }, { name: '.ctor', type: 1, params: [Number, Number], sname: '$ctor2' }, { name: '.ctor', type: 1, params: [Number, Number, Number, Number], sname: '$ctor3' }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'Parse', isStatic: true, type: 8, sname: 'Parse', returnType: $System_Windows_Thickness, params: [String] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'op_Addition', isStatic: true, type: 8, sname: 'op_Addition', returnType: $System_Windows_Thickness, params: [$System_Windows_Thickness, $System_Windows_Thickness] }, { name: 'op_Equality', isStatic: true, type: 8, sname: 'op_Equality', returnType: Boolean, params: [$System_Windows_Thickness, $System_Windows_Thickness] }, { name: 'op_Implicit', isStatic: true, type: 8, sname: 'op_Implicit', returnType: $System_Windows_Thickness, params: [Number] }, { name: 'op_Inequality', isStatic: true, type: 8, sname: 'op_Inequality', returnType: Boolean, params: [$System_Windows_Thickness, $System_Windows_Thickness] }, { name: 'op_Multiply', isStatic: true, type: 8, sname: 'op_Multiply', returnType: $System_Windows_Thickness, params: [Number, $System_Windows_Thickness] }, { name: 'op_Multiply', isStatic: true, type: 8, sname: 'op_Multiply$1', returnType: $System_Windows_Thickness, params: [$System_Windows_Thickness, Number] }, { name: 'op_Subtraction', isStatic: true, type: 8, sname: 'op_Subtraction', returnType: $System_Windows_Thickness, params: [$System_Windows_Thickness, $System_Windows_Thickness] }, { name: 'op_UnaryNegation', isStatic: true, type: 8, sname: 'op_UnaryNegation', returnType: $System_Windows_Thickness, params: [$System_Windows_Thickness] }, { name: 'Bottom', type: 16, returnType: Number, getter: { name: 'get_Bottom', type: 8, sname: 'get_Bottom', returnType: Number, params: [] }, setter: { name: 'set_Bottom', type: 8, sname: 'set_Bottom', returnType: Object, params: [Number] } }, { name: 'IsUniform', type: 16, returnType: Boolean, getter: { name: 'get_IsUniform', type: 8, sname: 'get_IsUniform', returnType: Boolean, params: [] } }, { name: 'Left', type: 16, returnType: Number, getter: { name: 'get_Left', type: 8, sname: 'get_Left', returnType: Number, params: [] }, setter: { name: 'set_Left', type: 8, sname: 'set_Left', returnType: Object, params: [Number] } }, { name: 'Location', type: 16, returnType: $System_Windows_Point, getter: { name: 'get_Location', type: 8, sname: 'get_Location', returnType: $System_Windows_Point, params: [] }, setter: { name: 'set_Location', type: 8, sname: 'set_Location', returnType: Object, params: [$System_Windows_Point] } }, { name: 'Right', type: 16, returnType: Number, getter: { name: 'get_Right', type: 8, sname: 'get_Right', returnType: Number, params: [] }, setter: { name: 'set_Right', type: 8, sname: 'set_Right', returnType: Object, params: [Number] } }, { name: 'Size', type: 16, returnType: $System_Windows_Size, getter: { name: 'get_Size', type: 8, sname: 'get_Size', returnType: $System_Windows_Size, params: [] }, setter: { name: 'set_Size', type: 8, sname: 'set_Size', returnType: Object, params: [$System_Windows_Size] } }, { name: 'Top', type: 16, returnType: Number, getter: { name: 'get_Top', type: 8, sname: 'get_Top', returnType: Number, params: [] }, setter: { name: 'set_Top', type: 8, sname: 'set_Top', returnType: Object, params: [Number] } }, { name: 'Zero', isStatic: true, type: 4, returnType: $System_Windows_Thickness, sname: 'Zero' }] });
 	ss.setMetadata($System_Windows_ThicknessExtensions, { members: [{ name: 'DefaultIfNull', isStatic: true, type: 8, sname: 'DefaultIfNull', returnType: $System_Windows_Thickness, params: [$System_Windows_Thickness, $System_Windows_Thickness] }] });
+	ss.setMetadata($System_Windows_ThicknessTypeConverter, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }] });
 	ss.setMetadata($System_Windows_Trigger, { attr: [new $System_Windows_Markup_ContentPropertyAttribute('Setters')], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'CreateDataTriggerCondition', type: 8, sname: 'CreateDataTriggerCondition', returnType: $System_Windows_IDataTriggerCondition, params: [$System_Windows_FrameworkElement] }, { name: 'Property', type: 16, returnType: $System_Windows_IPropertyPathElement, getter: { name: 'get_Property', type: 8, sname: 'get_Property', returnType: $System_Windows_IPropertyPathElement, params: [] }, setter: { name: 'set_Property', type: 8, sname: 'set_Property', returnType: Object, params: [$System_Windows_IPropertyPathElement] } }, { name: 'Setters', type: 16, returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITriggerAction]), getter: { name: 'get_Setters', type: 8, sname: 'get_Setters', returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITriggerAction]), params: [] }, setter: { name: 'set_Setters', type: 8, sname: 'set_Setters', returnType: Object, params: [ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_ITriggerAction])] } }, { name: 'SourceName', type: 16, returnType: String, getter: { name: 'get_SourceName', type: 8, sname: 'get_SourceName', returnType: String, params: [] }, setter: { name: 'set_SourceName', type: 8, sname: 'set_SourceName', returnType: Object, params: [String] } }, { name: 'TriggerActions', type: 16, returnType: ss.IEnumerable, getter: { name: 'get_TriggerActions', type: 8, sname: 'get_TriggerActions', returnType: ss.IEnumerable, params: [] } }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] }, setter: { name: 'set_Value', type: 8, sname: 'set_Value', returnType: Object, params: [Object] } }] });
 	ss.setMetadata($System_Windows_TriggerBase, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Attach', type: 8, sname: 'Attach', returnType: Object, params: [$System_Windows_FrameworkElement, $System_Windows_BaseValueSource] }, { name: 'Detach', type: 8, sname: 'Detach', returnType: Object, params: [$System_Windows_FrameworkElement, $System_Windows_BaseValueSource] }, { name: 'TriggerActions', type: 16, returnType: ss.IEnumerable, getter: { name: 'get_TriggerActions', type: 8, sname: 'get_TriggerActions', returnType: ss.IEnumerable, params: [] } }] });
-	ss.setMetadata($System_Windows_UIElement, { members: [{ name: '.cctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [] }, { name: 'AddAnimationClocks', type: 8, sname: 'AddAnimationClocks', returnType: Object, params: [$System_Windows_DependencyProperty, ss.IEnumerable, Object] }, { name: 'AddHandler', type: 8, sname: 'AddHandler', returnType: Object, params: [$System_Windows_RoutedEvent, Function, Boolean] }, { name: 'AddHandler', isStatic: true, type: 8, sname: 'AddHandler', returnType: Object, params: [$System_Windows_DependencyObject, $System_Windows_RoutedEvent, Function, Boolean] }, { name: 'AddLogicalChild', type: 8, sname: 'AddLogicalChild', returnType: Object, params: [Object] }, { name: 'Arrange', type: 8, sname: 'Arrange', returnType: Object, params: [$System_Windows_Rect] }, { name: 'ArrangeCore', type: 8, sname: 'ArrangeCore', returnType: Object, params: [$System_Windows_Rect] }, { name: 'ClearFocus', type: 8, sname: 'ClearFocus', returnType: Object, params: [] }, { name: 'Focus', type: 8, sname: 'Focus', returnType: Object, params: [] }, { name: 'GetPathFromRoot', type: 8, sname: 'GetPathFromRoot', returnType: ss.IEnumerable, params: [] }, { name: 'GetRelativePosition', type: 8, sname: 'GetRelativePosition', returnType: $System_Windows_Point, params: [$System_Windows_Point] }, { name: 'GetRoutedEventHandlersOverride', type: 8, sname: 'GetRoutedEventHandlersOverride', returnType: ss.IEnumerable, params: [$System_Windows_RoutedEvent] }, { name: 'HitTest', type: 8, sname: 'HitTest', returnType: $System_Windows_Media_Visual, params: [$System_Windows_Point] }, { name: 'HitTestOverride', type: 8, sname: 'HitTestOverride', returnType: Boolean, params: [$System_Windows_Point] }, { name: 'InvalidateArrange', type: 8, sname: 'InvalidateArrange', returnType: Object, params: [] }, { name: 'InvalidateMeasure', type: 8, sname: 'InvalidateMeasure', returnType: Object, params: [] }, { name: 'Measure', type: 8, sname: 'Measure', returnType: Object, params: [$System_Windows_Size] }, { name: 'MeasureCore', type: 8, sname: 'MeasureCore', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'OnGotFocus', type: 8, sname: 'OnGotFocus', returnType: Object, params: [$System_Windows_RoutedEventArgs] }, { name: 'OnGotKeyboardFocus', type: 8, sname: 'OnGotKeyboardFocus', returnType: Object, params: [$System_Windows_Input_KeyboardFocusChangedEventArgs] }, { name: 'OnKeyDown', type: 8, sname: 'OnKeyDown', returnType: Object, params: [$System_Windows_Input_KeyEventArgs] }, { name: 'OnKeyUp', type: 8, sname: 'OnKeyUp', returnType: Object, params: [$System_Windows_Input_KeyEventArgs] }, { name: 'OnLayoutUpdated', type: 8, sname: 'OnLayoutUpdated', returnType: Object, params: [] }, { name: 'OnLogicalParentChanged', type: 8, sname: 'OnLogicalParentChanged', returnType: Object, params: [$System_Windows_UIElement, $System_Windows_UIElement] }, { name: 'OnLostFocus', type: 8, sname: 'OnLostFocus', returnType: Object, params: [$System_Windows_RoutedEventArgs] }, { name: 'OnLostKeyboardFocus', type: 8, sname: 'OnLostKeyboardFocus', returnType: Object, params: [$System_Windows_Input_KeyboardFocusChangedEventArgs] }, { name: 'OnMouseDown', type: 8, sname: 'OnMouseDown', returnType: Object, params: [$System_Windows_Input_MouseButtonEventArgs] }, { name: 'OnMouseEnter', type: 8, sname: 'OnMouseEnter', returnType: Object, params: [$System_Windows_Input_MouseEventArgs] }, { name: 'OnMouseLeave', type: 8, sname: 'OnMouseLeave', returnType: Object, params: [$System_Windows_Input_MouseEventArgs] }, { name: 'OnMouseMove', type: 8, sname: 'OnMouseMove', returnType: Object, params: [$System_Windows_Input_MouseEventArgs] }, { name: 'OnMouseUp', type: 8, sname: 'OnMouseUp', returnType: Object, params: [$System_Windows_Input_MouseButtonEventArgs] }, { name: 'OnMouseWheel', type: 8, sname: 'OnMouseWheel', returnType: Object, params: [$System_Windows_Input_MouseWheelEventArgs] }, { name: 'OnPreviewKeyDown', type: 8, sname: 'OnPreviewKeyDown', returnType: Object, params: [$System_Windows_Input_KeyEventArgs] }, { name: 'OnPreviewKeyUp', type: 8, sname: 'OnPreviewKeyUp', returnType: Object, params: [$System_Windows_Input_KeyEventArgs] }, { name: 'OnPreviewMouseDown', type: 8, sname: 'OnPreviewMouseDown', returnType: Object, params: [$System_Windows_Input_MouseButtonEventArgs] }, { name: 'OnPreviewMouseMove', type: 8, sname: 'OnPreviewMouseMove', returnType: Object, params: [$System_Windows_Input_MouseEventArgs] }, { name: 'OnPreviewMouseUp', type: 8, sname: 'OnPreviewMouseUp', returnType: Object, params: [$System_Windows_Input_MouseButtonEventArgs] }, { name: 'OnPreviewMouseWheel', type: 8, sname: 'OnPreviewMouseWheel', returnType: Object, params: [$System_Windows_Input_MouseWheelEventArgs] }, { name: 'OnQueryCursor', type: 8, sname: 'OnQueryCursor', returnType: Object, params: [$System_Windows_Input_QueryCursorEventArgs] }, { name: 'OnVisualParentChanged', type: 8, sname: 'OnVisualParentChanged', returnType: Object, params: [$System_Windows_Media_Visual, $System_Windows_Media_Visual] }, { name: 'RaiseEvent', type: 8, sname: 'RaiseEvent', returnType: Object, params: [$System_Windows_RoutedEventArgs] }, { name: 'RemoveAnimationClocks', type: 8, sname: 'RemoveAnimationClocks', returnType: Object, params: [$System_Windows_DependencyProperty, ss.IEnumerable, Object] }, { name: 'RemoveHandler', type: 8, sname: 'RemoveHandler', returnType: Object, params: [$System_Windows_RoutedEvent, Function] }, { name: 'RemoveHandler', isStatic: true, type: 8, sname: 'RemoveHandler', returnType: Object, params: [$System_Windows_DependencyObject, $System_Windows_RoutedEvent, Function] }, { name: 'RemoveLogicalChild', type: 8, sname: 'RemoveLogicalChild', returnType: Object, params: [Object] }, { name: 'SetAnimatableRootClock', type: 8, sname: 'SetAnimatableRootClock', returnType: Object, params: [$System_Windows_Media_Animation_AnimatableRootClock] }, { name: 'SetAnimationClocks', type: 8, sname: 'SetAnimationClocks', returnType: Object, params: [$System_Windows_DependencyProperty, ss.IEnumerable, Object] }, { name: 'UpdateLayout', type: 8, sname: 'UpdateLayout', returnType: Object, params: [] }, { name: 'ClipToBounds', type: 16, returnType: Boolean, getter: { name: 'get_ClipToBounds', type: 8, sname: 'get_ClipToBounds', returnType: Boolean, params: [] }, setter: { name: 'set_ClipToBounds', type: 8, sname: 'set_ClipToBounds', returnType: Object, params: [Boolean] } }, { name: 'DesiredSize', type: 16, returnType: $System_Windows_Size, getter: { name: 'get_DesiredSize', type: 8, sname: 'get_DesiredSize', returnType: $System_Windows_Size, params: [] }, setter: { name: 'set_DesiredSize', type: 8, sname: 'set_DesiredSize', returnType: Object, params: [$System_Windows_Size] } }, { name: 'Focusable', type: 16, returnType: Boolean, getter: { name: 'get_Focusable', type: 8, sname: 'get_Focusable', returnType: Boolean, params: [] }, setter: { name: 'set_Focusable', type: 8, sname: 'set_Focusable', returnType: Object, params: [Boolean] } }, { name: 'IsArrangeValid', type: 16, returnType: Boolean, getter: { name: 'get_IsArrangeValid', type: 8, sname: 'get_IsArrangeValid', returnType: Boolean, params: [] }, setter: { name: 'set_IsArrangeValid', type: 8, sname: 'set_IsArrangeValid', returnType: Object, params: [Boolean] } }, { name: 'IsEnabled', type: 16, returnType: Boolean, getter: { name: 'get_IsEnabled', type: 8, sname: 'get_IsEnabled', returnType: Boolean, params: [] }, setter: { name: 'set_IsEnabled', type: 8, sname: 'set_IsEnabled', returnType: Object, params: [Boolean] } }, { name: 'IsFocused', type: 16, returnType: Boolean, getter: { name: 'get_IsFocused', type: 8, sname: 'get_IsFocused', returnType: Boolean, params: [] }, setter: { name: 'set_IsFocused', type: 8, sname: 'set_IsFocused', returnType: Object, params: [Boolean] } }, { name: 'IsHitTestVisible', type: 16, returnType: Boolean, getter: { name: 'get_IsHitTestVisible', type: 8, sname: 'get_IsHitTestVisible', returnType: Boolean, params: [] }, setter: { name: 'set_IsHitTestVisible', type: 8, sname: 'set_IsHitTestVisible', returnType: Object, params: [Boolean] } }, { name: 'IsKeyboardFocusWithin', type: 16, returnType: Boolean, getter: { name: 'get_IsKeyboardFocusWithin', type: 8, sname: 'get_IsKeyboardFocusWithin', returnType: Boolean, params: [] }, setter: { name: 'set_IsKeyboardFocusWithin', type: 8, sname: 'set_IsKeyboardFocusWithin', returnType: Object, params: [Boolean] } }, { name: 'IsKeyboardFocused', type: 16, returnType: Boolean, getter: { name: 'get_IsKeyboardFocused', type: 8, sname: 'get_IsKeyboardFocused', returnType: Boolean, params: [] }, setter: { name: 'set_IsKeyboardFocused', type: 8, sname: 'set_IsKeyboardFocused', returnType: Object, params: [Boolean] } }, { name: 'IsMeasureValid', type: 16, returnType: Boolean, getter: { name: 'get_IsMeasureValid', type: 8, sname: 'get_IsMeasureValid', returnType: Boolean, params: [] }, setter: { name: 'set_IsMeasureValid', type: 8, sname: 'set_IsMeasureValid', returnType: Object, params: [Boolean] } }, { name: 'IsMouseOver', type: 16, returnType: Boolean, getter: { name: 'get_IsMouseOver', type: 8, sname: 'get_IsMouseOver', returnType: Boolean, params: [] }, setter: { name: 'set_IsMouseOver', type: 8, sname: 'set_IsMouseOver', returnType: Object, params: [Boolean] } }, { name: 'IsRootElement', type: 16, returnType: Boolean, getter: { name: 'get_IsRootElement', type: 8, sname: 'get_IsRootElement', returnType: Boolean, params: [] }, setter: { name: 'set_IsRootElement', type: 8, sname: 'set_IsRootElement', returnType: Object, params: [Boolean] } }, { name: 'IsVisible', type: 16, returnType: Boolean, getter: { name: 'get_IsVisible', type: 8, sname: 'get_IsVisible', returnType: Boolean, params: [] }, setter: { name: 'set_IsVisible', type: 8, sname: 'set_IsVisible', returnType: Object, params: [Boolean] } }, { name: 'LogicalChildren', type: 16, returnType: ss.IEnumerable, getter: { name: 'get_LogicalChildren', type: 8, sname: 'get_LogicalChildren', returnType: ss.IEnumerable, params: [] }, setter: { name: 'set_LogicalChildren', type: 8, sname: 'set_LogicalChildren', returnType: Object, params: [ss.IEnumerable] } }, { name: 'LogicalParent', type: 16, returnType: $System_Windows_UIElement, getter: { name: 'get_LogicalParent', type: 8, sname: 'get_LogicalParent', returnType: $System_Windows_UIElement, params: [] }, setter: { name: 'set_LogicalParent', type: 8, sname: 'set_LogicalParent', returnType: Object, params: [$System_Windows_UIElement] } }, { name: 'Opacity', type: 16, returnType: Number, getter: { name: 'get_Opacity', type: 8, sname: 'get_Opacity', returnType: Number, params: [] }, setter: { name: 'set_Opacity', type: 8, sname: 'set_Opacity', returnType: Object, params: [Number] } }, { name: 'PreviousAvailableSize', type: 16, returnType: $System_Windows_Size, getter: { name: 'get_PreviousAvailableSize', type: 8, sname: 'get_PreviousAvailableSize', returnType: $System_Windows_Size, params: [] }, setter: { name: 'set_PreviousAvailableSize', type: 8, sname: 'set_PreviousAvailableSize', returnType: Object, params: [$System_Windows_Size] } }, { name: 'PreviousFinalRect', type: 16, returnType: $System_Windows_Rect, getter: { name: 'get_PreviousFinalRect', type: 8, sname: 'get_PreviousFinalRect', returnType: $System_Windows_Rect, params: [] }, setter: { name: 'set_PreviousFinalRect', type: 8, sname: 'set_PreviousFinalRect', returnType: Object, params: [$System_Windows_Rect] } }, { name: 'RenderSize', type: 16, returnType: $System_Windows_Size, getter: { name: 'get_RenderSize', type: 8, sname: 'get_RenderSize', returnType: $System_Windows_Size, params: [] } }, { name: 'RootClock', type: 16, returnType: $System_Windows_Media_Animation_IRootClock, getter: { name: 'get_RootClock', type: 8, sname: 'get_RootClock', returnType: $System_Windows_Media_Animation_IRootClock, params: [] } }, { name: 'Visibility', type: 16, returnType: $System_Windows_Visibility, getter: { name: 'get_Visibility', type: 8, sname: 'get_Visibility', returnType: $System_Windows_Visibility, params: [] }, setter: { name: 'set_Visibility', type: 8, sname: 'set_Visibility', returnType: Object, params: [$System_Windows_Visibility] } }, { name: 'ClipToBoundsProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ClipToBoundsProperty' }, { name: 'FocusableProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'FocusableProperty' }, { name: 'GotFocusEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'GotFocusEvent' }, { name: 'GotKeyboardFocusEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'GotKeyboardFocusEvent' }, { name: 'IsEnabledProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'IsEnabledProperty' }, { name: 'IsFocusedProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'IsFocusedProperty' }, { name: 'IsHitTestVisibleProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'IsHitTestVisibleProperty' }, { name: 'IsKeyboardFocusWithinProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'IsKeyboardFocusWithinProperty' }, { name: 'IsKeyboardFocusedProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'IsKeyboardFocusedProperty' }, { name: 'IsMouseOverProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'IsMouseOverProperty' }, { name: 'IsVisibleProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'IsVisibleProperty' }, { name: 'KeyDownEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'KeyDownEvent' }, { name: 'KeyUpEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'KeyUpEvent' }, { name: 'LostFocusEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'LostFocusEvent' }, { name: 'LostKeyboardFocusEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'LostKeyboardFocusEvent' }, { name: 'MouseDownEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'MouseDownEvent' }, { name: 'MouseEnterEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'MouseEnterEvent' }, { name: 'MouseLeaveEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'MouseLeaveEvent' }, { name: 'MouseMoveEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'MouseMoveEvent' }, { name: 'MouseUpEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'MouseUpEvent' }, { name: 'MouseWheelEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'MouseWheelEvent' }, { name: 'OpacityProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'OpacityProperty' }, { name: 'PreviewGotKeyboardFocusEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'PreviewGotKeyboardFocusEvent' }, { name: 'PreviewKeyDownEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'PreviewKeyDownEvent' }, { name: 'PreviewKeyUpEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'PreviewKeyUpEvent' }, { name: 'PreviewLostKeyboardFocusEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'PreviewLostKeyboardFocusEvent' }, { name: 'PreviewMouseDownEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'PreviewMouseDownEvent' }, { name: 'PreviewMouseMoveEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'PreviewMouseMoveEvent' }, { name: 'PreviewMouseUpEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'PreviewMouseUpEvent' }, { name: 'PreviewMouseWheelEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'PreviewMouseWheelEvent' }, { name: 'QueryCursorEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'QueryCursorEvent' }, { name: 'VisibilityProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'VisibilityProperty' }, { name: 'GotFocus', type: 2, adder: { name: 'add_GotFocus', type: 8, sname: 'add_GotFocus', returnType: Object, params: [Function] }, remover: { name: 'remove_GotFocus', type: 8, sname: 'remove_GotFocus', returnType: Object, params: [Function] } }, { name: 'GotKeyboardFocus', type: 2, adder: { name: 'add_GotKeyboardFocus', type: 8, sname: 'add_GotKeyboardFocus', returnType: Object, params: [Function] }, remover: { name: 'remove_GotKeyboardFocus', type: 8, sname: 'remove_GotKeyboardFocus', returnType: Object, params: [Function] } }, { name: 'KeyDown', type: 2, adder: { name: 'add_KeyDown', type: 8, sname: 'add_KeyDown', returnType: Object, params: [Function] }, remover: { name: 'remove_KeyDown', type: 8, sname: 'remove_KeyDown', returnType: Object, params: [Function] } }, { name: 'KeyUp', type: 2, adder: { name: 'add_KeyUp', type: 8, sname: 'add_KeyUp', returnType: Object, params: [Function] }, remover: { name: 'remove_KeyUp', type: 8, sname: 'remove_KeyUp', returnType: Object, params: [Function] } }, { name: 'LayoutUpdated', type: 2, adder: { name: 'add_LayoutUpdated', type: 8, sname: 'add_LayoutUpdated', returnType: Object, params: [Function] }, remover: { name: 'remove_LayoutUpdated', type: 8, sname: 'remove_LayoutUpdated', returnType: Object, params: [Function] } }, { name: 'LostFocus', type: 2, adder: { name: 'add_LostFocus', type: 8, sname: 'add_LostFocus', returnType: Object, params: [Function] }, remover: { name: 'remove_LostFocus', type: 8, sname: 'remove_LostFocus', returnType: Object, params: [Function] } }, { name: 'LostKeyboardFocus', type: 2, adder: { name: 'add_LostKeyboardFocus', type: 8, sname: 'add_LostKeyboardFocus', returnType: Object, params: [Function] }, remover: { name: 'remove_LostKeyboardFocus', type: 8, sname: 'remove_LostKeyboardFocus', returnType: Object, params: [Function] } }, { name: 'MouseDown', type: 2, adder: { name: 'add_MouseDown', type: 8, sname: 'add_MouseDown', returnType: Object, params: [Function] }, remover: { name: 'remove_MouseDown', type: 8, sname: 'remove_MouseDown', returnType: Object, params: [Function] } }, { name: 'MouseEnter', type: 2, adder: { name: 'add_MouseEnter', type: 8, sname: 'add_MouseEnter', returnType: Object, params: [Function] }, remover: { name: 'remove_MouseEnter', type: 8, sname: 'remove_MouseEnter', returnType: Object, params: [Function] } }, { name: 'MouseLeave', type: 2, adder: { name: 'add_MouseLeave', type: 8, sname: 'add_MouseLeave', returnType: Object, params: [Function] }, remover: { name: 'remove_MouseLeave', type: 8, sname: 'remove_MouseLeave', returnType: Object, params: [Function] } }, { name: 'MouseMove', type: 2, adder: { name: 'add_MouseMove', type: 8, sname: 'add_MouseMove', returnType: Object, params: [Function] }, remover: { name: 'remove_MouseMove', type: 8, sname: 'remove_MouseMove', returnType: Object, params: [Function] } }, { name: 'MouseUp', type: 2, adder: { name: 'add_MouseUp', type: 8, sname: 'add_MouseUp', returnType: Object, params: [Function] }, remover: { name: 'remove_MouseUp', type: 8, sname: 'remove_MouseUp', returnType: Object, params: [Function] } }, { name: 'MouseWheel', type: 2, adder: { name: 'add_MouseWheel', type: 8, sname: 'add_MouseWheel', returnType: Object, params: [Function] }, remover: { name: 'remove_MouseWheel', type: 8, sname: 'remove_MouseWheel', returnType: Object, params: [Function] } }, { name: 'PreviewGotKeyboardFocus', type: 2, adder: { name: 'add_PreviewGotKeyboardFocus', type: 8, sname: 'add_PreviewGotKeyboardFocus', returnType: Object, params: [Function] }, remover: { name: 'remove_PreviewGotKeyboardFocus', type: 8, sname: 'remove_PreviewGotKeyboardFocus', returnType: Object, params: [Function] } }, { name: 'PreviewKeyDown', type: 2, adder: { name: 'add_PreviewKeyDown', type: 8, sname: 'add_PreviewKeyDown', returnType: Object, params: [Function] }, remover: { name: 'remove_PreviewKeyDown', type: 8, sname: 'remove_PreviewKeyDown', returnType: Object, params: [Function] } }, { name: 'PreviewKeyUp', type: 2, adder: { name: 'add_PreviewKeyUp', type: 8, sname: 'add_PreviewKeyUp', returnType: Object, params: [Function] }, remover: { name: 'remove_PreviewKeyUp', type: 8, sname: 'remove_PreviewKeyUp', returnType: Object, params: [Function] } }, { name: 'PreviewLostKeyboardFocus', type: 2, adder: { name: 'add_PreviewLostKeyboardFocus', type: 8, sname: 'add_PreviewLostKeyboardFocus', returnType: Object, params: [Function] }, remover: { name: 'remove_PreviewLostKeyboardFocus', type: 8, sname: 'remove_PreviewLostKeyboardFocus', returnType: Object, params: [Function] } }, { name: 'PreviewMouseDown', type: 2, adder: { name: 'add_PreviewMouseDown', type: 8, sname: 'add_PreviewMouseDown', returnType: Object, params: [Function] }, remover: { name: 'remove_PreviewMouseDown', type: 8, sname: 'remove_PreviewMouseDown', returnType: Object, params: [Function] } }, { name: 'PreviewMouseMove', type: 2, adder: { name: 'add_PreviewMouseMove', type: 8, sname: 'add_PreviewMouseMove', returnType: Object, params: [Function] }, remover: { name: 'remove_PreviewMouseMove', type: 8, sname: 'remove_PreviewMouseMove', returnType: Object, params: [Function] } }, { name: 'PreviewMouseUp', type: 2, adder: { name: 'add_PreviewMouseUp', type: 8, sname: 'add_PreviewMouseUp', returnType: Object, params: [Function] }, remover: { name: 'remove_PreviewMouseUp', type: 8, sname: 'remove_PreviewMouseUp', returnType: Object, params: [Function] } }, { name: 'PreviewMouseWheel', type: 2, adder: { name: 'add_PreviewMouseWheel', type: 8, sname: 'add_PreviewMouseWheel', returnType: Object, params: [Function] }, remover: { name: 'remove_PreviewMouseWheel', type: 8, sname: 'remove_PreviewMouseWheel', returnType: Object, params: [Function] } }, { name: 'QueryCursor', type: 2, adder: { name: 'add_QueryCursor', type: 8, sname: 'add_QueryCursor', returnType: Object, params: [Function] }, remover: { name: 'remove_QueryCursor', type: 8, sname: 'remove_QueryCursor', returnType: Object, params: [Function] } }] });
+	ss.setMetadata($System_Windows_UIElement, { members: [{ name: '.cctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [] }, { name: 'AddAnimationClocks', type: 8, sname: 'AddAnimationClocks', returnType: Object, params: [$System_Windows_DependencyProperty, ss.IEnumerable, Object] }, { name: 'AddHandler', type: 8, sname: 'AddHandler', returnType: Object, params: [$System_Windows_RoutedEvent, Function, Boolean] }, { name: 'AddHandler', isStatic: true, type: 8, sname: 'AddHandler', returnType: Object, params: [$System_Windows_DependencyObject, $System_Windows_RoutedEvent, Function, Boolean] }, { name: 'AddLogicalChild', type: 8, sname: 'AddLogicalChild', returnType: Object, params: [Object] }, { name: 'Arrange', type: 8, sname: 'Arrange', returnType: Object, params: [$System_Windows_Rect] }, { name: 'ArrangeCore', type: 8, sname: 'ArrangeCore', returnType: Object, params: [$System_Windows_Rect] }, { name: 'ClearFocus', type: 8, sname: 'ClearFocus', returnType: Object, params: [] }, { name: 'Focus', type: 8, sname: 'Focus', returnType: Object, params: [] }, { name: 'GetHitTestBoundsOverride', type: 8, sname: 'GetHitTestBoundsOverride', returnType: $System_Windows_Rect, params: [] }, { name: 'GetPathFromRoot', type: 8, sname: 'GetPathFromRoot', returnType: ss.IEnumerable, params: [] }, { name: 'GetRelativePosition', type: 8, sname: 'GetRelativePosition', returnType: $System_Windows_Point, params: [$System_Windows_Point] }, { name: 'GetRoutedEventHandlersOverride', type: 8, sname: 'GetRoutedEventHandlersOverride', returnType: ss.IEnumerable, params: [$System_Windows_RoutedEvent] }, { name: 'GetVisualTransformOverride', type: 8, sname: 'GetVisualTransformOverride', returnType: $System_Windows_Media_Matrix, params: [] }, { name: 'HitTest', type: 8, sname: 'HitTest', returnType: $System_Windows_Media_Visual, params: [$System_Windows_Point] }, { name: 'HitTestOverride', type: 8, sname: 'HitTestOverride', returnType: Boolean, params: [$System_Windows_Point] }, { name: 'InvalidateArrange', type: 8, sname: 'InvalidateArrange', returnType: Object, params: [] }, { name: 'InvalidateMeasure', type: 8, sname: 'InvalidateMeasure', returnType: Object, params: [] }, { name: 'Measure', type: 8, sname: 'Measure', returnType: Object, params: [$System_Windows_Size] }, { name: 'MeasureCore', type: 8, sname: 'MeasureCore', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'OnGotFocus', type: 8, sname: 'OnGotFocus', returnType: Object, params: [$System_Windows_RoutedEventArgs] }, { name: 'OnGotKeyboardFocus', type: 8, sname: 'OnGotKeyboardFocus', returnType: Object, params: [$System_Windows_Input_KeyboardFocusChangedEventArgs] }, { name: 'OnKeyDown', type: 8, sname: 'OnKeyDown', returnType: Object, params: [$System_Windows_Input_KeyEventArgs] }, { name: 'OnKeyUp', type: 8, sname: 'OnKeyUp', returnType: Object, params: [$System_Windows_Input_KeyEventArgs] }, { name: 'OnLayoutUpdated', type: 8, sname: 'OnLayoutUpdated', returnType: Object, params: [] }, { name: 'OnLogicalParentChanged', type: 8, sname: 'OnLogicalParentChanged', returnType: Object, params: [$System_Windows_UIElement, $System_Windows_UIElement] }, { name: 'OnLostFocus', type: 8, sname: 'OnLostFocus', returnType: Object, params: [$System_Windows_RoutedEventArgs] }, { name: 'OnLostKeyboardFocus', type: 8, sname: 'OnLostKeyboardFocus', returnType: Object, params: [$System_Windows_Input_KeyboardFocusChangedEventArgs] }, { name: 'OnMouseDown', type: 8, sname: 'OnMouseDown', returnType: Object, params: [$System_Windows_Input_MouseButtonEventArgs] }, { name: 'OnMouseEnter', type: 8, sname: 'OnMouseEnter', returnType: Object, params: [$System_Windows_Input_MouseEventArgs] }, { name: 'OnMouseLeave', type: 8, sname: 'OnMouseLeave', returnType: Object, params: [$System_Windows_Input_MouseEventArgs] }, { name: 'OnMouseMove', type: 8, sname: 'OnMouseMove', returnType: Object, params: [$System_Windows_Input_MouseEventArgs] }, { name: 'OnMouseUp', type: 8, sname: 'OnMouseUp', returnType: Object, params: [$System_Windows_Input_MouseButtonEventArgs] }, { name: 'OnMouseWheel', type: 8, sname: 'OnMouseWheel', returnType: Object, params: [$System_Windows_Input_MouseWheelEventArgs] }, { name: 'OnPreviewKeyDown', type: 8, sname: 'OnPreviewKeyDown', returnType: Object, params: [$System_Windows_Input_KeyEventArgs] }, { name: 'OnPreviewKeyUp', type: 8, sname: 'OnPreviewKeyUp', returnType: Object, params: [$System_Windows_Input_KeyEventArgs] }, { name: 'OnPreviewMouseDown', type: 8, sname: 'OnPreviewMouseDown', returnType: Object, params: [$System_Windows_Input_MouseButtonEventArgs] }, { name: 'OnPreviewMouseMove', type: 8, sname: 'OnPreviewMouseMove', returnType: Object, params: [$System_Windows_Input_MouseEventArgs] }, { name: 'OnPreviewMouseUp', type: 8, sname: 'OnPreviewMouseUp', returnType: Object, params: [$System_Windows_Input_MouseButtonEventArgs] }, { name: 'OnPreviewMouseWheel', type: 8, sname: 'OnPreviewMouseWheel', returnType: Object, params: [$System_Windows_Input_MouseWheelEventArgs] }, { name: 'OnQueryCursor', type: 8, sname: 'OnQueryCursor', returnType: Object, params: [$System_Windows_Input_QueryCursorEventArgs] }, { name: 'OnVisualBoundsChanged', type: 8, sname: 'OnVisualBoundsChanged', returnType: Object, params: [] }, { name: 'OnVisualParentChanged', type: 8, sname: 'OnVisualParentChanged', returnType: Object, params: [$System_Windows_Media_Visual, $System_Windows_Media_Visual] }, { name: 'RaiseEvent', type: 8, sname: 'RaiseEvent', returnType: Object, params: [$System_Windows_RoutedEventArgs] }, { name: 'RemoveAnimationClocks', type: 8, sname: 'RemoveAnimationClocks', returnType: Object, params: [$System_Windows_DependencyProperty, ss.IEnumerable, Object] }, { name: 'RemoveHandler', type: 8, sname: 'RemoveHandler', returnType: Object, params: [$System_Windows_RoutedEvent, Function] }, { name: 'RemoveHandler', isStatic: true, type: 8, sname: 'RemoveHandler', returnType: Object, params: [$System_Windows_DependencyObject, $System_Windows_RoutedEvent, Function] }, { name: 'RemoveLogicalChild', type: 8, sname: 'RemoveLogicalChild', returnType: Object, params: [Object] }, { name: 'SetAnimatableRootClock', type: 8, sname: 'SetAnimatableRootClock', returnType: Object, params: [$System_Windows_Media_Animation_AnimatableRootClock] }, { name: 'SetAnimationClocks', type: 8, sname: 'SetAnimationClocks', returnType: Object, params: [$System_Windows_DependencyProperty, ss.IEnumerable, Object] }, { name: 'UpdateLayout', type: 8, sname: 'UpdateLayout', returnType: Object, params: [] }, { name: 'ClipToBounds', type: 16, returnType: Boolean, getter: { name: 'get_ClipToBounds', type: 8, sname: 'get_ClipToBounds', returnType: Boolean, params: [] }, setter: { name: 'set_ClipToBounds', type: 8, sname: 'set_ClipToBounds', returnType: Object, params: [Boolean] } }, { name: 'DesiredSize', type: 16, returnType: $System_Windows_Size, getter: { name: 'get_DesiredSize', type: 8, sname: 'get_DesiredSize', returnType: $System_Windows_Size, params: [] }, setter: { name: 'set_DesiredSize', type: 8, sname: 'set_DesiredSize', returnType: Object, params: [$System_Windows_Size] } }, { name: 'Focusable', type: 16, returnType: Boolean, getter: { name: 'get_Focusable', type: 8, sname: 'get_Focusable', returnType: Boolean, params: [] }, setter: { name: 'set_Focusable', type: 8, sname: 'set_Focusable', returnType: Object, params: [Boolean] } }, { name: 'IsArrangeValid', type: 16, returnType: Boolean, getter: { name: 'get_IsArrangeValid', type: 8, sname: 'get_IsArrangeValid', returnType: Boolean, params: [] }, setter: { name: 'set_IsArrangeValid', type: 8, sname: 'set_IsArrangeValid', returnType: Object, params: [Boolean] } }, { name: 'IsEnabled', type: 16, returnType: Boolean, getter: { name: 'get_IsEnabled', type: 8, sname: 'get_IsEnabled', returnType: Boolean, params: [] }, setter: { name: 'set_IsEnabled', type: 8, sname: 'set_IsEnabled', returnType: Object, params: [Boolean] } }, { name: 'IsFocused', type: 16, returnType: Boolean, getter: { name: 'get_IsFocused', type: 8, sname: 'get_IsFocused', returnType: Boolean, params: [] }, setter: { name: 'set_IsFocused', type: 8, sname: 'set_IsFocused', returnType: Object, params: [Boolean] } }, { name: 'IsHitTestVisible', type: 16, returnType: Boolean, getter: { name: 'get_IsHitTestVisible', type: 8, sname: 'get_IsHitTestVisible', returnType: Boolean, params: [] }, setter: { name: 'set_IsHitTestVisible', type: 8, sname: 'set_IsHitTestVisible', returnType: Object, params: [Boolean] } }, { name: 'IsKeyboardFocusWithin', type: 16, returnType: Boolean, getter: { name: 'get_IsKeyboardFocusWithin', type: 8, sname: 'get_IsKeyboardFocusWithin', returnType: Boolean, params: [] }, setter: { name: 'set_IsKeyboardFocusWithin', type: 8, sname: 'set_IsKeyboardFocusWithin', returnType: Object, params: [Boolean] } }, { name: 'IsKeyboardFocused', type: 16, returnType: Boolean, getter: { name: 'get_IsKeyboardFocused', type: 8, sname: 'get_IsKeyboardFocused', returnType: Boolean, params: [] }, setter: { name: 'set_IsKeyboardFocused', type: 8, sname: 'set_IsKeyboardFocused', returnType: Object, params: [Boolean] } }, { name: 'IsMeasureValid', type: 16, returnType: Boolean, getter: { name: 'get_IsMeasureValid', type: 8, sname: 'get_IsMeasureValid', returnType: Boolean, params: [] }, setter: { name: 'set_IsMeasureValid', type: 8, sname: 'set_IsMeasureValid', returnType: Object, params: [Boolean] } }, { name: 'IsMouseOver', type: 16, returnType: Boolean, getter: { name: 'get_IsMouseOver', type: 8, sname: 'get_IsMouseOver', returnType: Boolean, params: [] }, setter: { name: 'set_IsMouseOver', type: 8, sname: 'set_IsMouseOver', returnType: Object, params: [Boolean] } }, { name: 'IsRootElement', type: 16, returnType: Boolean, getter: { name: 'get_IsRootElement', type: 8, sname: 'get_IsRootElement', returnType: Boolean, params: [] }, setter: { name: 'set_IsRootElement', type: 8, sname: 'set_IsRootElement', returnType: Object, params: [Boolean] } }, { name: 'IsVisible', type: 16, returnType: Boolean, getter: { name: 'get_IsVisible', type: 8, sname: 'get_IsVisible', returnType: Boolean, params: [] }, setter: { name: 'set_IsVisible', type: 8, sname: 'set_IsVisible', returnType: Object, params: [Boolean] } }, { name: 'LogicalChildren', type: 16, returnType: ss.IEnumerable, getter: { name: 'get_LogicalChildren', type: 8, sname: 'get_LogicalChildren', returnType: ss.IEnumerable, params: [] }, setter: { name: 'set_LogicalChildren', type: 8, sname: 'set_LogicalChildren', returnType: Object, params: [ss.IEnumerable] } }, { name: 'LogicalParent', type: 16, returnType: $System_Windows_UIElement, getter: { name: 'get_LogicalParent', type: 8, sname: 'get_LogicalParent', returnType: $System_Windows_UIElement, params: [] }, setter: { name: 'set_LogicalParent', type: 8, sname: 'set_LogicalParent', returnType: Object, params: [$System_Windows_UIElement] } }, { name: 'Opacity', type: 16, returnType: Number, getter: { name: 'get_Opacity', type: 8, sname: 'get_Opacity', returnType: Number, params: [] }, setter: { name: 'set_Opacity', type: 8, sname: 'set_Opacity', returnType: Object, params: [Number] } }, { name: 'PreviousAvailableSize', type: 16, returnType: $System_Windows_Size, getter: { name: 'get_PreviousAvailableSize', type: 8, sname: 'get_PreviousAvailableSize', returnType: $System_Windows_Size, params: [] }, setter: { name: 'set_PreviousAvailableSize', type: 8, sname: 'set_PreviousAvailableSize', returnType: Object, params: [$System_Windows_Size] } }, { name: 'PreviousFinalRect', type: 16, returnType: $System_Windows_Rect, getter: { name: 'get_PreviousFinalRect', type: 8, sname: 'get_PreviousFinalRect', returnType: $System_Windows_Rect, params: [] }, setter: { name: 'set_PreviousFinalRect', type: 8, sname: 'set_PreviousFinalRect', returnType: Object, params: [$System_Windows_Rect] } }, { name: 'RenderSize', type: 16, returnType: $System_Windows_Size, getter: { name: 'get_RenderSize', type: 8, sname: 'get_RenderSize', returnType: $System_Windows_Size, params: [] } }, { name: 'RenderTransform', type: 16, returnType: $System_Windows_Media_Transform, getter: { name: 'get_RenderTransform', type: 8, sname: 'get_RenderTransform', returnType: $System_Windows_Media_Transform, params: [] }, setter: { name: 'set_RenderTransform', type: 8, sname: 'set_RenderTransform', returnType: Object, params: [$System_Windows_Media_Transform] } }, { name: 'RenderTransformOrigin', type: 16, returnType: $System_Windows_Point, getter: { name: 'get_RenderTransformOrigin', type: 8, sname: 'get_RenderTransformOrigin', returnType: $System_Windows_Point, params: [] }, setter: { name: 'set_RenderTransformOrigin', type: 8, sname: 'set_RenderTransformOrigin', returnType: Object, params: [$System_Windows_Point] } }, { name: 'RootClock', type: 16, returnType: $System_Windows_Media_Animation_IRootClock, getter: { name: 'get_RootClock', type: 8, sname: 'get_RootClock', returnType: $System_Windows_Media_Animation_IRootClock, params: [] } }, { name: 'Visibility', type: 16, returnType: $System_Windows_Visibility, getter: { name: 'get_Visibility', type: 8, sname: 'get_Visibility', returnType: $System_Windows_Visibility, params: [] }, setter: { name: 'set_Visibility', type: 8, sname: 'set_Visibility', returnType: Object, params: [$System_Windows_Visibility] } }, { name: 'ClipToBoundsProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ClipToBoundsProperty' }, { name: 'FocusableProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'FocusableProperty' }, { name: 'GotFocusEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'GotFocusEvent' }, { name: 'GotKeyboardFocusEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'GotKeyboardFocusEvent' }, { name: 'IsEnabledProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'IsEnabledProperty' }, { name: 'IsFocusedProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'IsFocusedProperty' }, { name: 'IsHitTestVisibleProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'IsHitTestVisibleProperty' }, { name: 'IsKeyboardFocusWithinProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'IsKeyboardFocusWithinProperty' }, { name: 'IsKeyboardFocusedProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'IsKeyboardFocusedProperty' }, { name: 'IsMouseOverProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'IsMouseOverProperty' }, { name: 'IsVisibleProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'IsVisibleProperty' }, { name: 'KeyDownEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'KeyDownEvent' }, { name: 'KeyUpEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'KeyUpEvent' }, { name: 'LostFocusEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'LostFocusEvent' }, { name: 'LostKeyboardFocusEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'LostKeyboardFocusEvent' }, { name: 'MouseDownEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'MouseDownEvent' }, { name: 'MouseEnterEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'MouseEnterEvent' }, { name: 'MouseLeaveEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'MouseLeaveEvent' }, { name: 'MouseMoveEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'MouseMoveEvent' }, { name: 'MouseUpEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'MouseUpEvent' }, { name: 'MouseWheelEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'MouseWheelEvent' }, { name: 'OpacityProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'OpacityProperty' }, { name: 'PreviewGotKeyboardFocusEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'PreviewGotKeyboardFocusEvent' }, { name: 'PreviewKeyDownEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'PreviewKeyDownEvent' }, { name: 'PreviewKeyUpEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'PreviewKeyUpEvent' }, { name: 'PreviewLostKeyboardFocusEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'PreviewLostKeyboardFocusEvent' }, { name: 'PreviewMouseDownEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'PreviewMouseDownEvent' }, { name: 'PreviewMouseMoveEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'PreviewMouseMoveEvent' }, { name: 'PreviewMouseUpEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'PreviewMouseUpEvent' }, { name: 'PreviewMouseWheelEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'PreviewMouseWheelEvent' }, { name: 'QueryCursorEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'QueryCursorEvent' }, { name: 'RenderTransformOriginProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'RenderTransformOriginProperty' }, { name: 'RenderTransformProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'RenderTransformProperty' }, { name: 'VisibilityProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'VisibilityProperty' }, { name: 'GotFocus', type: 2, adder: { name: 'add_GotFocus', type: 8, sname: 'add_GotFocus', returnType: Object, params: [Function] }, remover: { name: 'remove_GotFocus', type: 8, sname: 'remove_GotFocus', returnType: Object, params: [Function] } }, { name: 'GotKeyboardFocus', type: 2, adder: { name: 'add_GotKeyboardFocus', type: 8, sname: 'add_GotKeyboardFocus', returnType: Object, params: [Function] }, remover: { name: 'remove_GotKeyboardFocus', type: 8, sname: 'remove_GotKeyboardFocus', returnType: Object, params: [Function] } }, { name: 'KeyDown', type: 2, adder: { name: 'add_KeyDown', type: 8, sname: 'add_KeyDown', returnType: Object, params: [Function] }, remover: { name: 'remove_KeyDown', type: 8, sname: 'remove_KeyDown', returnType: Object, params: [Function] } }, { name: 'KeyUp', type: 2, adder: { name: 'add_KeyUp', type: 8, sname: 'add_KeyUp', returnType: Object, params: [Function] }, remover: { name: 'remove_KeyUp', type: 8, sname: 'remove_KeyUp', returnType: Object, params: [Function] } }, { name: 'LayoutUpdated', type: 2, adder: { name: 'add_LayoutUpdated', type: 8, sname: 'add_LayoutUpdated', returnType: Object, params: [Function] }, remover: { name: 'remove_LayoutUpdated', type: 8, sname: 'remove_LayoutUpdated', returnType: Object, params: [Function] } }, { name: 'LostFocus', type: 2, adder: { name: 'add_LostFocus', type: 8, sname: 'add_LostFocus', returnType: Object, params: [Function] }, remover: { name: 'remove_LostFocus', type: 8, sname: 'remove_LostFocus', returnType: Object, params: [Function] } }, { name: 'LostKeyboardFocus', type: 2, adder: { name: 'add_LostKeyboardFocus', type: 8, sname: 'add_LostKeyboardFocus', returnType: Object, params: [Function] }, remover: { name: 'remove_LostKeyboardFocus', type: 8, sname: 'remove_LostKeyboardFocus', returnType: Object, params: [Function] } }, { name: 'MouseDown', type: 2, adder: { name: 'add_MouseDown', type: 8, sname: 'add_MouseDown', returnType: Object, params: [Function] }, remover: { name: 'remove_MouseDown', type: 8, sname: 'remove_MouseDown', returnType: Object, params: [Function] } }, { name: 'MouseEnter', type: 2, adder: { name: 'add_MouseEnter', type: 8, sname: 'add_MouseEnter', returnType: Object, params: [Function] }, remover: { name: 'remove_MouseEnter', type: 8, sname: 'remove_MouseEnter', returnType: Object, params: [Function] } }, { name: 'MouseLeave', type: 2, adder: { name: 'add_MouseLeave', type: 8, sname: 'add_MouseLeave', returnType: Object, params: [Function] }, remover: { name: 'remove_MouseLeave', type: 8, sname: 'remove_MouseLeave', returnType: Object, params: [Function] } }, { name: 'MouseMove', type: 2, adder: { name: 'add_MouseMove', type: 8, sname: 'add_MouseMove', returnType: Object, params: [Function] }, remover: { name: 'remove_MouseMove', type: 8, sname: 'remove_MouseMove', returnType: Object, params: [Function] } }, { name: 'MouseUp', type: 2, adder: { name: 'add_MouseUp', type: 8, sname: 'add_MouseUp', returnType: Object, params: [Function] }, remover: { name: 'remove_MouseUp', type: 8, sname: 'remove_MouseUp', returnType: Object, params: [Function] } }, { name: 'MouseWheel', type: 2, adder: { name: 'add_MouseWheel', type: 8, sname: 'add_MouseWheel', returnType: Object, params: [Function] }, remover: { name: 'remove_MouseWheel', type: 8, sname: 'remove_MouseWheel', returnType: Object, params: [Function] } }, { name: 'PreviewGotKeyboardFocus', type: 2, adder: { name: 'add_PreviewGotKeyboardFocus', type: 8, sname: 'add_PreviewGotKeyboardFocus', returnType: Object, params: [Function] }, remover: { name: 'remove_PreviewGotKeyboardFocus', type: 8, sname: 'remove_PreviewGotKeyboardFocus', returnType: Object, params: [Function] } }, { name: 'PreviewKeyDown', type: 2, adder: { name: 'add_PreviewKeyDown', type: 8, sname: 'add_PreviewKeyDown', returnType: Object, params: [Function] }, remover: { name: 'remove_PreviewKeyDown', type: 8, sname: 'remove_PreviewKeyDown', returnType: Object, params: [Function] } }, { name: 'PreviewKeyUp', type: 2, adder: { name: 'add_PreviewKeyUp', type: 8, sname: 'add_PreviewKeyUp', returnType: Object, params: [Function] }, remover: { name: 'remove_PreviewKeyUp', type: 8, sname: 'remove_PreviewKeyUp', returnType: Object, params: [Function] } }, { name: 'PreviewLostKeyboardFocus', type: 2, adder: { name: 'add_PreviewLostKeyboardFocus', type: 8, sname: 'add_PreviewLostKeyboardFocus', returnType: Object, params: [Function] }, remover: { name: 'remove_PreviewLostKeyboardFocus', type: 8, sname: 'remove_PreviewLostKeyboardFocus', returnType: Object, params: [Function] } }, { name: 'PreviewMouseDown', type: 2, adder: { name: 'add_PreviewMouseDown', type: 8, sname: 'add_PreviewMouseDown', returnType: Object, params: [Function] }, remover: { name: 'remove_PreviewMouseDown', type: 8, sname: 'remove_PreviewMouseDown', returnType: Object, params: [Function] } }, { name: 'PreviewMouseMove', type: 2, adder: { name: 'add_PreviewMouseMove', type: 8, sname: 'add_PreviewMouseMove', returnType: Object, params: [Function] }, remover: { name: 'remove_PreviewMouseMove', type: 8, sname: 'remove_PreviewMouseMove', returnType: Object, params: [Function] } }, { name: 'PreviewMouseUp', type: 2, adder: { name: 'add_PreviewMouseUp', type: 8, sname: 'add_PreviewMouseUp', returnType: Object, params: [Function] }, remover: { name: 'remove_PreviewMouseUp', type: 8, sname: 'remove_PreviewMouseUp', returnType: Object, params: [Function] } }, { name: 'PreviewMouseWheel', type: 2, adder: { name: 'add_PreviewMouseWheel', type: 8, sname: 'add_PreviewMouseWheel', returnType: Object, params: [Function] }, remover: { name: 'remove_PreviewMouseWheel', type: 8, sname: 'remove_PreviewMouseWheel', returnType: Object, params: [Function] } }, { name: 'QueryCursor', type: 2, adder: { name: 'add_QueryCursor', type: 8, sname: 'add_QueryCursor', returnType: Object, params: [Function] }, remover: { name: 'remove_QueryCursor', type: 8, sname: 'remove_QueryCursor', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_ValueSource, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_BaseValueSource, Boolean, Boolean, Boolean, Boolean] }, { name: 'BaseValueSource', type: 16, returnType: $System_Windows_BaseValueSource, getter: { name: 'get_BaseValueSource', type: 8, sname: 'get_BaseValueSource', returnType: $System_Windows_BaseValueSource, params: [] }, setter: { name: 'set_BaseValueSource', type: 8, sname: 'set_BaseValueSource', returnType: Object, params: [$System_Windows_BaseValueSource] } }, { name: 'IsAnimated', type: 16, returnType: Boolean, getter: { name: 'get_IsAnimated', type: 8, sname: 'get_IsAnimated', returnType: Boolean, params: [] }, setter: { name: 'set_IsAnimated', type: 8, sname: 'set_IsAnimated', returnType: Object, params: [Boolean] } }, { name: 'IsCoerced', type: 16, returnType: Boolean, getter: { name: 'get_IsCoerced', type: 8, sname: 'get_IsCoerced', returnType: Boolean, params: [] }, setter: { name: 'set_IsCoerced', type: 8, sname: 'set_IsCoerced', returnType: Object, params: [Boolean] } }, { name: 'IsCurrent', type: 16, returnType: Boolean, getter: { name: 'get_IsCurrent', type: 8, sname: 'get_IsCurrent', returnType: Boolean, params: [] }, setter: { name: 'set_IsCurrent', type: 8, sname: 'set_IsCurrent', returnType: Object, params: [Boolean] } }, { name: 'IsExpression', type: 16, returnType: Boolean, getter: { name: 'get_IsExpression', type: 8, sname: 'get_IsExpression', returnType: Boolean, params: [] }, setter: { name: 'set_IsExpression', type: 8, sname: 'set_IsExpression', returnType: Object, params: [Boolean] } }] });
 	ss.setMetadata($System_Windows_VisualState, { attr: [new $System_Windows_Markup_RuntimeNamePropertyAttribute('Name'), new $System_Windows_Markup_ContentPropertyAttribute('Storyboard')], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Name', type: 16, returnType: String, getter: { name: 'get_Name', type: 8, sname: 'get_Name', returnType: String, params: [] }, setter: { name: 'set_Name', type: 8, sname: 'set_Name', returnType: Object, params: [String] } }, { name: 'Storyboard', type: 16, returnType: $System_Windows_Media_Animation_Storyboard, getter: { name: 'get_Storyboard', type: 8, sname: 'get_Storyboard', returnType: $System_Windows_Media_Animation_Storyboard, params: [] }, setter: { name: 'set_Storyboard', type: 8, sname: 'set_Storyboard', returnType: Object, params: [$System_Windows_Media_Animation_Storyboard] } }, { name: 'StoryboardProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'StoryboardProperty' }] });
 	ss.setMetadata($System_Windows_VisualStateGroup, { attr: [new $System_Windows_Markup_ContentPropertyAttribute('States'), new $System_Windows_Markup_RuntimeNamePropertyAttribute('Name')], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'GoToState', type: 8, sname: 'GoToState', returnType: Boolean, params: [$System_Windows_VisualState, Boolean] }, { name: 'SetContainer', type: 8, sname: 'SetContainer', returnType: Object, params: [$System_Windows_FrameworkElement] }, { name: 'CurrentState', type: 16, returnType: $System_Windows_VisualState, getter: { name: 'get_CurrentState', type: 8, sname: 'get_CurrentState', returnType: $System_Windows_VisualState, params: [] }, setter: { name: 'set_CurrentState', type: 8, sname: 'set_CurrentState', returnType: Object, params: [$System_Windows_VisualState] } }, { name: 'Name', type: 16, returnType: String, getter: { name: 'get_Name', type: 8, sname: 'get_Name', returnType: String, params: [] }, setter: { name: 'set_Name', type: 8, sname: 'set_Name', returnType: Object, params: [String] } }, { name: 'States', type: 16, returnType: ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_VisualState]), getter: { name: 'get_States', type: 8, sname: 'get_States', returnType: ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_VisualState]), params: [] }, setter: { name: 'set_States', type: 8, sname: 'set_States', returnType: Object, params: [ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_VisualState])] } }, { name: 'Transitions', type: 16, returnType: ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_VisualTransition]), getter: { name: 'get_Transitions', type: 8, sname: 'get_Transitions', returnType: ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_VisualTransition]), params: [] }, setter: { name: 'set_Transitions', type: 8, sname: 'set_Transitions', returnType: Object, params: [ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_VisualTransition])] } }] });
@@ -23224,8 +24533,8 @@
 	ss.setMetadata($System_Windows_Controls_$IDefinitionBase, { members: [{ name: 'ActualLength', type: 16, returnType: Number, getter: { name: 'get_ActualLength', type: 8, sname: 'get_$ActualLength', returnType: Number, params: [] }, setter: { name: 'set_ActualLength', type: 8, sname: 'set_$ActualLength', returnType: Object, params: [Number] } }, { name: 'Length', type: 16, returnType: $System_Windows_Controls_GridLength, getter: { name: 'get_Length', type: 8, sname: 'get_$Length', returnType: $System_Windows_Controls_GridLength, params: [] } }, { name: 'MaxLength', type: 16, returnType: Number, getter: { name: 'get_MaxLength', type: 8, sname: 'get_$MaxLength', returnType: Number, params: [] } }, { name: 'MinLength', type: 16, returnType: Number, getter: { name: 'get_MinLength', type: 8, sname: 'get_$MinLength', returnType: Number, params: [] } }] });
 	ss.setMetadata($System_Windows_Controls_$MeasureCache, { members: [{ name: '.ctor', type: 1, params: [ss.Int32] }, { name: 'Clear', type: 8, sname: '$Clear', returnType: Object, params: [] }, { name: 'SetMeasure', type: 8, sname: '$SetMeasure', returnType: Object, params: [$System_Windows_Size, $System_Windows_Size] }] });
 	ss.setMetadata($System_Windows_Controls_$TextBoxView, { members: [{ name: '.cctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [] }, { name: 'ArrangeOverride', type: 8, sname: 'ArrangeOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'ClearFocusRenderElement', type: 8, sname: '$ClearFocusRenderElement', returnType: Object, params: [] }, { name: 'CreateContentRenderElementOverride', type: 8, sname: 'CreateContentRenderElementOverride', returnType: Object, params: [$System_Windows_Media_IRenderElementFactory] }, { name: 'FocusRenderElement', type: 8, sname: '$FocusRenderElement', returnType: Object, params: [] }, { name: 'MeasureOverride', type: 8, sname: 'MeasureOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'ProcessRenderElementKeyEvent', type: 8, sname: '$ProcessRenderElementKeyEvent', returnType: Object, params: [$System_Windows_Input_KeyEventArgs] }, { name: 'AcceptsReturn', type: 16, returnType: Boolean, getter: { name: 'get_AcceptsReturn', type: 8, sname: 'get_$AcceptsReturn', returnType: Boolean, params: [] }, setter: { name: 'set_AcceptsReturn', type: 8, sname: 'set_$AcceptsReturn', returnType: Object, params: [Boolean] } }, { name: 'AcceptsTab', type: 16, returnType: Boolean, getter: { name: 'get_AcceptsTab', type: 8, sname: 'get_$AcceptsTab', returnType: Boolean, params: [] }, setter: { name: 'set_AcceptsTab', type: 8, sname: 'set_$AcceptsTab', returnType: Object, params: [Boolean] } }, { name: 'CaretIndex', type: 16, returnType: ss.Int32, getter: { name: 'get_CaretIndex', type: 8, sname: 'get_$CaretIndex', returnType: ss.Int32, params: [] }, setter: { name: 'set_CaretIndex', type: 8, sname: 'set_$CaretIndex', returnType: Object, params: [ss.Int32] } }, { name: 'HorizontalScrollBarVisibility', type: 16, returnType: $System_Windows_Controls_ScrollBarVisibility, getter: { name: 'get_HorizontalScrollBarVisibility', type: 8, sname: 'get_$HorizontalScrollBarVisibility', returnType: $System_Windows_Controls_ScrollBarVisibility, params: [] }, setter: { name: 'set_HorizontalScrollBarVisibility', type: 8, sname: 'set_$HorizontalScrollBarVisibility', returnType: Object, params: [$System_Windows_Controls_ScrollBarVisibility] } }, { name: 'IsPassword', type: 16, returnType: Boolean, getter: { name: 'get_IsPassword', type: 8, sname: 'get_$IsPassword', returnType: Boolean, params: [] }, setter: { name: 'set_IsPassword', type: 8, sname: 'set_$IsPassword', returnType: Object, params: [Boolean] } }, { name: 'IsReadOnly', type: 16, returnType: Boolean, getter: { name: 'get_IsReadOnly', type: 8, sname: 'get_$IsReadOnly', returnType: Boolean, params: [] }, setter: { name: 'set_IsReadOnly', type: 8, sname: 'set_$IsReadOnly', returnType: Object, params: [Boolean] } }, { name: 'MaxLength', type: 16, returnType: ss.Int32, getter: { name: 'get_MaxLength', type: 8, sname: 'get_$MaxLength', returnType: ss.Int32, params: [] }, setter: { name: 'set_MaxLength', type: 8, sname: 'set_$MaxLength', returnType: Object, params: [ss.Int32] } }, { name: 'SelectionLength', type: 16, returnType: ss.Int32, getter: { name: 'get_SelectionLength', type: 8, sname: 'get_$SelectionLength', returnType: ss.Int32, params: [] }, setter: { name: 'set_SelectionLength', type: 8, sname: 'set_$SelectionLength', returnType: Object, params: [ss.Int32] } }, { name: 'SelectionStart', type: 16, returnType: ss.Int32, getter: { name: 'get_SelectionStart', type: 8, sname: 'get_$SelectionStart', returnType: ss.Int32, params: [] }, setter: { name: 'set_SelectionStart', type: 8, sname: 'set_$SelectionStart', returnType: Object, params: [ss.Int32] } }, { name: 'SpellCheck', type: 16, returnType: Boolean, getter: { name: 'get_SpellCheck', type: 8, sname: 'get_$SpellCheck', returnType: Boolean, params: [] }, setter: { name: 'set_SpellCheck', type: 8, sname: 'set_$SpellCheck', returnType: Object, params: [Boolean] } }, { name: 'Text', type: 16, returnType: String, getter: { name: 'get_Text', type: 8, sname: 'get_$Text', returnType: String, params: [] }, setter: { name: 'set_Text', type: 8, sname: 'set_$Text', returnType: Object, params: [String] } }, { name: 'VerticalScrollBarVisibility', type: 16, returnType: $System_Windows_Controls_ScrollBarVisibility, getter: { name: 'get_VerticalScrollBarVisibility', type: 8, sname: 'get_$VerticalScrollBarVisibility', returnType: $System_Windows_Controls_ScrollBarVisibility, params: [] }, setter: { name: 'set_VerticalScrollBarVisibility', type: 8, sname: 'set_$VerticalScrollBarVisibility', returnType: Object, params: [$System_Windows_Controls_ScrollBarVisibility] } }, { name: 'CaretIndexChanged', type: 2, adder: { name: 'add_CaretIndexChanged', type: 8, sname: 'add_$CaretIndexChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_CaretIndexChanged', type: 8, sname: 'remove_$CaretIndexChanged', returnType: Object, params: [Function] } }, { name: 'SelectionLengthChanged', type: 2, adder: { name: 'add_SelectionLengthChanged', type: 8, sname: 'add_$SelectionLengthChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_SelectionLengthChanged', type: 8, sname: 'remove_$SelectionLengthChanged', returnType: Object, params: [Function] } }, { name: 'SelectionStartChanged', type: 2, adder: { name: 'add_SelectionStartChanged', type: 8, sname: 'add_$SelectionStartChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_SelectionStartChanged', type: 8, sname: 'remove_$SelectionStartChanged', returnType: Object, params: [Function] } }, { name: 'TextChanged', type: 2, adder: { name: 'add_TextChanged', type: 8, sname: 'add_$TextChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_TextChanged', type: 8, sname: 'remove_$TextChanged', returnType: Object, params: [Function] } }] });
-	ss.setMetadata($System_Windows_Controls_Adorner, { members: [{ name: '.cctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [$System_Windows_UIElement] }, { name: 'ArrangeOverride', type: 8, sname: 'ArrangeOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'MeasureOverride', type: 8, sname: 'MeasureOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'AdornedElement', type: 16, returnType: $System_Windows_UIElement, getter: { name: 'get_AdornedElement', type: 8, sname: 'get_AdornedElement', returnType: $System_Windows_UIElement, params: [] }, setter: { name: 'set_AdornedElement', type: 8, sname: 'set_AdornedElement', returnType: Object, params: [$System_Windows_UIElement] } }, { name: 'Child', type: 16, returnType: $System_Windows_UIElement, getter: { name: 'get_Child', type: 8, sname: 'get_Child', returnType: $System_Windows_UIElement, params: [] }, setter: { name: 'set_Child', type: 8, sname: 'set_Child', returnType: Object, params: [$System_Windows_UIElement] } }] });
-	ss.setMetadata($System_Windows_Controls_AdornerLayer, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Add', type: 8, sname: 'Add', returnType: Object, params: [$System_Windows_Controls_Adorner] }, { name: 'ArrangeOverride', type: 8, sname: 'ArrangeOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'GetAdornerLayer', isStatic: true, type: 8, sname: 'GetAdornerLayer', returnType: $System_Windows_Controls_AdornerLayer, params: [$System_Windows_Media_Visual] }, { name: 'MeasureOverride', type: 8, sname: 'MeasureOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'OnVisualParentChanged', type: 8, sname: 'OnVisualParentChanged', returnType: Object, params: [$System_Windows_Media_Visual, $System_Windows_Media_Visual] }, { name: 'Remove', type: 8, sname: 'Remove', returnType: Object, params: [$System_Windows_Controls_Adorner] }] });
+	ss.setMetadata($System_Windows_Controls_Adorner, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_UIElement] }, { name: 'Arrange', type: 8, sname: 'Arrange$1', returnType: Object, params: [] }, { name: 'ArrangeOverride', type: 8, sname: 'ArrangeOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'MeasureOverride', type: 8, sname: 'MeasureOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'OnVisualParentChanged', type: 8, sname: 'OnVisualParentChanged', returnType: Object, params: [$System_Windows_Media_Visual, $System_Windows_Media_Visual] }, { name: 'AdornedElement', type: 16, returnType: $System_Windows_UIElement, getter: { name: 'get_AdornedElement', type: 8, sname: 'get_AdornedElement', returnType: $System_Windows_UIElement, params: [] }, setter: { name: 'set_AdornedElement', type: 8, sname: 'set_AdornedElement', returnType: Object, params: [$System_Windows_UIElement] } }, { name: 'Child', type: 16, returnType: $System_Windows_UIElement, getter: { name: 'get_Child', type: 8, sname: 'get_Child', returnType: $System_Windows_UIElement, params: [] }, setter: { name: 'set_Child', type: 8, sname: 'set_Child', returnType: Object, params: [$System_Windows_UIElement] } }] });
+	ss.setMetadata($System_Windows_Controls_AdornerLayer, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Add', type: 8, sname: 'Add', returnType: Object, params: [$System_Windows_Controls_Adorner] }, { name: 'GetAdornerLayer', isStatic: true, type: 8, sname: 'GetAdornerLayer', returnType: $System_Windows_Controls_AdornerLayer, params: [$System_Windows_Media_Visual] }, { name: 'OnVisualParentChanged', type: 8, sname: 'OnVisualParentChanged', returnType: Object, params: [$System_Windows_Media_Visual, $System_Windows_Media_Visual] }, { name: 'Remove', type: 8, sname: 'Remove', returnType: Object, params: [$System_Windows_Controls_Adorner] }] });
 	ss.setMetadata($System_Windows_Controls_Border, { members: [{ name: '.cctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [] }, { name: 'ArrangeOverride', type: 8, sname: 'ArrangeOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'CreateContentRenderElementOverride', type: 8, sname: 'CreateContentRenderElementOverride', returnType: Object, params: [$System_Windows_Media_IRenderElementFactory] }, { name: 'HitTestOverride', type: 8, sname: 'HitTestOverride', returnType: Boolean, params: [$System_Windows_Point] }, { name: 'MeasureOverride', type: 8, sname: 'MeasureOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'Background', type: 16, returnType: $System_Windows_Media_Brush, getter: { name: 'get_Background', type: 8, sname: 'get_Background', returnType: $System_Windows_Media_Brush, params: [] }, setter: { name: 'set_Background', type: 8, sname: 'set_Background', returnType: Object, params: [$System_Windows_Media_Brush] } }, { name: 'BorderBrush', type: 16, returnType: $System_Windows_Media_Brush, getter: { name: 'get_BorderBrush', type: 8, sname: 'get_BorderBrush', returnType: $System_Windows_Media_Brush, params: [] }, setter: { name: 'set_BorderBrush', type: 8, sname: 'set_BorderBrush', returnType: Object, params: [$System_Windows_Media_Brush] } }, { name: 'BorderThickness', type: 16, returnType: $System_Windows_Thickness, getter: { name: 'get_BorderThickness', type: 8, sname: 'get_BorderThickness', returnType: $System_Windows_Thickness, params: [] }, setter: { name: 'set_BorderThickness', type: 8, sname: 'set_BorderThickness', returnType: Object, params: [$System_Windows_Thickness] } }, { name: 'CornerRadius', type: 16, returnType: $System_Windows_CornerRadius, getter: { name: 'get_CornerRadius', type: 8, sname: 'get_CornerRadius', returnType: $System_Windows_CornerRadius, params: [] }, setter: { name: 'set_CornerRadius', type: 8, sname: 'set_CornerRadius', returnType: Object, params: [$System_Windows_CornerRadius] } }, { name: 'Padding', type: 16, returnType: $System_Windows_Thickness, getter: { name: 'get_Padding', type: 8, sname: 'get_Padding', returnType: $System_Windows_Thickness, params: [] }, setter: { name: 'set_Padding', type: 8, sname: 'set_Padding', returnType: Object, params: [$System_Windows_Thickness] } }, { name: 'BackgroundProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'BackgroundProperty' }, { name: 'BorderBrushProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'BorderBrushProperty' }, { name: 'BorderThicknessProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'BorderThicknessProperty' }, { name: 'CornerRadiusProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'CornerRadiusProperty' }, { name: 'PaddingProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'PaddingProperty' }] });
 	ss.setMetadata($System_Windows_Controls_Button, { members: [{ name: '.ctor', type: 1, params: [] }] });
 	ss.setMetadata($System_Windows_Controls_Canvas, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ArrangeOverride', type: 8, sname: 'ArrangeOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'GetBottom', isStatic: true, type: 8, sname: 'GetBottom', returnType: Number, params: [$System_Windows_DependencyObject] }, { name: 'GetLeft', isStatic: true, type: 8, sname: 'GetLeft', returnType: Number, params: [$System_Windows_DependencyObject] }, { name: 'GetRight', isStatic: true, type: 8, sname: 'GetRight', returnType: Number, params: [$System_Windows_DependencyObject] }, { name: 'GetTop', isStatic: true, type: 8, sname: 'GetTop', returnType: Number, params: [$System_Windows_DependencyObject] }, { name: 'MeasureOverride', type: 8, sname: 'MeasureOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'SetBottom', isStatic: true, type: 8, sname: 'SetBottom', returnType: Object, params: [$System_Windows_DependencyObject, Number] }, { name: 'SetLeft', isStatic: true, type: 8, sname: 'SetLeft', returnType: Object, params: [$System_Windows_DependencyObject, Number] }, { name: 'SetRight', isStatic: true, type: 8, sname: 'SetRight', returnType: Object, params: [$System_Windows_DependencyObject, Number] }, { name: 'SetTop', isStatic: true, type: 8, sname: 'SetTop', returnType: Object, params: [$System_Windows_DependencyObject, Number] }, { name: 'BottomProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'BottomProperty' }, { name: 'LeftProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'LeftProperty' }, { name: 'RightProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'RightProperty' }, { name: 'TopProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'TopProperty' }] });
@@ -23247,7 +24556,7 @@
 	ss.setMetadata($System_Windows_Controls_IGeneratorHost, { members: [{ name: 'ClearContainerForItem', type: 8, sname: 'ClearContainerForItem', returnType: Object, params: [Object, $System_Windows_FrameworkElement] }, { name: 'GetContainerForItem', type: 8, sname: 'GetContainerForItem', returnType: $System_Windows_FrameworkElement, params: [Object] }, { name: 'PrepareContainerForItem', type: 8, sname: 'PrepareContainerForItem', returnType: Object, params: [Object, $System_Windows_FrameworkElement] }, { name: 'View', type: 16, returnType: $System_Windows_Controls_ItemCollection, getter: { name: 'get_View', type: 8, sname: 'get_View', returnType: $System_Windows_Controls_ItemCollection, params: [] } }] });
 	ss.setMetadata($System_Windows_Controls_IItemContainer, { members: [{ name: 'ClearContainerForItem', type: 8, sname: 'ClearContainerForItem', returnType: Object, params: [Object] }, { name: 'PrepareContainerForItem', type: 8, sname: 'PrepareContainerForItem', returnType: Object, params: [Object, $System_Windows_DataTemplate, $System_Windows_Style] }] });
 	ss.setMetadata($System_Windows_Controls_IItemContainerGenerator, { members: [{ name: 'ContainerFromItem', type: 8, sname: 'ContainerFromItem', returnType: $System_Windows_DependencyObject, params: [Object] }, { name: 'Generate', type: 8, sname: 'Generate', returnType: $System_Windows_FrameworkElement, params: [ss.Int32] }, { name: 'IndexFromContainer', type: 8, sname: 'IndexFromContainer', returnType: ss.Int32, params: [$System_Windows_DependencyObject] }, { name: 'ItemFromContainer', type: 8, sname: 'ItemFromContainer', returnType: Object, params: [$System_Windows_DependencyObject] }, { name: 'RemoveRange', type: 8, sname: 'RemoveRange', returnType: Object, params: [ss.Int32, ss.Int32] }, { name: 'ItemsCount', type: 16, returnType: ss.Int32, getter: { name: 'get_ItemsCount', type: 8, sname: 'get_ItemsCount', returnType: ss.Int32, params: [] } }, { name: 'ItemsChanged', type: 2, adder: { name: 'add_ItemsChanged', type: 8, sname: 'add_ItemsChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ItemsChanged', type: 8, sname: 'remove_ItemsChanged', returnType: Object, params: [Function] } }] });
-	ss.setMetadata($System_Windows_Controls_Image, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ArrangeOverride', type: 8, sname: 'ArrangeOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'CreateContentRenderElementOverride', type: 8, sname: 'CreateContentRenderElementOverride', returnType: Object, params: [$System_Windows_Media_IRenderElementFactory] }, { name: 'MeasureOverride', type: 8, sname: 'MeasureOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'Source', type: 16, returnType: $System_Windows_Media_ImageSource, getter: { name: 'get_Source', type: 8, sname: 'get_Source', returnType: $System_Windows_Media_ImageSource, params: [] }, setter: { name: 'set_Source', type: 8, sname: 'set_Source', returnType: Object, params: [$System_Windows_Media_ImageSource] } }, { name: 'Stretch', type: 16, returnType: $System_Windows_Media_Stretch, getter: { name: 'get_Stretch', type: 8, sname: 'get_Stretch', returnType: $System_Windows_Media_Stretch, params: [] }, setter: { name: 'set_Stretch', type: 8, sname: 'set_Stretch', returnType: Object, params: [$System_Windows_Media_Stretch] } }, { name: 'StretchDirection', type: 16, returnType: $System_Windows_Media_StretchDirection, getter: { name: 'get_StretchDirection', type: 8, sname: 'get_StretchDirection', returnType: $System_Windows_Media_StretchDirection, params: [] }, setter: { name: 'set_StretchDirection', type: 8, sname: 'set_StretchDirection', returnType: Object, params: [$System_Windows_Media_StretchDirection] } }, { name: 'ImageFailedEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'ImageFailedEvent' }, { name: 'SourceProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'SourceProperty' }, { name: 'StretchDirectionProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'StretchDirectionProperty' }, { name: 'StretchProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'StretchProperty' }, { name: 'ImageFailed', type: 2, adder: { name: 'add_ImageFailed', type: 8, sname: 'add_ImageFailed', returnType: Object, params: [Function] }, remover: { name: 'remove_ImageFailed', type: 8, sname: 'remove_ImageFailed', returnType: Object, params: [Function] } }] });
+	ss.setMetadata($System_Windows_Controls_Image, { members: [{ name: '.cctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [] }, { name: 'ArrangeOverride', type: 8, sname: 'ArrangeOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'CreateContentRenderElementOverride', type: 8, sname: 'CreateContentRenderElementOverride', returnType: Object, params: [$System_Windows_Media_IRenderElementFactory] }, { name: 'MeasureOverride', type: 8, sname: 'MeasureOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'Source', type: 16, returnType: $System_Windows_Media_ImageSource, getter: { name: 'get_Source', type: 8, sname: 'get_Source', returnType: $System_Windows_Media_ImageSource, params: [] }, setter: { name: 'set_Source', type: 8, sname: 'set_Source', returnType: Object, params: [$System_Windows_Media_ImageSource] } }, { name: 'Stretch', type: 16, returnType: $System_Windows_Media_Stretch, getter: { name: 'get_Stretch', type: 8, sname: 'get_Stretch', returnType: $System_Windows_Media_Stretch, params: [] }, setter: { name: 'set_Stretch', type: 8, sname: 'set_Stretch', returnType: Object, params: [$System_Windows_Media_Stretch] } }, { name: 'StretchDirection', type: 16, returnType: $System_Windows_Media_StretchDirection, getter: { name: 'get_StretchDirection', type: 8, sname: 'get_StretchDirection', returnType: $System_Windows_Media_StretchDirection, params: [] }, setter: { name: 'set_StretchDirection', type: 8, sname: 'set_StretchDirection', returnType: Object, params: [$System_Windows_Media_StretchDirection] } }, { name: 'ImageFailedEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'ImageFailedEvent' }, { name: 'SourceProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'SourceProperty' }, { name: 'StretchDirectionProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'StretchDirectionProperty' }, { name: 'StretchProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'StretchProperty' }, { name: 'ImageFailed', type: 2, adder: { name: 'add_ImageFailed', type: 8, sname: 'add_ImageFailed', returnType: Object, params: [Function] }, remover: { name: 'remove_ImageFailed', type: 8, sname: 'remove_ImageFailed', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_Controls_InnerCollectionView, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Add', type: 8, sname: 'add', returnType: Object, params: [Object] }, { name: 'Clear', type: 8, sname: 'clear', returnType: Object, params: [] }, { name: 'Contains', type: 8, sname: 'contains', returnType: Boolean, params: [Object] }, { name: 'CopyTo', type: 8, sname: 'CopyTo', returnType: Object, params: [Array, ss.Int32] }, { name: 'GetEnumerator', type: 8, sname: 'getEnumerator', returnType: ss.IEnumerator, params: [] }, { name: 'IndexOf', type: 8, sname: 'indexOf', returnType: ss.Int32, params: [Object] }, { name: 'Insert', type: 8, sname: 'insert', returnType: Object, params: [ss.Int32, Object] }, { name: 'Remove', type: 8, sname: 'remove', returnType: Boolean, params: [Object] }, { name: 'RemoveAt', type: 8, sname: 'removeAt', returnType: Object, params: [ss.Int32] }, { name: 'CanFilter', type: 16, returnType: Boolean, getter: { name: 'get_CanFilter', type: 8, sname: 'get_CanFilter', returnType: Boolean, params: [] } }, { name: 'CanSort', type: 16, returnType: Boolean, getter: { name: 'get_CanSort', type: 8, sname: 'get_CanSort', returnType: Boolean, params: [] } }, { name: 'Count', type: 16, returnType: ss.Int32, getter: { name: 'get_Count', type: 8, sname: 'get_count', returnType: ss.Int32, params: [] } }, { name: 'CurrentItem', type: 16, returnType: Object, getter: { name: 'get_CurrentItem', type: 8, sname: 'get_CurrentItem', returnType: Object, params: [] }, setter: { name: 'set_CurrentItem', type: 8, sname: 'set_CurrentItem', returnType: Object, params: [Object] } }, { name: 'CurrentItemIndex', type: 16, returnType: ss.Int32, getter: { name: 'get_CurrentItemIndex', type: 8, sname: 'get_CurrentItemIndex', returnType: ss.Int32, params: [] }, setter: { name: 'set_CurrentItemIndex', type: 8, sname: 'set_CurrentItemIndex', returnType: Object, params: [ss.Int32] } }, { name: 'FilterPredicate', type: 16, returnType: Function, getter: { name: 'get_FilterPredicate', type: 8, sname: 'get_FilterPredicate', returnType: Function, params: [] }, setter: { name: 'set_FilterPredicate', type: 8, sname: 'set_FilterPredicate', returnType: Object, params: [Function] } }, { name: 'IsReadOnly', type: 16, returnType: Boolean, getter: { name: 'get_IsReadOnly', type: 8, sname: 'get_IsReadOnly', returnType: Boolean, params: [] } }, { name: 'Item', type: 16, returnType: Object, params: [ss.Int32], getter: { name: 'get_Item', type: 8, sname: 'get_item', returnType: Object, params: [ss.Int32] }, setter: { name: 'set_Item', type: 8, sname: 'set_item', returnType: Object, params: [ss.Int32, Object] } }, { name: 'SortDirection', type: 16, returnType: $System_Windows_Data_ListSortDirection, getter: { name: 'get_SortDirection', type: 8, sname: 'get_SortDirection', returnType: $System_Windows_Data_ListSortDirection, params: [] }, setter: { name: 'set_SortDirection', type: 8, sname: 'set_SortDirection', returnType: Object, params: [$System_Windows_Data_ListSortDirection] } }, { name: 'SortKeySelector', type: 16, returnType: Function, getter: { name: 'get_SortKeySelector', type: 8, sname: 'get_SortKeySelector', returnType: Function, params: [] }, setter: { name: 'set_SortKeySelector', type: 8, sname: 'set_SortKeySelector', returnType: Object, params: [Function] } }, { name: 'SourceCollection', type: 16, returnType: ss.IEnumerable, getter: { name: 'get_SourceCollection', type: 8, sname: 'get_SourceCollection', returnType: ss.IEnumerable, params: [] } }, { name: 'CollectionChanged', type: 2, adder: { name: 'add_CollectionChanged', type: 8, sname: 'add_CollectionChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_CollectionChanged', type: 8, sname: 'remove_CollectionChanged', returnType: Object, params: [Function] } }, { name: 'CurrentChanged', type: 2, adder: { name: 'add_CurrentChanged', type: 8, sname: 'add_CurrentChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_CurrentChanged', type: 8, sname: 'remove_CurrentChanged', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_Controls_IPopupLayerHost, { members: [{ name: 'PopupLayer', type: 16, returnType: $System_Windows_Controls_PopupLayer, getter: { name: 'get_PopupLayer', type: 8, sname: 'get_PopupLayer', returnType: $System_Windows_Controls_PopupLayer, params: [] } }] });
 	ss.setMetadata($System_Windows_Controls_IRadioButtonGroupScope, { members: [{ name: 'GetRadioButtonGroup', type: 8, sname: 'GetRadioButtonGroup', returnType: ss.makeGenericType($System_Windows_Controls_ISelectionGroup$1, [$System_Windows_Controls_RadioButton]), params: [String] }] });
@@ -23284,7 +24593,7 @@
 	ss.setMetadata($System_Windows_Controls_UIElementCollection, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_UIElement] }, { name: 'Add', type: 8, sname: 'add', returnType: Object, params: [$System_Windows_UIElement] }, { name: 'Clear', type: 8, sname: 'clear', returnType: Object, params: [] }, { name: 'Contains', type: 8, sname: 'contains', returnType: Boolean, params: [$System_Windows_UIElement] }, { name: 'CopyTo', type: 8, sname: 'CopyTo', returnType: Object, params: [Array, ss.Int32] }, { name: 'GetEnumerator', type: 8, sname: 'getEnumerator', returnType: ss.IEnumerator, params: [] }, { name: 'IndexOf', type: 8, sname: 'indexOf', returnType: ss.Int32, params: [$System_Windows_UIElement] }, { name: 'Insert', type: 8, sname: 'insert', returnType: Object, params: [ss.Int32, $System_Windows_UIElement] }, { name: 'Remove', type: 8, sname: 'remove', returnType: Boolean, params: [$System_Windows_UIElement] }, { name: 'RemoveAt', type: 8, sname: 'removeAt', returnType: Object, params: [ss.Int32] }, { name: 'Count', type: 16, returnType: ss.Int32, getter: { name: 'get_Count', type: 8, sname: 'get_count', returnType: ss.Int32, params: [] } }, { name: 'IsReadOnly', type: 16, returnType: Boolean, getter: { name: 'get_IsReadOnly', type: 8, sname: 'get_IsReadOnly', returnType: Boolean, params: [] } }, { name: 'Item', type: 16, returnType: $System_Windows_UIElement, params: [ss.Int32], getter: { name: 'get_Item', type: 8, sname: 'get_item', returnType: $System_Windows_UIElement, params: [ss.Int32] }, setter: { name: 'set_Item', type: 8, sname: 'set_item', returnType: Object, params: [ss.Int32, $System_Windows_UIElement] } }, { name: 'CollectionChanged', type: 2, adder: { name: 'add_CollectionChanged', type: 8, sname: 'add_CollectionChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_CollectionChanged', type: 8, sname: 'remove_CollectionChanged', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_Controls_UserControl, { members: [{ name: '.cctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [] }] });
 	ss.setMetadata($System_Windows_Controls_WrapPanel, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ArrangeOverride', type: 8, sname: 'ArrangeOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'MeasureOverride', type: 8, sname: 'MeasureOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'Orientation', type: 16, returnType: $System_Windows_Controls_Orientation, getter: { name: 'get_Orientation', type: 8, sname: 'get_Orientation', returnType: $System_Windows_Controls_Orientation, params: [] }, setter: { name: 'set_Orientation', type: 8, sname: 'set_Orientation', returnType: Object, params: [$System_Windows_Controls_Orientation] } }, { name: 'OrientationProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'OrientationProperty' }] });
-	ss.setMetadata($System_Windows_Controls_Primitives_ButtonBase, { attr: [new $System_Windows_TemplateVisualStateAttribute($System_Windows_VisualStates.CommonStates, $System_Windows_VisualStates.NormalState), new $System_Windows_TemplateVisualStateAttribute($System_Windows_VisualStates.CommonStates, $System_Windows_VisualStates.MouseOverState), new $System_Windows_TemplateVisualStateAttribute($System_Windows_VisualStates.CommonStates, $System_Windows_VisualStates.PressedState), new $System_Windows_TemplateVisualStateAttribute($System_Windows_VisualStates.CommonStates, $System_Windows_VisualStates.DisabledState), new $System_Windows_TemplateVisualStateAttribute($System_Windows_VisualStates.FocusStates, $System_Windows_VisualStates.FocusedState), new $System_Windows_TemplateVisualStateAttribute($System_Windows_VisualStates.FocusStates, $System_Windows_VisualStates.UnfocusedState)], members: [{ name: '.cctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [] }, { name: 'OnClick', type: 8, sname: 'OnClick', returnType: Object, params: [$System_Windows_RoutedEventArgs] }, { name: 'OnGotFocus', type: 8, sname: 'OnGotFocus', returnType: Object, params: [$System_Windows_RoutedEventArgs] }, { name: 'OnIsPressedChanged', type: 8, sname: 'OnIsPressedChanged', returnType: Object, params: [$System_Windows_DependencyPropertyChangedEventArgs] }, { name: 'OnKeyDown', type: 8, sname: 'OnKeyDown', returnType: Object, params: [$System_Windows_Input_KeyEventArgs] }, { name: 'OnKeyUp', type: 8, sname: 'OnKeyUp', returnType: Object, params: [$System_Windows_Input_KeyEventArgs] }, { name: 'OnLostFocus', type: 8, sname: 'OnLostFocus', returnType: Object, params: [$System_Windows_RoutedEventArgs] }, { name: 'OnMouseDown', type: 8, sname: 'OnMouseDown', returnType: Object, params: [$System_Windows_Input_MouseButtonEventArgs] }, { name: 'OnMouseMove', type: 8, sname: 'OnMouseMove', returnType: Object, params: [$System_Windows_Input_MouseEventArgs] }, { name: 'OnMouseUp', type: 8, sname: 'OnMouseUp', returnType: Object, params: [$System_Windows_Input_MouseButtonEventArgs] }, { name: 'OnPressEnded', type: 8, sname: 'OnPressEnded', returnType: Object, params: [] }, { name: 'OnPressStarted', type: 8, sname: 'OnPressStarted', returnType: Object, params: [] }, { name: 'RaiseClick', type: 8, sname: 'RaiseClick', returnType: Boolean, params: [] }, { name: 'UpdateVisualState', type: 8, sname: 'UpdateVisualState', returnType: Object, params: [Boolean] }, { name: 'ClickMode', type: 16, returnType: $System_Windows_Controls_Primitives_ClickMode, getter: { name: 'get_ClickMode', type: 8, sname: 'get_ClickMode', returnType: $System_Windows_Controls_Primitives_ClickMode, params: [] }, setter: { name: 'set_ClickMode', type: 8, sname: 'set_ClickMode', returnType: Object, params: [$System_Windows_Controls_Primitives_ClickMode] } }, { name: 'IsPressed', type: 16, returnType: Boolean, getter: { name: 'get_IsPressed', type: 8, sname: 'get_IsPressed', returnType: Boolean, params: [] }, setter: { name: 'set_IsPressed', type: 8, sname: 'set_IsPressed', returnType: Object, params: [Boolean] } }, { name: 'ClickEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'ClickEvent' }, { name: 'ClickModeProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ClickModeProperty' }, { name: 'IsPressedProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'IsPressedProperty' }, { name: 'Click', type: 2, adder: { name: 'add_Click', type: 8, sname: 'add_Click', returnType: Object, params: [Function] }, remover: { name: 'remove_Click', type: 8, sname: 'remove_Click', returnType: Object, params: [Function] } }] });
+	ss.setMetadata($System_Windows_Controls_Primitives_ButtonBase, { attr: [new $System_Windows_TemplateVisualStateAttribute($System_Windows_VisualStates.CommonStates, $System_Windows_VisualStates.NormalState), new $System_Windows_TemplateVisualStateAttribute($System_Windows_VisualStates.CommonStates, $System_Windows_VisualStates.MouseOverState), new $System_Windows_TemplateVisualStateAttribute($System_Windows_VisualStates.CommonStates, $System_Windows_VisualStates.PressedState), new $System_Windows_TemplateVisualStateAttribute($System_Windows_VisualStates.CommonStates, $System_Windows_VisualStates.DisabledState), new $System_Windows_TemplateVisualStateAttribute($System_Windows_VisualStates.FocusStates, $System_Windows_VisualStates.FocusedState), new $System_Windows_TemplateVisualStateAttribute($System_Windows_VisualStates.FocusStates, $System_Windows_VisualStates.UnfocusedState)], members: [{ name: '.cctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [] }, { name: 'OnClick', type: 8, sname: 'OnClick', returnType: Object, params: [$System_Windows_RoutedEventArgs] }, { name: 'OnGotFocus', type: 8, sname: 'OnGotFocus', returnType: Object, params: [$System_Windows_RoutedEventArgs] }, { name: 'OnIsPressedChanged', type: 8, sname: 'OnIsPressedChanged', returnType: Object, params: [$System_Windows_DependencyPropertyChangedEventArgs] }, { name: 'OnKeyDown', type: 8, sname: 'OnKeyDown', returnType: Object, params: [$System_Windows_Input_KeyEventArgs] }, { name: 'OnKeyUp', type: 8, sname: 'OnKeyUp', returnType: Object, params: [$System_Windows_Input_KeyEventArgs] }, { name: 'OnLostFocus', type: 8, sname: 'OnLostFocus', returnType: Object, params: [$System_Windows_RoutedEventArgs] }, { name: 'OnMouseDown', type: 8, sname: 'OnMouseDown', returnType: Object, params: [$System_Windows_Input_MouseButtonEventArgs] }, { name: 'OnMouseMove', type: 8, sname: 'OnMouseMove', returnType: Object, params: [$System_Windows_Input_MouseEventArgs] }, { name: 'OnMouseUp', type: 8, sname: 'OnMouseUp', returnType: Object, params: [$System_Windows_Input_MouseButtonEventArgs] }, { name: 'OnPressEnded', type: 8, sname: 'OnPressEnded', returnType: Object, params: [] }, { name: 'OnPressStarted', type: 8, sname: 'OnPressStarted', returnType: Object, params: [] }, { name: 'RaiseClick', type: 8, sname: 'RaiseClick', returnType: Boolean, params: [] }, { name: 'UpdateVisualState', type: 8, sname: 'UpdateVisualState', returnType: Object, params: [Boolean] }, { name: 'ClickMode', type: 16, returnType: $System_Windows_Controls_Primitives_ClickMode, getter: { name: 'get_ClickMode', type: 8, sname: 'get_ClickMode', returnType: $System_Windows_Controls_Primitives_ClickMode, params: [] }, setter: { name: 'set_ClickMode', type: 8, sname: 'set_ClickMode', returnType: Object, params: [$System_Windows_Controls_Primitives_ClickMode] } }, { name: 'Command', type: 16, returnType: System.Windows.Input.ICommand, getter: { name: 'get_Command', type: 8, sname: 'get_Command', returnType: System.Windows.Input.ICommand, params: [] }, setter: { name: 'set_Command', type: 8, sname: 'set_Command', returnType: Object, params: [System.Windows.Input.ICommand] } }, { name: 'CommandParameter', type: 16, returnType: Object, getter: { name: 'get_CommandParameter', type: 8, sname: 'get_CommandParameter', returnType: Object, params: [] }, setter: { name: 'set_CommandParameter', type: 8, sname: 'set_CommandParameter', returnType: Object, params: [Object] } }, { name: 'IsPressed', type: 16, returnType: Boolean, getter: { name: 'get_IsPressed', type: 8, sname: 'get_IsPressed', returnType: Boolean, params: [] }, setter: { name: 'set_IsPressed', type: 8, sname: 'set_IsPressed', returnType: Object, params: [Boolean] } }, { name: 'ClickEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'ClickEvent' }, { name: 'ClickModeProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ClickModeProperty' }, { name: 'CommandParameterProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'CommandParameterProperty' }, { name: 'CommandProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'CommandProperty' }, { name: 'IsPressedProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'IsPressedProperty' }, { name: 'Click', type: 2, adder: { name: 'add_Click', type: 8, sname: 'add_Click', returnType: Object, params: [Function] }, remover: { name: 'remove_Click', type: 8, sname: 'remove_Click', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_Controls_Primitives_DragCompletedEventArgs, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_RoutedEvent, Object, Boolean] }, { name: 'InvokeEventHandler', type: 8, sname: 'InvokeEventHandler', returnType: Object, params: [Function, Object] }, { name: 'IsCanceled', type: 16, returnType: Boolean, getter: { name: 'get_IsCanceled', type: 8, sname: 'get_IsCanceled', returnType: Boolean, params: [] }, setter: { name: 'set_IsCanceled', type: 8, sname: 'set_IsCanceled', returnType: Object, params: [Boolean] } }] });
 	ss.setMetadata($System_Windows_Controls_Primitives_DragDeltaEventArgs, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_RoutedEvent, Object, $System_Windows_Point] }, { name: 'InvokeEventHandler', type: 8, sname: 'InvokeEventHandler', returnType: Object, params: [Function, Object] }, { name: 'Delta', type: 16, returnType: $System_Windows_Point, getter: { name: 'get_Delta', type: 8, sname: 'get_Delta', returnType: $System_Windows_Point, params: [] }, setter: { name: 'set_Delta', type: 8, sname: 'set_Delta', returnType: Object, params: [$System_Windows_Point] } }] });
 	ss.setMetadata($System_Windows_Controls_Primitives_DragStartedEventArgs, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_RoutedEvent, Object] }, { name: 'InvokeEventHandler', type: 8, sname: 'InvokeEventHandler', returnType: Object, params: [Function, Object] }] });
@@ -23300,12 +24609,15 @@
 	ss.setMetadata($System_Windows_Controls_Primitives_Thumb, { attr: [new $System_Windows_TemplateVisualStateAttribute($System_Windows_VisualStates.CommonStates, $System_Windows_VisualStates.NormalState), new $System_Windows_TemplateVisualStateAttribute($System_Windows_VisualStates.CommonStates, $System_Windows_VisualStates.MouseOverState), new $System_Windows_TemplateVisualStateAttribute($System_Windows_VisualStates.CommonStates, $System_Windows_VisualStates.PressedState), new $System_Windows_TemplateVisualStateAttribute($System_Windows_VisualStates.CommonStates, $System_Windows_VisualStates.DisabledState), new $System_Windows_TemplateVisualStateAttribute($System_Windows_VisualStates.FocusStates, $System_Windows_VisualStates.FocusedState), new $System_Windows_TemplateVisualStateAttribute($System_Windows_VisualStates.FocusStates, $System_Windows_VisualStates.UnfocusedState)], members: [{ name: '.cctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [] }, { name: 'OnMouseDown', type: 8, sname: 'OnMouseDown', returnType: Object, params: [$System_Windows_Input_MouseButtonEventArgs] }, { name: 'OnMouseMove', type: 8, sname: 'OnMouseMove', returnType: Object, params: [$System_Windows_Input_MouseEventArgs] }, { name: 'OnMouseUp', type: 8, sname: 'OnMouseUp', returnType: Object, params: [$System_Windows_Input_MouseButtonEventArgs] }, { name: 'UpdateVisualState', type: 8, sname: 'UpdateVisualState', returnType: Object, params: [Boolean] }, { name: 'IsDragging', type: 16, returnType: Boolean, getter: { name: 'get_IsDragging', type: 8, sname: 'get_IsDragging', returnType: Boolean, params: [] }, setter: { name: 'set_IsDragging', type: 8, sname: 'set_IsDragging', returnType: Object, params: [Boolean] } }, { name: 'DragCompletedEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'DragCompletedEvent' }, { name: 'DragDeltaEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'DragDeltaEvent' }, { name: 'DragStartedEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'DragStartedEvent' }, { name: 'IsDraggingProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'IsDraggingProperty' }, { name: 'DragCompleted', type: 2, adder: { name: 'add_DragCompleted', type: 8, sname: 'add_DragCompleted', returnType: Object, params: [Function] }, remover: { name: 'remove_DragCompleted', type: 8, sname: 'remove_DragCompleted', returnType: Object, params: [Function] } }, { name: 'DragDelta', type: 2, adder: { name: 'add_DragDelta', type: 8, sname: 'add_DragDelta', returnType: Object, params: [Function] }, remover: { name: 'remove_DragDelta', type: 8, sname: 'remove_DragDelta', returnType: Object, params: [Function] } }, { name: 'DragStarted', type: 2, adder: { name: 'add_DragStarted', type: 8, sname: 'add_DragStarted', returnType: Object, params: [Function] }, remover: { name: 'remove_DragStarted', type: 8, sname: 'remove_DragStarted', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_Controls_Primitives_ToggleButton, { attr: [new $System_Windows_TemplateVisualStateAttribute($System_Windows_VisualStates.CheckStates, $System_Windows_VisualStates.CheckedState), new $System_Windows_TemplateVisualStateAttribute($System_Windows_VisualStates.CheckStates, $System_Windows_VisualStates.UncheckedState), new $System_Windows_TemplateVisualStateAttribute($System_Windows_VisualStates.CheckStates, $System_Windows_VisualStates.IndeterminateState)], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'GetToggledState', isStatic: true, type: 8, sname: 'GetToggledState', returnType: ss.makeGenericType(ss.Nullable$1, [Boolean]), params: [ss.makeGenericType(ss.Nullable$1, [Boolean]), Boolean] }, { name: 'OnClick', type: 8, sname: 'OnClick', returnType: Object, params: [$System_Windows_RoutedEventArgs] }, { name: 'OnIsCheckedChanged', type: 8, sname: 'OnIsCheckedChanged', returnType: Object, params: [$System_Windows_DependencyPropertyChangedEventArgs] }, { name: 'ToggleState', type: 8, sname: 'ToggleState', returnType: Object, params: [] }, { name: 'UpdateVisualState', type: 8, sname: 'UpdateVisualState', returnType: Object, params: [Boolean] }, { name: 'CheckOnClick', type: 16, returnType: Boolean, getter: { name: 'get_CheckOnClick', type: 8, sname: 'get_CheckOnClick', returnType: Boolean, params: [] }, setter: { name: 'set_CheckOnClick', type: 8, sname: 'set_CheckOnClick', returnType: Object, params: [Boolean] } }, { name: 'IsChecked', type: 16, returnType: ss.makeGenericType(ss.Nullable$1, [Boolean]), getter: { name: 'get_IsChecked', type: 8, sname: 'get_IsChecked', returnType: ss.makeGenericType(ss.Nullable$1, [Boolean]), params: [] }, setter: { name: 'set_IsChecked', type: 8, sname: 'set_IsChecked', returnType: Object, params: [ss.makeGenericType(ss.Nullable$1, [Boolean])] } }, { name: 'IsThreeState', type: 16, returnType: Boolean, getter: { name: 'get_IsThreeState', type: 8, sname: 'get_IsThreeState', returnType: Boolean, params: [] }, setter: { name: 'set_IsThreeState', type: 8, sname: 'set_IsThreeState', returnType: Object, params: [Boolean] } }, { name: 'CheckOnClickProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'CheckOnClickProperty' }, { name: 'CheckedEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'CheckedEvent' }, { name: 'IndeterminateEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'IndeterminateEvent' }, { name: 'IsCheckedProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'IsCheckedProperty' }, { name: 'IsThreeStateProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'IsThreeStateProperty' }, { name: 'UncheckedEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'UncheckedEvent' }, { name: 'Checked', type: 2, adder: { name: 'add_Checked', type: 8, sname: 'add_Checked', returnType: Object, params: [Function] }, remover: { name: 'remove_Checked', type: 8, sname: 'remove_Checked', returnType: Object, params: [Function] } }, { name: 'Indeterminate', type: 2, adder: { name: 'add_Indeterminate', type: 8, sname: 'add_Indeterminate', returnType: Object, params: [Function] }, remover: { name: 'remove_Indeterminate', type: 8, sname: 'remove_Indeterminate', returnType: Object, params: [Function] } }, { name: 'Unchecked', type: 2, adder: { name: 'add_Unchecked', type: 8, sname: 'add_Unchecked', returnType: Object, params: [Function] }, remover: { name: 'remove_Unchecked', type: 8, sname: 'remove_Unchecked', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_Controls_Primitives_Track, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ArrangeOverride', type: 8, sname: 'ArrangeOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'MeasureOverride', type: 8, sname: 'MeasureOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'DecreaseRepeatButton', type: 16, returnType: $System_Windows_Controls_Primitives_RepeatButton, getter: { name: 'get_DecreaseRepeatButton', type: 8, sname: 'get_DecreaseRepeatButton', returnType: $System_Windows_Controls_Primitives_RepeatButton, params: [] }, setter: { name: 'set_DecreaseRepeatButton', type: 8, sname: 'set_DecreaseRepeatButton', returnType: Object, params: [$System_Windows_Controls_Primitives_RepeatButton] } }, { name: 'IncreaseRepeatButton', type: 16, returnType: $System_Windows_Controls_Primitives_RepeatButton, getter: { name: 'get_IncreaseRepeatButton', type: 8, sname: 'get_IncreaseRepeatButton', returnType: $System_Windows_Controls_Primitives_RepeatButton, params: [] }, setter: { name: 'set_IncreaseRepeatButton', type: 8, sname: 'set_IncreaseRepeatButton', returnType: Object, params: [$System_Windows_Controls_Primitives_RepeatButton] } }, { name: 'Maximum', type: 16, returnType: Number, getter: { name: 'get_Maximum', type: 8, sname: 'get_Maximum', returnType: Number, params: [] }, setter: { name: 'set_Maximum', type: 8, sname: 'set_Maximum', returnType: Object, params: [Number] } }, { name: 'Minimum', type: 16, returnType: Number, getter: { name: 'get_Minimum', type: 8, sname: 'get_Minimum', returnType: Number, params: [] }, setter: { name: 'set_Minimum', type: 8, sname: 'set_Minimum', returnType: Object, params: [Number] } }, { name: 'Orientation', type: 16, returnType: $System_Windows_Controls_Orientation, getter: { name: 'get_Orientation', type: 8, sname: 'get_Orientation', returnType: $System_Windows_Controls_Orientation, params: [] }, setter: { name: 'set_Orientation', type: 8, sname: 'set_Orientation', returnType: Object, params: [$System_Windows_Controls_Orientation] } }, { name: 'Thumb', type: 16, returnType: $System_Windows_Controls_Primitives_Thumb, getter: { name: 'get_Thumb', type: 8, sname: 'get_Thumb', returnType: $System_Windows_Controls_Primitives_Thumb, params: [] }, setter: { name: 'set_Thumb', type: 8, sname: 'set_Thumb', returnType: Object, params: [$System_Windows_Controls_Primitives_Thumb] } }, { name: 'ThumbMinLength', type: 16, returnType: Number, getter: { name: 'get_ThumbMinLength', type: 8, sname: 'get_ThumbMinLength', returnType: Number, params: [] }, setter: { name: 'set_ThumbMinLength', type: 8, sname: 'set_ThumbMinLength', returnType: Object, params: [Number] } }, { name: 'Value', type: 16, returnType: Number, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Number, params: [] }, setter: { name: 'set_Value', type: 8, sname: 'set_Value', returnType: Object, params: [Number] } }, { name: 'ViewportSize', type: 16, returnType: Number, getter: { name: 'get_ViewportSize', type: 8, sname: 'get_ViewportSize', returnType: Number, params: [] }, setter: { name: 'set_ViewportSize', type: 8, sname: 'set_ViewportSize', returnType: Object, params: [Number] } }, { name: 'MaximumProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'MaximumProperty' }, { name: 'MinimumProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'MinimumProperty' }, { name: 'OrientationProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'OrientationProperty' }, { name: 'ValueProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ValueProperty' }, { name: 'ViewportSizeProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ViewportSizeProperty' }] });
+	ss.setMetadata($System_Windows_Controls_Primitives_UniformGrid, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ArrangeOverride', type: 8, sname: 'ArrangeOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'MeasureOverride', type: 8, sname: 'MeasureOverride', returnType: $System_Windows_Size, params: [$System_Windows_Size] }, { name: 'Columns', type: 16, returnType: ss.Int32, getter: { name: 'get_Columns', type: 8, sname: 'get_Columns', returnType: ss.Int32, params: [] }, setter: { name: 'set_Columns', type: 8, sname: 'set_Columns', returnType: Object, params: [ss.Int32] } }, { name: 'FirstColumn', type: 16, returnType: ss.Int32, getter: { name: 'get_FirstColumn', type: 8, sname: 'get_FirstColumn', returnType: ss.Int32, params: [] }, setter: { name: 'set_FirstColumn', type: 8, sname: 'set_FirstColumn', returnType: Object, params: [ss.Int32] } }, { name: 'Rows', type: 16, returnType: ss.Int32, getter: { name: 'get_Rows', type: 8, sname: 'get_Rows', returnType: ss.Int32, params: [] }, setter: { name: 'set_Rows', type: 8, sname: 'set_Rows', returnType: Object, params: [ss.Int32] } }, { name: 'ColumnsProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ColumnsProperty' }, { name: 'FirstColumnProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'FirstColumnProperty' }, { name: 'RowsProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'RowsProperty' }] });
 	ss.setMetadata($System_Windows_Data_Binding, { attr: [new $System_Windows_Markup_MarkupExtensionParameterAttribute('Path', 0)], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'CreateExpression', type: 8, sname: 'CreateExpression', returnType: $System_Windows_IExpression, params: [$System_Windows_DependencyObject, $System_Windows_DependencyProperty] }, { name: 'ProvideValue', type: 8, sname: 'ProvideValue', returnType: Object, params: [$System_Windows_Markup_InitializeContext] }, { name: 'Converter', type: 16, returnType: $System_Windows_Data_IValueConverter, getter: { name: 'get_Converter', type: 8, sname: 'get_Converter', returnType: $System_Windows_Data_IValueConverter, params: [] }, setter: { name: 'set_Converter', type: 8, sname: 'set_Converter', returnType: Object, params: [$System_Windows_Data_IValueConverter] } }, { name: 'ConverterParameter', type: 16, returnType: Object, getter: { name: 'get_ConverterParameter', type: 8, sname: 'get_ConverterParameter', returnType: Object, params: [] }, setter: { name: 'set_ConverterParameter', type: 8, sname: 'set_ConverterParameter', returnType: Object, params: [Object] } }, { name: 'ElementName', type: 16, returnType: String, getter: { name: 'get_ElementName', type: 8, sname: 'get_ElementName', returnType: String, params: [] }, setter: { name: 'set_ElementName', type: 8, sname: 'set_ElementName', returnType: Object, params: [String] } }, { name: 'FallbackValue', type: 16, returnType: Object, getter: { name: 'get_FallbackValue', type: 8, sname: 'get_FallbackValue', returnType: Object, params: [] }, setter: { name: 'set_FallbackValue', type: 8, sname: 'set_FallbackValue', returnType: Object, params: [Object] } }, { name: 'Mode', type: 16, returnType: $System_Windows_Data_BindingMode, getter: { name: 'get_Mode', type: 8, sname: 'get_Mode', returnType: $System_Windows_Data_BindingMode, params: [] }, setter: { name: 'set_Mode', type: 8, sname: 'set_Mode', returnType: Object, params: [$System_Windows_Data_BindingMode] } }, { name: 'Path', type: 16, returnType: $System_Windows_PropertyPath, getter: { name: 'get_Path', type: 8, sname: 'get_Path', returnType: $System_Windows_PropertyPath, params: [] }, setter: { name: 'set_Path', type: 8, sname: 'set_Path', returnType: Object, params: [$System_Windows_PropertyPath] } }, { name: 'RelativeSource', type: 16, returnType: $System_Windows_Data_RelativeSource, getter: { name: 'get_RelativeSource', type: 8, sname: 'get_RelativeSource', returnType: $System_Windows_Data_RelativeSource, params: [] }, setter: { name: 'set_RelativeSource', type: 8, sname: 'set_RelativeSource', returnType: Object, params: [$System_Windows_Data_RelativeSource] } }, { name: 'Source', type: 16, returnType: Object, getter: { name: 'get_Source', type: 8, sname: 'get_Source', returnType: Object, params: [] }, setter: { name: 'set_Source', type: 8, sname: 'set_Source', returnType: Object, params: [Object] } }, { name: 'StringFormat', type: 16, returnType: String, getter: { name: 'get_StringFormat', type: 8, sname: 'get_StringFormat', returnType: String, params: [] }, setter: { name: 'set_StringFormat', type: 8, sname: 'set_StringFormat', returnType: Object, params: [String] } }, { name: 'TargetNullValue', type: 16, returnType: Object, getter: { name: 'get_TargetNullValue', type: 8, sname: 'get_TargetNullValue', returnType: Object, params: [] }, setter: { name: 'set_TargetNullValue', type: 8, sname: 'set_TargetNullValue', returnType: Object, params: [Object] } }, { name: 'UpdateSourceTrigger', type: 16, returnType: $System_Windows_Data_UpdateSourceTrigger, getter: { name: 'get_UpdateSourceTrigger', type: 8, sname: 'get_UpdateSourceTrigger', returnType: $System_Windows_Data_UpdateSourceTrigger, params: [] }, setter: { name: 'set_UpdateSourceTrigger', type: 8, sname: 'set_UpdateSourceTrigger', returnType: Object, params: [$System_Windows_Data_UpdateSourceTrigger] } }] });
 	ss.setMetadata($System_Windows_Data_BindingExpression, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_DependencyObject, $System_Windows_DependencyProperty, $System_Windows_PropertyPath, Object, $System_Windows_Data_RelativeSource, String, $System_Windows_Data_BindingMode, $System_Windows_Data_UpdateSourceTrigger, $System_Windows_Data_IValueConverter, Object, Object, Object] }, { name: 'Dispose', type: 8, sname: 'dispose', returnType: Object, params: [] }, { name: 'SetValue', type: 8, sname: 'SetValue', returnType: Boolean, params: [Object] }, { name: 'UpdateSource', type: 8, sname: 'UpdateSource', returnType: Object, params: [] }, { name: 'UpdateTarget', type: 8, sname: 'UpdateTarget', returnType: Object, params: [] }, { name: 'Converter', type: 16, returnType: $System_Windows_Data_IValueConverter, getter: { name: 'get_Converter', type: 8, sname: 'get_Converter', returnType: $System_Windows_Data_IValueConverter, params: [] }, setter: { name: 'set_Converter', type: 8, sname: 'set_Converter', returnType: Object, params: [$System_Windows_Data_IValueConverter] } }, { name: 'ConverterParameter', type: 16, returnType: Object, getter: { name: 'get_ConverterParameter', type: 8, sname: 'get_ConverterParameter', returnType: Object, params: [] }, setter: { name: 'set_ConverterParameter', type: 8, sname: 'set_ConverterParameter', returnType: Object, params: [Object] } }, { name: 'ElementName', type: 16, returnType: String, getter: { name: 'get_ElementName', type: 8, sname: 'get_ElementName', returnType: String, params: [] }, setter: { name: 'set_ElementName', type: 8, sname: 'set_ElementName', returnType: Object, params: [String] } }, { name: 'FallbackValue', type: 16, returnType: Object, getter: { name: 'get_FallbackValue', type: 8, sname: 'get_FallbackValue', returnType: Object, params: [] }, setter: { name: 'set_FallbackValue', type: 8, sname: 'set_FallbackValue', returnType: Object, params: [Object] } }, { name: 'Mode', type: 16, returnType: $System_Windows_Data_BindingMode, getter: { name: 'get_Mode', type: 8, sname: 'get_Mode', returnType: $System_Windows_Data_BindingMode, params: [] }, setter: { name: 'set_Mode', type: 8, sname: 'set_Mode', returnType: Object, params: [$System_Windows_Data_BindingMode] } }, { name: 'Path', type: 16, returnType: $System_Windows_PropertyPath, getter: { name: 'get_Path', type: 8, sname: 'get_Path', returnType: $System_Windows_PropertyPath, params: [] }, setter: { name: 'set_Path', type: 8, sname: 'set_Path', returnType: Object, params: [$System_Windows_PropertyPath] } }, { name: 'RelativeSource', type: 16, returnType: $System_Windows_Data_RelativeSource, getter: { name: 'get_RelativeSource', type: 8, sname: 'get_RelativeSource', returnType: $System_Windows_Data_RelativeSource, params: [] }, setter: { name: 'set_RelativeSource', type: 8, sname: 'set_RelativeSource', returnType: Object, params: [$System_Windows_Data_RelativeSource] } }, { name: 'Source', type: 16, returnType: Object, getter: { name: 'get_Source', type: 8, sname: 'get_Source', returnType: Object, params: [] }, setter: { name: 'set_Source', type: 8, sname: 'set_Source', returnType: Object, params: [Object] } }, { name: 'Status', type: 16, returnType: $System_Windows_Data_BindingStatus, getter: { name: 'get_Status', type: 8, sname: 'get_Status', returnType: $System_Windows_Data_BindingStatus, params: [] }, setter: { name: 'set_Status', type: 8, sname: 'set_Status', returnType: Object, params: [$System_Windows_Data_BindingStatus] } }, { name: 'Target', type: 16, returnType: $System_Windows_DependencyObject, getter: { name: 'get_Target', type: 8, sname: 'get_Target', returnType: $System_Windows_DependencyObject, params: [] }, setter: { name: 'set_Target', type: 8, sname: 'set_Target', returnType: Object, params: [$System_Windows_DependencyObject] } }, { name: 'TargetNullValue', type: 16, returnType: Object, getter: { name: 'get_TargetNullValue', type: 8, sname: 'get_TargetNullValue', returnType: Object, params: [] }, setter: { name: 'set_TargetNullValue', type: 8, sname: 'set_TargetNullValue', returnType: Object, params: [Object] } }, { name: 'TargetProperty', type: 16, returnType: $System_Windows_DependencyProperty, getter: { name: 'get_TargetProperty', type: 8, sname: 'get_TargetProperty', returnType: $System_Windows_DependencyProperty, params: [] }, setter: { name: 'set_TargetProperty', type: 8, sname: 'set_TargetProperty', returnType: Object, params: [$System_Windows_DependencyProperty] } }, { name: 'UpdateSourceTrigger', type: 16, returnType: $System_Windows_Data_UpdateSourceTrigger, getter: { name: 'get_UpdateSourceTrigger', type: 8, sname: 'get_UpdateSourceTrigger', returnType: $System_Windows_Data_UpdateSourceTrigger, params: [] }, setter: { name: 'set_UpdateSourceTrigger', type: 8, sname: 'set_UpdateSourceTrigger', returnType: Object, params: [$System_Windows_Data_UpdateSourceTrigger] } }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] } }, { name: 'DisconnectedItem', isStatic: true, type: 4, returnType: $System_Windows_Data_NamedObject, sname: 'DisconnectedItem' }, { name: 'ValueChanged', type: 2, adder: { name: 'add_ValueChanged', type: 8, sname: 'add_ValueChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ValueChanged', type: 8, sname: 'remove_ValueChanged', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_Data_ClrPropertyObserver, { members: [{ name: '.ctor', type: 1, params: [Object, ss.IEnumerable] }, { name: 'Dispose', type: 8, sname: 'dispose', returnType: Object, params: [] }, { name: 'SetBaseValue', type: 8, sname: 'SetBaseValue', returnType: Object, params: [Object] }, { name: 'TrySetValue', type: 8, sname: 'TrySetValue', returnType: Boolean, params: [Object] }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] } }, { name: 'ValueType', type: 16, returnType: Function, getter: { name: 'get_ValueType', type: 8, sname: 'get_ValueType', returnType: Function, params: [] } }, { name: 'ValueChanged', type: 2, adder: { name: 'add_ValueChanged', type: 8, sname: 'add_ValueChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ValueChanged', type: 8, sname: 'remove_ValueChanged', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_Data_CollectionView, { members: [{ name: '.ctor', type: 1, params: [ss.IEnumerable] }, { name: 'Dispose', type: 8, sname: 'dispose', returnType: Object, params: [] }, { name: 'GetEnumerator', type: 8, sname: 'getEnumerator', returnType: ss.IEnumerator, params: [] }, { name: 'CanFilter', type: 16, returnType: Boolean, getter: { name: 'get_CanFilter', type: 8, sname: 'get_CanFilter', returnType: Boolean, params: [] } }, { name: 'CanSort', type: 16, returnType: Boolean, getter: { name: 'get_CanSort', type: 8, sname: 'get_CanSort', returnType: Boolean, params: [] } }, { name: 'CurrentItem', type: 16, returnType: Object, getter: { name: 'get_CurrentItem', type: 8, sname: 'get_CurrentItem', returnType: Object, params: [] }, setter: { name: 'set_CurrentItem', type: 8, sname: 'set_CurrentItem', returnType: Object, params: [Object] } }, { name: 'CurrentItemIndex', type: 16, returnType: ss.Int32, getter: { name: 'get_CurrentItemIndex', type: 8, sname: 'get_CurrentItemIndex', returnType: ss.Int32, params: [] }, setter: { name: 'set_CurrentItemIndex', type: 8, sname: 'set_CurrentItemIndex', returnType: Object, params: [ss.Int32] } }, { name: 'FilterPredicate', type: 16, returnType: Function, getter: { name: 'get_FilterPredicate', type: 8, sname: 'get_FilterPredicate', returnType: Function, params: [] }, setter: { name: 'set_FilterPredicate', type: 8, sname: 'set_FilterPredicate', returnType: Object, params: [Function] } }, { name: 'SortDirection', type: 16, returnType: $System_Windows_Data_ListSortDirection, getter: { name: 'get_SortDirection', type: 8, sname: 'get_SortDirection', returnType: $System_Windows_Data_ListSortDirection, params: [] }, setter: { name: 'set_SortDirection', type: 8, sname: 'set_SortDirection', returnType: Object, params: [$System_Windows_Data_ListSortDirection] } }, { name: 'SortKeySelector', type: 16, returnType: Function, getter: { name: 'get_SortKeySelector', type: 8, sname: 'get_SortKeySelector', returnType: Function, params: [] }, setter: { name: 'set_SortKeySelector', type: 8, sname: 'set_SortKeySelector', returnType: Object, params: [Function] } }, { name: 'SourceCollection', type: 16, returnType: ss.IEnumerable, getter: { name: 'get_SourceCollection', type: 8, sname: 'get_SourceCollection', returnType: ss.IEnumerable, params: [] }, setter: { name: 'set_SourceCollection', type: 8, sname: 'set_SourceCollection', returnType: Object, params: [ss.IEnumerable] } }, { name: 'Empty', isStatic: true, type: 4, returnType: $System_Windows_Data_ICollectionView, sname: 'Empty' }, { name: 'CollectionChanged', type: 2, adder: { name: 'add_CollectionChanged', type: 8, sname: 'add_CollectionChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_CollectionChanged', type: 8, sname: 'remove_CollectionChanged', returnType: Object, params: [Function] } }, { name: 'CurrentChanged', type: 2, adder: { name: 'add_CurrentChanged', type: 8, sname: 'add_CurrentChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_CurrentChanged', type: 8, sname: 'remove_CurrentChanged', returnType: Object, params: [Function] } }] });
-	ss.setMetadata($System_Windows_Data_ConstantObservableValue, { members: [{ name: '.ctor', type: 1, params: [Object] }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] }, setter: { name: 'set_Value', type: 8, sname: 'set_Value', returnType: Object, params: [Object] } }, { name: 'ValueChanged', type: 2, adder: { name: 'add_ValueChanged', type: 8, sname: 'add_ValueChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ValueChanged', type: 8, sname: 'remove_ValueChanged', returnType: Object, params: [Function] } }] });
+	ss.setMetadata($System_Windows_Data_ContextSourceObserver, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_DependencyObject, Object] }, { name: 'Dispose', type: 8, sname: 'dispose', returnType: Object, params: [] }, { name: 'GetBaseValue', type: 8, sname: 'GetBaseValue', returnType: Object, params: [] }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] } }, { name: 'ValueChanged', type: 2, adder: { name: 'add_ValueChanged', type: 8, sname: 'add_ValueChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ValueChanged', type: 8, sname: 'remove_ValueChanged', returnType: Object, params: [Function] } }] });
+	ss.setMetadata($System_Windows_Data_DataContextSourceObserver, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_DependencyObject] }, { name: 'Dispose', type: 8, sname: 'dispose', returnType: Object, params: [] }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] } }, { name: 'ValueChanged', type: 2, adder: { name: 'add_ValueChanged', type: 8, sname: 'add_ValueChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ValueChanged', type: 8, sname: 'remove_ValueChanged', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_Data_DependencyPropertyObserver, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_DependencyProperty] }, { name: 'Dispose', type: 8, sname: 'dispose', returnType: Object, params: [] }, { name: 'SetBaseValue', type: 8, sname: 'SetBaseValue', returnType: Object, params: [Object] }, { name: 'TrySetValue', type: 8, sname: 'TrySetValue', returnType: Boolean, params: [Object] }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] } }, { name: 'ValueType', type: 16, returnType: Function, getter: { name: 'get_ValueType', type: 8, sname: 'get_ValueType', returnType: Function, params: [] } }, { name: 'ValueChanged', type: 2, adder: { name: 'add_ValueChanged', type: 8, sname: 'add_ValueChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ValueChanged', type: 8, sname: 'remove_ValueChanged', returnType: Object, params: [Function] } }] });
+	ss.setMetadata($System_Windows_Data_FindAncestorSourceObserver, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_DependencyObject, Function, ss.Int32] }, { name: 'GetAncestor', isStatic: true, type: 8, sname: 'GetAncestor', returnType: Object, params: [$System_Windows_DependencyObject, Function, ss.Int32] }, { name: 'GetBaseValue', type: 8, sname: 'GetBaseValue', returnType: Object, params: [] }] });
 	ss.setMetadata($System_Windows_Data_ICollectionView, { members: [{ name: 'CanFilter', type: 16, returnType: Boolean, getter: { name: 'get_CanFilter', type: 8, sname: 'get_CanFilter', returnType: Boolean, params: [] } }, { name: 'CanSort', type: 16, returnType: Boolean, getter: { name: 'get_CanSort', type: 8, sname: 'get_CanSort', returnType: Boolean, params: [] } }, { name: 'CurrentItem', type: 16, returnType: Object, getter: { name: 'get_CurrentItem', type: 8, sname: 'get_CurrentItem', returnType: Object, params: [] }, setter: { name: 'set_CurrentItem', type: 8, sname: 'set_CurrentItem', returnType: Object, params: [Object] } }, { name: 'CurrentItemIndex', type: 16, returnType: ss.Int32, getter: { name: 'get_CurrentItemIndex', type: 8, sname: 'get_CurrentItemIndex', returnType: ss.Int32, params: [] }, setter: { name: 'set_CurrentItemIndex', type: 8, sname: 'set_CurrentItemIndex', returnType: Object, params: [ss.Int32] } }, { name: 'FilterPredicate', type: 16, returnType: Function, getter: { name: 'get_FilterPredicate', type: 8, sname: 'get_FilterPredicate', returnType: Function, params: [] }, setter: { name: 'set_FilterPredicate', type: 8, sname: 'set_FilterPredicate', returnType: Object, params: [Function] } }, { name: 'SortDirection', type: 16, returnType: $System_Windows_Data_ListSortDirection, getter: { name: 'get_SortDirection', type: 8, sname: 'get_SortDirection', returnType: $System_Windows_Data_ListSortDirection, params: [] }, setter: { name: 'set_SortDirection', type: 8, sname: 'set_SortDirection', returnType: Object, params: [$System_Windows_Data_ListSortDirection] } }, { name: 'SortKeySelector', type: 16, returnType: Function, getter: { name: 'get_SortKeySelector', type: 8, sname: 'get_SortKeySelector', returnType: Function, params: [] }, setter: { name: 'set_SortKeySelector', type: 8, sname: 'set_SortKeySelector', returnType: Object, params: [Function] } }, { name: 'SourceCollection', type: 16, returnType: ss.IEnumerable, getter: { name: 'get_SourceCollection', type: 8, sname: 'get_SourceCollection', returnType: ss.IEnumerable, params: [] } }, { name: 'CurrentChanged', type: 2, adder: { name: 'add_CurrentChanged', type: 8, sname: 'add_CurrentChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_CurrentChanged', type: 8, sname: 'remove_CurrentChanged', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_Data_IndexPropertyObserver, { members: [{ name: '.ctor', type: 1, params: [Function, $System_Windows_IndexPropertyPathElement, System.Xaml.XamlNamespaces] }, { name: 'Dispose', type: 8, sname: 'dispose', returnType: Object, params: [] }, { name: 'SetBaseValue', type: 8, sname: 'SetBaseValue', returnType: Object, params: [Object] }, { name: 'TrySetValue', type: 8, sname: 'TrySetValue', returnType: Boolean, params: [Object] }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] } }, { name: 'ValueType', type: 16, returnType: Function, getter: { name: 'get_ValueType', type: 8, sname: 'get_ValueType', returnType: Function, params: [] } }, { name: 'ValueChanged', type: 2, adder: { name: 'add_ValueChanged', type: 8, sname: 'add_ValueChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ValueChanged', type: 8, sname: 'remove_ValueChanged', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_Data_IObservableValue, { members: [{ name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] } }, { name: 'ValueChanged', type: 2, adder: { name: 'add_ValueChanged', type: 8, sname: 'add_ValueChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ValueChanged', type: 8, sname: 'remove_ValueChanged', returnType: Object, params: [Function] } }] });
@@ -23313,11 +24625,19 @@
 	ss.setMetadata($System_Windows_Data_IValueConverter, { members: [{ name: 'Convert', type: 8, sname: 'Convert', returnType: Object, params: [Object, Function, Object] }, { name: 'ConvertBack', type: 8, sname: 'ConvertBack', returnType: Object, params: [Object, Function, Object] }] });
 	ss.setMetadata($System_Windows_Data_NamedObject, { members: [{ name: '.ctor', type: 1, params: [String] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }] });
 	ss.setMetadata($System_Windows_Data_ObservableExpression, { members: [{ name: '.ctor', type: 1, params: [String] }, { name: '.ctor', type: 1, params: [$System_Windows_PropertyPath], sname: '$ctor1' }, { name: '.ctor', type: 1, params: [Object, String], sname: '$ctor2' }, { name: '.ctor', type: 1, params: [Object, $System_Windows_PropertyPath], sname: '$ctor3' }, { name: 'Dispose', type: 8, sname: 'dispose', returnType: Object, params: [] }, { name: 'SetBaseValue', type: 8, sname: 'SetBaseValue', returnType: Object, params: [Object] }, { name: 'TrySetValue', type: 8, sname: 'TrySetValue', returnType: Boolean, params: [Object] }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] } }, { name: 'ValueType', type: 16, returnType: Function, getter: { name: 'get_ValueType', type: 8, sname: 'get_ValueType', returnType: Function, params: [] }, setter: { name: 'set_ValueType', type: 8, sname: 'set_ValueType', returnType: Object, params: [Function] } }, { name: 'ValueChanged', type: 2, adder: { name: 'add_ValueChanged', type: 8, sname: 'add_ValueChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ValueChanged', type: 8, sname: 'remove_ValueChanged', returnType: Object, params: [Function] } }] });
-	ss.setMetadata($System_Windows_Data_ObservableValue, { attr: [new System.Diagnostics.DebuggerNonUserCodeAttribute()], members: [{ name: '.ctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [Object], sname: '$ctor1' }, { name: 'IsNullOrUnset', isStatic: true, type: 8, sname: 'IsNullOrUnset', returnType: Boolean, params: [Object] }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] }, setter: { name: 'set_Value', type: 8, sname: 'set_Value', returnType: Object, params: [Object] } }, { name: 'UnsetValue', isStatic: true, type: 4, returnType: $System_Windows_Data_NamedObject, sname: 'UnsetValue' }, { name: 'ValueChanged', type: 2, adder: { name: 'add_ValueChanged', type: 8, sname: 'add_ValueChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ValueChanged', type: 8, sname: 'remove_ValueChanged', returnType: Object, params: [Function] } }] });
-	ss.setMetadata($System_Windows_Data_ObservableValueChangedArgs, { members: [{ name: '.ctor', type: 1, params: [Object, Object] }, { name: 'NewValue', type: 16, returnType: Object, getter: { name: 'get_NewValue', type: 8, sname: 'get_NewValue', returnType: Object, params: [] }, setter: { name: 'set_NewValue', type: 8, sname: 'set_NewValue', returnType: Object, params: [Object] } }, { name: 'OldValue', type: 16, returnType: Object, getter: { name: 'get_OldValue', type: 8, sname: 'get_OldValue', returnType: Object, params: [] }, setter: { name: 'set_OldValue', type: 8, sname: 'set_OldValue', returnType: Object, params: [Object] } }] });
-	ss.setMetadata($System_Windows_Data_ReadOnlyObservableValue, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_Data_IObservableValue] }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] } }, { name: 'ValueChanged', type: 2, adder: { name: 'add_ValueChanged', type: 8, sname: 'add_ValueChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ValueChanged', type: 8, sname: 'remove_ValueChanged', returnType: Object, params: [Function] } }] });
-	ss.setMetadata($System_Windows_Data_RelativeSource, { attr: [new $System_Windows_Markup_MarkupExtensionParameterAttribute('Mode', 0)], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ProvideValue', type: 8, sname: 'ProvideValue', returnType: Object, params: [$System_Windows_Markup_InitializeContext] }, { name: 'AncestorLevel', type: 16, returnType: ss.Int32, getter: { name: 'get_AncestorLevel', type: 8, sname: 'get_AncestorLevel', returnType: ss.Int32, params: [] }, setter: { name: 'set_AncestorLevel', type: 8, sname: 'set_AncestorLevel', returnType: Object, params: [ss.Int32] } }, { name: 'AncestorType', type: 16, returnType: Function, getter: { name: 'get_AncestorType', type: 8, sname: 'get_AncestorType', returnType: Function, params: [] }, setter: { name: 'set_AncestorType', type: 8, sname: 'set_AncestorType', returnType: Object, params: [Function] } }, { name: 'Mode', type: 16, returnType: $System_Windows_Data_RelativeSourceMode, getter: { name: 'get_Mode', type: 8, sname: 'get_Mode', returnType: $System_Windows_Data_RelativeSourceMode, params: [] }, setter: { name: 'set_Mode', type: 8, sname: 'set_Mode', returnType: Object, params: [$System_Windows_Data_RelativeSourceMode] } }] });
+	ss.setMetadata($System_Windows_Data_ObservableValue, { attr: [new System.Diagnostics.DebuggerNonUserCodeAttribute()], members: [{ name: '.ctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [Object], sname: '$ctor1' }, { name: 'IsNullOrUnset', isStatic: true, type: 8, sname: 'IsNullOrUnset', returnType: Boolean, params: [Object] }, { name: 'BaseValue', type: 16, returnType: Object, getter: { name: 'get_BaseValue', type: 8, sname: 'get_BaseValue', returnType: Object, params: [] }, setter: { name: 'set_BaseValue', type: 8, sname: 'set_BaseValue', returnType: Object, params: [Object] } }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] }, setter: { name: 'set_Value', type: 8, sname: 'set_Value', returnType: Object, params: [Object] } }, { name: 'UnsetValue', isStatic: true, type: 4, returnType: $System_Windows_Data_NamedObject, sname: 'UnsetValue' }, { name: 'ValueChanged', type: 2, adder: { name: 'add_ValueChanged', type: 8, sname: 'add_ValueChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ValueChanged', type: 8, sname: 'remove_ValueChanged', returnType: Object, params: [Function] } }] });
+	ss.setMetadata($System_Windows_Data_ObservableValueChangedEventHandlerExtensions, { attr: [new System.Diagnostics.DebuggerNonUserCodeAttribute()], members: [{ name: 'Raise', isStatic: true, type: 8, sname: 'Raise', returnType: Object, params: [Function, Object, Object, Object] }] });
+	ss.setMetadata($System_Windows_Data_RelativeSource, { attr: [new $System_Windows_Markup_MarkupExtensionParameterAttribute('Mode', 0)], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'CreateSourceObserver', type: 8, sname: 'CreateSourceObserver', returnType: $System_Windows_Data_IObservableValue, params: [$System_Windows_DependencyObject] }, { name: 'ProvideValue', type: 8, sname: 'ProvideValue', returnType: Object, params: [$System_Windows_Markup_InitializeContext] }, { name: 'AncestorLevel', type: 16, returnType: ss.Int32, getter: { name: 'get_AncestorLevel', type: 8, sname: 'get_AncestorLevel', returnType: ss.Int32, params: [] }, setter: { name: 'set_AncestorLevel', type: 8, sname: 'set_AncestorLevel', returnType: Object, params: [ss.Int32] } }, { name: 'AncestorType', type: 16, returnType: Function, getter: { name: 'get_AncestorType', type: 8, sname: 'get_AncestorType', returnType: Function, params: [] }, setter: { name: 'set_AncestorType', type: 8, sname: 'set_AncestorType', returnType: Object, params: [Function] } }, { name: 'Mode', type: 16, returnType: $System_Windows_Data_RelativeSourceMode, getter: { name: 'get_Mode', type: 8, sname: 'get_Mode', returnType: $System_Windows_Data_RelativeSourceMode, params: [] }, setter: { name: 'set_Mode', type: 8, sname: 'set_Mode', returnType: Object, params: [$System_Windows_Data_RelativeSourceMode] } }] });
+	ss.setMetadata($System_Windows_Data_ScopeElementSourceObserver, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_DependencyObject, String] }, { name: 'GetBaseValue', type: 8, sname: 'GetBaseValue', returnType: Object, params: [] }] });
+	ss.setMetadata($System_Windows_Data_StaticObservableValue, { attr: [new System.Diagnostics.DebuggerNonUserCodeAttribute()], members: [{ name: '.ctor', type: 1, params: [Object] }, { name: 'Value', type: 16, returnType: Object, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: Object, params: [] } }, { name: 'ValueChanged', type: 2, adder: { name: 'add_ValueChanged', type: 8, sname: 'add_ValueChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ValueChanged', type: 8, sname: 'remove_ValueChanged', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_Data_TemplateBindingExtension, { attr: [new $System_Windows_Markup_MarkupExtensionParameterAttribute('Property', 0)], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ProvideValue', type: 8, sname: 'ProvideValue', returnType: Object, params: [$System_Windows_Markup_InitializeContext] }, { name: 'Converter', type: 16, returnType: $System_Windows_Data_IValueConverter, getter: { name: 'get_Converter', type: 8, sname: 'get_Converter', returnType: $System_Windows_Data_IValueConverter, params: [] }, setter: { name: 'set_Converter', type: 8, sname: 'set_Converter', returnType: Object, params: [$System_Windows_Data_IValueConverter] } }, { name: 'ConverterParameter', type: 16, returnType: Object, getter: { name: 'get_ConverterParameter', type: 8, sname: 'get_ConverterParameter', returnType: Object, params: [] }, setter: { name: 'set_ConverterParameter', type: 8, sname: 'set_ConverterParameter', returnType: Object, params: [Object] } }, { name: 'Property', type: 16, returnType: $System_Windows_IPropertyPathElement, getter: { name: 'get_Property', type: 8, sname: 'get_Property', returnType: $System_Windows_IPropertyPathElement, params: [] }, setter: { name: 'set_Property', type: 8, sname: 'set_Property', returnType: Object, params: [$System_Windows_IPropertyPathElement] } }] });
+	ss.setMetadata($System_Windows_Data_TemplatedParentSourceObserver, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_DependencyObject] }, { name: 'GetBaseValue', type: 8, sname: 'GetBaseValue', returnType: Object, params: [] }] });
+	ss.setMetadata($System_Windows_Documents_Block, { attr: [new $System_Windows_Markup_ContentPropertyAttribute('SiblingBlocks')], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'GetRenderElement', type: 8, sname: 'GetRenderElement', returnType: Object, params: [$System_Windows_Media_IRenderElementFactory] }, { name: 'RemoveRenderElement', type: 8, sname: 'RemoveRenderElement', returnType: Object, params: [$System_Windows_Media_IRenderElementFactory] }, { name: 'BorderBrush', type: 16, returnType: $System_Windows_Media_Brush, getter: { name: 'get_BorderBrush', type: 8, sname: 'get_BorderBrush', returnType: $System_Windows_Media_Brush, params: [] }, setter: { name: 'set_BorderBrush', type: 8, sname: 'set_BorderBrush', returnType: Object, params: [$System_Windows_Media_Brush] } }, { name: 'BorderThickness', type: 16, returnType: $System_Windows_Thickness, getter: { name: 'get_BorderThickness', type: 8, sname: 'get_BorderThickness', returnType: $System_Windows_Thickness, params: [] }, setter: { name: 'set_BorderThickness', type: 8, sname: 'set_BorderThickness', returnType: Object, params: [$System_Windows_Thickness] } }, { name: 'LineHeight', type: 16, returnType: Number, getter: { name: 'get_LineHeight', type: 8, sname: 'get_LineHeight', returnType: Number, params: [] }, setter: { name: 'set_LineHeight', type: 8, sname: 'set_LineHeight', returnType: Object, params: [Number] } }, { name: 'Padding', type: 16, returnType: $System_Windows_Thickness, getter: { name: 'get_Padding', type: 8, sname: 'get_Padding', returnType: $System_Windows_Thickness, params: [] }, setter: { name: 'set_Padding', type: 8, sname: 'set_Padding', returnType: Object, params: [$System_Windows_Thickness] } }, { name: 'SiblingBlocks', type: 16, returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_Documents_Block]), getter: { name: 'get_SiblingBlocks', type: 8, sname: 'get_SiblingBlocks', returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_Documents_Block]), params: [] }, setter: { name: 'set_SiblingBlocks', type: 8, sname: 'set_SiblingBlocks', returnType: Object, params: [ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_Documents_Block])] } }, { name: 'TextAlignment', type: 16, returnType: $System_Windows_Controls_TextAlignment, getter: { name: 'get_TextAlignment', type: 8, sname: 'get_TextAlignment', returnType: $System_Windows_Controls_TextAlignment, params: [] }, setter: { name: 'set_TextAlignment', type: 8, sname: 'set_TextAlignment', returnType: Object, params: [$System_Windows_Controls_TextAlignment] } }, { name: 'BorderBrushProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'BorderBrushProperty' }, { name: 'BorderThicknessProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'BorderThicknessProperty' }, { name: 'LineHeightProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'LineHeightProperty' }, { name: 'PaddingProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'PaddingProperty' }, { name: 'TextAlignmentProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'TextAlignmentProperty' }] });
+	ss.setMetadata($System_Windows_Documents_Inline, { attr: [new $System_Windows_Markup_TypeConverterAttribute($System_Windows_Documents_InlineConverter)], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'SiblingInlines', type: 16, returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_Documents_Inline]), getter: { name: 'get_SiblingInlines', type: 8, sname: 'get_SiblingInlines', returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_Documents_Inline]), params: [] }, setter: { name: 'set_SiblingInlines', type: 8, sname: 'set_SiblingInlines', returnType: Object, params: [ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_Documents_Inline])] } }] });
+	ss.setMetadata($System_Windows_Documents_InlineConverter, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }] });
+	ss.setMetadata($System_Windows_Documents_Paragraph, { attr: [new $System_Windows_Markup_ContentPropertyAttribute('Inlines')], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Inlines', type: 16, returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_Documents_Inline]), getter: { name: 'get_Inlines', type: 8, sname: 'get_Inlines', returnType: ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_Documents_Inline]), params: [] }, setter: { name: 'set_Inlines', type: 8, sname: 'set_Inlines', returnType: Object, params: [ss.makeGenericType(Granular.Collections.ObservableCollection$1, [$System_Windows_Documents_Inline])] } }] });
+	ss.setMetadata($System_Windows_Documents_Run, { attr: [new $System_Windows_Markup_ContentPropertyAttribute('Text')], members: [{ name: '.ctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [String], sname: '$ctor1' }, { name: 'GetRenderElement', type: 8, sname: 'GetRenderElement', returnType: Object, params: [$System_Windows_Media_IRenderElementFactory] }, { name: 'RemoveRenderElement', type: 8, sname: 'RemoveRenderElement', returnType: Object, params: [$System_Windows_Media_IRenderElementFactory] }, { name: 'Text', type: 16, returnType: String, getter: { name: 'get_Text', type: 8, sname: 'get_Text', returnType: String, params: [] }, setter: { name: 'set_Text', type: 8, sname: 'set_Text', returnType: Object, params: [String] } }, { name: 'TextProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'TextProperty' }] });
+	ss.setMetadata($System_Windows_Documents_TextElement, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Background', type: 16, returnType: $System_Windows_Media_Brush, getter: { name: 'get_Background', type: 8, sname: 'get_Background', returnType: $System_Windows_Media_Brush, params: [] }, setter: { name: 'set_Background', type: 8, sname: 'set_Background', returnType: Object, params: [$System_Windows_Media_Brush] } }, { name: 'FontFamily', type: 16, returnType: $System_Windows_FontFamily, getter: { name: 'get_FontFamily', type: 8, sname: 'get_FontFamily', returnType: $System_Windows_FontFamily, params: [] }, setter: { name: 'set_FontFamily', type: 8, sname: 'set_FontFamily', returnType: Object, params: [$System_Windows_FontFamily] } }, { name: 'FontSize', type: 16, returnType: Number, getter: { name: 'get_FontSize', type: 8, sname: 'get_FontSize', returnType: Number, params: [] }, setter: { name: 'set_FontSize', type: 8, sname: 'set_FontSize', returnType: Object, params: [Number] } }, { name: 'FontStretch', type: 16, returnType: $System_Windows_FontStretch, getter: { name: 'get_FontStretch', type: 8, sname: 'get_FontStretch', returnType: $System_Windows_FontStretch, params: [] }, setter: { name: 'set_FontStretch', type: 8, sname: 'set_FontStretch', returnType: Object, params: [$System_Windows_FontStretch] } }, { name: 'FontStyle', type: 16, returnType: $System_Windows_FontStyle, getter: { name: 'get_FontStyle', type: 8, sname: 'get_FontStyle', returnType: $System_Windows_FontStyle, params: [] }, setter: { name: 'set_FontStyle', type: 8, sname: 'set_FontStyle', returnType: Object, params: [$System_Windows_FontStyle] } }, { name: 'FontWeight', type: 16, returnType: $System_Windows_FontWeight, getter: { name: 'get_FontWeight', type: 8, sname: 'get_FontWeight', returnType: $System_Windows_FontWeight, params: [] }, setter: { name: 'set_FontWeight', type: 8, sname: 'set_FontWeight', returnType: Object, params: [$System_Windows_FontWeight] } }, { name: 'Foreground', type: 16, returnType: $System_Windows_Media_Brush, getter: { name: 'get_Foreground', type: 8, sname: 'get_Foreground', returnType: $System_Windows_Media_Brush, params: [] }, setter: { name: 'set_Foreground', type: 8, sname: 'set_Foreground', returnType: Object, params: [$System_Windows_Media_Brush] } }, { name: 'BackgroundProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'BackgroundProperty' }, { name: 'FontFamilyProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'FontFamilyProperty' }, { name: 'FontSizeProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'FontSizeProperty' }, { name: 'FontStretchProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'FontStretchProperty' }, { name: 'FontStyleProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'FontStyleProperty' }, { name: 'FontWeightProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'FontWeightProperty' }, { name: 'ForegroundProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ForegroundProperty' }] });
 	ss.setMetadata($System_Windows_Input_Cursor, { attr: [new $System_Windows_Markup_TypeConverterAttribute($System_Windows_Input_CursorTypeConverter)], members: [{ name: '.ctor', type: 1, params: [$System_Windows_Media_ImageSource, $System_Windows_Point], sname: '$ctor1' }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'CursorType', type: 16, returnType: $System_Windows_Input_CursorType, getter: { name: 'get_CursorType', type: 8, sname: 'get_CursorType', returnType: $System_Windows_Input_CursorType, params: [] }, setter: { name: 'set_CursorType', type: 8, sname: 'set_CursorType', returnType: Object, params: [$System_Windows_Input_CursorType] } }, { name: 'Hotspot', type: 16, returnType: $System_Windows_Point, getter: { name: 'get_Hotspot', type: 8, sname: 'get_Hotspot', returnType: $System_Windows_Point, params: [] }, setter: { name: 'set_Hotspot', type: 8, sname: 'set_Hotspot', returnType: Object, params: [$System_Windows_Point] } }, { name: 'ImageSource', type: 16, returnType: $System_Windows_Media_ImageSource, getter: { name: 'get_ImageSource', type: 8, sname: 'get_ImageSource', returnType: $System_Windows_Media_ImageSource, params: [] }, setter: { name: 'set_ImageSource', type: 8, sname: 'set_ImageSource', returnType: Object, params: [$System_Windows_Media_ImageSource] } }] });
 	ss.setMetadata($System_Windows_Input_Cursors, { members: [{ name: 'AppStarting', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_AppStarting', isStatic: true, type: 8, sname: 'get_AppStarting', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'Arrow', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_Arrow', isStatic: true, type: 8, sname: 'get_Arrow', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'ArrowCD', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_ArrowCD', isStatic: true, type: 8, sname: 'get_ArrowCD', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'Cross', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_Cross', isStatic: true, type: 8, sname: 'get_Cross', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'Hand', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_Hand', isStatic: true, type: 8, sname: 'get_Hand', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'Help', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_Help', isStatic: true, type: 8, sname: 'get_Help', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'IBeam', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_IBeam', isStatic: true, type: 8, sname: 'get_IBeam', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'No', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_No', isStatic: true, type: 8, sname: 'get_No', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'None', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_None', isStatic: true, type: 8, sname: 'get_None', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'Pen', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_Pen', isStatic: true, type: 8, sname: 'get_Pen', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'ScrollAll', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_ScrollAll', isStatic: true, type: 8, sname: 'get_ScrollAll', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'ScrollE', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_ScrollE', isStatic: true, type: 8, sname: 'get_ScrollE', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'ScrollN', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_ScrollN', isStatic: true, type: 8, sname: 'get_ScrollN', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'ScrollNE', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_ScrollNE', isStatic: true, type: 8, sname: 'get_ScrollNE', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'ScrollNS', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_ScrollNS', isStatic: true, type: 8, sname: 'get_ScrollNS', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'ScrollNW', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_ScrollNW', isStatic: true, type: 8, sname: 'get_ScrollNW', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'ScrollS', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_ScrollS', isStatic: true, type: 8, sname: 'get_ScrollS', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'ScrollSE', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_ScrollSE', isStatic: true, type: 8, sname: 'get_ScrollSE', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'ScrollSW', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_ScrollSW', isStatic: true, type: 8, sname: 'get_ScrollSW', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'ScrollW', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_ScrollW', isStatic: true, type: 8, sname: 'get_ScrollW', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'ScrollWE', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_ScrollWE', isStatic: true, type: 8, sname: 'get_ScrollWE', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'SizeAll', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_SizeAll', isStatic: true, type: 8, sname: 'get_SizeAll', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'SizeNESW', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_SizeNESW', isStatic: true, type: 8, sname: 'get_SizeNESW', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'SizeNS', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_SizeNS', isStatic: true, type: 8, sname: 'get_SizeNS', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'SizeNWSE', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_SizeNWSE', isStatic: true, type: 8, sname: 'get_SizeNWSE', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'SizeWE', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_SizeWE', isStatic: true, type: 8, sname: 'get_SizeWE', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'UpArrow', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_UpArrow', isStatic: true, type: 8, sname: 'get_UpArrow', returnType: $System_Windows_Input_Cursor, params: [] } }, { name: 'Wait', isStatic: true, type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_Wait', isStatic: true, type: 8, sname: 'get_Wait', returnType: $System_Windows_Input_Cursor, params: [] } }] });
 	ss.setMetadata($System_Windows_Input_CursorTypeConverter, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }] });
@@ -23331,7 +24651,7 @@
 	ss.setMetadata($System_Windows_Input_KeyboardNavigation, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_IPresentationSource] }, { name: 'Dispose', type: 8, sname: 'dispose', returnType: Object, params: [] }, { name: 'GetControlTabNavigation', isStatic: true, type: 8, sname: 'GetControlTabNavigation', returnType: $System_Windows_Input_KeyboardNavigationMode, params: [$System_Windows_DependencyObject] }, { name: 'GetDirectionalNavigation', isStatic: true, type: 8, sname: 'GetDirectionalNavigation', returnType: $System_Windows_Input_KeyboardNavigationMode, params: [$System_Windows_DependencyObject] }, { name: 'GetIsTabStop', isStatic: true, type: 8, sname: 'GetIsTabStop', returnType: Boolean, params: [$System_Windows_DependencyObject] }, { name: 'GetNavigationFocusElement', isStatic: true, type: 8, sname: 'GetNavigationFocusElement', returnType: $System_Windows_Media_VisualWeakReference, params: [$System_Windows_DependencyObject] }, { name: 'GetTabIndex', isStatic: true, type: 8, sname: 'GetTabIndex', returnType: ss.Int32, params: [$System_Windows_DependencyObject] }, { name: 'GetTabNavigation', isStatic: true, type: 8, sname: 'GetTabNavigation', returnType: $System_Windows_Input_KeyboardNavigationMode, params: [$System_Windows_DependencyObject] }, { name: 'SetControlTabNavigation', isStatic: true, type: 8, sname: 'SetControlTabNavigation', returnType: Object, params: [$System_Windows_DependencyObject, $System_Windows_Input_KeyboardNavigationMode] }, { name: 'SetDirectionalNavigation', isStatic: true, type: 8, sname: 'SetDirectionalNavigation', returnType: Object, params: [$System_Windows_DependencyObject, $System_Windows_Input_KeyboardNavigationMode] }, { name: 'SetIsTabStop', isStatic: true, type: 8, sname: 'SetIsTabStop', returnType: Object, params: [$System_Windows_DependencyObject, Boolean] }, { name: 'SetNavigationFocusElement', isStatic: true, type: 8, sname: 'SetNavigationFocusElement', returnType: Object, params: [$System_Windows_DependencyObject, $System_Windows_Media_VisualWeakReference] }, { name: 'SetTabIndex', isStatic: true, type: 8, sname: 'SetTabIndex', returnType: Object, params: [$System_Windows_DependencyObject, ss.Int32] }, { name: 'SetTabNavigation', isStatic: true, type: 8, sname: 'SetTabNavigation', returnType: Object, params: [$System_Windows_DependencyObject, $System_Windows_Input_KeyboardNavigationMode] }, { name: 'ControlTabNavigationProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ControlTabNavigationProperty' }, { name: 'DirectionalNavigationProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'DirectionalNavigationProperty' }, { name: 'IsTabStopProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'IsTabStopProperty' }, { name: 'NavigationFocusElementProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'NavigationFocusElementProperty' }, { name: 'TabIndexProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'TabIndexProperty' }, { name: 'TabNavigationProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'TabNavigationProperty' }] });
 	ss.setMetadata($System_Windows_Input_KeyboardNavigationTarget, { members: [{ name: 'FindTarget', isStatic: true, type: 8, sname: 'FindTarget', returnType: $System_Windows_Media_Visual, params: [$System_Windows_Media_Visual, $System_Windows_Input_FocusNavigationDirection, $System_Windows_DependencyProperty] }] });
 	ss.setMetadata($System_Windows_Input_KeyEventArgs, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_RoutedEvent, Object, $System_Windows_Input_KeyboardDevice, ss.Int32, $System_Windows_Input_Key, $System_Windows_Input_KeyStates, Boolean] }, { name: 'InvokeEventHandler', type: 8, sname: 'InvokeEventHandler', returnType: Object, params: [Function, Object] }, { name: 'ForceHostHandling', type: 16, returnType: Boolean, getter: { name: 'get_ForceHostHandling', type: 8, sname: 'get_ForceHostHandling', returnType: Boolean, params: [] }, setter: { name: 'set_ForceHostHandling', type: 8, sname: 'set_ForceHostHandling', returnType: Object, params: [Boolean] } }, { name: 'IsDown', type: 16, returnType: Boolean, getter: { name: 'get_IsDown', type: 8, sname: 'get_IsDown', returnType: Boolean, params: [] } }, { name: 'IsRepeat', type: 16, returnType: Boolean, getter: { name: 'get_IsRepeat', type: 8, sname: 'get_IsRepeat', returnType: Boolean, params: [] }, setter: { name: 'set_IsRepeat', type: 8, sname: 'set_IsRepeat', returnType: Object, params: [Boolean] } }, { name: 'IsUp', type: 16, returnType: Boolean, getter: { name: 'get_IsUp', type: 8, sname: 'get_IsUp', returnType: Boolean, params: [] } }, { name: 'Key', type: 16, returnType: $System_Windows_Input_Key, getter: { name: 'get_Key', type: 8, sname: 'get_Key', returnType: $System_Windows_Input_Key, params: [] }, setter: { name: 'set_Key', type: 8, sname: 'set_Key', returnType: Object, params: [$System_Windows_Input_Key] } }, { name: 'KeyStates', type: 16, returnType: $System_Windows_Input_KeyStates, getter: { name: 'get_KeyStates', type: 8, sname: 'get_KeyStates', returnType: $System_Windows_Input_KeyStates, params: [] }, setter: { name: 'set_KeyStates', type: 8, sname: 'set_KeyStates', returnType: Object, params: [$System_Windows_Input_KeyStates] } }] });
-	ss.setMetadata($System_Windows_Input_KeyEventHandlerExtensions, { members: [{ name: 'Raise', isStatic: true, type: 8, sname: 'Raise', returnType: Object, params: [Function, Object, $System_Windows_Input_KeyEventArgs] }] });
+	ss.setMetadata($System_Windows_Input_KeyEventHandlerExtensions, { attr: [new System.Diagnostics.DebuggerNonUserCodeAttribute()], members: [{ name: 'Raise', isStatic: true, type: 8, sname: 'Raise', returnType: Object, params: [Function, Object, $System_Windows_Input_KeyEventArgs] }] });
 	ss.setMetadata($System_Windows_Input_Mouse, { members: [{ name: 'MouseDownEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'MouseDownEvent' }, { name: 'MouseEnterEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'MouseEnterEvent' }, { name: 'MouseLeaveEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'MouseLeaveEvent' }, { name: 'MouseMoveEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'MouseMoveEvent' }, { name: 'MouseUpEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'MouseUpEvent' }, { name: 'MouseWheelEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'MouseWheelEvent' }, { name: 'PreviewMouseDownEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'PreviewMouseDownEvent' }, { name: 'PreviewMouseMoveEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'PreviewMouseMoveEvent' }, { name: 'PreviewMouseUpEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'PreviewMouseUpEvent' }, { name: 'PreviewMouseWheelEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'PreviewMouseWheelEvent' }, { name: 'QueryCursorEvent', isStatic: true, type: 4, returnType: $System_Windows_RoutedEvent, sname: 'QueryCursorEvent' }] });
 	ss.setMetadata($System_Windows_Input_MouseButtonEventArgs, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_RoutedEvent, Object, $System_Windows_Input_MouseDevice, ss.Int32, $System_Windows_Point, $System_Windows_Input_MouseButton, $System_Windows_Input_MouseButtonState, ss.Int32] }, { name: 'InvokeEventHandler', type: 8, sname: 'InvokeEventHandler', returnType: Object, params: [Function, Object] }, { name: 'ButtonState', type: 16, returnType: $System_Windows_Input_MouseButtonState, getter: { name: 'get_ButtonState', type: 8, sname: 'get_ButtonState', returnType: $System_Windows_Input_MouseButtonState, params: [] }, setter: { name: 'set_ButtonState', type: 8, sname: 'set_ButtonState', returnType: Object, params: [$System_Windows_Input_MouseButtonState] } }, { name: 'ChangedButton', type: 16, returnType: $System_Windows_Input_MouseButton, getter: { name: 'get_ChangedButton', type: 8, sname: 'get_ChangedButton', returnType: $System_Windows_Input_MouseButton, params: [] }, setter: { name: 'set_ChangedButton', type: 8, sname: 'set_ChangedButton', returnType: Object, params: [$System_Windows_Input_MouseButton] } }, { name: 'ClickCount', type: 16, returnType: ss.Int32, getter: { name: 'get_ClickCount', type: 8, sname: 'get_ClickCount', returnType: ss.Int32, params: [] }, setter: { name: 'set_ClickCount', type: 8, sname: 'set_ClickCount', returnType: Object, params: [ss.Int32] } }] });
 	ss.setMetadata($System_Windows_Input_MouseDevice, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_IPresentationSource] }, { name: 'Activate', type: 8, sname: 'Activate', returnType: Object, params: [] }, { name: 'Capture', type: 8, sname: 'Capture', returnType: Object, params: [$System_Windows_IInputElement] }, { name: 'Deactivate', type: 8, sname: 'Deactivate', returnType: Object, params: [] }, { name: 'Dispose', type: 8, sname: 'dispose', returnType: Object, params: [] }, { name: 'GetButtonState', type: 8, sname: 'GetButtonState', returnType: $System_Windows_Input_MouseButtonState, params: [$System_Windows_Input_MouseButton] }, { name: 'ProcessRawEvent', type: 8, sname: 'ProcessRawEvent', returnType: Boolean, params: [$System_Windows_Input_RawMouseEventArgs] }, { name: 'ReleaseCapture', type: 8, sname: 'ReleaseCapture', returnType: Object, params: [] }, { name: 'UpdateCursor', type: 8, sname: 'UpdateCursor', returnType: Object, params: [] }, { name: 'CaptureTarget', type: 16, returnType: $System_Windows_IInputElement, getter: { name: 'get_CaptureTarget', type: 8, sname: 'get_CaptureTarget', returnType: $System_Windows_IInputElement, params: [] }, setter: { name: 'set_CaptureTarget', type: 8, sname: 'set_CaptureTarget', returnType: Object, params: [$System_Windows_IInputElement] } }, { name: 'Cursor', type: 16, returnType: $System_Windows_Input_Cursor, getter: { name: 'get_Cursor', type: 8, sname: 'get_Cursor', returnType: $System_Windows_Input_Cursor, params: [] }, setter: { name: 'set_Cursor', type: 8, sname: 'set_Cursor', returnType: Object, params: [$System_Windows_Input_Cursor] } }, { name: 'HitTarget', type: 16, returnType: $System_Windows_IInputElement, getter: { name: 'get_HitTarget', type: 8, sname: 'get_HitTarget', returnType: $System_Windows_IInputElement, params: [] }, setter: { name: 'set_HitTarget', type: 8, sname: 'set_HitTarget', returnType: Object, params: [$System_Windows_IInputElement] } }, { name: 'Position', type: 16, returnType: $System_Windows_Point, getter: { name: 'get_Position', type: 8, sname: 'get_Position', returnType: $System_Windows_Point, params: [] }, setter: { name: 'set_Position', type: 8, sname: 'set_Position', returnType: Object, params: [$System_Windows_Point] } }, { name: 'Target', type: 16, returnType: $System_Windows_IInputElement, getter: { name: 'get_Target', type: 8, sname: 'get_Target', returnType: $System_Windows_IInputElement, params: [] }, setter: { name: 'set_Target', type: 8, sname: 'set_Target', returnType: Object, params: [$System_Windows_IInputElement] } }, { name: 'CursorChanged', type: 2, adder: { name: 'add_CursorChanged', type: 8, sname: 'add_CursorChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_CursorChanged', type: 8, sname: 'remove_CursorChanged', returnType: Object, params: [Function] } }] });
@@ -23348,7 +24668,6 @@
 	ss.setMetadata($System_Windows_Markup_$EnumTypeConverter, { members: [{ name: '.ctor', type: 1, params: [Function] }, { name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }] });
 	ss.setMetadata($System_Windows_Markup_$Int32TypeConverter, { members: [{ name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }, { name: 'Default', isStatic: true, type: 4, returnType: $System_Windows_Markup_$Int32TypeConverter, sname: '$Default' }] });
 	ss.setMetadata($System_Windows_Markup_$ObjectTypeConverter, { members: [{ name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }, { name: 'Default', isStatic: true, type: 4, returnType: $System_Windows_Markup_$ObjectTypeConverter, sname: '$Default' }] });
-	ss.setMetadata($System_Windows_Markup_$ParseTypeConverter, { members: [{ name: '.ctor', type: 1, params: [Function] }, { name: 'ContainsParseMethod', isStatic: true, type: 8, sname: '$ContainsParseMethod', returnType: Boolean, params: [Function] }, { name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }] });
 	ss.setMetadata($System_Windows_Markup_$StringTypeConverter, { members: [{ name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }, { name: 'Default', isStatic: true, type: 4, returnType: $System_Windows_Markup_$StringTypeConverter, sname: '$Default' }] });
 	ss.setMetadata($System_Windows_Markup_$TimeSpanTypeConverter, { members: [{ name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }, { name: 'Default', isStatic: true, type: 4, returnType: $System_Windows_Markup_$TimeSpanTypeConverter, sname: '$Default' }] });
 	ss.setMetadata($System_Windows_Markup_$TypeTypeConverter, { members: [{ name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }, { name: 'Default', isStatic: true, type: 4, returnType: $System_Windows_Markup_$TypeTypeConverter, sname: '$Default' }] });
@@ -23390,8 +24709,9 @@
 	ss.setMetadata($System_Windows_Markup_PropertyPathParser, { members: [{ name: '.ctor', type: 1, params: [String, System.Xaml.XamlNamespaces] }, { name: 'Parse', type: 8, sname: 'Parse', returnType: ss.IEnumerable, params: [] }] });
 	ss.setMetadata($System_Windows_Markup_RoutedEventAdapter, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_RoutedEvent] }, { name: 'AddHandler', type: 8, sname: 'AddHandler', returnType: Object, params: [Object, Function] }, { name: 'HandlerType', type: 16, returnType: Function, getter: { name: 'get_HandlerType', type: 8, sname: 'get_HandlerType', returnType: Function, params: [] } }] });
 	ss.setMetadata($System_Windows_Markup_RuntimeNamePropertyAttribute, { members: [{ name: '.ctor', type: 1, params: [String] }] });
-	ss.setMetadata($System_Windows_Markup_TypeConverter, { members: [{ name: 'ConvertValue', isStatic: true, type: 8, sname: 'ConvertValue', returnType: Object, params: [Object, Function, System.Xaml.XamlNamespaces] }] });
+	ss.setMetadata($System_Windows_Markup_TypeConverter, { members: [{ name: 'ConvertValue', isStatic: true, type: 8, sname: 'ConvertValue', returnType: Object, params: [Object, Function, System.Xaml.XamlNamespaces] }, { name: 'GetTypeConverter', isStatic: true, type: 8, sname: 'GetTypeConverter', returnType: $System_Windows_Markup_ITypeConverter, params: [Function, Function] }, { name: 'Empty', isStatic: true, type: 4, returnType: $System_Windows_Markup_ITypeConverter, sname: 'Empty' }] });
 	ss.setMetadata($System_Windows_Markup_TypeConverterAttribute, { members: [{ name: '.ctor', type: 1, params: [Function] }, { name: 'ConverterType', type: 16, returnType: Function, getter: { name: 'get_ConverterType', type: 8, sname: 'get_ConverterType', returnType: Function, params: [] }, setter: { name: 'set_ConverterType', type: 8, sname: 'set_ConverterType', returnType: Object, params: [Function] } }] });
+	ss.setMetadata($System_Windows_Markup_TypeMemberKey, { members: [{ name: '.ctor', type: 1, params: [Function, System.Xaml.XamlName] }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'MemberName', type: 16, returnType: System.Xaml.XamlName, getter: { name: 'get_MemberName', type: 8, sname: 'get_MemberName', returnType: System.Xaml.XamlName, params: [] }, setter: { name: 'set_MemberName', type: 8, sname: 'set_MemberName', returnType: Object, params: [System.Xaml.XamlName] } }, { name: 'Type', type: 16, returnType: Function, getter: { name: 'get_Type', type: 8, sname: 'get_Type', returnType: Function, params: [] }, setter: { name: 'set_Type', type: 8, sname: 'set_Type', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_Markup_TypeParser, { members: [{ name: 'ParseType', isStatic: true, type: 8, sname: 'ParseType', returnType: Function, params: [System.Xaml.XamlName] }, { name: 'ParseType', isStatic: true, type: 8, sname: 'ParseType$1', returnType: Function, params: [String, System.Xaml.XamlNamespaces] }] });
 	ss.setMetadata($System_Windows_Markup_ValueProvider, { members: [{ name: '.ctor', type: 1, params: [Function] }, { name: 'ProvideValue', type: 8, sname: 'ProvideValue', returnType: Object, params: [] }] });
 	ss.setMetadata($System_Windows_Markup_XamlElementExtensions, { members: [{ name: 'GetElementType', isStatic: true, type: 8, sname: 'GetElementType', returnType: Function, params: [System.Xaml.XamlElement] }] });
@@ -23405,7 +24725,7 @@
 	ss.setMetadata($System_Windows_Media_ColorExtensions, { members: [{ name: 'ApplyOpacity', isStatic: true, type: 8, sname: 'ApplyOpacity', returnType: $System_Windows_Media_Color, params: [$System_Windows_Media_Color, Number] }] });
 	ss.setMetadata($System_Windows_Media_Colors, { members: [{ name: 'AliceBlue', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_AliceBlue', isStatic: true, type: 8, sname: 'get_AliceBlue', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'AntiqueWhite', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_AntiqueWhite', isStatic: true, type: 8, sname: 'get_AntiqueWhite', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Aqua', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Aqua', isStatic: true, type: 8, sname: 'get_Aqua', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Aquamarine', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Aquamarine', isStatic: true, type: 8, sname: 'get_Aquamarine', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Azure', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Azure', isStatic: true, type: 8, sname: 'get_Azure', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Beige', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Beige', isStatic: true, type: 8, sname: 'get_Beige', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Bisque', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Bisque', isStatic: true, type: 8, sname: 'get_Bisque', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Black', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Black', isStatic: true, type: 8, sname: 'get_Black', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'BlanchedAlmond', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_BlanchedAlmond', isStatic: true, type: 8, sname: 'get_BlanchedAlmond', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Blue', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Blue', isStatic: true, type: 8, sname: 'get_Blue', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'BlueViolet', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_BlueViolet', isStatic: true, type: 8, sname: 'get_BlueViolet', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Brown', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Brown', isStatic: true, type: 8, sname: 'get_Brown', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'BurlyWood', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_BurlyWood', isStatic: true, type: 8, sname: 'get_BurlyWood', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'CadetBlue', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_CadetBlue', isStatic: true, type: 8, sname: 'get_CadetBlue', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Chartreuse', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Chartreuse', isStatic: true, type: 8, sname: 'get_Chartreuse', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Chocolate', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Chocolate', isStatic: true, type: 8, sname: 'get_Chocolate', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Coral', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Coral', isStatic: true, type: 8, sname: 'get_Coral', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'CornflowerBlue', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_CornflowerBlue', isStatic: true, type: 8, sname: 'get_CornflowerBlue', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Cornsilk', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Cornsilk', isStatic: true, type: 8, sname: 'get_Cornsilk', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Crimson', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Crimson', isStatic: true, type: 8, sname: 'get_Crimson', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Cyan', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Cyan', isStatic: true, type: 8, sname: 'get_Cyan', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'DarkBlue', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_DarkBlue', isStatic: true, type: 8, sname: 'get_DarkBlue', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'DarkCyan', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_DarkCyan', isStatic: true, type: 8, sname: 'get_DarkCyan', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'DarkGoldenrod', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_DarkGoldenrod', isStatic: true, type: 8, sname: 'get_DarkGoldenrod', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'DarkGray', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_DarkGray', isStatic: true, type: 8, sname: 'get_DarkGray', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'DarkGreen', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_DarkGreen', isStatic: true, type: 8, sname: 'get_DarkGreen', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'DarkKhaki', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_DarkKhaki', isStatic: true, type: 8, sname: 'get_DarkKhaki', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'DarkMagenta', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_DarkMagenta', isStatic: true, type: 8, sname: 'get_DarkMagenta', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'DarkOliveGreen', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_DarkOliveGreen', isStatic: true, type: 8, sname: 'get_DarkOliveGreen', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'DarkOrange', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_DarkOrange', isStatic: true, type: 8, sname: 'get_DarkOrange', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'DarkOrchid', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_DarkOrchid', isStatic: true, type: 8, sname: 'get_DarkOrchid', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'DarkRed', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_DarkRed', isStatic: true, type: 8, sname: 'get_DarkRed', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'DarkSalmon', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_DarkSalmon', isStatic: true, type: 8, sname: 'get_DarkSalmon', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'DarkSeaGreen', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_DarkSeaGreen', isStatic: true, type: 8, sname: 'get_DarkSeaGreen', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'DarkSlateBlue', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_DarkSlateBlue', isStatic: true, type: 8, sname: 'get_DarkSlateBlue', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'DarkSlateGray', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_DarkSlateGray', isStatic: true, type: 8, sname: 'get_DarkSlateGray', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'DarkTurquoise', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_DarkTurquoise', isStatic: true, type: 8, sname: 'get_DarkTurquoise', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'DarkViolet', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_DarkViolet', isStatic: true, type: 8, sname: 'get_DarkViolet', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'DeepPink', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_DeepPink', isStatic: true, type: 8, sname: 'get_DeepPink', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'DeepSkyBlue', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_DeepSkyBlue', isStatic: true, type: 8, sname: 'get_DeepSkyBlue', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'DimGray', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_DimGray', isStatic: true, type: 8, sname: 'get_DimGray', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'DodgerBlue', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_DodgerBlue', isStatic: true, type: 8, sname: 'get_DodgerBlue', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Firebrick', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Firebrick', isStatic: true, type: 8, sname: 'get_Firebrick', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'FloralWhite', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_FloralWhite', isStatic: true, type: 8, sname: 'get_FloralWhite', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'ForestGreen', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_ForestGreen', isStatic: true, type: 8, sname: 'get_ForestGreen', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Fuchsia', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Fuchsia', isStatic: true, type: 8, sname: 'get_Fuchsia', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Gainsboro', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Gainsboro', isStatic: true, type: 8, sname: 'get_Gainsboro', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'GhostWhite', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_GhostWhite', isStatic: true, type: 8, sname: 'get_GhostWhite', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Gold', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Gold', isStatic: true, type: 8, sname: 'get_Gold', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Goldenrod', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Goldenrod', isStatic: true, type: 8, sname: 'get_Goldenrod', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Gray', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Gray', isStatic: true, type: 8, sname: 'get_Gray', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Green', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Green', isStatic: true, type: 8, sname: 'get_Green', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'GreenYellow', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_GreenYellow', isStatic: true, type: 8, sname: 'get_GreenYellow', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Honeydew', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Honeydew', isStatic: true, type: 8, sname: 'get_Honeydew', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'HotPink', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_HotPink', isStatic: true, type: 8, sname: 'get_HotPink', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'IndianRed', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_IndianRed', isStatic: true, type: 8, sname: 'get_IndianRed', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Indigo', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Indigo', isStatic: true, type: 8, sname: 'get_Indigo', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Ivory', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Ivory', isStatic: true, type: 8, sname: 'get_Ivory', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Khaki', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Khaki', isStatic: true, type: 8, sname: 'get_Khaki', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Lavender', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Lavender', isStatic: true, type: 8, sname: 'get_Lavender', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'LavenderBlush', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_LavenderBlush', isStatic: true, type: 8, sname: 'get_LavenderBlush', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'LawnGreen', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_LawnGreen', isStatic: true, type: 8, sname: 'get_LawnGreen', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'LemonChiffon', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_LemonChiffon', isStatic: true, type: 8, sname: 'get_LemonChiffon', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'LightBlue', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_LightBlue', isStatic: true, type: 8, sname: 'get_LightBlue', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'LightCoral', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_LightCoral', isStatic: true, type: 8, sname: 'get_LightCoral', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'LightCyan', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_LightCyan', isStatic: true, type: 8, sname: 'get_LightCyan', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'LightGoldenrodYellow', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_LightGoldenrodYellow', isStatic: true, type: 8, sname: 'get_LightGoldenrodYellow', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'LightGray', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_LightGray', isStatic: true, type: 8, sname: 'get_LightGray', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'LightGreen', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_LightGreen', isStatic: true, type: 8, sname: 'get_LightGreen', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'LightPink', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_LightPink', isStatic: true, type: 8, sname: 'get_LightPink', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'LightSalmon', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_LightSalmon', isStatic: true, type: 8, sname: 'get_LightSalmon', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'LightSeaGreen', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_LightSeaGreen', isStatic: true, type: 8, sname: 'get_LightSeaGreen', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'LightSkyBlue', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_LightSkyBlue', isStatic: true, type: 8, sname: 'get_LightSkyBlue', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'LightSlateGray', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_LightSlateGray', isStatic: true, type: 8, sname: 'get_LightSlateGray', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'LightSteelBlue', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_LightSteelBlue', isStatic: true, type: 8, sname: 'get_LightSteelBlue', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'LightYellow', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_LightYellow', isStatic: true, type: 8, sname: 'get_LightYellow', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Lime', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Lime', isStatic: true, type: 8, sname: 'get_Lime', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'LimeGreen', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_LimeGreen', isStatic: true, type: 8, sname: 'get_LimeGreen', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Linen', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Linen', isStatic: true, type: 8, sname: 'get_Linen', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Magenta', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Magenta', isStatic: true, type: 8, sname: 'get_Magenta', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Maroon', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Maroon', isStatic: true, type: 8, sname: 'get_Maroon', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'MediumAquamarine', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_MediumAquamarine', isStatic: true, type: 8, sname: 'get_MediumAquamarine', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'MediumBlue', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_MediumBlue', isStatic: true, type: 8, sname: 'get_MediumBlue', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'MediumOrchid', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_MediumOrchid', isStatic: true, type: 8, sname: 'get_MediumOrchid', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'MediumPurple', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_MediumPurple', isStatic: true, type: 8, sname: 'get_MediumPurple', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'MediumSeaGreen', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_MediumSeaGreen', isStatic: true, type: 8, sname: 'get_MediumSeaGreen', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'MediumSlateBlue', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_MediumSlateBlue', isStatic: true, type: 8, sname: 'get_MediumSlateBlue', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'MediumSpringGreen', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_MediumSpringGreen', isStatic: true, type: 8, sname: 'get_MediumSpringGreen', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'MediumTurquoise', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_MediumTurquoise', isStatic: true, type: 8, sname: 'get_MediumTurquoise', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'MediumVioletRed', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_MediumVioletRed', isStatic: true, type: 8, sname: 'get_MediumVioletRed', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'MidnightBlue', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_MidnightBlue', isStatic: true, type: 8, sname: 'get_MidnightBlue', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'MintCream', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_MintCream', isStatic: true, type: 8, sname: 'get_MintCream', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'MistyRose', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_MistyRose', isStatic: true, type: 8, sname: 'get_MistyRose', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Moccasin', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Moccasin', isStatic: true, type: 8, sname: 'get_Moccasin', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'NavajoWhite', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_NavajoWhite', isStatic: true, type: 8, sname: 'get_NavajoWhite', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Navy', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Navy', isStatic: true, type: 8, sname: 'get_Navy', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'OldLace', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_OldLace', isStatic: true, type: 8, sname: 'get_OldLace', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Olive', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Olive', isStatic: true, type: 8, sname: 'get_Olive', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'OliveDrab', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_OliveDrab', isStatic: true, type: 8, sname: 'get_OliveDrab', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Orange', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Orange', isStatic: true, type: 8, sname: 'get_Orange', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'OrangeRed', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_OrangeRed', isStatic: true, type: 8, sname: 'get_OrangeRed', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Orchid', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Orchid', isStatic: true, type: 8, sname: 'get_Orchid', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'PaleGoldenrod', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_PaleGoldenrod', isStatic: true, type: 8, sname: 'get_PaleGoldenrod', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'PaleGreen', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_PaleGreen', isStatic: true, type: 8, sname: 'get_PaleGreen', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'PaleTurquoise', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_PaleTurquoise', isStatic: true, type: 8, sname: 'get_PaleTurquoise', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'PaleVioletRed', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_PaleVioletRed', isStatic: true, type: 8, sname: 'get_PaleVioletRed', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'PapayaWhip', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_PapayaWhip', isStatic: true, type: 8, sname: 'get_PapayaWhip', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'PeachPuff', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_PeachPuff', isStatic: true, type: 8, sname: 'get_PeachPuff', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Peru', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Peru', isStatic: true, type: 8, sname: 'get_Peru', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Pink', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Pink', isStatic: true, type: 8, sname: 'get_Pink', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Plum', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Plum', isStatic: true, type: 8, sname: 'get_Plum', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'PowderBlue', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_PowderBlue', isStatic: true, type: 8, sname: 'get_PowderBlue', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Purple', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Purple', isStatic: true, type: 8, sname: 'get_Purple', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Red', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Red', isStatic: true, type: 8, sname: 'get_Red', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'RosyBrown', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_RosyBrown', isStatic: true, type: 8, sname: 'get_RosyBrown', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'RoyalBlue', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_RoyalBlue', isStatic: true, type: 8, sname: 'get_RoyalBlue', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'SaddleBrown', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_SaddleBrown', isStatic: true, type: 8, sname: 'get_SaddleBrown', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Salmon', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Salmon', isStatic: true, type: 8, sname: 'get_Salmon', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'SandyBrown', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_SandyBrown', isStatic: true, type: 8, sname: 'get_SandyBrown', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'SeaGreen', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_SeaGreen', isStatic: true, type: 8, sname: 'get_SeaGreen', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'SeaShell', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_SeaShell', isStatic: true, type: 8, sname: 'get_SeaShell', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Sienna', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Sienna', isStatic: true, type: 8, sname: 'get_Sienna', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Silver', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Silver', isStatic: true, type: 8, sname: 'get_Silver', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'SkyBlue', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_SkyBlue', isStatic: true, type: 8, sname: 'get_SkyBlue', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'SlateBlue', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_SlateBlue', isStatic: true, type: 8, sname: 'get_SlateBlue', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'SlateGray', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_SlateGray', isStatic: true, type: 8, sname: 'get_SlateGray', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Snow', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Snow', isStatic: true, type: 8, sname: 'get_Snow', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'SpringGreen', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_SpringGreen', isStatic: true, type: 8, sname: 'get_SpringGreen', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'SteelBlue', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_SteelBlue', isStatic: true, type: 8, sname: 'get_SteelBlue', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Tan', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Tan', isStatic: true, type: 8, sname: 'get_Tan', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Teal', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Teal', isStatic: true, type: 8, sname: 'get_Teal', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Thistle', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Thistle', isStatic: true, type: 8, sname: 'get_Thistle', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Tomato', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Tomato', isStatic: true, type: 8, sname: 'get_Tomato', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Transparent', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Transparent', isStatic: true, type: 8, sname: 'get_Transparent', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Turquoise', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Turquoise', isStatic: true, type: 8, sname: 'get_Turquoise', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Violet', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Violet', isStatic: true, type: 8, sname: 'get_Violet', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Wheat', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Wheat', isStatic: true, type: 8, sname: 'get_Wheat', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'White', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_White', isStatic: true, type: 8, sname: 'get_White', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'WhiteSmoke', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_WhiteSmoke', isStatic: true, type: 8, sname: 'get_WhiteSmoke', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Yellow', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Yellow', isStatic: true, type: 8, sname: 'get_Yellow', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'YellowGreen', isStatic: true, type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_YellowGreen', isStatic: true, type: 8, sname: 'get_YellowGreen', returnType: $System_Windows_Media_Color, params: [] } }] });
 	ss.setMetadata($System_Windows_Media_ColorTypeConverter, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }] });
-	ss.setMetadata($System_Windows_Media_GradientBrush, { attr: [new $System_Windows_Markup_ContentPropertyAttribute('GradientStops')], members: [{ name: '.ctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [ss.IEnumerable], sname: '$ctor1' }, { name: 'GradientStops', type: 16, returnType: $System_Windows_Media_GradientStopCollection, getter: { name: 'get_GradientStops', type: 8, sname: 'get_GradientStops', returnType: $System_Windows_Media_GradientStopCollection, params: [] }, setter: { name: 'set_GradientStops', type: 8, sname: 'set_GradientStops', returnType: Object, params: [$System_Windows_Media_GradientStopCollection] } }, { name: 'SpreadMethod', type: 16, returnType: $System_Windows_Media_GradientSpreadMethod, getter: { name: 'get_SpreadMethod', type: 8, sname: 'get_SpreadMethod', returnType: $System_Windows_Media_GradientSpreadMethod, params: [] }, setter: { name: 'set_SpreadMethod', type: 8, sname: 'set_SpreadMethod', returnType: Object, params: [$System_Windows_Media_GradientSpreadMethod] } }, { name: 'GradientStopsProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'GradientStopsProperty' }, { name: 'SpreadMethodProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'SpreadMethodProperty' }] });
+	ss.setMetadata($System_Windows_Media_GradientBrush, { attr: [new $System_Windows_Markup_ContentPropertyAttribute('GradientStops')], members: [{ name: '.ctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [ss.IEnumerable], sname: '$ctor1' }, { name: 'GradientStops', type: 16, returnType: $System_Windows_Media_GradientStopCollection, getter: { name: 'get_GradientStops', type: 8, sname: 'get_GradientStops', returnType: $System_Windows_Media_GradientStopCollection, params: [] }, setter: { name: 'set_GradientStops', type: 8, sname: 'set_GradientStops', returnType: Object, params: [$System_Windows_Media_GradientStopCollection] } }, { name: 'MappingMode', type: 16, returnType: $System_Windows_Media_BrushMappingMode, getter: { name: 'get_MappingMode', type: 8, sname: 'get_MappingMode', returnType: $System_Windows_Media_BrushMappingMode, params: [] }, setter: { name: 'set_MappingMode', type: 8, sname: 'set_MappingMode', returnType: Object, params: [$System_Windows_Media_BrushMappingMode] } }, { name: 'SpreadMethod', type: 16, returnType: $System_Windows_Media_GradientSpreadMethod, getter: { name: 'get_SpreadMethod', type: 8, sname: 'get_SpreadMethod', returnType: $System_Windows_Media_GradientSpreadMethod, params: [] }, setter: { name: 'set_SpreadMethod', type: 8, sname: 'set_SpreadMethod', returnType: Object, params: [$System_Windows_Media_GradientSpreadMethod] } }, { name: 'GradientStopsProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'GradientStopsProperty' }, { name: 'MappingModeProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'MappingModeProperty' }, { name: 'SpreadMethodProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'SpreadMethodProperty' }] });
 	ss.setMetadata($System_Windows_Media_GradientStop, { members: [{ name: '.ctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [$System_Windows_Media_Color, Number], sname: '$ctor1' }, { name: 'Color', type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Color', type: 8, sname: 'get_Color', returnType: $System_Windows_Media_Color, params: [] }, setter: { name: 'set_Color', type: 8, sname: 'set_Color', returnType: Object, params: [$System_Windows_Media_Color] } }, { name: 'Offset', type: 16, returnType: Number, getter: { name: 'get_Offset', type: 8, sname: 'get_Offset', returnType: Number, params: [] }, setter: { name: 'set_Offset', type: 8, sname: 'set_Offset', returnType: Object, params: [Number] } }, { name: 'ColorProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ColorProperty' }, { name: 'OffsetProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'OffsetProperty' }] });
 	ss.setMetadata($System_Windows_Media_GradientStopCollection, { members: [{ name: '.ctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [ss.IEnumerable], sname: '$ctor1' }] });
 	ss.setMetadata($System_Windows_Media_IBorderRenderElement, { members: [{ name: 'Background', type: 16, returnType: $System_Windows_Media_Brush, getter: { name: 'get_Background', type: 8, sname: 'get_Background', returnType: $System_Windows_Media_Brush, params: [] }, setter: { name: 'set_Background', type: 8, sname: 'set_Background', returnType: Object, params: [$System_Windows_Media_Brush] } }, { name: 'BorderBrush', type: 16, returnType: $System_Windows_Media_Brush, getter: { name: 'get_BorderBrush', type: 8, sname: 'get_BorderBrush', returnType: $System_Windows_Media_Brush, params: [] }, setter: { name: 'set_BorderBrush', type: 8, sname: 'set_BorderBrush', returnType: Object, params: [$System_Windows_Media_Brush] } }, { name: 'BorderThickness', type: 16, returnType: $System_Windows_Thickness, getter: { name: 'get_BorderThickness', type: 8, sname: 'get_BorderThickness', returnType: $System_Windows_Thickness, params: [] }, setter: { name: 'set_BorderThickness', type: 8, sname: 'set_BorderThickness', returnType: Object, params: [$System_Windows_Thickness] } }, { name: 'Bounds', type: 16, returnType: $System_Windows_Rect, getter: { name: 'get_Bounds', type: 8, sname: 'get_Bounds', returnType: $System_Windows_Rect, params: [] }, setter: { name: 'set_Bounds', type: 8, sname: 'set_Bounds', returnType: Object, params: [$System_Windows_Rect] } }, { name: 'CornerRadius', type: 16, returnType: $System_Windows_CornerRadius, getter: { name: 'get_CornerRadius', type: 8, sname: 'get_CornerRadius', returnType: $System_Windows_CornerRadius, params: [] }, setter: { name: 'set_CornerRadius', type: 8, sname: 'set_CornerRadius', returnType: Object, params: [$System_Windows_CornerRadius] } }, { name: 'IsHitTestVisible', type: 16, returnType: Boolean, getter: { name: 'get_IsHitTestVisible', type: 8, sname: 'get_IsHitTestVisible', returnType: Boolean, params: [] }, setter: { name: 'set_IsHitTestVisible', type: 8, sname: 'set_IsHitTestVisible', returnType: Object, params: [Boolean] } }] });
@@ -23418,19 +24738,26 @@
 	ss.setMetadata($System_Windows_Media_IRenderImageSource, { members: [{ name: 'Size', type: 16, returnType: $System_Windows_Size, getter: { name: 'get_Size', type: 8, sname: 'get_Size', returnType: $System_Windows_Size, params: [] } }, { name: 'State', type: 16, returnType: $System_Windows_Media_RenderImageState, getter: { name: 'get_State', type: 8, sname: 'get_State', returnType: $System_Windows_Media_RenderImageState, params: [] } }, { name: 'StateChanged', type: 2, adder: { name: 'add_StateChanged', type: 8, sname: 'add_StateChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_StateChanged', type: 8, sname: 'remove_StateChanged', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_Media_ITextBlockRenderElement, { members: [{ name: 'Bounds', type: 16, returnType: $System_Windows_Rect, getter: { name: 'get_Bounds', type: 8, sname: 'get_Bounds', returnType: $System_Windows_Rect, params: [] }, setter: { name: 'set_Bounds', type: 8, sname: 'set_Bounds', returnType: Object, params: [$System_Windows_Rect] } }, { name: 'FontFamily', type: 16, returnType: $System_Windows_FontFamily, getter: { name: 'get_FontFamily', type: 8, sname: 'get_FontFamily', returnType: $System_Windows_FontFamily, params: [] }, setter: { name: 'set_FontFamily', type: 8, sname: 'set_FontFamily', returnType: Object, params: [$System_Windows_FontFamily] } }, { name: 'FontSize', type: 16, returnType: Number, getter: { name: 'get_FontSize', type: 8, sname: 'get_FontSize', returnType: Number, params: [] }, setter: { name: 'set_FontSize', type: 8, sname: 'set_FontSize', returnType: Object, params: [Number] } }, { name: 'FontStretch', type: 16, returnType: $System_Windows_FontStretch, getter: { name: 'get_FontStretch', type: 8, sname: 'get_FontStretch', returnType: $System_Windows_FontStretch, params: [] }, setter: { name: 'set_FontStretch', type: 8, sname: 'set_FontStretch', returnType: Object, params: [$System_Windows_FontStretch] } }, { name: 'FontStyle', type: 16, returnType: $System_Windows_FontStyle, getter: { name: 'get_FontStyle', type: 8, sname: 'get_FontStyle', returnType: $System_Windows_FontStyle, params: [] }, setter: { name: 'set_FontStyle', type: 8, sname: 'set_FontStyle', returnType: Object, params: [$System_Windows_FontStyle] } }, { name: 'FontWeight', type: 16, returnType: $System_Windows_FontWeight, getter: { name: 'get_FontWeight', type: 8, sname: 'get_FontWeight', returnType: $System_Windows_FontWeight, params: [] }, setter: { name: 'set_FontWeight', type: 8, sname: 'set_FontWeight', returnType: Object, params: [$System_Windows_FontWeight] } }, { name: 'Foreground', type: 16, returnType: $System_Windows_Media_Brush, getter: { name: 'get_Foreground', type: 8, sname: 'get_Foreground', returnType: $System_Windows_Media_Brush, params: [] }, setter: { name: 'set_Foreground', type: 8, sname: 'set_Foreground', returnType: Object, params: [$System_Windows_Media_Brush] } }, { name: 'Text', type: 16, returnType: String, getter: { name: 'get_Text', type: 8, sname: 'get_Text', returnType: String, params: [] }, setter: { name: 'set_Text', type: 8, sname: 'set_Text', returnType: Object, params: [String] } }, { name: 'TextAlignment', type: 16, returnType: $System_Windows_Controls_TextAlignment, getter: { name: 'get_TextAlignment', type: 8, sname: 'get_TextAlignment', returnType: $System_Windows_Controls_TextAlignment, params: [] }, setter: { name: 'set_TextAlignment', type: 8, sname: 'set_TextAlignment', returnType: Object, params: [$System_Windows_Controls_TextAlignment] } }, { name: 'TextTrimming', type: 16, returnType: $System_Windows_TextTrimming, getter: { name: 'get_TextTrimming', type: 8, sname: 'get_TextTrimming', returnType: $System_Windows_TextTrimming, params: [] }, setter: { name: 'set_TextTrimming', type: 8, sname: 'set_TextTrimming', returnType: Object, params: [$System_Windows_TextTrimming] } }, { name: 'TextWrapping', type: 16, returnType: $System_Windows_TextWrapping, getter: { name: 'get_TextWrapping', type: 8, sname: 'get_TextWrapping', returnType: $System_Windows_TextWrapping, params: [] }, setter: { name: 'set_TextWrapping', type: 8, sname: 'set_TextWrapping', returnType: Object, params: [$System_Windows_TextWrapping] } }] });
 	ss.setMetadata($System_Windows_Media_ITextBoxRenderElement, { members: [{ name: 'ClearFocus', type: 8, sname: 'ClearFocus', returnType: Object, params: [] }, { name: 'Focus', type: 8, sname: 'Focus', returnType: Object, params: [] }, { name: 'ProcessKeyEvent', type: 8, sname: 'ProcessKeyEvent', returnType: Object, params: [$System_Windows_Input_KeyEventArgs] }, { name: 'AcceptsReturn', type: 16, returnType: Boolean, getter: { name: 'get_AcceptsReturn', type: 8, sname: 'get_AcceptsReturn', returnType: Boolean, params: [] }, setter: { name: 'set_AcceptsReturn', type: 8, sname: 'set_AcceptsReturn', returnType: Object, params: [Boolean] } }, { name: 'AcceptsTab', type: 16, returnType: Boolean, getter: { name: 'get_AcceptsTab', type: 8, sname: 'get_AcceptsTab', returnType: Boolean, params: [] }, setter: { name: 'set_AcceptsTab', type: 8, sname: 'set_AcceptsTab', returnType: Object, params: [Boolean] } }, { name: 'Bounds', type: 16, returnType: $System_Windows_Rect, getter: { name: 'get_Bounds', type: 8, sname: 'get_Bounds', returnType: $System_Windows_Rect, params: [] }, setter: { name: 'set_Bounds', type: 8, sname: 'set_Bounds', returnType: Object, params: [$System_Windows_Rect] } }, { name: 'CaretIndex', type: 16, returnType: ss.Int32, getter: { name: 'get_CaretIndex', type: 8, sname: 'get_CaretIndex', returnType: ss.Int32, params: [] }, setter: { name: 'set_CaretIndex', type: 8, sname: 'set_CaretIndex', returnType: Object, params: [ss.Int32] } }, { name: 'FontFamily', type: 16, returnType: $System_Windows_FontFamily, getter: { name: 'get_FontFamily', type: 8, sname: 'get_FontFamily', returnType: $System_Windows_FontFamily, params: [] }, setter: { name: 'set_FontFamily', type: 8, sname: 'set_FontFamily', returnType: Object, params: [$System_Windows_FontFamily] } }, { name: 'FontSize', type: 16, returnType: Number, getter: { name: 'get_FontSize', type: 8, sname: 'get_FontSize', returnType: Number, params: [] }, setter: { name: 'set_FontSize', type: 8, sname: 'set_FontSize', returnType: Object, params: [Number] } }, { name: 'FontStretch', type: 16, returnType: $System_Windows_FontStretch, getter: { name: 'get_FontStretch', type: 8, sname: 'get_FontStretch', returnType: $System_Windows_FontStretch, params: [] }, setter: { name: 'set_FontStretch', type: 8, sname: 'set_FontStretch', returnType: Object, params: [$System_Windows_FontStretch] } }, { name: 'FontStyle', type: 16, returnType: $System_Windows_FontStyle, getter: { name: 'get_FontStyle', type: 8, sname: 'get_FontStyle', returnType: $System_Windows_FontStyle, params: [] }, setter: { name: 'set_FontStyle', type: 8, sname: 'set_FontStyle', returnType: Object, params: [$System_Windows_FontStyle] } }, { name: 'FontWeight', type: 16, returnType: $System_Windows_FontWeight, getter: { name: 'get_FontWeight', type: 8, sname: 'get_FontWeight', returnType: $System_Windows_FontWeight, params: [] }, setter: { name: 'set_FontWeight', type: 8, sname: 'set_FontWeight', returnType: Object, params: [$System_Windows_FontWeight] } }, { name: 'Foreground', type: 16, returnType: $System_Windows_Media_Brush, getter: { name: 'get_Foreground', type: 8, sname: 'get_Foreground', returnType: $System_Windows_Media_Brush, params: [] }, setter: { name: 'set_Foreground', type: 8, sname: 'set_Foreground', returnType: Object, params: [$System_Windows_Media_Brush] } }, { name: 'HorizontalScrollBarVisibility', type: 16, returnType: $System_Windows_Controls_ScrollBarVisibility, getter: { name: 'get_HorizontalScrollBarVisibility', type: 8, sname: 'get_HorizontalScrollBarVisibility', returnType: $System_Windows_Controls_ScrollBarVisibility, params: [] }, setter: { name: 'set_HorizontalScrollBarVisibility', type: 8, sname: 'set_HorizontalScrollBarVisibility', returnType: Object, params: [$System_Windows_Controls_ScrollBarVisibility] } }, { name: 'IsHitTestVisible', type: 16, returnType: Boolean, getter: { name: 'get_IsHitTestVisible', type: 8, sname: 'get_IsHitTestVisible', returnType: Boolean, params: [] }, setter: { name: 'set_IsHitTestVisible', type: 8, sname: 'set_IsHitTestVisible', returnType: Object, params: [Boolean] } }, { name: 'IsPassword', type: 16, returnType: Boolean, getter: { name: 'get_IsPassword', type: 8, sname: 'get_IsPassword', returnType: Boolean, params: [] }, setter: { name: 'set_IsPassword', type: 8, sname: 'set_IsPassword', returnType: Object, params: [Boolean] } }, { name: 'IsReadOnly', type: 16, returnType: Boolean, getter: { name: 'get_IsReadOnly', type: 8, sname: 'get_IsReadOnly', returnType: Boolean, params: [] }, setter: { name: 'set_IsReadOnly', type: 8, sname: 'set_IsReadOnly', returnType: Object, params: [Boolean] } }, { name: 'MaxLength', type: 16, returnType: ss.Int32, getter: { name: 'get_MaxLength', type: 8, sname: 'get_MaxLength', returnType: ss.Int32, params: [] }, setter: { name: 'set_MaxLength', type: 8, sname: 'set_MaxLength', returnType: Object, params: [ss.Int32] } }, { name: 'SelectionLength', type: 16, returnType: ss.Int32, getter: { name: 'get_SelectionLength', type: 8, sname: 'get_SelectionLength', returnType: ss.Int32, params: [] }, setter: { name: 'set_SelectionLength', type: 8, sname: 'set_SelectionLength', returnType: Object, params: [ss.Int32] } }, { name: 'SelectionStart', type: 16, returnType: ss.Int32, getter: { name: 'get_SelectionStart', type: 8, sname: 'get_SelectionStart', returnType: ss.Int32, params: [] }, setter: { name: 'set_SelectionStart', type: 8, sname: 'set_SelectionStart', returnType: Object, params: [ss.Int32] } }, { name: 'SpellCheck', type: 16, returnType: Boolean, getter: { name: 'get_SpellCheck', type: 8, sname: 'get_SpellCheck', returnType: Boolean, params: [] }, setter: { name: 'set_SpellCheck', type: 8, sname: 'set_SpellCheck', returnType: Object, params: [Boolean] } }, { name: 'Text', type: 16, returnType: String, getter: { name: 'get_Text', type: 8, sname: 'get_Text', returnType: String, params: [] }, setter: { name: 'set_Text', type: 8, sname: 'set_Text', returnType: Object, params: [String] } }, { name: 'TextAlignment', type: 16, returnType: $System_Windows_Controls_TextAlignment, getter: { name: 'get_TextAlignment', type: 8, sname: 'get_TextAlignment', returnType: $System_Windows_Controls_TextAlignment, params: [] }, setter: { name: 'set_TextAlignment', type: 8, sname: 'set_TextAlignment', returnType: Object, params: [$System_Windows_Controls_TextAlignment] } }, { name: 'TextWrapping', type: 16, returnType: $System_Windows_TextWrapping, getter: { name: 'get_TextWrapping', type: 8, sname: 'get_TextWrapping', returnType: $System_Windows_TextWrapping, params: [] }, setter: { name: 'set_TextWrapping', type: 8, sname: 'set_TextWrapping', returnType: Object, params: [$System_Windows_TextWrapping] } }, { name: 'VerticalScrollBarVisibility', type: 16, returnType: $System_Windows_Controls_ScrollBarVisibility, getter: { name: 'get_VerticalScrollBarVisibility', type: 8, sname: 'get_VerticalScrollBarVisibility', returnType: $System_Windows_Controls_ScrollBarVisibility, params: [] }, setter: { name: 'set_VerticalScrollBarVisibility', type: 8, sname: 'set_VerticalScrollBarVisibility', returnType: Object, params: [$System_Windows_Controls_ScrollBarVisibility] } }, { name: 'CaretIndexChanged', type: 2, adder: { name: 'add_CaretIndexChanged', type: 8, sname: 'add_CaretIndexChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_CaretIndexChanged', type: 8, sname: 'remove_CaretIndexChanged', returnType: Object, params: [Function] } }, { name: 'SelectionLengthChanged', type: 2, adder: { name: 'add_SelectionLengthChanged', type: 8, sname: 'add_SelectionLengthChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_SelectionLengthChanged', type: 8, sname: 'remove_SelectionLengthChanged', returnType: Object, params: [Function] } }, { name: 'SelectionStartChanged', type: 2, adder: { name: 'add_SelectionStartChanged', type: 8, sname: 'add_SelectionStartChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_SelectionStartChanged', type: 8, sname: 'remove_SelectionStartChanged', returnType: Object, params: [Function] } }, { name: 'TextChanged', type: 2, adder: { name: 'add_TextChanged', type: 8, sname: 'add_TextChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_TextChanged', type: 8, sname: 'remove_TextChanged', returnType: Object, params: [Function] } }] });
-	ss.setMetadata($System_Windows_Media_IVisualRenderElement, { members: [{ name: 'InsertChild', type: 8, sname: 'InsertChild', returnType: Object, params: [ss.Int32, Object] }, { name: 'RemoveChild', type: 8, sname: 'RemoveChild', returnType: Object, params: [Object] }, { name: 'Background', type: 16, returnType: $System_Windows_Media_Brush, getter: { name: 'get_Background', type: 8, sname: 'get_Background', returnType: $System_Windows_Media_Brush, params: [] }, setter: { name: 'set_Background', type: 8, sname: 'set_Background', returnType: Object, params: [$System_Windows_Media_Brush] } }, { name: 'Bounds', type: 16, returnType: $System_Windows_Rect, getter: { name: 'get_Bounds', type: 8, sname: 'get_Bounds', returnType: $System_Windows_Rect, params: [] }, setter: { name: 'set_Bounds', type: 8, sname: 'set_Bounds', returnType: Object, params: [$System_Windows_Rect] } }, { name: 'Children', type: 16, returnType: ss.IEnumerable, getter: { name: 'get_Children', type: 8, sname: 'get_Children', returnType: ss.IEnumerable, params: [] } }, { name: 'ClipToBounds', type: 16, returnType: Boolean, getter: { name: 'get_ClipToBounds', type: 8, sname: 'get_ClipToBounds', returnType: Boolean, params: [] }, setter: { name: 'set_ClipToBounds', type: 8, sname: 'set_ClipToBounds', returnType: Object, params: [Boolean] } }, { name: 'IsHitTestVisible', type: 16, returnType: Boolean, getter: { name: 'get_IsHitTestVisible', type: 8, sname: 'get_IsHitTestVisible', returnType: Boolean, params: [] }, setter: { name: 'set_IsHitTestVisible', type: 8, sname: 'set_IsHitTestVisible', returnType: Object, params: [Boolean] } }, { name: 'IsVisible', type: 16, returnType: Boolean, getter: { name: 'get_IsVisible', type: 8, sname: 'get_IsVisible', returnType: Boolean, params: [] }, setter: { name: 'set_IsVisible', type: 8, sname: 'set_IsVisible', returnType: Object, params: [Boolean] } }, { name: 'Opacity', type: 16, returnType: Number, getter: { name: 'get_Opacity', type: 8, sname: 'get_Opacity', returnType: Number, params: [] }, setter: { name: 'set_Opacity', type: 8, sname: 'set_Opacity', returnType: Object, params: [Number] } }, { name: 'Transform', type: 16, returnType: $System_Windows_Media_Transform, getter: { name: 'get_Transform', type: 8, sname: 'get_Transform', returnType: $System_Windows_Media_Transform, params: [] }, setter: { name: 'set_Transform', type: 8, sname: 'set_Transform', returnType: Object, params: [$System_Windows_Media_Transform] } }] });
-	ss.setMetadata($System_Windows_Media_LinearGradientBrush, { members: [{ name: '.ctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [Number, ss.IEnumerable], sname: '$ctor1' }, { name: '.ctor', type: 1, params: [Number, $System_Windows_Media_Color, $System_Windows_Media_Color], sname: '$ctor2' }, { name: '.ctor', type: 1, params: [$System_Windows_Point, $System_Windows_Point, ss.IEnumerable], sname: '$ctor3' }, { name: '.ctor', type: 1, params: [$System_Windows_Point, $System_Windows_Point, $System_Windows_Media_Color, $System_Windows_Media_Color], sname: '$ctor4' }, { name: 'Angle', type: 16, returnType: Number, getter: { name: 'get_Angle', type: 8, sname: 'get_Angle', returnType: Number, params: [] }, setter: { name: 'set_Angle', type: 8, sname: 'set_Angle', returnType: Object, params: [Number] } }, { name: 'EndPoint', type: 16, returnType: $System_Windows_Point, getter: { name: 'get_EndPoint', type: 8, sname: 'get_EndPoint', returnType: $System_Windows_Point, params: [] }, setter: { name: 'set_EndPoint', type: 8, sname: 'set_EndPoint', returnType: Object, params: [$System_Windows_Point] } }, { name: 'StartPoint', type: 16, returnType: $System_Windows_Point, getter: { name: 'get_StartPoint', type: 8, sname: 'get_StartPoint', returnType: $System_Windows_Point, params: [] }, setter: { name: 'set_StartPoint', type: 8, sname: 'set_StartPoint', returnType: Object, params: [$System_Windows_Point] } }, { name: 'AngleProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'AngleProperty' }, { name: 'EndPointProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'EndPointProperty' }, { name: 'StartPointProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'StartPointProperty' }] });
-	ss.setMetadata($System_Windows_Media_Matrix, { members: [{ name: '.ctor', type: 1, params: [Number, Number, Number, Number, Number, Number] }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'IsClose', type: 8, sname: 'IsClose', returnType: Boolean, params: [$System_Windows_Media_Matrix] }, { name: 'Parse', isStatic: true, type: 8, sname: 'Parse', returnType: $System_Windows_Media_Matrix, params: [String] }, { name: 'RotationMatrix', isStatic: true, type: 8, sname: 'RotationMatrix', returnType: $System_Windows_Media_Matrix, params: [Number, Number, Number] }, { name: 'ScalingMatrix', isStatic: true, type: 8, sname: 'ScalingMatrix', returnType: $System_Windows_Media_Matrix, params: [Number, Number, Number, Number] }, { name: 'SkewMatrix', isStatic: true, type: 8, sname: 'SkewMatrix', returnType: $System_Windows_Media_Matrix, params: [Number, Number, Number, Number] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'TranslationMatrix', isStatic: true, type: 8, sname: 'TranslationMatrix', returnType: $System_Windows_Media_Matrix, params: [Number, Number] }, { name: 'op_Equality', isStatic: true, type: 8, sname: 'op_Equality', returnType: Boolean, params: [$System_Windows_Media_Matrix, $System_Windows_Media_Matrix] }, { name: 'op_Inequality', isStatic: true, type: 8, sname: 'op_Inequality', returnType: Boolean, params: [$System_Windows_Media_Matrix, $System_Windows_Media_Matrix] }, { name: 'op_Multiply', isStatic: true, type: 8, sname: 'op_Multiply', returnType: $System_Windows_Media_Matrix, params: [$System_Windows_Media_Matrix, $System_Windows_Media_Matrix] }, { name: 'op_Multiply', isStatic: true, type: 8, sname: 'op_Multiply$1', returnType: $System_Windows_Point, params: [$System_Windows_Point, $System_Windows_Media_Matrix] }, { name: 'IsIdentity', type: 16, returnType: Boolean, getter: { name: 'get_IsIdentity', type: 8, sname: 'get_IsIdentity', returnType: Boolean, params: [] } }, { name: 'IsScaling', type: 16, returnType: Boolean, getter: { name: 'get_IsScaling', type: 8, sname: 'get_IsScaling', returnType: Boolean, params: [] } }, { name: 'IsTranslation', type: 16, returnType: Boolean, getter: { name: 'get_IsTranslation', type: 8, sname: 'get_IsTranslation', returnType: Boolean, params: [] } }, { name: 'M11', type: 16, returnType: Number, getter: { name: 'get_M11', type: 8, sname: 'get_M11', returnType: Number, params: [] }, setter: { name: 'set_M11', type: 8, sname: 'set_M11', returnType: Object, params: [Number] } }, { name: 'M12', type: 16, returnType: Number, getter: { name: 'get_M12', type: 8, sname: 'get_M12', returnType: Number, params: [] }, setter: { name: 'set_M12', type: 8, sname: 'set_M12', returnType: Object, params: [Number] } }, { name: 'M21', type: 16, returnType: Number, getter: { name: 'get_M21', type: 8, sname: 'get_M21', returnType: Number, params: [] }, setter: { name: 'set_M21', type: 8, sname: 'set_M21', returnType: Object, params: [Number] } }, { name: 'M22', type: 16, returnType: Number, getter: { name: 'get_M22', type: 8, sname: 'get_M22', returnType: Number, params: [] }, setter: { name: 'set_M22', type: 8, sname: 'set_M22', returnType: Object, params: [Number] } }, { name: 'OffsetX', type: 16, returnType: Number, getter: { name: 'get_OffsetX', type: 8, sname: 'get_OffsetX', returnType: Number, params: [] }, setter: { name: 'set_OffsetX', type: 8, sname: 'set_OffsetX', returnType: Object, params: [Number] } }, { name: 'OffsetY', type: 16, returnType: Number, getter: { name: 'get_OffsetY', type: 8, sname: 'get_OffsetY', returnType: Number, params: [] }, setter: { name: 'set_OffsetY', type: 8, sname: 'set_OffsetY', returnType: Object, params: [Number] } }, { name: 'Identity', isStatic: true, type: 4, returnType: $System_Windows_Media_Matrix, sname: 'Identity' }] });
+	ss.setMetadata($System_Windows_Media_IVisualRenderElement, { members: [{ name: 'InsertChild', type: 8, sname: 'InsertChild', returnType: Object, params: [ss.Int32, Object] }, { name: 'RemoveChild', type: 8, sname: 'RemoveChild', returnType: Object, params: [Object] }, { name: 'Background', type: 16, returnType: $System_Windows_Media_Brush, getter: { name: 'get_Background', type: 8, sname: 'get_Background', returnType: $System_Windows_Media_Brush, params: [] }, setter: { name: 'set_Background', type: 8, sname: 'set_Background', returnType: Object, params: [$System_Windows_Media_Brush] } }, { name: 'Bounds', type: 16, returnType: $System_Windows_Rect, getter: { name: 'get_Bounds', type: 8, sname: 'get_Bounds', returnType: $System_Windows_Rect, params: [] }, setter: { name: 'set_Bounds', type: 8, sname: 'set_Bounds', returnType: Object, params: [$System_Windows_Rect] } }, { name: 'Children', type: 16, returnType: ss.IEnumerable, getter: { name: 'get_Children', type: 8, sname: 'get_Children', returnType: ss.IEnumerable, params: [] } }, { name: 'ClipToBounds', type: 16, returnType: Boolean, getter: { name: 'get_ClipToBounds', type: 8, sname: 'get_ClipToBounds', returnType: Boolean, params: [] }, setter: { name: 'set_ClipToBounds', type: 8, sname: 'set_ClipToBounds', returnType: Object, params: [Boolean] } }, { name: 'IsHitTestVisible', type: 16, returnType: Boolean, getter: { name: 'get_IsHitTestVisible', type: 8, sname: 'get_IsHitTestVisible', returnType: Boolean, params: [] }, setter: { name: 'set_IsHitTestVisible', type: 8, sname: 'set_IsHitTestVisible', returnType: Object, params: [Boolean] } }, { name: 'IsVisible', type: 16, returnType: Boolean, getter: { name: 'get_IsVisible', type: 8, sname: 'get_IsVisible', returnType: Boolean, params: [] }, setter: { name: 'set_IsVisible', type: 8, sname: 'set_IsVisible', returnType: Object, params: [Boolean] } }, { name: 'Opacity', type: 16, returnType: Number, getter: { name: 'get_Opacity', type: 8, sname: 'get_Opacity', returnType: Number, params: [] }, setter: { name: 'set_Opacity', type: 8, sname: 'set_Opacity', returnType: Object, params: [Number] } }, { name: 'Transform', type: 16, returnType: $System_Windows_Media_Matrix, getter: { name: 'get_Transform', type: 8, sname: 'get_Transform', returnType: $System_Windows_Media_Matrix, params: [] }, setter: { name: 'set_Transform', type: 8, sname: 'set_Transform', returnType: Object, params: [$System_Windows_Media_Matrix] } }] });
+	ss.setMetadata($System_Windows_Media_LinearGradientBrush, { members: [{ name: '.ctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [Number, ss.IEnumerable], sname: '$ctor1' }, { name: '.ctor', type: 1, params: [Number, $System_Windows_Media_Color, $System_Windows_Media_Color], sname: '$ctor2' }, { name: '.ctor', type: 1, params: [$System_Windows_Point, $System_Windows_Point, ss.IEnumerable], sname: '$ctor3' }, { name: '.ctor', type: 1, params: [$System_Windows_Point, $System_Windows_Point, $System_Windows_Media_Color, $System_Windows_Media_Color], sname: '$ctor4' }, { name: 'EndPoint', type: 16, returnType: $System_Windows_Point, getter: { name: 'get_EndPoint', type: 8, sname: 'get_EndPoint', returnType: $System_Windows_Point, params: [] }, setter: { name: 'set_EndPoint', type: 8, sname: 'set_EndPoint', returnType: Object, params: [$System_Windows_Point] } }, { name: 'StartPoint', type: 16, returnType: $System_Windows_Point, getter: { name: 'get_StartPoint', type: 8, sname: 'get_StartPoint', returnType: $System_Windows_Point, params: [] }, setter: { name: 'set_StartPoint', type: 8, sname: 'set_StartPoint', returnType: Object, params: [$System_Windows_Point] } }, { name: 'EndPointProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'EndPointProperty' }, { name: 'StartPointProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'StartPointProperty' }] });
+	ss.setMetadata($System_Windows_Media_Matrix, { attr: [new $System_Windows_Markup_TypeConverterAttribute($System_Windows_Media_MatrixTypeConverter)], members: [{ name: '.ctor', type: 1, params: [Number, Number, Number, Number, Number, Number] }, { name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'IsClose', type: 8, sname: 'IsClose', returnType: Boolean, params: [$System_Windows_Media_Matrix] }, { name: 'Parse', isStatic: true, type: 8, sname: 'Parse', returnType: $System_Windows_Media_Matrix, params: [String] }, { name: 'RotationMatrix', isStatic: true, type: 8, sname: 'RotationMatrix', returnType: $System_Windows_Media_Matrix, params: [Number, Number, Number] }, { name: 'ScalingMatrix', isStatic: true, type: 8, sname: 'ScalingMatrix', returnType: $System_Windows_Media_Matrix, params: [Number, Number, Number, Number] }, { name: 'SkewMatrix', isStatic: true, type: 8, sname: 'SkewMatrix', returnType: $System_Windows_Media_Matrix, params: [Number, Number, Number, Number] }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'TranslationMatrix', isStatic: true, type: 8, sname: 'TranslationMatrix', returnType: $System_Windows_Media_Matrix, params: [Number, Number] }, { name: 'op_Equality', isStatic: true, type: 8, sname: 'op_Equality', returnType: Boolean, params: [$System_Windows_Media_Matrix, $System_Windows_Media_Matrix] }, { name: 'op_Inequality', isStatic: true, type: 8, sname: 'op_Inequality', returnType: Boolean, params: [$System_Windows_Media_Matrix, $System_Windows_Media_Matrix] }, { name: 'op_Multiply', isStatic: true, type: 8, sname: 'op_Multiply', returnType: $System_Windows_Media_Matrix, params: [$System_Windows_Media_Matrix, $System_Windows_Media_Matrix] }, { name: 'op_Multiply', isStatic: true, type: 8, sname: 'op_Multiply$1', returnType: $System_Windows_Point, params: [$System_Windows_Point, $System_Windows_Media_Matrix] }, { name: 'Inverse', type: 16, returnType: $System_Windows_Media_Matrix, getter: { name: 'get_Inverse', type: 8, sname: 'get_Inverse', returnType: $System_Windows_Media_Matrix, params: [] } }, { name: 'IsIdentity', type: 16, returnType: Boolean, getter: { name: 'get_IsIdentity', type: 8, sname: 'get_IsIdentity', returnType: Boolean, params: [] } }, { name: 'IsScaling', type: 16, returnType: Boolean, getter: { name: 'get_IsScaling', type: 8, sname: 'get_IsScaling', returnType: Boolean, params: [] } }, { name: 'IsTranslation', type: 16, returnType: Boolean, getter: { name: 'get_IsTranslation', type: 8, sname: 'get_IsTranslation', returnType: Boolean, params: [] } }, { name: 'M11', type: 16, returnType: Number, getter: { name: 'get_M11', type: 8, sname: 'get_M11', returnType: Number, params: [] }, setter: { name: 'set_M11', type: 8, sname: 'set_M11', returnType: Object, params: [Number] } }, { name: 'M12', type: 16, returnType: Number, getter: { name: 'get_M12', type: 8, sname: 'get_M12', returnType: Number, params: [] }, setter: { name: 'set_M12', type: 8, sname: 'set_M12', returnType: Object, params: [Number] } }, { name: 'M21', type: 16, returnType: Number, getter: { name: 'get_M21', type: 8, sname: 'get_M21', returnType: Number, params: [] }, setter: { name: 'set_M21', type: 8, sname: 'set_M21', returnType: Object, params: [Number] } }, { name: 'M22', type: 16, returnType: Number, getter: { name: 'get_M22', type: 8, sname: 'get_M22', returnType: Number, params: [] }, setter: { name: 'set_M22', type: 8, sname: 'set_M22', returnType: Object, params: [Number] } }, { name: 'OffsetX', type: 16, returnType: Number, getter: { name: 'get_OffsetX', type: 8, sname: 'get_OffsetX', returnType: Number, params: [] }, setter: { name: 'set_OffsetX', type: 8, sname: 'set_OffsetX', returnType: Object, params: [Number] } }, { name: 'OffsetY', type: 16, returnType: Number, getter: { name: 'get_OffsetY', type: 8, sname: 'get_OffsetY', returnType: Number, params: [] }, setter: { name: 'set_OffsetY', type: 8, sname: 'set_OffsetY', returnType: Object, params: [Number] } }, { name: 'Identity', isStatic: true, type: 4, returnType: $System_Windows_Media_Matrix, sname: 'Identity' }] });
+	ss.setMetadata($System_Windows_Media_MatrixExtensions, { members: [{ name: 'GetApproximatedRect', isStatic: true, type: 8, sname: 'GetApproximatedRect', returnType: $System_Windows_Rect, params: [$System_Windows_Media_Matrix, $System_Windows_Rect] }, { name: 'GetApproximatedRect', isStatic: true, type: 8, sname: 'GetApproximatedRect$1', returnType: $System_Windows_Rect, params: [$System_Windows_Media_Matrix, $System_Windows_Size] }, { name: 'GetContainedSize', isStatic: true, type: 8, sname: 'GetContainedSize', returnType: $System_Windows_Size, params: [$System_Windows_Media_Matrix, $System_Windows_Size] }, { name: 'GetContainingRect', isStatic: true, type: 8, sname: 'GetContainingRect', returnType: $System_Windows_Rect, params: [$System_Windows_Media_Matrix, $System_Windows_Rect] }, { name: 'GetContainingSize', isStatic: true, type: 8, sname: 'GetContainingSize', returnType: $System_Windows_Size, params: [$System_Windows_Media_Matrix, $System_Windows_Size] }, { name: 'IsNullOrIdentity', isStatic: true, type: 8, sname: 'IsNullOrIdentity', returnType: Boolean, params: [$System_Windows_Media_Matrix] }] });
+	ss.setMetadata($System_Windows_Media_MatrixTransform, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Matrix', type: 16, returnType: $System_Windows_Media_Matrix, getter: { name: 'get_Matrix', type: 8, sname: 'get_Matrix', returnType: $System_Windows_Media_Matrix, params: [] }, setter: { name: 'set_Matrix', type: 8, sname: 'set_Matrix', returnType: Object, params: [$System_Windows_Media_Matrix] } }, { name: 'Value', type: 16, returnType: $System_Windows_Media_Matrix, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: $System_Windows_Media_Matrix, params: [] } }, { name: 'MatrixProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'MatrixProperty' }] });
+	ss.setMetadata($System_Windows_Media_MatrixTypeConverter, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }] });
 	ss.setMetadata($System_Windows_Media_RadialGradientBrush, { members: [{ name: '.ctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [ss.IEnumerable], sname: '$ctor1' }, { name: '.ctor', type: 1, params: [$System_Windows_Media_Color, $System_Windows_Media_Color], sname: '$ctor2' }, { name: 'Center', type: 16, returnType: $System_Windows_Point, getter: { name: 'get_Center', type: 8, sname: 'get_Center', returnType: $System_Windows_Point, params: [] }, setter: { name: 'set_Center', type: 8, sname: 'set_Center', returnType: Object, params: [$System_Windows_Point] } }, { name: 'GradientOrigin', type: 16, returnType: $System_Windows_Point, getter: { name: 'get_GradientOrigin', type: 8, sname: 'get_GradientOrigin', returnType: $System_Windows_Point, params: [] }, setter: { name: 'set_GradientOrigin', type: 8, sname: 'set_GradientOrigin', returnType: Object, params: [$System_Windows_Point] } }, { name: 'RadiusX', type: 16, returnType: Number, getter: { name: 'get_RadiusX', type: 8, sname: 'get_RadiusX', returnType: Number, params: [] }, setter: { name: 'set_RadiusX', type: 8, sname: 'set_RadiusX', returnType: Object, params: [Number] } }, { name: 'RadiusY', type: 16, returnType: Number, getter: { name: 'get_RadiusY', type: 8, sname: 'get_RadiusY', returnType: Number, params: [] }, setter: { name: 'set_RadiusY', type: 8, sname: 'set_RadiusY', returnType: Object, params: [Number] } }, { name: 'CenterProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'CenterProperty' }, { name: 'GradientOriginProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'GradientOriginProperty' }, { name: 'RadiusXProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'RadiusXProperty' }, { name: 'RadiusYProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'RadiusYProperty' }] });
 	ss.setMetadata($System_Windows_Media_RotateTransform, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Angle', type: 16, returnType: Number, getter: { name: 'get_Angle', type: 8, sname: 'get_Angle', returnType: Number, params: [] }, setter: { name: 'set_Angle', type: 8, sname: 'set_Angle', returnType: Object, params: [Number] } }, { name: 'CenterX', type: 16, returnType: Number, getter: { name: 'get_CenterX', type: 8, sname: 'get_CenterX', returnType: Number, params: [] }, setter: { name: 'set_CenterX', type: 8, sname: 'set_CenterX', returnType: Object, params: [Number] } }, { name: 'CenterY', type: 16, returnType: Number, getter: { name: 'get_CenterY', type: 8, sname: 'get_CenterY', returnType: Number, params: [] }, setter: { name: 'set_CenterY', type: 8, sname: 'set_CenterY', returnType: Object, params: [Number] } }, { name: 'Value', type: 16, returnType: $System_Windows_Media_Matrix, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: $System_Windows_Media_Matrix, params: [] } }, { name: 'AngleProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'AngleProperty' }, { name: 'CenterXProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'CenterXProperty' }, { name: 'CenterYProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'CenterYProperty' }] });
 	ss.setMetadata($System_Windows_Media_ScaleTransform, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'CenterX', type: 16, returnType: Number, getter: { name: 'get_CenterX', type: 8, sname: 'get_CenterX', returnType: Number, params: [] }, setter: { name: 'set_CenterX', type: 8, sname: 'set_CenterX', returnType: Object, params: [Number] } }, { name: 'CenterY', type: 16, returnType: Number, getter: { name: 'get_CenterY', type: 8, sname: 'get_CenterY', returnType: Number, params: [] }, setter: { name: 'set_CenterY', type: 8, sname: 'set_CenterY', returnType: Object, params: [Number] } }, { name: 'ScaleX', type: 16, returnType: Number, getter: { name: 'get_ScaleX', type: 8, sname: 'get_ScaleX', returnType: Number, params: [] }, setter: { name: 'set_ScaleX', type: 8, sname: 'set_ScaleX', returnType: Object, params: [Number] } }, { name: 'ScaleY', type: 16, returnType: Number, getter: { name: 'get_ScaleY', type: 8, sname: 'get_ScaleY', returnType: Number, params: [] }, setter: { name: 'set_ScaleY', type: 8, sname: 'set_ScaleY', returnType: Object, params: [Number] } }, { name: 'Value', type: 16, returnType: $System_Windows_Media_Matrix, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: $System_Windows_Media_Matrix, params: [] } }, { name: 'CenterXProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'CenterXProperty' }, { name: 'CenterYProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'CenterYProperty' }, { name: 'ScaleXProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ScaleXProperty' }, { name: 'ScaleYProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ScaleYProperty' }] });
 	ss.setMetadata($System_Windows_Media_SkewTransform, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'AngleX', type: 16, returnType: Number, getter: { name: 'get_AngleX', type: 8, sname: 'get_AngleX', returnType: Number, params: [] }, setter: { name: 'set_AngleX', type: 8, sname: 'set_AngleX', returnType: Object, params: [Number] } }, { name: 'AngleY', type: 16, returnType: Number, getter: { name: 'get_AngleY', type: 8, sname: 'get_AngleY', returnType: Number, params: [] }, setter: { name: 'set_AngleY', type: 8, sname: 'set_AngleY', returnType: Object, params: [Number] } }, { name: 'CenterX', type: 16, returnType: Number, getter: { name: 'get_CenterX', type: 8, sname: 'get_CenterX', returnType: Number, params: [] }, setter: { name: 'set_CenterX', type: 8, sname: 'set_CenterX', returnType: Object, params: [Number] } }, { name: 'CenterY', type: 16, returnType: Number, getter: { name: 'get_CenterY', type: 8, sname: 'get_CenterY', returnType: Number, params: [] }, setter: { name: 'set_CenterY', type: 8, sname: 'set_CenterY', returnType: Object, params: [Number] } }, { name: 'Value', type: 16, returnType: $System_Windows_Media_Matrix, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: $System_Windows_Media_Matrix, params: [] } }, { name: 'AngleXProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'AngleXProperty' }, { name: 'AngleYProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'AngleYProperty' }, { name: 'CenterXProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'CenterXProperty' }, { name: 'CenterYProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'CenterYProperty' }] });
 	ss.setMetadata($System_Windows_Media_SolidColorBrush, { members: [{ name: '.ctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [$System_Windows_Media_Color], sname: '$ctor1' }, { name: 'ToString', type: 8, sname: 'toString', returnType: String, params: [] }, { name: 'Color', type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Color', type: 8, sname: 'get_Color', returnType: $System_Windows_Media_Color, params: [] }, setter: { name: 'set_Color', type: 8, sname: 'set_Color', returnType: Object, params: [$System_Windows_Media_Color] } }, { name: 'ColorProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ColorProperty' }] });
 	ss.setMetadata($System_Windows_Media_TileBrush, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Stretch', type: 16, returnType: $System_Windows_Media_Stretch, getter: { name: 'get_Stretch', type: 8, sname: 'get_Stretch', returnType: $System_Windows_Media_Stretch, params: [] }, setter: { name: 'set_Stretch', type: 8, sname: 'set_Stretch', returnType: Object, params: [$System_Windows_Media_Stretch] } }, { name: 'TileMode', type: 16, returnType: $System_Windows_Media_TileMode, getter: { name: 'get_TileMode', type: 8, sname: 'get_TileMode', returnType: $System_Windows_Media_TileMode, params: [] }, setter: { name: 'set_TileMode', type: 8, sname: 'set_TileMode', returnType: Object, params: [$System_Windows_Media_TileMode] } }, { name: 'Viewport', type: 16, returnType: $System_Windows_Rect, getter: { name: 'get_Viewport', type: 8, sname: 'get_Viewport', returnType: $System_Windows_Rect, params: [] }, setter: { name: 'set_Viewport', type: 8, sname: 'set_Viewport', returnType: Object, params: [$System_Windows_Rect] } }, { name: 'ViewportUnits', type: 16, returnType: $System_Windows_Media_BrushMappingMode, getter: { name: 'get_ViewportUnits', type: 8, sname: 'get_ViewportUnits', returnType: $System_Windows_Media_BrushMappingMode, params: [] }, setter: { name: 'set_ViewportUnits', type: 8, sname: 'set_ViewportUnits', returnType: Object, params: [$System_Windows_Media_BrushMappingMode] } }, { name: 'StretchProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'StretchProperty' }, { name: 'TileModeProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'TileModeProperty' }, { name: 'ViewportProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ViewportProperty' }, { name: 'ViewportUnitsProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ViewportUnitsProperty' }] });
-	ss.setMetadata($System_Windows_Media_Transform, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Value', type: 16, returnType: $System_Windows_Media_Matrix, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: $System_Windows_Media_Matrix, params: [] } }, { name: 'Identity', isStatic: true, type: 4, returnType: $System_Windows_Media_Transform, sname: 'Identity' }] });
+	ss.setMetadata($System_Windows_Media_Transform, { attr: [new $System_Windows_Markup_TypeConverterAttribute($System_Windows_Media_TransformTypeConverter)], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Value', type: 16, returnType: $System_Windows_Media_Matrix, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: $System_Windows_Media_Matrix, params: [] } }, { name: 'Identity', isStatic: true, type: 4, returnType: $System_Windows_Media_Transform, sname: 'Identity' }] });
+	ss.setMetadata($System_Windows_Media_TransformExtensions, { members: [{ name: 'IsNullOrIdentity', isStatic: true, type: 8, sname: 'IsNullOrIdentity', returnType: Boolean, params: [$System_Windows_Media_Transform] }] });
+	ss.setMetadata($System_Windows_Media_TransformGroup, { attr: [new $System_Windows_Markup_ContentPropertyAttribute('Children')], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Children', type: 16, returnType: ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_Media_Transform]), getter: { name: 'get_Children', type: 8, sname: 'get_Children', returnType: ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_Media_Transform]), params: [] }, setter: { name: 'set_Children', type: 8, sname: 'set_Children', returnType: Object, params: [ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_Media_Transform])] } }, { name: 'Value', type: 16, returnType: $System_Windows_Media_Matrix, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: $System_Windows_Media_Matrix, params: [] } }] });
+	ss.setMetadata($System_Windows_Media_TransformTypeConverter, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }] });
+	ss.setMetadata($System_Windows_Media_TranslateTransform, { members: [{ name: '.ctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [Number, Number], sname: '$ctor2' }, { name: 'Value', type: 16, returnType: $System_Windows_Media_Matrix, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: $System_Windows_Media_Matrix, params: [] } }, { name: 'X', type: 16, returnType: Number, getter: { name: 'get_X', type: 8, sname: 'get_X', returnType: Number, params: [] }, setter: { name: 'set_X', type: 8, sname: 'set_X', returnType: Object, params: [Number] } }, { name: 'Y', type: 16, returnType: Number, getter: { name: 'get_Y', type: 8, sname: 'get_Y', returnType: Number, params: [] }, setter: { name: 'set_Y', type: 8, sname: 'set_Y', returnType: Object, params: [Number] } }, { name: 'XProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'XProperty' }, { name: 'YProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'YProperty' }] });
 	ss.setMetadata($System_Windows_Media_Typeface, { members: [{ name: '.ctor', type: 1, params: [String, $System_Windows_FontStyle, $System_Windows_FontWeight, $System_Windows_FontStretch] }, { name: '.ctor', type: 1, params: [$System_Windows_FontFamily, $System_Windows_FontStyle, $System_Windows_FontWeight, $System_Windows_FontStretch], sname: '$ctor1' }, { name: 'FontFamily', type: 16, returnType: $System_Windows_FontFamily, getter: { name: 'get_FontFamily', type: 8, sname: 'get_FontFamily', returnType: $System_Windows_FontFamily, params: [] }, setter: { name: 'set_FontFamily', type: 8, sname: 'set_FontFamily', returnType: Object, params: [$System_Windows_FontFamily] } }, { name: 'Stretch', type: 16, returnType: $System_Windows_FontStretch, getter: { name: 'get_Stretch', type: 8, sname: 'get_Stretch', returnType: $System_Windows_FontStretch, params: [] }, setter: { name: 'set_Stretch', type: 8, sname: 'set_Stretch', returnType: Object, params: [$System_Windows_FontStretch] } }, { name: 'Style', type: 16, returnType: $System_Windows_FontStyle, getter: { name: 'get_Style', type: 8, sname: 'get_Style', returnType: $System_Windows_FontStyle, params: [] }, setter: { name: 'set_Style', type: 8, sname: 'set_Style', returnType: Object, params: [$System_Windows_FontStyle] } }, { name: 'Weight', type: 16, returnType: $System_Windows_FontWeight, getter: { name: 'get_Weight', type: 8, sname: 'get_Weight', returnType: $System_Windows_FontWeight, params: [] }, setter: { name: 'set_Weight', type: 8, sname: 'set_Weight', returnType: Object, params: [$System_Windows_FontWeight] } }] });
-	ss.setMetadata($System_Windows_Media_Visual, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'AddVisualChild', type: 8, sname: 'AddVisualChild', returnType: Object, params: [$System_Windows_Media_Visual] }, { name: 'ClearVisualChildren', type: 8, sname: 'ClearVisualChildren', returnType: Object, params: [] }, { name: 'CreateContentRenderElementOverride', type: 8, sname: 'CreateContentRenderElementOverride', returnType: Object, params: [$System_Windows_Media_IRenderElementFactory] }, { name: 'GetRenderElement', type: 8, sname: 'GetRenderElement', returnType: $System_Windows_Media_IVisualRenderElement, params: [$System_Windows_Media_IRenderElementFactory] }, { name: 'OnVisualAncestorChanged', type: 8, sname: 'OnVisualAncestorChanged', returnType: Object, params: [] }, { name: 'OnVisualParentChanged', type: 8, sname: 'OnVisualParentChanged', returnType: Object, params: [$System_Windows_Media_Visual, $System_Windows_Media_Visual] }, { name: 'PointFromRoot', type: 8, sname: 'PointFromRoot', returnType: $System_Windows_Point, params: [$System_Windows_Point] }, { name: 'PointToRoot', type: 8, sname: 'PointToRoot', returnType: $System_Windows_Point, params: [$System_Windows_Point] }, { name: 'RemoveRenderElement', type: 8, sname: 'RemoveRenderElement', returnType: Object, params: [$System_Windows_Media_IRenderElementFactory] }, { name: 'RemoveVisualChild', type: 8, sname: 'RemoveVisualChild', returnType: Object, params: [$System_Windows_Media_Visual] }, { name: 'SetVisualChildIndex', type: 8, sname: 'SetVisualChildIndex', returnType: Object, params: [$System_Windows_Media_Visual, ss.Int32] }, { name: 'VisualBackground', type: 16, returnType: $System_Windows_Media_Brush, getter: { name: 'get_VisualBackground', type: 8, sname: 'get_VisualBackground', returnType: $System_Windows_Media_Brush, params: [] }, setter: { name: 'set_VisualBackground', type: 8, sname: 'set_VisualBackground', returnType: Object, params: [$System_Windows_Media_Brush] } }, { name: 'VisualBounds', type: 16, returnType: $System_Windows_Rect, getter: { name: 'get_VisualBounds', type: 8, sname: 'get_VisualBounds', returnType: $System_Windows_Rect, params: [] }, setter: { name: 'set_VisualBounds', type: 8, sname: 'set_VisualBounds', returnType: Object, params: [$System_Windows_Rect] } }, { name: 'VisualChildren', type: 16, returnType: Array, getter: { name: 'get_VisualChildren', type: 8, sname: 'get_VisualChildren', returnType: Array, params: [] }, setter: { name: 'set_VisualChildren', type: 8, sname: 'set_VisualChildren', returnType: Object, params: [Array] } }, { name: 'VisualClipToBounds', type: 16, returnType: Boolean, getter: { name: 'get_VisualClipToBounds', type: 8, sname: 'get_VisualClipToBounds', returnType: Boolean, params: [] }, setter: { name: 'set_VisualClipToBounds', type: 8, sname: 'set_VisualClipToBounds', returnType: Object, params: [Boolean] } }, { name: 'VisualIsHitTestVisible', type: 16, returnType: Boolean, getter: { name: 'get_VisualIsHitTestVisible', type: 8, sname: 'get_VisualIsHitTestVisible', returnType: Boolean, params: [] }, setter: { name: 'set_VisualIsHitTestVisible', type: 8, sname: 'set_VisualIsHitTestVisible', returnType: Object, params: [Boolean] } }, { name: 'VisualIsVisible', type: 16, returnType: Boolean, getter: { name: 'get_VisualIsVisible', type: 8, sname: 'get_VisualIsVisible', returnType: Boolean, params: [] }, setter: { name: 'set_VisualIsVisible', type: 8, sname: 'set_VisualIsVisible', returnType: Object, params: [Boolean] } }, { name: 'VisualLevel', type: 16, returnType: ss.Int32, getter: { name: 'get_VisualLevel', type: 8, sname: 'get_VisualLevel', returnType: ss.Int32, params: [] } }, { name: 'VisualOffset', type: 16, returnType: $System_Windows_Point, getter: { name: 'get_VisualOffset', type: 8, sname: 'get_VisualOffset', returnType: $System_Windows_Point, params: [] } }, { name: 'VisualOpacity', type: 16, returnType: Number, getter: { name: 'get_VisualOpacity', type: 8, sname: 'get_VisualOpacity', returnType: Number, params: [] }, setter: { name: 'set_VisualOpacity', type: 8, sname: 'set_VisualOpacity', returnType: Object, params: [Number] } }, { name: 'VisualParent', type: 16, returnType: $System_Windows_Media_Visual, getter: { name: 'get_VisualParent', type: 8, sname: 'get_VisualParent', returnType: $System_Windows_Media_Visual, params: [] }, setter: { name: 'set_VisualParent', type: 8, sname: 'set_VisualParent', returnType: Object, params: [$System_Windows_Media_Visual] } }, { name: 'VisualSize', type: 16, returnType: $System_Windows_Size, getter: { name: 'get_VisualSize', type: 8, sname: 'get_VisualSize', returnType: $System_Windows_Size, params: [] } }, { name: 'VisualTransform', type: 16, returnType: $System_Windows_Media_Transform, getter: { name: 'get_VisualTransform', type: 8, sname: 'get_VisualTransform', returnType: $System_Windows_Media_Transform, params: [] }, setter: { name: 'set_VisualTransform', type: 8, sname: 'set_VisualTransform', returnType: Object, params: [$System_Windows_Media_Transform] } }, { name: 'VisualAncestorChanged', type: 2, adder: { name: 'add_VisualAncestorChanged', type: 8, sname: 'add_VisualAncestorChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_VisualAncestorChanged', type: 8, sname: 'remove_VisualAncestorChanged', returnType: Object, params: [Function] } }, { name: 'VisualParentChanged', type: 2, adder: { name: 'add_VisualParentChanged', type: 8, sname: 'add_VisualParentChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_VisualParentChanged', type: 8, sname: 'remove_VisualParentChanged', returnType: Object, params: [Function] } }] });
-	ss.setMetadata($System_Windows_Media_VisualExtensions, { members: [{ name: 'IsAncestorOf', isStatic: true, type: 8, sname: 'IsAncestorOf', returnType: Boolean, params: [$System_Windows_Media_Visual, $System_Windows_Media_Visual] }] });
+	ss.setMetadata($System_Windows_Media_Visual, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'AddVisualChild', type: 8, sname: 'AddVisualChild', returnType: Object, params: [$System_Windows_Media_Visual] }, { name: 'ClearVisualChildren', type: 8, sname: 'ClearVisualChildren', returnType: Object, params: [] }, { name: 'CreateContentRenderElementOverride', type: 8, sname: 'CreateContentRenderElementOverride', returnType: Object, params: [$System_Windows_Media_IRenderElementFactory] }, { name: 'GetHitTestBounds', type: 8, sname: 'GetHitTestBounds', returnType: $System_Windows_Rect, params: [] }, { name: 'GetHitTestBoundsOverride', type: 8, sname: 'GetHitTestBoundsOverride', returnType: $System_Windows_Rect, params: [] }, { name: 'GetRenderElement', type: 8, sname: 'GetRenderElement', returnType: $System_Windows_Media_IVisualRenderElement, params: [$System_Windows_Media_IRenderElementFactory] }, { name: 'GetVisualTransformOverride', type: 8, sname: 'GetVisualTransformOverride', returnType: $System_Windows_Media_Matrix, params: [] }, { name: 'InvalidateHitTestBounds', type: 8, sname: 'InvalidateHitTestBounds', returnType: Object, params: [] }, { name: 'InvalidateVisualTransform', type: 8, sname: 'InvalidateVisualTransform', returnType: Object, params: [] }, { name: 'OnVisualAncestorChanged', type: 8, sname: 'OnVisualAncestorChanged', returnType: Object, params: [] }, { name: 'OnVisualBoundsChanged', type: 8, sname: 'OnVisualBoundsChanged', returnType: Object, params: [] }, { name: 'OnVisualParentChanged', type: 8, sname: 'OnVisualParentChanged', returnType: Object, params: [$System_Windows_Media_Visual, $System_Windows_Media_Visual] }, { name: 'OnVisualTransformChanged', type: 8, sname: 'OnVisualTransformChanged', returnType: Object, params: [] }, { name: 'PointFromRoot', type: 8, sname: 'PointFromRoot', returnType: $System_Windows_Point, params: [$System_Windows_Point] }, { name: 'PointToRoot', type: 8, sname: 'PointToRoot', returnType: $System_Windows_Point, params: [$System_Windows_Point] }, { name: 'RemoveRenderElement', type: 8, sname: 'RemoveRenderElement', returnType: Object, params: [$System_Windows_Media_IRenderElementFactory] }, { name: 'RemoveVisualChild', type: 8, sname: 'RemoveVisualChild', returnType: Object, params: [$System_Windows_Media_Visual] }, { name: 'SetVisualChildIndex', type: 8, sname: 'SetVisualChildIndex', returnType: Object, params: [$System_Windows_Media_Visual, ss.Int32] }, { name: 'TransformToAncestor', type: 8, sname: 'TransformToAncestor', returnType: $System_Windows_Media_Matrix, params: [$System_Windows_Media_Visual] }, { name: 'TrySetContextParent', type: 8, sname: 'TrySetContextParent', returnType: Boolean, params: [$System_Windows_IContextElement] }, { name: 'ContextParent', type: 16, returnType: $System_Windows_IContextElement, getter: { name: 'get_ContextParent', type: 8, sname: 'get_ContextParent', returnType: $System_Windows_IContextElement, params: [] } }, { name: 'VisualBackground', type: 16, returnType: $System_Windows_Media_Brush, getter: { name: 'get_VisualBackground', type: 8, sname: 'get_VisualBackground', returnType: $System_Windows_Media_Brush, params: [] }, setter: { name: 'set_VisualBackground', type: 8, sname: 'set_VisualBackground', returnType: Object, params: [$System_Windows_Media_Brush] } }, { name: 'VisualBounds', type: 16, returnType: $System_Windows_Rect, getter: { name: 'get_VisualBounds', type: 8, sname: 'get_VisualBounds', returnType: $System_Windows_Rect, params: [] }, setter: { name: 'set_VisualBounds', type: 8, sname: 'set_VisualBounds', returnType: Object, params: [$System_Windows_Rect] } }, { name: 'VisualChildren', type: 16, returnType: Array, getter: { name: 'get_VisualChildren', type: 8, sname: 'get_VisualChildren', returnType: Array, params: [] }, setter: { name: 'set_VisualChildren', type: 8, sname: 'set_VisualChildren', returnType: Object, params: [Array] } }, { name: 'VisualClipToBounds', type: 16, returnType: Boolean, getter: { name: 'get_VisualClipToBounds', type: 8, sname: 'get_VisualClipToBounds', returnType: Boolean, params: [] }, setter: { name: 'set_VisualClipToBounds', type: 8, sname: 'set_VisualClipToBounds', returnType: Object, params: [Boolean] } }, { name: 'VisualIsHitTestVisible', type: 16, returnType: Boolean, getter: { name: 'get_VisualIsHitTestVisible', type: 8, sname: 'get_VisualIsHitTestVisible', returnType: Boolean, params: [] }, setter: { name: 'set_VisualIsHitTestVisible', type: 8, sname: 'set_VisualIsHitTestVisible', returnType: Object, params: [Boolean] } }, { name: 'VisualIsVisible', type: 16, returnType: Boolean, getter: { name: 'get_VisualIsVisible', type: 8, sname: 'get_VisualIsVisible', returnType: Boolean, params: [] }, setter: { name: 'set_VisualIsVisible', type: 8, sname: 'set_VisualIsVisible', returnType: Object, params: [Boolean] } }, { name: 'VisualLevel', type: 16, returnType: ss.Int32, getter: { name: 'get_VisualLevel', type: 8, sname: 'get_VisualLevel', returnType: ss.Int32, params: [] } }, { name: 'VisualOffset', type: 16, returnType: $System_Windows_Point, getter: { name: 'get_VisualOffset', type: 8, sname: 'get_VisualOffset', returnType: $System_Windows_Point, params: [] } }, { name: 'VisualOpacity', type: 16, returnType: Number, getter: { name: 'get_VisualOpacity', type: 8, sname: 'get_VisualOpacity', returnType: Number, params: [] }, setter: { name: 'set_VisualOpacity', type: 8, sname: 'set_VisualOpacity', returnType: Object, params: [Number] } }, { name: 'VisualParent', type: 16, returnType: $System_Windows_Media_Visual, getter: { name: 'get_VisualParent', type: 8, sname: 'get_VisualParent', returnType: $System_Windows_Media_Visual, params: [] }, setter: { name: 'set_VisualParent', type: 8, sname: 'set_VisualParent', returnType: Object, params: [$System_Windows_Media_Visual] } }, { name: 'VisualSize', type: 16, returnType: $System_Windows_Size, getter: { name: 'get_VisualSize', type: 8, sname: 'get_VisualSize', returnType: $System_Windows_Size, params: [] } }, { name: 'VisualTransform', type: 16, returnType: $System_Windows_Media_Matrix, getter: { name: 'get_VisualTransform', type: 8, sname: 'get_VisualTransform', returnType: $System_Windows_Media_Matrix, params: [] }, setter: { name: 'set_VisualTransform', type: 8, sname: 'set_VisualTransform', returnType: Object, params: [$System_Windows_Media_Matrix] } }, { name: 'ContextParentChanged', type: 2, adder: { name: 'add_ContextParentChanged', type: 8, sname: 'add_ContextParentChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_ContextParentChanged', type: 8, sname: 'remove_ContextParentChanged', returnType: Object, params: [Function] } }, { name: 'VisualAncestorChanged', type: 2, adder: { name: 'add_VisualAncestorChanged', type: 8, sname: 'add_VisualAncestorChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_VisualAncestorChanged', type: 8, sname: 'remove_VisualAncestorChanged', returnType: Object, params: [Function] } }, { name: 'VisualBoundsChanged', type: 2, adder: { name: 'add_VisualBoundsChanged', type: 8, sname: 'add_VisualBoundsChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_VisualBoundsChanged', type: 8, sname: 'remove_VisualBoundsChanged', returnType: Object, params: [Function] } }, { name: 'VisualParentChanged', type: 2, adder: { name: 'add_VisualParentChanged', type: 8, sname: 'add_VisualParentChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_VisualParentChanged', type: 8, sname: 'remove_VisualParentChanged', returnType: Object, params: [Function] } }, { name: 'VisualTransformChanged', type: 2, adder: { name: 'add_VisualTransformChanged', type: 8, sname: 'add_VisualTransformChanged', returnType: Object, params: [Function] }, remover: { name: 'remove_VisualTransformChanged', type: 8, sname: 'remove_VisualTransformChanged', returnType: Object, params: [Function] } }] });
+	ss.setMetadata($System_Windows_Media_VisualExtensions, { members: [{ name: 'GetVisualPath', isStatic: true, type: 8, sname: 'GetVisualPath', returnType: ss.IEnumerable, params: [$System_Windows_Media_Visual, $System_Windows_Media_Visual] }, { name: 'IsAncestorOf', isStatic: true, type: 8, sname: 'IsAncestorOf', returnType: Boolean, params: [$System_Windows_Media_Visual, $System_Windows_Media_Visual] }] });
 	ss.setMetadata($System_Windows_Media_VisualWeakReference, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_Media_Visual, $System_Windows_Media_Visual] }, { name: 'Dispose', type: 8, sname: 'dispose', returnType: Object, params: [] }, { name: 'Visual', type: 16, returnType: $System_Windows_Media_Visual, getter: { name: 'get_Visual', type: 8, sname: 'get_Visual', returnType: $System_Windows_Media_Visual, params: [] }, setter: { name: 'set_Visual', type: 8, sname: 'set_Visual', returnType: Object, params: [$System_Windows_Media_Visual] } }] });
 	ss.setMetadata($System_Windows_Media_Animation_$ColorAnimationOperations, { members: [{ name: 'Add', type: 8, sname: 'Add', returnType: $System_Windows_Media_Color, params: [$System_Windows_Media_Color, $System_Windows_Media_Color] }, { name: 'Interpolate', type: 8, sname: 'Interpolate', returnType: $System_Windows_Media_Color, params: [$System_Windows_Media_Color, $System_Windows_Media_Color, Number] }, { name: 'Scale', type: 8, sname: 'Scale', returnType: $System_Windows_Media_Color, params: [$System_Windows_Media_Color, Number] }, { name: 'Subtract', type: 8, sname: 'Subtract', returnType: $System_Windows_Media_Color, params: [$System_Windows_Media_Color, $System_Windows_Media_Color] }, { name: 'Zero', type: 16, returnType: $System_Windows_Media_Color, getter: { name: 'get_Zero', type: 8, sname: 'get_Zero', returnType: $System_Windows_Media_Color, params: [] } }, { name: 'Default', isStatic: true, type: 4, returnType: $System_Windows_Media_Animation_$ColorAnimationOperations, sname: '$Default' }] });
 	ss.setMetadata($System_Windows_Media_Animation_$DoubleAnimationOperations, { members: [{ name: 'Add', type: 8, sname: 'Add', returnType: ss.makeGenericType(ss.Nullable$1, [Number]), params: [ss.makeGenericType(ss.Nullable$1, [Number]), ss.makeGenericType(ss.Nullable$1, [Number])] }, { name: 'Interpolate', type: 8, sname: 'Interpolate', returnType: ss.makeGenericType(ss.Nullable$1, [Number]), params: [ss.makeGenericType(ss.Nullable$1, [Number]), ss.makeGenericType(ss.Nullable$1, [Number]), Number] }, { name: 'Scale', type: 8, sname: 'Scale', returnType: ss.makeGenericType(ss.Nullable$1, [Number]), params: [ss.makeGenericType(ss.Nullable$1, [Number]), Number] }, { name: 'Subtract', type: 8, sname: 'Subtract', returnType: ss.makeGenericType(ss.Nullable$1, [Number]), params: [ss.makeGenericType(ss.Nullable$1, [Number]), ss.makeGenericType(ss.Nullable$1, [Number])] }, { name: 'Zero', type: 16, returnType: ss.makeGenericType(ss.Nullable$1, [Number]), getter: { name: 'get_Zero', type: 8, sname: 'get_Zero', returnType: ss.makeGenericType(ss.Nullable$1, [Number]), params: [] } }, { name: 'Default', isStatic: true, type: 4, returnType: $System_Windows_Media_Animation_$DoubleAnimationOperations, sname: '$Default' }] });
@@ -23474,7 +24801,8 @@
 	ss.setMetadata($System_Windows_Media_Animation_IClock, { members: [{ name: 'Tick', type: 8, sname: 'Tick', returnType: $System_Windows_Media_Animation_ClockState, params: [ss.TimeSpan] }, { name: 'Duration', type: 16, returnType: ss.TimeSpan, getter: { name: 'get_Duration', type: 8, sname: 'get_Duration', returnType: ss.TimeSpan, params: [] } }, { name: 'FirstTick', type: 16, returnType: ss.TimeSpan, getter: { name: 'get_FirstTick', type: 8, sname: 'get_FirstTick', returnType: ss.TimeSpan, params: [] } }, { name: 'LastTick', type: 16, returnType: ss.TimeSpan, getter: { name: 'get_LastTick', type: 8, sname: 'get_LastTick', returnType: ss.TimeSpan, params: [] } }] });
 	ss.setMetadata($System_Windows_Media_Animation_IEasingFunction, { members: [{ name: 'Ease', type: 8, sname: 'Ease', returnType: Number, params: [Number] }] });
 	ss.setMetadata($System_Windows_Media_Animation_IRootClock, { members: [{ name: 'AddClock', type: 8, sname: 'AddClock', returnType: Object, params: [$System_Windows_Media_Animation_IClock] }, { name: 'RemoveClock', type: 8, sname: 'RemoveClock', returnType: Object, params: [$System_Windows_Media_Animation_IClock] }, { name: 'Time', type: 16, returnType: ss.TimeSpan, getter: { name: 'get_Time', type: 8, sname: 'get_Time', returnType: ss.TimeSpan, params: [] } }] });
-	ss.setMetadata($System_Windows_Media_Animation_KeyTime, { members: [{ name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'FromPercent', isStatic: true, type: 8, sname: 'FromPercent', returnType: $System_Windows_Media_Animation_KeyTime, params: [Number] }, { name: 'FromTimeSpan', isStatic: true, type: 8, sname: 'FromTimeSpan', returnType: $System_Windows_Media_Animation_KeyTime, params: [ss.TimeSpan] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'Parse', isStatic: true, type: 8, sname: 'Parse', returnType: $System_Windows_Media_Animation_KeyTime, params: [String] }, { name: 'HasPercent', type: 16, returnType: Boolean, getter: { name: 'get_HasPercent', type: 8, sname: 'get_HasPercent', returnType: Boolean, params: [] } }, { name: 'HasTimeSpan', type: 16, returnType: Boolean, getter: { name: 'get_HasTimeSpan', type: 8, sname: 'get_HasTimeSpan', returnType: Boolean, params: [] } }, { name: 'IsPaced', type: 16, returnType: Boolean, getter: { name: 'get_IsPaced', type: 8, sname: 'get_IsPaced', returnType: Boolean, params: [] } }, { name: 'IsUniform', type: 16, returnType: Boolean, getter: { name: 'get_IsUniform', type: 8, sname: 'get_IsUniform', returnType: Boolean, params: [] } }, { name: 'Percent', type: 16, returnType: Number, getter: { name: 'get_Percent', type: 8, sname: 'get_Percent', returnType: Number, params: [] }, setter: { name: 'set_Percent', type: 8, sname: 'set_Percent', returnType: Object, params: [Number] } }, { name: 'TimeSpan', type: 16, returnType: ss.TimeSpan, getter: { name: 'get_TimeSpan', type: 8, sname: 'get_TimeSpan', returnType: ss.TimeSpan, params: [] }, setter: { name: 'set_TimeSpan', type: 8, sname: 'set_TimeSpan', returnType: Object, params: [ss.TimeSpan] } }, { name: 'Type', type: 16, returnType: $System_Windows_Media_Animation_KeyTimeType, getter: { name: 'get_Type', type: 8, sname: 'get_Type', returnType: $System_Windows_Media_Animation_KeyTimeType, params: [] }, setter: { name: 'set_Type', type: 8, sname: 'set_Type', returnType: Object, params: [$System_Windows_Media_Animation_KeyTimeType] } }, { name: 'Paced', isStatic: true, type: 4, returnType: $System_Windows_Media_Animation_KeyTime, sname: 'Paced' }, { name: 'Uniform', isStatic: true, type: 4, returnType: $System_Windows_Media_Animation_KeyTime, sname: 'Uniform' }] });
+	ss.setMetadata($System_Windows_Media_Animation_KeyTime, { attr: [new $System_Windows_Markup_TypeConverterAttribute($System_Windows_Media_Animation_KeyTimeTypeConverter)], members: [{ name: 'Equals', type: 8, sname: 'equals', returnType: Boolean, params: [Object] }, { name: 'FromPercent', isStatic: true, type: 8, sname: 'FromPercent', returnType: $System_Windows_Media_Animation_KeyTime, params: [Number] }, { name: 'FromTimeSpan', isStatic: true, type: 8, sname: 'FromTimeSpan', returnType: $System_Windows_Media_Animation_KeyTime, params: [ss.TimeSpan] }, { name: 'GetHashCode', type: 8, sname: 'getHashCode', returnType: ss.Int32, params: [] }, { name: 'Parse', isStatic: true, type: 8, sname: 'Parse', returnType: $System_Windows_Media_Animation_KeyTime, params: [String] }, { name: 'HasPercent', type: 16, returnType: Boolean, getter: { name: 'get_HasPercent', type: 8, sname: 'get_HasPercent', returnType: Boolean, params: [] } }, { name: 'HasTimeSpan', type: 16, returnType: Boolean, getter: { name: 'get_HasTimeSpan', type: 8, sname: 'get_HasTimeSpan', returnType: Boolean, params: [] } }, { name: 'IsPaced', type: 16, returnType: Boolean, getter: { name: 'get_IsPaced', type: 8, sname: 'get_IsPaced', returnType: Boolean, params: [] } }, { name: 'IsUniform', type: 16, returnType: Boolean, getter: { name: 'get_IsUniform', type: 8, sname: 'get_IsUniform', returnType: Boolean, params: [] } }, { name: 'Percent', type: 16, returnType: Number, getter: { name: 'get_Percent', type: 8, sname: 'get_Percent', returnType: Number, params: [] }, setter: { name: 'set_Percent', type: 8, sname: 'set_Percent', returnType: Object, params: [Number] } }, { name: 'TimeSpan', type: 16, returnType: ss.TimeSpan, getter: { name: 'get_TimeSpan', type: 8, sname: 'get_TimeSpan', returnType: ss.TimeSpan, params: [] }, setter: { name: 'set_TimeSpan', type: 8, sname: 'set_TimeSpan', returnType: Object, params: [ss.TimeSpan] } }, { name: 'Type', type: 16, returnType: $System_Windows_Media_Animation_KeyTimeType, getter: { name: 'get_Type', type: 8, sname: 'get_Type', returnType: $System_Windows_Media_Animation_KeyTimeType, params: [] }, setter: { name: 'set_Type', type: 8, sname: 'set_Type', returnType: Object, params: [$System_Windows_Media_Animation_KeyTimeType] } }, { name: 'Paced', isStatic: true, type: 4, returnType: $System_Windows_Media_Animation_KeyTime, sname: 'Paced' }, { name: 'Uniform', isStatic: true, type: 4, returnType: $System_Windows_Media_Animation_KeyTime, sname: 'Uniform' }] });
+	ss.setMetadata($System_Windows_Media_Animation_KeyTimeTypeConverter, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }] });
 	ss.setMetadata($System_Windows_Media_Animation_LinearColorKeyFrame, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'InterpolateValue', type: 8, sname: 'InterpolateValue', returnType: $System_Windows_Media_Color, params: [$System_Windows_Media_Color, Number] }] });
 	ss.setMetadata($System_Windows_Media_Animation_LinearDoubleKeyFrame, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'InterpolateValue', type: 8, sname: 'InterpolateValue', returnType: ss.makeGenericType(ss.Nullable$1, [Number]), params: [ss.makeGenericType(ss.Nullable$1, [Number]), Number] }] });
 	ss.setMetadata($System_Windows_Media_Animation_LinearRectKeyFrame, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'InterpolateValue', type: 8, sname: 'InterpolateValue', returnType: $System_Windows_Rect, params: [$System_Windows_Rect, Number] }] });
@@ -23492,7 +24820,8 @@
 	ss.setMetadata($System_Windows_Media_Animation_RectAnimationUsingKeyFrames, { attr: [new $System_Windows_Markup_ContentPropertyAttribute('KeyFrames')], members: [{ name: '.ctor', type: 1, params: [] }, { name: 'GetCurrentValue', type: 8, sname: 'GetCurrentValue', returnType: Object, params: [Object, Object, $System_Windows_Media_Animation_AnimationTimelineClock] }, { name: 'KeyFrames', type: 16, returnType: ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_Media_Animation_RectKeyFrame]), getter: { name: 'get_KeyFrames', type: 8, sname: 'get_KeyFrames', returnType: ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_Media_Animation_RectKeyFrame]), params: [] }, setter: { name: 'set_KeyFrames', type: 8, sname: 'set_KeyFrames', returnType: Object, params: [ss.makeGenericType($System_Windows_FreezableCollection$1, [$System_Windows_Media_Animation_RectKeyFrame])] } }] });
 	ss.setMetadata($System_Windows_Media_Animation_RectKeyFrame, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'InterpolateValue', type: 8, sname: 'InterpolateValue', returnType: $System_Windows_Rect, params: [$System_Windows_Rect, Number] }, { name: 'KeyTime', type: 16, returnType: $System_Windows_Media_Animation_KeyTime, getter: { name: 'get_KeyTime', type: 8, sname: 'get_KeyTime', returnType: $System_Windows_Media_Animation_KeyTime, params: [] }, setter: { name: 'set_KeyTime', type: 8, sname: 'set_KeyTime', returnType: Object, params: [$System_Windows_Media_Animation_KeyTime] } }, { name: 'Value', type: 16, returnType: $System_Windows_Rect, getter: { name: 'get_Value', type: 8, sname: 'get_Value', returnType: $System_Windows_Rect, params: [] }, setter: { name: 'set_Value', type: 8, sname: 'set_Value', returnType: Object, params: [$System_Windows_Rect] } }, { name: 'KeyTimeProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'KeyTimeProperty' }, { name: 'ValueProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ValueProperty' }] });
 	ss.setMetadata($System_Windows_Media_Animation_RemoveStoryboard, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Apply', type: 8, sname: 'Apply', returnType: Object, params: [$System_Windows_FrameworkElement, $System_Windows_BaseValueSource] }] });
-	ss.setMetadata($System_Windows_Media_Animation_RepeatBehavior, { members: [{ name: 'FromRepeatCount', isStatic: true, type: 8, sname: 'FromRepeatCount', returnType: $System_Windows_Media_Animation_RepeatBehavior, params: [Number] }, { name: 'FromTimeSpan', isStatic: true, type: 8, sname: 'FromTimeSpan', returnType: $System_Windows_Media_Animation_RepeatBehavior, params: [ss.TimeSpan] }, { name: 'Parse', isStatic: true, type: 8, sname: 'Parse', returnType: $System_Windows_Media_Animation_RepeatBehavior, params: [String] }, { name: 'Count', type: 16, returnType: Number, getter: { name: 'get_Count', type: 8, sname: 'get_Count', returnType: Number, params: [] }, setter: { name: 'set_Count', type: 8, sname: 'set_Count', returnType: Object, params: [Number] } }, { name: 'Duration', type: 16, returnType: ss.TimeSpan, getter: { name: 'get_Duration', type: 8, sname: 'get_Duration', returnType: ss.TimeSpan, params: [] }, setter: { name: 'set_Duration', type: 8, sname: 'set_Duration', returnType: Object, params: [ss.TimeSpan] } }, { name: 'Forever', isStatic: true, type: 4, returnType: $System_Windows_Media_Animation_RepeatBehavior, sname: 'Forever' }, { name: 'OneTime', isStatic: true, type: 4, returnType: $System_Windows_Media_Animation_RepeatBehavior, sname: 'OneTime' }] });
+	ss.setMetadata($System_Windows_Media_Animation_RepeatBehavior, { attr: [new $System_Windows_Markup_TypeConverterAttribute($System_Windows_Media_Animation_RepeatBehaviorTypeConverter)], members: [{ name: 'FromRepeatCount', isStatic: true, type: 8, sname: 'FromRepeatCount', returnType: $System_Windows_Media_Animation_RepeatBehavior, params: [Number] }, { name: 'FromTimeSpan', isStatic: true, type: 8, sname: 'FromTimeSpan', returnType: $System_Windows_Media_Animation_RepeatBehavior, params: [ss.TimeSpan] }, { name: 'Parse', isStatic: true, type: 8, sname: 'Parse', returnType: $System_Windows_Media_Animation_RepeatBehavior, params: [String] }, { name: 'Count', type: 16, returnType: Number, getter: { name: 'get_Count', type: 8, sname: 'get_Count', returnType: Number, params: [] }, setter: { name: 'set_Count', type: 8, sname: 'set_Count', returnType: Object, params: [Number] } }, { name: 'Duration', type: 16, returnType: ss.TimeSpan, getter: { name: 'get_Duration', type: 8, sname: 'get_Duration', returnType: ss.TimeSpan, params: [] }, setter: { name: 'set_Duration', type: 8, sname: 'set_Duration', returnType: Object, params: [ss.TimeSpan] } }, { name: 'Forever', isStatic: true, type: 4, returnType: $System_Windows_Media_Animation_RepeatBehavior, sname: 'Forever' }, { name: 'OneTime', isStatic: true, type: 4, returnType: $System_Windows_Media_Animation_RepeatBehavior, sname: 'OneTime' }] });
+	ss.setMetadata($System_Windows_Media_Animation_RepeatBehaviorTypeConverter, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'ConvertFrom', type: 8, sname: 'ConvertFrom', returnType: Object, params: [System.Xaml.XamlNamespaces, Object] }] });
 	ss.setMetadata($System_Windows_Media_Animation_RepeatClock, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_Media_Animation_IClock, Number] }, { name: 'Tick', type: 8, sname: 'Tick', returnType: $System_Windows_Media_Animation_ClockState, params: [ss.TimeSpan] }, { name: 'Duration', type: 16, returnType: ss.TimeSpan, getter: { name: 'get_Duration', type: 8, sname: 'get_Duration', returnType: ss.TimeSpan, params: [] }, setter: { name: 'set_Duration', type: 8, sname: 'set_Duration', returnType: Object, params: [ss.TimeSpan] } }, { name: 'FirstTick', type: 16, returnType: ss.TimeSpan, getter: { name: 'get_FirstTick', type: 8, sname: 'get_FirstTick', returnType: ss.TimeSpan, params: [] }, setter: { name: 'set_FirstTick', type: 8, sname: 'set_FirstTick', returnType: Object, params: [ss.TimeSpan] } }, { name: 'LastTick', type: 16, returnType: ss.TimeSpan, getter: { name: 'get_LastTick', type: 8, sname: 'get_LastTick', returnType: ss.TimeSpan, params: [] }, setter: { name: 'set_LastTick', type: 8, sname: 'set_LastTick', returnType: Object, params: [ss.TimeSpan] } }] });
 	ss.setMetadata($System_Windows_Media_Animation_ResumeStoryboard, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Apply', type: 8, sname: 'Apply', returnType: Object, params: [$System_Windows_FrameworkElement, $System_Windows_BaseValueSource] }] });
 	ss.setMetadata($System_Windows_Media_Animation_ReverseClock, { members: [{ name: '.ctor', type: 1, params: [$System_Windows_Media_Animation_IClock] }, { name: 'Tick', type: 8, sname: 'Tick', returnType: $System_Windows_Media_Animation_ClockState, params: [ss.TimeSpan] }, { name: 'Duration', type: 16, returnType: ss.TimeSpan, getter: { name: 'get_Duration', type: 8, sname: 'get_Duration', returnType: ss.TimeSpan, params: [] }, setter: { name: 'set_Duration', type: 8, sname: 'set_Duration', returnType: Object, params: [ss.TimeSpan] } }, { name: 'FirstTick', type: 16, returnType: ss.TimeSpan, getter: { name: 'get_FirstTick', type: 8, sname: 'get_FirstTick', returnType: ss.TimeSpan, params: [] } }, { name: 'LastTick', type: 16, returnType: ss.TimeSpan, getter: { name: 'get_LastTick', type: 8, sname: 'get_LastTick', returnType: ss.TimeSpan, params: [] }, setter: { name: 'set_LastTick', type: 8, sname: 'set_LastTick', returnType: Object, params: [ss.TimeSpan] } }] });
@@ -23515,12 +24844,13 @@
 	ss.setMetadata($System_Windows_Media_Animation_TransitionAnimationTimeline$1, { members: [{ name: '.ctor', type: 1, params: [ss.makeGenericType($System_Windows_Media_Animation_IAnimationOperations$1, [Object]), Boolean] }, { name: 'GetCurrentValue', type: 8, sname: 'GetCurrentValue', returnType: Object, params: [Object, Object, $System_Windows_Media_Animation_AnimationTimelineClock] }, { name: 'By', type: 16, returnType: Object, getter: { name: 'get_By', type: 8, sname: 'get_By', returnType: Object, params: [] }, setter: { name: 'set_By', type: 8, sname: 'set_By', returnType: Object, params: [Object] } }, { name: 'EasingFunction', type: 16, returnType: $System_Windows_Media_Animation_IEasingFunction, getter: { name: 'get_EasingFunction', type: 8, sname: 'get_EasingFunction', returnType: $System_Windows_Media_Animation_IEasingFunction, params: [] }, setter: { name: 'set_EasingFunction', type: 8, sname: 'set_EasingFunction', returnType: Object, params: [$System_Windows_Media_Animation_IEasingFunction] } }, { name: 'From', type: 16, returnType: Object, getter: { name: 'get_From', type: 8, sname: 'get_From', returnType: Object, params: [] }, setter: { name: 'set_From', type: 8, sname: 'set_From', returnType: Object, params: [Object] } }, { name: 'To', type: 16, returnType: Object, getter: { name: 'get_To', type: 8, sname: 'get_To', returnType: Object, params: [] }, setter: { name: 'set_To', type: 8, sname: 'set_To', returnType: Object, params: [Object] } }, { name: 'ByProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ByProperty' }, { name: 'EasingFunctionProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'EasingFunctionProperty' }, { name: 'FromProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'FromProperty' }, { name: 'ToProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'ToProperty' }] });
 	ss.setMetadata($System_Windows_Media_Imaging_BitmapImage, { members: [{ name: '.ctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [String, $System_Windows_Media_Imaging_BitmapCacheOption], sname: '$ctor1' }, { name: 'BeginInit', type: 8, sname: 'BeginInit', returnType: Object, params: [] }, { name: 'EndInit', type: 8, sname: 'EndInit', returnType: Object, params: [] }, { name: 'CacheOption', type: 16, returnType: $System_Windows_Media_Imaging_BitmapCacheOption, getter: { name: 'get_CacheOption', type: 8, sname: 'get_CacheOption', returnType: $System_Windows_Media_Imaging_BitmapCacheOption, params: [] }, setter: { name: 'set_CacheOption', type: 8, sname: 'set_CacheOption', returnType: Object, params: [$System_Windows_Media_Imaging_BitmapCacheOption] } }, { name: 'RenderImageSource', type: 16, returnType: $System_Windows_Media_IRenderImageSource, getter: { name: 'get_RenderImageSource', type: 8, sname: 'get_RenderImageSource', returnType: $System_Windows_Media_IRenderImageSource, params: [] } }, { name: 'SourceRect', type: 16, returnType: $System_Windows_Rect, getter: { name: 'get_SourceRect', type: 8, sname: 'get_SourceRect', returnType: $System_Windows_Rect, params: [] }, setter: { name: 'set_SourceRect', type: 8, sname: 'set_SourceRect', returnType: Object, params: [$System_Windows_Rect] } }, { name: 'UriSource', type: 16, returnType: String, getter: { name: 'get_UriSource', type: 8, sname: 'get_UriSource', returnType: String, params: [] }, setter: { name: 'set_UriSource', type: 8, sname: 'set_UriSource', returnType: Object, params: [String] } }, { name: 'CacheOptionProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'CacheOptionProperty' }, { name: 'SourceRectProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'SourceRectProperty' }, { name: 'UriSourceProperty', isStatic: true, type: 4, returnType: $System_Windows_DependencyProperty, sname: 'UriSourceProperty' }] });
 	ss.setMetadata($System_Windows_Media_Imaging_BitmapSource, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'Create', isStatic: true, type: 8, sname: 'Create', returnType: $System_Windows_Media_Imaging_BitmapSource, params: [Array, $System_Windows_Rect] }, { name: 'Create', isStatic: true, type: 8, sname: 'Create$1', returnType: $System_Windows_Media_Imaging_BitmapSource, params: [$System_Windows_Media_RenderImageType, Array, $System_Windows_Rect] }, { name: 'SetRenderImageState', type: 8, sname: 'SetRenderImageState', returnType: Object, params: [$System_Windows_Media_RenderImageState] }, { name: 'IsDownloading', type: 16, returnType: Boolean, getter: { name: 'get_IsDownloading', type: 8, sname: 'get_IsDownloading', returnType: Boolean, params: [] }, setter: { name: 'set_IsDownloading', type: 8, sname: 'set_IsDownloading', returnType: Object, params: [Boolean] } }, { name: 'RenderImageSource', type: 16, returnType: $System_Windows_Media_IRenderImageSource, getter: { name: 'get_RenderImageSource', type: 8, sname: 'get_RenderImageSource', returnType: $System_Windows_Media_IRenderImageSource, params: [] } }, { name: 'DownloadCompleted', type: 2, adder: { name: 'add_DownloadCompleted', type: 8, sname: 'add_DownloadCompleted', returnType: Object, params: [Function] }, remover: { name: 'remove_DownloadCompleted', type: 8, sname: 'remove_DownloadCompleted', returnType: Object, params: [Function] } }, { name: 'DownloadFailed', type: 2, adder: { name: 'add_DownloadFailed', type: 8, sname: 'add_DownloadFailed', returnType: Object, params: [Function] }, remover: { name: 'remove_DownloadFailed', type: 8, sname: 'remove_DownloadFailed', returnType: Object, params: [Function] } }, { name: 'DownloadProgress', type: 2, adder: { name: 'add_DownloadProgress', type: 8, sname: 'add_DownloadProgress', returnType: Object, params: [Function] }, remover: { name: 'remove_DownloadProgress', type: 8, sname: 'remove_DownloadProgress', returnType: Object, params: [Function] } }] });
-	ss.setMetadata($System_Windows_Threading_Dispatcher, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'BeginInvoke', type: 8, sname: 'BeginInvoke', returnType: $System_Windows_Threading_DispatcherOperation, params: [Function] }, { name: 'BeginInvoke', type: 8, sname: 'BeginInvoke$1', returnType: $System_Windows_Threading_DispatcherOperation, params: [Function] }, { name: 'BeginInvoke', type: 8, sname: 'BeginInvoke$2', returnType: Object, params: [$System_Windows_Threading_DispatcherOperation] }, { name: 'BeginInvoke', type: 8, sname: 'BeginInvoke$3', returnType: $System_Windows_Threading_DispatcherOperation, params: [$System_Windows_Threading_DispatcherPriority, Function] }, { name: 'BeginInvoke', type: 8, sname: 'BeginInvoke$4', returnType: $System_Windows_Threading_DispatcherOperation, params: [$System_Windows_Threading_DispatcherPriority, Function] }, { name: 'DisableProcessing', type: 8, sname: 'DisableProcessing', returnType: ss.IDisposable, params: [] }, { name: 'ProcessQueue', type: 8, sname: 'ProcessQueue', returnType: Object, params: [] }, { name: 'CurrentDispatcher', isStatic: true, type: 4, returnType: $System_Windows_Threading_Dispatcher, sname: 'CurrentDispatcher' }] });
-	ss.setMetadata($System_Windows_Threading_DispatcherOperation, { members: [{ name: '.ctor', type: 1, params: [Function] }, { name: '.ctor', type: 1, params: [Function], sname: '$ctor1' }, { name: '.ctor', type: 1, params: [$System_Windows_Threading_DispatcherPriority, Function], sname: '$ctor2' }, { name: '.ctor', type: 1, params: [$System_Windows_Threading_DispatcherPriority, Function], sname: '$ctor3' }, { name: 'Abort', type: 8, sname: 'Abort', returnType: Object, params: [] }, { name: 'Invoke', type: 8, sname: 'Invoke', returnType: Object, params: [] }, { name: 'Priority', type: 16, returnType: $System_Windows_Threading_DispatcherPriority, getter: { name: 'get_Priority', type: 8, sname: 'get_Priority', returnType: $System_Windows_Threading_DispatcherPriority, params: [] }, setter: { name: 'set_Priority', type: 8, sname: 'set_Priority', returnType: Object, params: [$System_Windows_Threading_DispatcherPriority] } }, { name: 'Result', type: 16, returnType: Object, getter: { name: 'get_Result', type: 8, sname: 'get_Result', returnType: Object, params: [] }, setter: { name: 'set_Result', type: 8, sname: 'set_Result', returnType: Object, params: [Object] } }, { name: 'Status', type: 16, returnType: $System_Windows_Threading_DispatcherOperationStatus, getter: { name: 'get_Status', type: 8, sname: 'get_Status', returnType: $System_Windows_Threading_DispatcherOperationStatus, params: [] }, setter: { name: 'set_Status', type: 8, sname: 'set_Status', returnType: Object, params: [$System_Windows_Threading_DispatcherOperationStatus] } }, { name: 'Aborted', type: 2, adder: { name: 'add_Aborted', type: 8, sname: 'add_Aborted', returnType: Object, params: [Function] }, remover: { name: 'remove_Aborted', type: 8, sname: 'remove_Aborted', returnType: Object, params: [Function] } }, { name: 'Completed', type: 2, adder: { name: 'add_Completed', type: 8, sname: 'add_Completed', returnType: Object, params: [Function] }, remover: { name: 'remove_Completed', type: 8, sname: 'remove_Completed', returnType: Object, params: [Function] } }] });
+	ss.setMetadata($System_Windows_Threading_Dispatcher, { members: [{ name: '.ctor', type: 1, params: [] }, { name: 'DisableProcessing', type: 8, sname: 'DisableProcessing', returnType: ss.IDisposable, params: [] }, { name: 'Invoke', type: 8, sname: 'Invoke', returnType: Object, params: [Function, $System_Windows_Threading_DispatcherPriority] }, { name: 'Invoke', type: 8, tpcount: 1, sname: 'Invoke$1', returnType: Object, params: [Function, $System_Windows_Threading_DispatcherPriority] }, { name: 'InvokeAsync', type: 8, sname: 'InvokeAsync', returnType: $System_Windows_Threading_DispatcherOperation, params: [Function, $System_Windows_Threading_DispatcherPriority] }, { name: 'InvokeAsync', type: 8, tpcount: 1, sname: 'InvokeAsync$1', returnType: ss.makeGenericType($System_Windows_Threading_DispatcherOperation$1, [Object]), params: [Function, $System_Windows_Threading_DispatcherPriority] }, { name: 'CurrentDispatcher', isStatic: true, type: 4, returnType: $System_Windows_Threading_Dispatcher, sname: 'CurrentDispatcher' }] });
+	ss.setMetadata($System_Windows_Threading_DispatcherOperation, { members: [{ name: '.ctor', type: 1, params: [Function, $System_Windows_Threading_DispatcherPriority] }, { name: '.ctor', type: 1, params: [Function, $System_Windows_Threading_DispatcherPriority], sname: '$ctor1' }, { name: 'Abort', type: 8, sname: 'Abort', returnType: Object, params: [] }, { name: 'Invoke', type: 8, sname: 'Invoke', returnType: Object, params: [] }, { name: 'Priority', type: 16, returnType: $System_Windows_Threading_DispatcherPriority, getter: { name: 'get_Priority', type: 8, sname: 'get_Priority', returnType: $System_Windows_Threading_DispatcherPriority, params: [] }, setter: { name: 'set_Priority', type: 8, sname: 'set_Priority', returnType: Object, params: [$System_Windows_Threading_DispatcherPriority] } }, { name: 'Result', type: 16, returnType: Object, getter: { name: 'get_Result', type: 8, sname: 'get_Result', returnType: Object, params: [] }, setter: { name: 'set_Result', type: 8, sname: 'set_Result', returnType: Object, params: [Object] } }, { name: 'Status', type: 16, returnType: $System_Windows_Threading_DispatcherOperationStatus, getter: { name: 'get_Status', type: 8, sname: 'get_Status', returnType: $System_Windows_Threading_DispatcherOperationStatus, params: [] }, setter: { name: 'set_Status', type: 8, sname: 'set_Status', returnType: Object, params: [$System_Windows_Threading_DispatcherOperationStatus] } }, { name: 'Aborted', type: 2, adder: { name: 'add_Aborted', type: 8, sname: 'add_Aborted', returnType: Object, params: [Function] }, remover: { name: 'remove_Aborted', type: 8, sname: 'remove_Aborted', returnType: Object, params: [Function] } }, { name: 'Completed', type: 2, adder: { name: 'add_Completed', type: 8, sname: 'add_Completed', returnType: Object, params: [Function] }, remover: { name: 'remove_Completed', type: 8, sname: 'remove_Completed', returnType: Object, params: [Function] } }] });
+	ss.setMetadata($System_Windows_Threading_DispatcherOperation$1, { members: [{ name: '.ctor', type: 1, params: [Function, $System_Windows_Threading_DispatcherPriority] }, { name: 'Result', type: 16, returnType: Object, getter: { name: 'get_Result', type: 8, sname: 'get_Result$1', returnType: Object, params: [] } }] });
 	ss.setMetadata($System_Windows_Threading_DispatcherTimer, { members: [{ name: '.ctor', type: 1, params: [] }, { name: '.ctor', type: 1, params: [$System_Windows_Threading_Dispatcher, $System_Windows_Threading_ITaskScheduler, ss.TimeSpan, $System_Windows_Threading_DispatcherPriority], sname: '$ctor1' }, { name: 'Start', type: 8, sname: 'Start', returnType: Object, params: [] }, { name: 'Stop', type: 8, sname: 'Stop', returnType: Object, params: [] }, { name: 'Interval', type: 16, returnType: ss.TimeSpan, getter: { name: 'get_Interval', type: 8, sname: 'get_Interval', returnType: ss.TimeSpan, params: [] }, setter: { name: 'set_Interval', type: 8, sname: 'set_Interval', returnType: Object, params: [ss.TimeSpan] } }, { name: 'IsEnabled', type: 16, returnType: Boolean, getter: { name: 'get_IsEnabled', type: 8, sname: 'get_IsEnabled', returnType: Boolean, params: [] }, setter: { name: 'set_IsEnabled', type: 8, sname: 'set_IsEnabled', returnType: Object, params: [Boolean] } }, { name: 'Priority', type: 16, returnType: $System_Windows_Threading_DispatcherPriority, getter: { name: 'get_Priority', type: 8, sname: 'get_Priority', returnType: $System_Windows_Threading_DispatcherPriority, params: [] }, setter: { name: 'set_Priority', type: 8, sname: 'set_Priority', returnType: Object, params: [$System_Windows_Threading_DispatcherPriority] } }, { name: 'Tick', type: 2, adder: { name: 'add_Tick', type: 8, sname: 'add_Tick', returnType: Object, params: [Function] }, remover: { name: 'remove_Tick', type: 8, sname: 'remove_Tick', returnType: Object, params: [Function] } }] });
 	ss.setMetadata($System_Windows_Threading_ITaskScheduler, { members: [{ name: 'ScheduleTask', type: 8, sname: 'ScheduleTask', returnType: ss.IDisposable, params: [ss.TimeSpan, Function] }] });
 	ss.setMetadata($System_Windows_Threading_TaskSchedulerExtensions, { members: [{ name: 'ScheduleTask', isStatic: true, type: 8, sname: 'ScheduleTask', returnType: ss.IDisposable, params: [$System_Windows_Threading_ITaskScheduler, Function] }] });
-	$asm.attr = [new $System_Windows_ThemeInfoAttribute(2), new $System_Windows_Markup_XmlnsDefinitionAttribute('http://schemas.microsoft.com/winfx/2006/xaml/presentation', 'System.Windows', 'Granular.Presentation'), new $System_Windows_Markup_XmlnsDefinitionAttribute('http://schemas.microsoft.com/winfx/2006/xaml/presentation', 'System.Windows.Controls', 'Granular.Presentation'), new $System_Windows_Markup_XmlnsDefinitionAttribute('http://schemas.microsoft.com/winfx/2006/xaml/presentation', 'System.Windows.Controls.Primitives', 'Granular.Presentation'), new $System_Windows_Markup_XmlnsDefinitionAttribute('http://schemas.microsoft.com/winfx/2006/xaml/presentation', 'System.Windows.Data', 'Granular.Presentation'), new $System_Windows_Markup_XmlnsDefinitionAttribute('http://schemas.microsoft.com/winfx/2006/xaml/presentation', 'System.Windows.Input', 'Granular.Presentation'), new $System_Windows_Markup_XmlnsDefinitionAttribute('http://schemas.microsoft.com/winfx/2006/xaml/presentation', 'System.Windows.Media', 'Granular.Presentation'), new $System_Windows_Markup_XmlnsDefinitionAttribute('http://schemas.microsoft.com/winfx/2006/xaml/presentation', 'System.Windows.Media.Animation', 'Granular.Presentation'), new $System_Windows_Markup_XmlnsDefinitionAttribute('http://schemas.microsoft.com/winfx/2006/xaml/presentation', 'System.Windows.Media.Imaging', 'Granular.Presentation')];
+	$asm.attr = [new $System_Windows_ThemeInfoAttribute(2), new $System_Windows_Markup_XmlnsDefinitionAttribute('http://schemas.microsoft.com/winfx/2006/xaml/presentation', 'System.Windows', 'Granular.Presentation'), new $System_Windows_Markup_XmlnsDefinitionAttribute('http://schemas.microsoft.com/winfx/2006/xaml/presentation', 'System.Windows.Controls', 'Granular.Presentation'), new $System_Windows_Markup_XmlnsDefinitionAttribute('http://schemas.microsoft.com/winfx/2006/xaml/presentation', 'System.Windows.Controls.Primitives', 'Granular.Presentation'), new $System_Windows_Markup_XmlnsDefinitionAttribute('http://schemas.microsoft.com/winfx/2006/xaml/presentation', 'System.Windows.Data', 'Granular.Presentation'), new $System_Windows_Markup_XmlnsDefinitionAttribute('http://schemas.microsoft.com/winfx/2006/xaml/presentation', 'System.Windows.Documents', 'Granular.Presentation'), new $System_Windows_Markup_XmlnsDefinitionAttribute('http://schemas.microsoft.com/winfx/2006/xaml/presentation', 'System.Windows.Input', 'Granular.Presentation'), new $System_Windows_Markup_XmlnsDefinitionAttribute('http://schemas.microsoft.com/winfx/2006/xaml/presentation', 'System.Windows.Media', 'Granular.Presentation'), new $System_Windows_Markup_XmlnsDefinitionAttribute('http://schemas.microsoft.com/winfx/2006/xaml/presentation', 'System.Windows.Media.Animation', 'Granular.Presentation'), new $System_Windows_Markup_XmlnsDefinitionAttribute('http://schemas.microsoft.com/winfx/2006/xaml/presentation', 'System.Windows.Media.Imaging', 'Granular.Presentation')];
 	(function() {
 		$System_$Windows_DependencyProperty$TypeComparer.$Default = new $System_$Windows_DependencyProperty$TypeComparer();
 	})();
@@ -23528,16 +24858,24 @@
 		$System_Windows_Data_ObservableValue.UnsetValue = new $System_Windows_Data_NamedObject('ObservableValue.UnsetValue');
 	})();
 	(function() {
+		$System_Windows_Point.Empty = new $System_Windows_Point();
+		$System_Windows_Point.Zero = new $System_Windows_Point.$ctor1(0, 0);
+	})();
+	(function() {
+		$System_Windows_Media_Matrix.Identity = new $System_Windows_Media_Matrix(1, 0, 0, 1, 0, 0);
+	})();
+	(function() {
+		$System_Windows_DependencyPropertyValueEntry.BaseValuePriorities = 12;
+		$System_Windows_DependencyPropertyValueEntry.ValuePriorities = 14;
+		$System_Windows_DependencyPropertyValueEntry.BaseValueHighestPriority = 11;
+		$System_Windows_DependencyPropertyValueEntry.CurrentValuePriority = $System_Windows_DependencyPropertyValueEntry.BaseValuePriorities;
+		$System_Windows_DependencyPropertyValueEntry.AnimationValuePriority = 13;
+	})();
+	(function() {
 		$System_Windows_Media_Animation_AnimationLayerKey.Default = new $System_Windows_Media_Animation_AnimationLayerKey(null);
 	})();
 	(function() {
 		$System_Windows_Media_Animation_AnimationLayer.$UnsetValue = new $System_Windows_Data_NamedObject('AnimationLayer.UnsetValue');
-	})();
-	(function() {
-		$System_Windows_ResourcesChangedEventArgs.Reset = new $System_Windows_ResourcesChangedEventArgs(null);
-	})();
-	(function() {
-		$System_Windows_DependencyPropertyValueEntry.$BaseValuePriorities = 12;
 	})();
 	(function() {
 		var $t1 = new (ss.makeGenericType(ss.Dictionary$2, [System.Xaml.XamlName, Function]))();
@@ -23558,16 +24896,21 @@
 		$System_Windows_DependencyProperty.$typeFlattenedPropertiesCache = new (ss.makeGenericType(Granular.Collections.CacheDictionary$2, [Function, ss.IEnumerable]))($System_Windows_DependencyProperty.$ResolveTypeFlattenedProperties);
 	})();
 	(function() {
-		$System_Windows_Point.Empty = new $System_Windows_Point();
-		$System_Windows_Point.Zero = new $System_Windows_Point.$ctor1(0, 0);
+		$System_Windows_ResourcesChangedEventArgs.Reset = new $System_Windows_ResourcesChangedEventArgs(null);
+	})();
+	(function() {
+		$System_Windows_Media_Transform.Identity = $System_Windows_Media_Transform.$CreateIdentityTransform();
+	})();
+	(function() {
+		$System_Windows_Media_Brush.OpacityProperty = $System_Windows_DependencyProperty.Register('Opacity', Number, $System_Windows_Media_Brush, new $System_Windows_FrameworkPropertyMetadata(1, null, null, false, false, false, false, 0), null);
+	})();
+	(function() {
+		$System_Windows_FontFamily.Default = new $System_Windows_FontFamily.$ctor1('');
 	})();
 	(function() {
 		$System_Windows_Size.Empty = new $System_Windows_Size(Number.NaN, Number.NaN);
 		$System_Windows_Size.Zero = new $System_Windows_Size(0, 0);
 		$System_Windows_Size.Infinity = new $System_Windows_Size(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY);
-	})();
-	(function() {
-		$System_Windows_Thickness.Zero = new $System_Windows_Thickness();
 	})();
 	(function() {
 		$System_Windows_Rect.Empty = new $System_Windows_Rect.$ctor2($System_Windows_Point.Empty, $System_Windows_Size.Empty);
@@ -23577,7 +24920,7 @@
 		$System_Windows_ApplicationHost.$current = null;
 	})();
 	(function() {
-		$System_Windows_Disposable.Empty = new $System_$Windows_Disposable$EmptyDisposable();
+		$System_Windows_Thickness.Zero = new $System_Windows_Thickness();
 	})();
 	(function() {
 		$System_Windows_Threading_Dispatcher.CurrentDispatcher = new $System_Windows_Threading_Dispatcher();
@@ -23590,9 +24933,6 @@
 		$System_Windows_EventManager.$registeredRoutedEvents = new (ss.makeGenericType(ss.Dictionary$2, [$System_$Windows_EventManager$RoutedEventKey, $System_Windows_RoutedEvent]))();
 		$System_Windows_EventManager.$classHandlers = new (ss.makeGenericType(Granular.Collections.ListDictionary$2, [$System_$Windows_EventManager$ClassHandlerKey, $System_Windows_RoutedEventHandlerItem]))();
 		$System_Windows_EventManager.$flattenedClassHandlersCache = new (ss.makeGenericType(Granular.Collections.CacheDictionary$2, [$System_$Windows_EventManager$ClassHandlerKey, ss.IEnumerable]))($System_Windows_EventManager.$ResolveFlattenedClassHandlers);
-	})();
-	(function() {
-		$System_Windows_Media_Matrix.Identity = new $System_Windows_Media_Matrix(1, 0, 0, 1, 0, 0);
 	})();
 	(function() {
 		$System_Windows_Input_Mouse.PreviewMouseMoveEvent = $System_Windows_EventManager.RegisterRoutedEvent('PreviewMouseMove', 0, Function, $System_Windows_Input_Mouse);
@@ -23608,12 +24948,13 @@
 		$System_Windows_Input_Mouse.QueryCursorEvent = $System_Windows_EventManager.RegisterRoutedEvent('QueryCursor', 1, Function, $System_Windows_Input_Mouse);
 	})();
 	(function() {
-		$System_Windows_Media_Transform.Identity = new $System_$Windows_Media_Transform$IdentityTransfrom();
-	})();
-	(function() {
 		$System_Windows_FrameworkElement.InitializedEvent = $System_Windows_EventManager.RegisterRoutedEvent('Initialized', 2, Function, $System_Windows_FrameworkElement);
-		$System_Windows_FrameworkElement.HorizontalAlignmentProperty = $System_Windows_DependencyProperty.Register('HorizontalAlignment', $System_Windows_HorizontalAlignment, $System_Windows_FrameworkElement, new $System_Windows_FrameworkPropertyMetadata(3, null, null, false, true, false, false, 0), null);
-		$System_Windows_FrameworkElement.VerticalAlignmentProperty = $System_Windows_DependencyProperty.Register('VerticalAlignment', $System_Windows_VerticalAlignment, $System_Windows_FrameworkElement, new $System_Windows_FrameworkPropertyMetadata(3, null, null, false, true, false, false, 0), null);
+		$System_Windows_FrameworkElement.HorizontalAlignmentProperty = $System_Windows_DependencyProperty.Register('HorizontalAlignment', $System_Windows_HorizontalAlignment, $System_Windows_FrameworkElement, new $System_Windows_FrameworkPropertyMetadata(3, function(sender, e) {
+			ss.cast(sender, $System_Windows_FrameworkElement).$OnAlignmentChanged(e);
+		}, null, false, true, false, false, 0), null);
+		$System_Windows_FrameworkElement.VerticalAlignmentProperty = $System_Windows_DependencyProperty.Register('VerticalAlignment', $System_Windows_VerticalAlignment, $System_Windows_FrameworkElement, new $System_Windows_FrameworkPropertyMetadata(3, function(sender, e) {
+			ss.cast(sender, $System_Windows_FrameworkElement).$OnAlignmentChanged(e);
+		}, null, false, true, false, false, 0), null);
 		$System_Windows_FrameworkElement.MarginProperty = $System_Windows_DependencyProperty.Register('Margin', $System_Windows_Thickness, $System_Windows_FrameworkElement, new $System_Windows_FrameworkPropertyMetadata($System_Windows_Thickness.Zero, null, null, false, true, false, false, 0), null);
 		$System_Windows_FrameworkElement.WidthProperty = $System_Windows_DependencyProperty.Register('Width', Number, $System_Windows_FrameworkElement, new $System_Windows_FrameworkPropertyMetadata(Number.NaN, function(sender, e) {
 			ss.cast(sender, $System_Windows_FrameworkElement).$SetSize();
@@ -23650,6 +24991,9 @@
 		$System_Windows_FrameworkElement.ForceCursorProperty = $System_Windows_DependencyProperty.Register('ForceCursor', Boolean, $System_Windows_FrameworkElement, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
 			ss.cast(sender, $System_Windows_FrameworkElement).$UpdateCursor();
 		}, null, false, false, false, false, 0), null);
+		$System_Windows_FrameworkElement.LayoutTransformProperty = $System_Windows_DependencyProperty.Register('LayoutTransform', $System_Windows_Media_Transform, $System_Windows_FrameworkElement, new $System_Windows_FrameworkPropertyMetadata($System_Windows_Media_Transform.Identity, function(sender, e) {
+			ss.cast(sender, $System_Windows_FrameworkElement).$OnLayoutTransformChanged(e);
+		}, null, false, true, false, false, 0), null);
 	})();
 	(function() {
 		$System_Windows_Input_Keyboard.PreviewKeyDownEvent = $System_Windows_EventManager.RegisterRoutedEvent('PreviewKeyDown', 0, Function, $System_Windows_Input_Keyboard);
@@ -23676,16 +25020,22 @@
 		}, null, false, true, false, false, 0), null);
 		$System_Windows_UIElement.$IsVisiblePropertyKey = $System_Windows_DependencyProperty.RegisterReadOnly('IsVisible', Boolean, $System_Windows_UIElement, new $System_Windows_FrameworkPropertyMetadata(true, function(sender, e) {
 			ss.cast(sender, $System_Windows_UIElement).$OnIsVisibleChanged(e);
-		}, null, true, false, false, false, 0), null);
+		}, function(sender1, value) {
+			return ss.cast(sender1, $System_Windows_UIElement).$CoerceIsVisible(ss.unbox(ss.cast(value, Boolean)));
+		}, false, false, false, false, 0), null);
 		$System_Windows_UIElement.IsVisibleProperty = $System_Windows_UIElement.$IsVisiblePropertyKey.get_DependencyProperty();
 		$System_Windows_UIElement.IsEnabledProperty = $System_Windows_DependencyProperty.Register('IsEnabled', Boolean, $System_Windows_UIElement, new $System_Windows_FrameworkPropertyMetadata(true, function(sender, e) {
 			ss.cast(sender, $System_Windows_UIElement).$OnIsEnabledChanged(e);
-		}, null, true, false, false, false, 0), null);
+		}, function(sender1, value) {
+			return ss.cast(sender1, $System_Windows_UIElement).$CoerceInheritedValue($System_Windows_UIElement.IsEnabledProperty, ss.unbox(ss.cast(value, Boolean)));
+		}, false, false, false, false, 0), null);
 		$System_Windows_UIElement.IsHitTestVisibleProperty = $System_Windows_DependencyProperty.Register('IsHitTestVisible', Boolean, $System_Windows_UIElement, new $System_Windows_FrameworkPropertyMetadata(true, function(sender, e) {
 			ss.cast(sender, $System_Windows_UIElement).$OnIsHitTestVisibleChanged(e);
-		}, null, true, false, false, false, 0), null);
-		$System_Windows_UIElement.ClipToBoundsProperty = $System_Windows_DependencyProperty.Register('ClipToBounds', Boolean, $System_Windows_UIElement, new $System_Windows_FrameworkPropertyMetadata(true, function(sender, e) {
-			ss.cast(sender, $System_Windows_UIElement).set_VisualClipToBounds(ss.unbox(ss.cast(e.get_NewValue(), Boolean)));
+		}, function(sender1, value) {
+			return ss.cast(sender1, $System_Windows_UIElement).$CoerceInheritedValue($System_Windows_UIElement.IsHitTestVisibleProperty, ss.unbox(ss.cast(value, Boolean)));
+		}, false, false, false, false, 0), null);
+		$System_Windows_UIElement.ClipToBoundsProperty = $System_Windows_DependencyProperty.Register('ClipToBounds', Boolean, $System_Windows_UIElement, new $System_Windows_FrameworkPropertyMetadata(false, function(sender, e) {
+			ss.cast(sender, $System_Windows_UIElement).$OnClipToBoundsChanged(e);
 		}, null, false, false, false, false, 0), null);
 		$System_Windows_UIElement.FocusableProperty = $System_Windows_DependencyProperty.Register('Focusable', Boolean, $System_Windows_UIElement, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
 			ss.cast(sender, $System_Windows_UIElement).$OnFocusableChanged(e);
@@ -23698,6 +25048,12 @@
 		$System_Windows_UIElement.IsKeyboardFocusedProperty = $System_Windows_UIElement.$IsKeyboardFocusedPropertyKey.get_DependencyProperty();
 		$System_Windows_UIElement.$IsKeyboardFocusWithinPropertyKey = $System_Windows_DependencyProperty.RegisterReadOnly('IsKeyboardFocusWithin', Boolean, $System_Windows_UIElement, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
 		$System_Windows_UIElement.IsKeyboardFocusWithinProperty = $System_Windows_UIElement.$IsKeyboardFocusWithinPropertyKey.get_DependencyProperty();
+		$System_Windows_UIElement.RenderTransformProperty = $System_Windows_DependencyProperty.Register('RenderTransform', $System_Windows_Media_Transform, $System_Windows_UIElement, new $System_Windows_FrameworkPropertyMetadata($System_Windows_Media_Transform.Identity, function(sender, e) {
+			ss.cast(sender, $System_Windows_UIElement).$OnRenderTransformChanged(e);
+		}, null, false, false, false, false, 0), null);
+		$System_Windows_UIElement.RenderTransformOriginProperty = $System_Windows_DependencyProperty.Register('RenderTransformOrigin', $System_Windows_Point, $System_Windows_UIElement, new $System_Windows_FrameworkPropertyMetadata($System_Windows_Point.Zero, function(sender, e) {
+			ss.cast(sender, $System_Windows_UIElement).$OnRenderTransformOriginChanged(e);
+		}, null, false, false, false, false, 0), null);
 		$System_Windows_UIElement.PreviewMouseMoveEvent = $System_Windows_Input_Mouse.PreviewMouseMoveEvent.AddOwner($System_Windows_UIElement);
 		$System_Windows_UIElement.PreviewMouseDownEvent = $System_Windows_Input_Mouse.PreviewMouseDownEvent.AddOwner($System_Windows_UIElement);
 		$System_Windows_UIElement.PreviewMouseUpEvent = $System_Windows_Input_Mouse.PreviewMouseUpEvent.AddOwner($System_Windows_UIElement);
@@ -23769,59 +25125,22 @@
 		$System_Windows_LayoutManager.Current = new $System_Windows_LayoutManager();
 	})();
 	(function() {
-		$System_Windows_Freezable.DataContextProperty = $System_Windows_FrameworkElement.DataContextProperty.AddOwner($System_Windows_Freezable, null);
+		$System_Windows_FrameworkTemplate.Empty = new $System_$Windows_FrameworkTemplate$EmptyFrameworkTemplate();
 	})();
 	(function() {
-		$System_Windows_Media_Brush.OpacityProperty = $System_Windows_DependencyProperty.Register('Opacity', Number, $System_Windows_Media_Brush, new $System_Windows_FrameworkPropertyMetadata(1, null, null, false, false, false, false, 0), null);
+		$System_Windows_CornerRadius.Zero = new $System_Windows_CornerRadius(0);
 	})();
 	(function() {
-		$System_Windows_FontFamily.Default = new $System_Windows_FontFamily.$ctor1('');
+		$System_$Windows_Input_KeyboardNavigationTarget$TabStopComparer.$Default = new $System_$Windows_Input_KeyboardNavigationTarget$TabStopComparer();
+	})();
+	(function() {
+		$System_Windows_Data_CollectionView.Empty = new $System_$Windows_Data_CollectionView$EmptyCollectionView();
 	})();
 	(function() {
 		$System_Windows_Media_SolidColorBrush.ColorProperty = $System_Windows_DependencyProperty.Register('Color', $System_Windows_Media_Color, $System_Windows_Media_SolidColorBrush, new $System_Windows_FrameworkPropertyMetadata($System_Windows_Media_Colors.get_Transparent(), null, null, false, false, false, false, 0), null);
 	})();
 	(function() {
 		$System_Windows_Media_Brushes.$brushes = new (ss.makeGenericType(Granular.Collections.CacheDictionary$2, [$System_Windows_Media_Color, $System_Windows_Media_Brush]))($System_Windows_Media_Brushes.$CreateBrush);
-	})();
-	(function() {
-		$System_Windows_Controls_TextBlock.TextProperty = $System_Windows_DependencyProperty.Register('Text', String, $System_Windows_Controls_TextBlock, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
-			ss.cast(sender, $System_Windows_Controls_TextBlock).$OnTextChanged(e);
-		}, null, false, true, false, false, 0), null);
-		$System_Windows_Controls_TextBlock.ForegroundProperty = $System_Windows_DependencyProperty.Register('Foreground', $System_Windows_Media_Brush, $System_Windows_Controls_TextBlock, new $System_Windows_FrameworkPropertyMetadata($System_Windows_Media_Brushes.get_Black(), function(sender, e) {
-			ss.cast(sender, $System_Windows_Controls_TextBlock).$SetRenderElementsProperty(function(textBlockRenderElement) {
-				textBlockRenderElement.set_Foreground(ss.cast(e.get_NewValue(), $System_Windows_Media_Brush));
-			});
-		}, null, true, false, false, false, 0), null);
-		$System_Windows_Controls_TextBlock.FontFamilyProperty = $System_Windows_DependencyProperty.Register('FontFamily', $System_Windows_FontFamily, $System_Windows_Controls_TextBlock, new $System_Windows_FrameworkPropertyMetadata($System_Windows_FontFamily.Default, function(sender, e) {
-			ss.cast(sender, $System_Windows_Controls_TextBlock).$OnFontFamilyChanged(e);
-		}, null, true, true, false, false, 0), null);
-		$System_Windows_Controls_TextBlock.FontSizeProperty = $System_Windows_DependencyProperty.Register('FontSize', Number, $System_Windows_Controls_TextBlock, new $System_Windows_FrameworkPropertyMetadata(11, function(sender, e) {
-			ss.cast(sender, $System_Windows_Controls_TextBlock).$OnFontSizeChanged(e);
-		}, null, true, true, false, false, 0), null);
-		$System_Windows_Controls_TextBlock.FontStyleProperty = $System_Windows_DependencyProperty.Register('FontStyle', $System_Windows_FontStyle, $System_Windows_Controls_TextBlock, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
-			ss.cast(sender, $System_Windows_Controls_TextBlock).$OnFontStyleChanged(e);
-		}, null, true, true, false, false, 0), null);
-		$System_Windows_Controls_TextBlock.FontWeightProperty = $System_Windows_DependencyProperty.Register('FontWeight', $System_Windows_FontWeight, $System_Windows_Controls_TextBlock, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
-			ss.cast(sender, $System_Windows_Controls_TextBlock).$OnFontWeightChanged(e);
-		}, null, true, true, false, false, 0), null);
-		$System_Windows_Controls_TextBlock.FontStretchProperty = $System_Windows_DependencyProperty.Register('FontStretch', $System_Windows_FontStretch, $System_Windows_Controls_TextBlock, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
-			ss.cast(sender, $System_Windows_Controls_TextBlock).$OnFontStretchChanged(e);
-		}, null, true, true, false, false, 0), null);
-		$System_Windows_Controls_TextBlock.TextAlignmentProperty = $System_Windows_DependencyProperty.Register('TextAlignment', $System_Windows_Controls_TextAlignment, $System_Windows_Controls_TextBlock, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
-			ss.cast(sender, $System_Windows_Controls_TextBlock).$SetRenderElementsProperty(function(textBlockRenderElement) {
-				textBlockRenderElement.set_TextAlignment(ss.cast(e.get_NewValue(), ss.Int32));
-			});
-		}, null, true, false, false, false, 0), null);
-		$System_Windows_Controls_TextBlock.TextTrimmingProperty = $System_Windows_DependencyProperty.Register('TextTrimming', $System_Windows_TextTrimming, $System_Windows_Controls_TextBlock, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
-			ss.cast(sender, $System_Windows_Controls_TextBlock).$SetRenderElementsProperty(function(textBlockRenderElement) {
-				textBlockRenderElement.set_TextTrimming(ss.cast(e.get_NewValue(), ss.Int32));
-			});
-		}, null, true, true, false, false, 0), null);
-		$System_Windows_Controls_TextBlock.TextWrappingProperty = $System_Windows_DependencyProperty.Register('TextWrapping', $System_Windows_TextWrapping, $System_Windows_Controls_TextBlock, new $System_Windows_FrameworkPropertyMetadata(1, function(sender, e) {
-			ss.cast(sender, $System_Windows_Controls_TextBlock).$SetRenderElementsProperty(function(textBlockRenderElement) {
-				textBlockRenderElement.set_TextWrapping(ss.cast(e.get_NewValue(), ss.Int32));
-			});
-		}, null, true, true, false, false, 0), null);
 	})();
 	(function() {
 		$System_Windows_Markup_$ObjectTypeConverter.$Default = new $System_Windows_Markup_$ObjectTypeConverter();
@@ -23845,6 +25164,12 @@
 		$System_Windows_Markup_$TypeTypeConverter.$Default = new $System_Windows_Markup_$TypeTypeConverter();
 	})();
 	(function() {
+		$System_Windows_Markup_KnownTypes.$typeConverterCache = new (ss.makeGenericType(Granular.Collections.CacheDictionary$2, [Function, $System_Windows_Markup_ITypeConverter]))($System_Windows_Markup_KnownTypes.$ResolveTypeConverter);
+	})();
+	(function() {
+		$System_Windows_Markup_TypeConverter.Empty = new $System_$Windows_Markup_TypeConverter$EmptyTypeConverter();
+	})();
+	(function() {
 		$System_Windows_Markup_PropertyPathParser.$lexer = new System.Xaml.Lexer([new System.Xaml.RegexTokenDefinition(0, new RegExp('[\\(\\)\\[\\]\\.,]')), new System.Xaml.RegexTokenDefinition(1, new RegExp('[^\\(\\)\\[\\]\\.\\,]*'))]);
 	})();
 	(function() {
@@ -23857,22 +25182,55 @@
 		$System_Windows_Data_BindingExpression.DisconnectedItem = new $System_Windows_Data_NamedObject('BindingExpression.DisconnectedItem');
 	})();
 	(function() {
-		$System_Windows_FrameworkTemplate.Empty = new $System_$Windows_FrameworkTemplate$EmptyFrameworkTemplate();
-	})();
-	(function() {
-		$System_Windows_Data_CollectionView.Empty = new $System_$Windows_Data_CollectionView$EmptyCollectionView();
-	})();
-	(function() {
-		$System_Windows_CornerRadius.Zero = new $System_Windows_CornerRadius(0);
-	})();
-	(function() {
-		$System_Windows_UIElement.ClipToBoundsProperty.OverrideMetadata($System_Windows_Controls_Adorner, new $System_Windows_FrameworkPropertyMetadata(false, null, null, false, false, false, false, 0));
-	})();
-	(function() {
-		$System_$Windows_Input_KeyboardNavigationTarget$TabStopComparer.$Default = new $System_$Windows_Input_KeyboardNavigationTarget$TabStopComparer();
-	})();
-	(function() {
 		$System_$Windows_Controls_ContentPresenter$DefaultContentTemplate$ToStringConverter.$Default = new $System_$Windows_Controls_ContentPresenter$DefaultContentTemplate$ToStringConverter();
+	})();
+	(function() {
+		$System_Windows_Controls_Panel.IsItemsHostProperty = $System_Windows_DependencyProperty.Register('IsItemsHost', Boolean, $System_Windows_Controls_Panel, new $System_Windows_FrameworkPropertyMetadata(false, function(sender, e) {
+			ss.cast(sender, $System_Windows_Controls_Panel).$OnIsItemsHostChanged(e);
+		}, null, false, false, false, false, 0), null);
+		$System_Windows_Controls_Panel.BackgroundProperty = $System_Windows_DependencyProperty.Register('Background', $System_Windows_Media_Brush, $System_Windows_Controls_Panel, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
+			ss.cast(sender, $System_Windows_Controls_Panel).$OnBackgroundChanged(e);
+		}, null, false, false, false, false, 0), null);
+		$System_Windows_Controls_Panel.ZIndexProperty = $System_Windows_DependencyProperty.RegisterAttached('ZIndex', ss.Int32, $System_Windows_Controls_Panel, new $System_Windows_FrameworkPropertyMetadata(null, $System_Windows_Controls_Panel.$OnZIndexPropertyChanged, null, false, false, false, false, 0), null);
+	})();
+	(function() {
+		$System_Windows_Controls_Border.BackgroundProperty = $System_Windows_Controls_Panel.BackgroundProperty.AddOwner($System_Windows_Controls_Border, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
+			ss.cast(sender, $System_Windows_Controls_Border).$SetRenderElementsProperty(function(renderElement) {
+				renderElement.set_Background(ss.cast(e.get_NewValue(), $System_Windows_Media_Brush));
+			});
+		}, null, false, false, false, false, 0));
+		$System_Windows_Controls_Border.BorderBrushProperty = $System_Windows_DependencyProperty.Register('BorderBrush', $System_Windows_Media_Brush, $System_Windows_Controls_Border, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
+			ss.cast(sender, $System_Windows_Controls_Border).$SetRenderElementsProperty(function(renderElement) {
+				renderElement.set_BorderBrush(ss.cast(e.get_NewValue(), $System_Windows_Media_Brush));
+			});
+		}, null, false, false, false, false, 0), null);
+		$System_Windows_Controls_Border.BorderThicknessProperty = $System_Windows_DependencyProperty.Register('BorderThickness', $System_Windows_Thickness, $System_Windows_Controls_Border, new $System_Windows_FrameworkPropertyMetadata($System_Windows_Thickness.Zero, function(sender, e) {
+			ss.cast(sender, $System_Windows_Controls_Border).$SetRenderElementsProperty(function(renderElement) {
+				renderElement.set_BorderThickness(ss.cast(e.get_NewValue(), $System_Windows_Thickness));
+			});
+		}, null, false, true, false, false, 0), null);
+		$System_Windows_Controls_Border.CornerRadiusProperty = $System_Windows_DependencyProperty.Register('CornerRadius', $System_Windows_CornerRadius, $System_Windows_Controls_Border, new $System_Windows_FrameworkPropertyMetadata($System_Windows_CornerRadius.Zero, function(sender, e) {
+			ss.cast(sender, $System_Windows_Controls_Border).$SetRenderElementsProperty(function(renderElement) {
+				renderElement.set_CornerRadius(ss.cast(e.get_NewValue(), $System_Windows_CornerRadius));
+			});
+		}, null, false, false, false, false, 0), null);
+		$System_Windows_Controls_Border.PaddingProperty = $System_Windows_DependencyProperty.Register('Padding', $System_Windows_Thickness, $System_Windows_Controls_Border, new $System_Windows_FrameworkPropertyMetadata($System_Windows_Thickness.Zero, null, null, false, true, false, false, 0), null);
+		$System_Windows_UIElement.IsHitTestVisibleProperty.OverrideMetadata($System_Windows_Controls_Border, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
+			ss.cast(sender, $System_Windows_Controls_Border).$SetRenderElementsProperty(function(renderElement) {
+				renderElement.set_IsHitTestVisible(ss.unbox(ss.cast(e.get_NewValue(), Boolean)));
+			});
+		}, null, false, false, false, false, 0));
+	})();
+	(function() {
+		$System_Windows_Documents_Block.BorderBrushProperty = $System_Windows_Controls_Border.BorderBrushProperty.AddOwner($System_Windows_Documents_Block, null);
+		$System_Windows_Documents_Block.BorderThicknessProperty = $System_Windows_Controls_Border.BorderThicknessProperty.AddOwner($System_Windows_Documents_Block, null);
+		$System_Windows_Documents_Block.LineHeightProperty = $System_Windows_DependencyProperty.Register('LineHeight', Number, $System_Windows_Documents_Block, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
+		$System_Windows_Documents_Block.PaddingProperty = $System_Windows_Controls_Border.PaddingProperty.AddOwner($System_Windows_Documents_Block, null);
+		$System_Windows_Documents_Block.TextAlignmentProperty = $System_Windows_DependencyProperty.RegisterAttached('TextAlignment', $System_Windows_Controls_TextAlignment, $System_Windows_Documents_Block, new $System_Windows_FrameworkPropertyMetadata(0, null, null, true, false, false, false, 0), null);
+	})();
+	(function() {
+		$System_Windows_Controls_StackPanel.OrientationProperty = $System_Windows_DependencyProperty.Register('Orientation', $System_Windows_Controls_Orientation, $System_Windows_Controls_StackPanel, new $System_Windows_FrameworkPropertyMetadata(1, null, null, false, false, false, false, 0), null);
+		$System_Windows_Controls_StackPanel.FlowDirectionProperty = $System_Windows_DependencyProperty.Register('FlowDirection', $System_Windows_Controls_FlowDirection, $System_Windows_Controls_StackPanel, new $System_Windows_FrameworkPropertyMetadata(1, null, null, false, false, false, false, 0), null);
 	})();
 	(function() {
 		$System_$Windows_Input_KeyboardNavigationTarget$LocalNavigation.$Default = new $System_$Windows_Input_KeyboardNavigationTarget$LocalNavigation();
@@ -23918,57 +25276,13 @@
 		});
 	})();
 	(function() {
-		$System_Windows_Controls_Panel.IsItemsHostProperty = $System_Windows_DependencyProperty.Register('IsItemsHost', Boolean, $System_Windows_Controls_Panel, new $System_Windows_FrameworkPropertyMetadata(false, function(sender, e) {
-			ss.cast(sender, $System_Windows_Controls_Panel).$OnIsItemsHostChanged(e);
-		}, null, false, false, false, false, 0), null);
-		$System_Windows_Controls_Panel.BackgroundProperty = $System_Windows_DependencyProperty.Register('Background', $System_Windows_Media_Brush, $System_Windows_Controls_Panel, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
-			ss.cast(sender, $System_Windows_Controls_Panel).$OnBackgroundChanged(e);
-		}, null, false, false, false, false, 0), null);
-		$System_Windows_Controls_Panel.ZIndexProperty = $System_Windows_DependencyProperty.RegisterAttached('ZIndex', ss.Int32, $System_Windows_Controls_Panel, new $System_Windows_FrameworkPropertyMetadata(null, $System_Windows_Controls_Panel.$OnZIndexPropertyChanged, null, false, false, false, false, 0), null);
-	})();
-	(function() {
-		$System_Windows_Controls_Border.BackgroundProperty = $System_Windows_Controls_Panel.BackgroundProperty.AddOwner($System_Windows_Controls_Border, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
-			ss.cast(sender, $System_Windows_Controls_Border).$SetRenderElementsProperty(function(renderElement) {
-				renderElement.set_Background(ss.cast(e.get_NewValue(), $System_Windows_Media_Brush));
-			});
-		}, null, false, false, false, false, 0));
-		$System_Windows_Controls_Border.BorderBrushProperty = $System_Windows_DependencyProperty.Register('BorderBrush', $System_Windows_Media_Brush, $System_Windows_Controls_Border, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
-			ss.cast(sender, $System_Windows_Controls_Border).$SetRenderElementsProperty(function(renderElement) {
-				renderElement.set_BorderBrush(ss.cast(e.get_NewValue(), $System_Windows_Media_Brush));
-			});
-		}, null, false, false, false, false, 0), null);
-		$System_Windows_Controls_Border.BorderThicknessProperty = $System_Windows_DependencyProperty.Register('BorderThickness', $System_Windows_Thickness, $System_Windows_Controls_Border, new $System_Windows_FrameworkPropertyMetadata($System_Windows_Thickness.Zero, function(sender, e) {
-			ss.cast(sender, $System_Windows_Controls_Border).$SetRenderElementsProperty(function(renderElement) {
-				renderElement.set_BorderThickness(ss.cast(e.get_NewValue(), $System_Windows_Thickness));
-			});
-		}, null, false, true, false, false, 0), null);
-		$System_Windows_Controls_Border.CornerRadiusProperty = $System_Windows_DependencyProperty.Register('CornerRadius', $System_Windows_CornerRadius, $System_Windows_Controls_Border, new $System_Windows_FrameworkPropertyMetadata($System_Windows_CornerRadius.Zero, function(sender, e) {
-			ss.cast(sender, $System_Windows_Controls_Border).$SetRenderElementsProperty(function(renderElement) {
-				renderElement.set_CornerRadius(ss.cast(e.get_NewValue(), $System_Windows_CornerRadius));
-			});
-		}, null, false, false, false, false, 0), null);
-		$System_Windows_Controls_Border.PaddingProperty = $System_Windows_DependencyProperty.Register('Padding', $System_Windows_Thickness, $System_Windows_Controls_Border, new $System_Windows_FrameworkPropertyMetadata($System_Windows_Thickness.Zero, null, null, false, true, false, false, 0), null);
-		$System_Windows_UIElement.IsHitTestVisibleProperty.OverrideMetadata($System_Windows_Controls_Border, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
-			ss.cast(sender, $System_Windows_Controls_Border).$SetRenderElementsProperty(function(renderElement) {
-				renderElement.set_IsHitTestVisible(ss.unbox(ss.cast(e.get_NewValue(), Boolean)));
-			});
-		}, null, true, false, false, false, 0));
-	})();
-	(function() {
-		$System_Windows_Controls_StackPanel.OrientationProperty = $System_Windows_DependencyProperty.Register('Orientation', $System_Windows_Controls_Orientation, $System_Windows_Controls_StackPanel, new $System_Windows_FrameworkPropertyMetadata(1, null, null, false, false, false, false, 0), null);
-		$System_Windows_Controls_StackPanel.FlowDirectionProperty = $System_Windows_DependencyProperty.Register('FlowDirection', $System_Windows_Controls_FlowDirection, $System_Windows_Controls_StackPanel, new $System_Windows_FrameworkPropertyMetadata(1, null, null, false, false, false, false, 0), null);
-	})();
-	(function() {
-		$System_Windows_Controls_ItemsControl.ItemsSourceProperty = $System_Windows_DependencyProperty.Register('ItemsSource', ss.IEnumerable, $System_Windows_Controls_ItemsControl, new $System_Windows_FrameworkPropertyMetadata(null, function(dependencyObject, e) {
-			ss.safeCast(dependencyObject, $System_Windows_Controls_ItemsControl).$OnItemsSourceChanged(e);
-		}, null, false, false, false, false, 0), null);
-		$System_Windows_Controls_ItemsControl.ItemContainerStyleProperty = $System_Windows_DependencyProperty.Register('ItemContainerStyle', $System_Windows_Style, $System_Windows_Controls_ItemsControl, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
-		$System_Windows_Controls_ItemsControl.ItemContainerStyleSelectorProperty = $System_Windows_DependencyProperty.Register('ItemContainerStyleSelector', $System_Windows_Controls_IStyleSelector, $System_Windows_Controls_ItemsControl, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
-		$System_Windows_Controls_ItemsControl.ItemsPanelProperty = $System_Windows_DependencyProperty.Register('ItemsPanel', $System_Windows_IFrameworkTemplate, $System_Windows_Controls_ItemsControl, new $System_Windows_FrameworkPropertyMetadata(new $System_$Windows_Controls_ItemsControl$DefaultItemsPanelTemplate(), null, null, false, false, false, false, 0), null);
-		$System_Windows_Controls_ItemsControl.ItemTemplateProperty = $System_Windows_DependencyProperty.Register('ItemTemplate', $System_Windows_DataTemplate, $System_Windows_Controls_ItemsControl, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
-		$System_Windows_Controls_ItemsControl.ItemTemplateSelectorProperty = $System_Windows_DependencyProperty.Register('ItemTemplateSelector', $System_Windows_Controls_IDataTemplateSelector, $System_Windows_Controls_ItemsControl, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
-		$System_Windows_Controls_ItemsControl.$ItemContainerGeneratorPropertyKey = $System_Windows_DependencyProperty.RegisterReadOnly('ItemContainerGenerator', $System_Windows_Controls_IItemContainerGenerator, $System_Windows_Controls_ItemsControl, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
-		$System_Windows_Controls_ItemsControl.ItemContainerGeneratorProperty = $System_Windows_Controls_ItemsControl.$ItemContainerGeneratorPropertyKey.get_DependencyProperty();
+		$System_Windows_Documents_TextElement.BackgroundProperty = $System_Windows_Controls_Panel.BackgroundProperty.AddOwner($System_Windows_Documents_TextElement, null);
+		$System_Windows_Documents_TextElement.ForegroundProperty = $System_Windows_DependencyProperty.RegisterAttached('Foreground', $System_Windows_Media_Brush, $System_Windows_Documents_TextElement, new $System_Windows_FrameworkPropertyMetadata($System_Windows_Media_Brushes.get_Black(), null, null, true, false, false, false, 0), null);
+		$System_Windows_Documents_TextElement.FontFamilyProperty = $System_Windows_DependencyProperty.RegisterAttached('FontFamily', $System_Windows_FontFamily, $System_Windows_Documents_TextElement, new $System_Windows_FrameworkPropertyMetadata($System_Windows_FontFamily.Default, null, null, true, false, false, false, 0), null);
+		$System_Windows_Documents_TextElement.FontSizeProperty = $System_Windows_DependencyProperty.RegisterAttached('FontSize', Number, $System_Windows_Documents_TextElement, new $System_Windows_FrameworkPropertyMetadata(11, null, null, true, false, false, false, 0), null);
+		$System_Windows_Documents_TextElement.FontStyleProperty = $System_Windows_DependencyProperty.RegisterAttached('FontStyle', $System_Windows_FontStyle, $System_Windows_Documents_TextElement, new $System_Windows_FrameworkPropertyMetadata(null, null, null, true, false, false, false, 0), null);
+		$System_Windows_Documents_TextElement.FontWeightProperty = $System_Windows_DependencyProperty.RegisterAttached('FontWeight', $System_Windows_FontWeight, $System_Windows_Documents_TextElement, new $System_Windows_FrameworkPropertyMetadata(null, null, null, true, false, false, false, 0), null);
+		$System_Windows_Documents_TextElement.FontStretchProperty = $System_Windows_DependencyProperty.RegisterAttached('FontStretch', $System_Windows_FontStretch, $System_Windows_Documents_TextElement, new $System_Windows_FrameworkPropertyMetadata(null, null, null, true, false, false, false, 0), null);
 	})();
 	(function() {
 		$System_Windows_Controls_Control.PreviewMouseDoubleClickEvent = $System_Windows_EventManager.RegisterRoutedEvent('PreviewMouseDoubleClick', 0, Function, $System_Windows_Controls_Control);
@@ -23977,12 +25291,12 @@
 			ss.cast(sender, $System_Windows_Controls_Control).ApplyTemplate();
 		}, null, false, false, false, false, 0), null);
 		$System_Windows_Controls_Control.BackgroundProperty = $System_Windows_Controls_Panel.BackgroundProperty.AddOwner($System_Windows_Controls_Control, null);
-		$System_Windows_Controls_Control.ForegroundProperty = $System_Windows_Controls_TextBlock.ForegroundProperty.AddOwner($System_Windows_Controls_Control, null);
-		$System_Windows_Controls_Control.FontFamilyProperty = $System_Windows_Controls_TextBlock.FontFamilyProperty.AddOwner($System_Windows_Controls_Control, null);
-		$System_Windows_Controls_Control.FontSizeProperty = $System_Windows_Controls_TextBlock.FontSizeProperty.AddOwner($System_Windows_Controls_Control, new $System_Windows_FrameworkPropertyMetadata(null, null, null, true, true, false, false, 0));
-		$System_Windows_Controls_Control.FontStyleProperty = $System_Windows_Controls_TextBlock.FontStyleProperty.AddOwner($System_Windows_Controls_Control, new $System_Windows_FrameworkPropertyMetadata(null, null, null, true, true, false, false, 0));
-		$System_Windows_Controls_Control.FontWeightProperty = $System_Windows_Controls_TextBlock.FontWeightProperty.AddOwner($System_Windows_Controls_Control, new $System_Windows_FrameworkPropertyMetadata(null, null, null, true, true, false, false, 0));
-		$System_Windows_Controls_Control.FontStretchProperty = $System_Windows_Controls_TextBlock.FontStretchProperty.AddOwner($System_Windows_Controls_Control, new $System_Windows_FrameworkPropertyMetadata(null, null, null, true, true, false, false, 0));
+		$System_Windows_Controls_Control.ForegroundProperty = $System_Windows_Documents_TextElement.ForegroundProperty.AddOwner($System_Windows_Controls_Control, null);
+		$System_Windows_Controls_Control.FontFamilyProperty = $System_Windows_Documents_TextElement.FontFamilyProperty.AddOwner($System_Windows_Controls_Control, null);
+		$System_Windows_Controls_Control.FontSizeProperty = $System_Windows_Documents_TextElement.FontSizeProperty.AddOwner($System_Windows_Controls_Control, new $System_Windows_FrameworkPropertyMetadata(null, null, null, true, true, false, false, 0));
+		$System_Windows_Controls_Control.FontStyleProperty = $System_Windows_Documents_TextElement.FontStyleProperty.AddOwner($System_Windows_Controls_Control, new $System_Windows_FrameworkPropertyMetadata(null, null, null, true, true, false, false, 0));
+		$System_Windows_Controls_Control.FontWeightProperty = $System_Windows_Documents_TextElement.FontWeightProperty.AddOwner($System_Windows_Controls_Control, new $System_Windows_FrameworkPropertyMetadata(null, null, null, true, true, false, false, 0));
+		$System_Windows_Controls_Control.FontStretchProperty = $System_Windows_Documents_TextElement.FontStretchProperty.AddOwner($System_Windows_Controls_Control, new $System_Windows_FrameworkPropertyMetadata(null, null, null, true, true, false, false, 0));
 		$System_Windows_Controls_Control.BorderBrushProperty = $System_Windows_Controls_Border.BorderBrushProperty.AddOwner($System_Windows_Controls_Control, null);
 		$System_Windows_Controls_Control.BorderThicknessProperty = $System_Windows_Controls_Border.BorderThicknessProperty.AddOwner($System_Windows_Controls_Control, null);
 		$System_Windows_Controls_Control.HorizontalContentAlignmentProperty = $System_Windows_DependencyProperty.Register('HorizontalContentAlignment', $System_Windows_HorizontalAlignment, $System_Windows_Controls_Control, new $System_Windows_FrameworkPropertyMetadata(0, null, null, false, false, false, false, 0), null);
@@ -24013,6 +25327,58 @@
 		$System_Windows_Controls_ContentPresenter.ContentTemplateSelectorProperty = $System_Windows_Controls_ContentControl.ContentTemplateSelectorProperty.AddOwner($System_Windows_Controls_ContentPresenter, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
 			ss.cast(sender, $System_Windows_Controls_ContentPresenter).$SetTemplate();
 		}, null, false, false, false, false, 0));
+	})();
+	(function() {
+		$System_Windows_Controls_ItemsControl.ItemsSourceProperty = $System_Windows_DependencyProperty.Register('ItemsSource', ss.IEnumerable, $System_Windows_Controls_ItemsControl, new $System_Windows_FrameworkPropertyMetadata(null, function(dependencyObject, e) {
+			ss.safeCast(dependencyObject, $System_Windows_Controls_ItemsControl).$OnItemsSourceChanged(e);
+		}, null, false, false, false, false, 0), null);
+		$System_Windows_Controls_ItemsControl.ItemContainerStyleProperty = $System_Windows_DependencyProperty.Register('ItemContainerStyle', $System_Windows_Style, $System_Windows_Controls_ItemsControl, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
+		$System_Windows_Controls_ItemsControl.ItemContainerStyleSelectorProperty = $System_Windows_DependencyProperty.Register('ItemContainerStyleSelector', $System_Windows_Controls_IStyleSelector, $System_Windows_Controls_ItemsControl, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
+		$System_Windows_Controls_ItemsControl.ItemsPanelProperty = $System_Windows_DependencyProperty.Register('ItemsPanel', $System_Windows_IFrameworkTemplate, $System_Windows_Controls_ItemsControl, new $System_Windows_FrameworkPropertyMetadata(new $System_$Windows_Controls_ItemsControl$DefaultItemsPanelTemplate(), null, null, false, false, false, false, 0), null);
+		$System_Windows_Controls_ItemsControl.ItemTemplateProperty = $System_Windows_DependencyProperty.Register('ItemTemplate', $System_Windows_DataTemplate, $System_Windows_Controls_ItemsControl, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
+		$System_Windows_Controls_ItemsControl.ItemTemplateSelectorProperty = $System_Windows_DependencyProperty.Register('ItemTemplateSelector', $System_Windows_Controls_IDataTemplateSelector, $System_Windows_Controls_ItemsControl, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
+		$System_Windows_Controls_ItemsControl.$ItemContainerGeneratorPropertyKey = $System_Windows_DependencyProperty.RegisterReadOnly('ItemContainerGenerator', $System_Windows_Controls_IItemContainerGenerator, $System_Windows_Controls_ItemsControl, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
+		$System_Windows_Controls_ItemsControl.ItemContainerGeneratorProperty = $System_Windows_Controls_ItemsControl.$ItemContainerGeneratorPropertyKey.get_DependencyProperty();
+	})();
+	(function() {
+		$System_Windows_Controls_TextBlock.TextProperty = $System_Windows_DependencyProperty.Register('Text', String, $System_Windows_Controls_TextBlock, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
+			ss.cast(sender, $System_Windows_Controls_TextBlock).$OnTextChanged(e);
+		}, null, false, true, false, false, 0), null);
+		$System_Windows_Controls_TextBlock.ForegroundProperty = $System_Windows_Documents_TextElement.ForegroundProperty.AddOwner($System_Windows_Controls_TextBlock, new $System_Windows_FrameworkPropertyMetadata($System_Windows_Media_Brushes.get_Black(), function(sender, e) {
+			ss.cast(sender, $System_Windows_Controls_TextBlock).$SetRenderElementsProperty(function(textBlockRenderElement) {
+				textBlockRenderElement.set_Foreground(ss.cast(e.get_NewValue(), $System_Windows_Media_Brush));
+			});
+		}, null, true, false, false, false, 0));
+		$System_Windows_Controls_TextBlock.FontFamilyProperty = $System_Windows_Documents_TextElement.FontFamilyProperty.AddOwner($System_Windows_Controls_TextBlock, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
+			ss.cast(sender, $System_Windows_Controls_TextBlock).$OnFontFamilyChanged(e);
+		}, null, true, true, false, false, 0));
+		$System_Windows_Controls_TextBlock.FontSizeProperty = $System_Windows_Documents_TextElement.FontSizeProperty.AddOwner($System_Windows_Controls_TextBlock, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
+			ss.cast(sender, $System_Windows_Controls_TextBlock).$OnFontSizeChanged(e);
+		}, null, true, true, false, false, 0));
+		$System_Windows_Controls_TextBlock.FontStyleProperty = $System_Windows_Documents_TextElement.FontStyleProperty.AddOwner($System_Windows_Controls_TextBlock, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
+			ss.cast(sender, $System_Windows_Controls_TextBlock).$OnFontStyleChanged(e);
+		}, null, true, true, false, false, 0));
+		$System_Windows_Controls_TextBlock.FontWeightProperty = $System_Windows_Documents_TextElement.FontWeightProperty.AddOwner($System_Windows_Controls_TextBlock, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
+			ss.cast(sender, $System_Windows_Controls_TextBlock).$OnFontWeightChanged(e);
+		}, null, true, true, false, false, 0));
+		$System_Windows_Controls_TextBlock.FontStretchProperty = $System_Windows_Documents_TextElement.FontStretchProperty.AddOwner($System_Windows_Controls_TextBlock, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
+			ss.cast(sender, $System_Windows_Controls_TextBlock).$OnFontStretchChanged(e);
+		}, null, true, true, false, false, 0));
+		$System_Windows_Controls_TextBlock.TextAlignmentProperty = $System_Windows_Documents_Block.TextAlignmentProperty.AddOwner($System_Windows_Controls_TextBlock, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
+			ss.cast(sender, $System_Windows_Controls_TextBlock).$SetRenderElementsProperty(function(textBlockRenderElement) {
+				textBlockRenderElement.set_TextAlignment(ss.cast(e.get_NewValue(), ss.Int32));
+			});
+		}, null, true, false, false, false, 0));
+		$System_Windows_Controls_TextBlock.TextTrimmingProperty = $System_Windows_DependencyProperty.Register('TextTrimming', $System_Windows_TextTrimming, $System_Windows_Controls_TextBlock, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
+			ss.cast(sender, $System_Windows_Controls_TextBlock).$SetRenderElementsProperty(function(textBlockRenderElement) {
+				textBlockRenderElement.set_TextTrimming(ss.cast(e.get_NewValue(), ss.Int32));
+			});
+		}, null, true, true, false, false, 0), null);
+		$System_Windows_Controls_TextBlock.TextWrappingProperty = $System_Windows_DependencyProperty.Register('TextWrapping', $System_Windows_TextWrapping, $System_Windows_Controls_TextBlock, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
+			ss.cast(sender, $System_Windows_Controls_TextBlock).$SetRenderElementsProperty(function(textBlockRenderElement) {
+				textBlockRenderElement.set_TextWrapping(ss.cast(e.get_NewValue(), ss.Int32));
+			});
+		}, null, true, true, false, false, 0), null);
 	})();
 	(function() {
 		$System_$Windows_Controls_ContentPresenter$DefaultContentTemplate.$Default = new $System_$Windows_Controls_ContentPresenter$DefaultContentTemplate();
@@ -24054,6 +25420,12 @@
 		$System_Windows_Controls_PopupLayer.PositionProperty = $System_Windows_DependencyProperty.RegisterAttached('Position', $System_Windows_Point, $System_Windows_Controls_PopupLayer, new $System_Windows_FrameworkPropertyMetadata($System_Windows_Point.Zero, $System_Windows_Controls_PopupLayer.$OnPositionChanged, null, false, false, false, false, 0), null);
 		$System_Windows_Controls_PopupLayer.IsOpenProperty = $System_Windows_DependencyProperty.RegisterAttached('IsOpen', Boolean, $System_Windows_Controls_PopupLayer, new $System_Windows_FrameworkPropertyMetadata(null, $System_Windows_Controls_PopupLayer.$OnIsOpenChanged, null, false, false, false, false, 0), null);
 		$System_Windows_Controls_PopupLayer.StaysOpenProperty = $System_Windows_DependencyProperty.RegisterAttached('StaysOpen', Boolean, $System_Windows_Controls_PopupLayer, new $System_Windows_FrameworkPropertyMetadata(true, null, null, false, false, false, false, 0), null);
+	})();
+	(function() {
+		$System_Windows_Markup_PropertyAdapter.$adaptersCache = new (ss.makeGenericType(Granular.Collections.CacheDictionary$2, [$System_Windows_Markup_TypeMemberKey, $System_Windows_Markup_IPropertyAdapter]).$ctor1)($System_Windows_Markup_PropertyAdapter.$TryCreateAdapter);
+	})();
+	(function() {
+		$System_Windows_Markup_EventAdapter.$adaptersCache = new (ss.makeGenericType(Granular.Collections.CacheDictionary$2, [$System_Windows_Markup_TypeMemberKey, $System_Windows_Markup_IEventAdapter]).$ctor1)($System_Windows_Markup_EventAdapter.$TryCreateAdapter);
 	})();
 	(function() {
 		$System_Windows_Markup_ElementInitializer.Empty = new $System_$Windows_Markup_ElementInitializer$EmptyElementInitializer();
@@ -24136,10 +25508,14 @@
 		$System_Windows_Controls_Primitives_ButtonBase.IsPressedProperty = $System_Windows_DependencyProperty.Register('IsPressed', Boolean, $System_Windows_Controls_Primitives_ButtonBase, new $System_Windows_Controls_ControlPropertyMetadata(false, function(sender, e) {
 			ss.cast(sender, $System_Windows_Controls_Primitives_ButtonBase).OnIsPressedChanged(e);
 		}, null, false, false, false, true, true, 0), null);
+		$System_Windows_Controls_Primitives_ButtonBase.CommandProperty = $System_Windows_DependencyProperty.Register('Command', System.Windows.Input.ICommand, $System_Windows_Controls_Primitives_ButtonBase, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
+			ss.cast(sender, $System_Windows_Controls_Primitives_ButtonBase).$OnCommandChanged(ss.cast(e.get_OldValue(), System.Windows.Input.ICommand), ss.cast(e.get_NewValue(), System.Windows.Input.ICommand));
+		}, null, false, false, false, false, 0), null);
+		$System_Windows_Controls_Primitives_ButtonBase.CommandParameterProperty = $System_Windows_DependencyProperty.Register('CommandParameterProperty', Object, $System_Windows_Controls_Primitives_ButtonBase, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
 		$System_Windows_EventManager.RegisterClassHandler($System_Windows_Controls_Primitives_ButtonBase, $System_Windows_Controls_Primitives_ButtonBase.ClickEvent, function(sender, e) {
 			ss.cast(sender, $System_Windows_Controls_Primitives_ButtonBase).OnClick(e);
 		}, false);
-		$System_Windows_UIElement.IsEnabledProperty.OverrideMetadata($System_Windows_Controls_Primitives_ButtonBase, new $System_Windows_Controls_ControlPropertyMetadata(null, null, null, true, false, false, true, true, 0));
+		$System_Windows_UIElement.IsEnabledProperty.OverrideMetadata($System_Windows_Controls_Primitives_ButtonBase, new $System_Windows_Controls_ControlPropertyMetadata(null, null, null, false, false, false, true, true, 0));
 		$System_Windows_UIElement.IsMouseOverProperty.OverrideMetadata($System_Windows_Controls_Primitives_ButtonBase, new $System_Windows_Controls_ControlPropertyMetadata(null, null, null, false, false, false, true, true, 0));
 		$System_Windows_UIElement.IsFocusedProperty.OverrideMetadata($System_Windows_Controls_Primitives_ButtonBase, new $System_Windows_Controls_ControlPropertyMetadata(null, null, null, false, false, false, true, true, 0));
 	})();
@@ -24187,7 +25563,7 @@
 		$System_Windows_Controls_Primitives_TextBoxBase.AcceptsReturnProperty = $System_Windows_DependencyProperty.Register('AcceptsReturn', Boolean, $System_Windows_Controls_Primitives_TextBoxBase, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
 		$System_Windows_Controls_Primitives_TextBoxBase.AcceptsTabProperty = $System_Windows_DependencyProperty.Register('AcceptsTab', Boolean, $System_Windows_Controls_Primitives_TextBoxBase, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
 		$System_Windows_Controls_Primitives_TextBoxBase.IsReadOnlyProperty = $System_Windows_DependencyProperty.Register('IsReadOnly', Boolean, $System_Windows_Controls_Primitives_TextBoxBase, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
-		$System_Windows_UIElement.IsEnabledProperty.OverrideMetadata($System_Windows_Controls_Primitives_TextBoxBase, new $System_Windows_Controls_ControlPropertyMetadata(null, null, null, true, false, false, true, true, 0));
+		$System_Windows_UIElement.IsEnabledProperty.OverrideMetadata($System_Windows_Controls_Primitives_TextBoxBase, new $System_Windows_Controls_ControlPropertyMetadata(null, null, null, false, false, false, true, true, 0));
 		$System_Windows_UIElement.IsMouseOverProperty.OverrideMetadata($System_Windows_Controls_Primitives_TextBoxBase, new $System_Windows_Controls_ControlPropertyMetadata(null, null, null, false, false, false, true, true, 0));
 		$System_Windows_UIElement.IsFocusedProperty.OverrideMetadata($System_Windows_Controls_Primitives_TextBoxBase, new $System_Windows_Controls_ControlPropertyMetadata(null, null, null, false, false, false, true, true, 0));
 	})();
@@ -24245,12 +25621,8 @@
 		$System_Windows_Controls_ScrollViewer.ComputedVerticalScrollBarVisibilityProperty = $System_Windows_Controls_ScrollViewer.$ComputedVerticalScrollBarVisibilityPropertyKey.get_DependencyProperty();
 		$System_Windows_Controls_ScrollViewer.$ComputedScrollBarsVisibilityPropertyKey = $System_Windows_DependencyProperty.RegisterReadOnly('ComputedScrollBarsVisibility', $System_Windows_Visibility, $System_Windows_Controls_ScrollViewer, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
 		$System_Windows_Controls_ScrollViewer.ComputedScrollBarsVisibilityProperty = $System_Windows_Controls_ScrollViewer.$ComputedScrollBarsVisibilityPropertyKey.get_DependencyProperty();
-		$System_Windows_Controls_ScrollViewer.HorizontalScrollBarVisibilityProperty = $System_Windows_DependencyProperty.Register('HorizontalScrollBarVisibility', $System_Windows_Controls_ScrollBarVisibility, $System_Windows_Controls_ScrollViewer, new $System_Windows_FrameworkPropertyMetadata(3, function(sender, e) {
-			ss.cast(sender, $System_Windows_Controls_ScrollViewer).$SetContentCanScroll();
-		}, null, false, true, false, false, 0), null);
-		$System_Windows_Controls_ScrollViewer.VerticalScrollBarVisibilityProperty = $System_Windows_DependencyProperty.Register('VerticalScrollBarVisibility', $System_Windows_Controls_ScrollBarVisibility, $System_Windows_Controls_ScrollViewer, new $System_Windows_FrameworkPropertyMetadata(3, function(sender, e) {
-			ss.cast(sender, $System_Windows_Controls_ScrollViewer).$SetContentCanScroll();
-		}, null, false, true, false, false, 0), null);
+		$System_Windows_Controls_ScrollViewer.HorizontalScrollBarVisibilityProperty = $System_Windows_DependencyProperty.RegisterAttached('HorizontalScrollBarVisibility', $System_Windows_Controls_ScrollBarVisibility, $System_Windows_Controls_ScrollViewer, new $System_Windows_FrameworkPropertyMetadata(3, $System_Windows_Controls_ScrollViewer.$OnScrollBarVisibilityChanged, null, false, true, false, false, 0), null);
+		$System_Windows_Controls_ScrollViewer.VerticalScrollBarVisibilityProperty = $System_Windows_DependencyProperty.RegisterAttached('VerticalScrollBarVisibility', $System_Windows_Controls_ScrollBarVisibility, $System_Windows_Controls_ScrollViewer, new $System_Windows_FrameworkPropertyMetadata(3, $System_Windows_Controls_ScrollViewer.$OnScrollBarVisibilityChanged, null, false, true, false, false, 0), null);
 		$System_Windows_Controls_ScrollViewer.HorizontalOffsetProperty = $System_Windows_DependencyProperty.Register('HorizontalOffset', Number, $System_Windows_Controls_ScrollViewer, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
 			ss.cast(sender, $System_Windows_Controls_ScrollViewer).$SetOffsets();
 		}, null, false, false, true, false, 0), null);
@@ -24320,10 +25692,10 @@
 	(function() {
 		$System_Windows_UIElement.IsHitTestVisibleProperty.OverrideMetadata($System_Windows_Controls_$TextBoxView, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
 			ss.cast(sender, $System_Windows_Controls_$TextBoxView).$SetRenderElementsIsHitTestVisible();
-		}, null, true, false, false, false, 0));
+		}, null, false, false, false, false, 0));
 		$System_Windows_UIElement.IsEnabledProperty.OverrideMetadata($System_Windows_Controls_$TextBoxView, new $System_Windows_FrameworkPropertyMetadata(null, function(sender1, e1) {
 			ss.cast(sender1, $System_Windows_Controls_$TextBoxView).$OnIsEnabledChanged$1();
-		}, null, true, false, false, false, 0));
+		}, null, false, false, false, false, 0));
 		$System_Windows_Controls_Control.ForegroundProperty.OverrideMetadata($System_Windows_Controls_$TextBoxView, new $System_Windows_FrameworkPropertyMetadata(null, function(sender2, e2) {
 			ss.cast(sender2, $System_Windows_Controls_$TextBoxView).$SetRenderElementsProperty(function(renderElement) {
 				renderElement.set_Foreground(ss.cast(e2.get_NewValue(), $System_Windows_Media_Brush));
@@ -24420,6 +25792,7 @@
 		}, null, false, false, false, false, 0), null);
 		$System_Windows_Controls_Image.StretchProperty = $System_Windows_DependencyProperty.Register('Stretch', $System_Windows_Media_Stretch, $System_Windows_Controls_Image, new $System_Windows_FrameworkPropertyMetadata(2, null, null, false, true, false, false, 0), null);
 		$System_Windows_Controls_Image.StretchDirectionProperty = $System_Windows_DependencyProperty.Register('StretchDirection', $System_Windows_Media_StretchDirection, $System_Windows_Controls_Image, new $System_Windows_FrameworkPropertyMetadata(2, null, null, false, true, false, false, 0), null);
+		$System_Windows_UIElement.ClipToBoundsProperty.OverrideMetadata($System_Windows_Controls_Image, new $System_Windows_FrameworkPropertyMetadata(true, null, null, false, false, false, false, 0));
 	})();
 	(function() {
 		$System_Windows_Controls_Primitives_Selector.SelectionChangedEvent = $System_Windows_EventManager.RegisterRoutedEvent('SelectionChanged', 1, Function, $System_Windows_Controls_Primitives_Selector);
@@ -24446,7 +25819,7 @@
 		$System_Windows_Controls_ListBoxItem.IsSelectedProperty = $System_Windows_Controls_Primitives_Selector.IsSelectedProperty.AddOwner($System_Windows_Controls_ListBoxItem, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
 			ss.cast(sender, $System_Windows_Controls_ListBoxItem).$OnIsSelectedChanged(e);
 		}, null, false, false, false, false, 0));
-		$System_Windows_UIElement.IsEnabledProperty.OverrideMetadata($System_Windows_Controls_ListBoxItem, new $System_Windows_Controls_ControlPropertyMetadata(null, null, null, true, false, false, true, true, 0));
+		$System_Windows_UIElement.IsEnabledProperty.OverrideMetadata($System_Windows_Controls_ListBoxItem, new $System_Windows_Controls_ControlPropertyMetadata(null, null, null, false, false, false, true, true, 0));
 		$System_Windows_UIElement.IsMouseOverProperty.OverrideMetadata($System_Windows_Controls_ListBoxItem, new $System_Windows_Controls_ControlPropertyMetadata(null, null, null, false, false, false, true, true, 0));
 		$System_Windows_Controls_Primitives_Selector.IsSelectionActiveProperty.OverrideMetadata($System_Windows_Controls_ListBoxItem, new $System_Windows_Controls_ControlPropertyMetadata(null, null, null, true, false, false, true, true, 0));
 	})();
@@ -24467,7 +25840,7 @@
 		}, null, false, false, false, false, 0));
 		$System_Windows_UIElement.IsEnabledProperty.OverrideMetadata($System_Windows_Controls_PasswordBox, new $System_Windows_Controls_ControlPropertyMetadata(null, function(sender, e) {
 			ss.cast(sender, $System_Windows_Controls_PasswordBox).$textBoxView.set_$IsReadOnly(!ss.cast(sender, $System_Windows_Controls_PasswordBox).get_IsEnabled());
-		}, null, true, false, false, true, true, 0));
+		}, null, false, false, false, true, true, 0));
 		$System_Windows_UIElement.IsMouseOverProperty.OverrideMetadata($System_Windows_Controls_PasswordBox, new $System_Windows_Controls_ControlPropertyMetadata(null, null, null, false, false, false, true, true, 0));
 		$System_Windows_UIElement.IsFocusedProperty.OverrideMetadata($System_Windows_Controls_PasswordBox, new $System_Windows_Controls_ControlPropertyMetadata(null, null, null, false, false, false, true, true, 0));
 		$System_Windows_FrameworkElement.CursorProperty.OverrideMetadata($System_Windows_Controls_PasswordBox, new $System_Windows_FrameworkPropertyMetadata($System_Windows_Input_Cursors.get_IBeam(), null, null, false, false, false, false, 0));
@@ -24478,16 +25851,12 @@
 	})();
 	(function() {
 		$System_Windows_Media_GradientBrush.SpreadMethodProperty = $System_Windows_DependencyProperty.Register('SpreadMethod', $System_Windows_Media_GradientSpreadMethod, $System_Windows_Media_GradientBrush, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
+		$System_Windows_Media_GradientBrush.MappingModeProperty = $System_Windows_DependencyProperty.Register('MappingMode', $System_Windows_Media_BrushMappingMode, $System_Windows_Media_GradientBrush, new $System_Windows_FrameworkPropertyMetadata(1, null, null, false, false, false, false, 0), null);
 		$System_Windows_Media_GradientBrush.GradientStopsProperty = $System_Windows_DependencyProperty.Register('GradientStops', $System_Windows_Media_GradientStopCollection, $System_Windows_Media_GradientBrush, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
 	})();
 	(function() {
-		$System_Windows_Media_LinearGradientBrush.StartPointProperty = $System_Windows_DependencyProperty.Register('StartPoint', $System_Windows_Point, $System_Windows_Media_LinearGradientBrush, new $System_Windows_FrameworkPropertyMetadata($System_Windows_Point.Zero, function(sender, e) {
-			ss.cast(sender, $System_Windows_Media_LinearGradientBrush).$SetAngle();
-		}, null, false, false, false, false, 0), null);
-		$System_Windows_Media_LinearGradientBrush.EndPointProperty = $System_Windows_DependencyProperty.Register('EndPoint', $System_Windows_Point, $System_Windows_Media_LinearGradientBrush, new $System_Windows_FrameworkPropertyMetadata(new $System_Windows_Point.$ctor1(1, 1), function(sender, e) {
-			ss.cast(sender, $System_Windows_Media_LinearGradientBrush).$SetAngle();
-		}, null, false, false, false, false, 0), null);
-		$System_Windows_Media_LinearGradientBrush.AngleProperty = $System_Windows_DependencyProperty.Register('Angle', Number, $System_Windows_Media_LinearGradientBrush, new $System_Windows_FrameworkPropertyMetadata(45, null, null, false, false, false, false, 0), null);
+		$System_Windows_Media_LinearGradientBrush.StartPointProperty = $System_Windows_DependencyProperty.Register('StartPoint', $System_Windows_Point, $System_Windows_Media_LinearGradientBrush, new $System_Windows_FrameworkPropertyMetadata($System_Windows_Point.Zero, null, null, false, false, false, false, 0), null);
+		$System_Windows_Media_LinearGradientBrush.EndPointProperty = $System_Windows_DependencyProperty.Register('EndPoint', $System_Windows_Point, $System_Windows_Media_LinearGradientBrush, new $System_Windows_FrameworkPropertyMetadata(new $System_Windows_Point.$ctor1(1, 1), null, null, false, false, false, false, 0), null);
 	})();
 	(function() {
 		$System_Windows_Media_Animation_KeyTime.Paced = new $System_Windows_Media_Animation_KeyTime(3, new ss.TimeSpan(0), Number.NaN);
@@ -24560,6 +25929,14 @@
 		$System_Windows_UIElement.FocusableProperty.OverrideMetadata($System_Windows_Controls_Primitives_Thumb, new $System_Windows_FrameworkPropertyMetadata(false, null, null, false, false, false, false, 0));
 	})();
 	(function() {
+		$System_Windows_Controls_Primitives_UniformGrid.RowsProperty = $System_Windows_DependencyProperty.Register('Rows', ss.Int32, $System_Windows_Controls_Primitives_UniformGrid, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, true, false, false, 0), null);
+		$System_Windows_Controls_Primitives_UniformGrid.ColumnsProperty = $System_Windows_DependencyProperty.Register('Columns', ss.Int32, $System_Windows_Controls_Primitives_UniformGrid, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, true, false, false, 0), null);
+		$System_Windows_Controls_Primitives_UniformGrid.FirstColumnProperty = $System_Windows_DependencyProperty.Register('FirstColumn', ss.Int32, $System_Windows_Controls_Primitives_UniformGrid, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, true, false, false, 0), null);
+	})();
+	(function() {
+		$System_Windows_Documents_Run.TextProperty = $System_Windows_DependencyProperty.Register('Text', String, $System_Windows_Documents_Run, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
+	})();
+	(function() {
 		$System_Windows_Media_TileBrush.TileModeProperty = $System_Windows_DependencyProperty.Register('TileMode', $System_Windows_Media_TileMode, $System_Windows_Media_TileBrush, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
 		$System_Windows_Media_TileBrush.StretchProperty = $System_Windows_DependencyProperty.Register('Stretch', $System_Windows_Media_Stretch, $System_Windows_Media_TileBrush, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
 		$System_Windows_Media_TileBrush.ViewportProperty = $System_Windows_DependencyProperty.Register('Viewport', $System_Windows_Rect, $System_Windows_Media_TileBrush, new $System_Windows_FrameworkPropertyMetadata(null, null, null, false, false, false, false, 0), null);
@@ -24576,6 +25953,9 @@
 		$System_Windows_Media_Imaging_BitmapImage.SourceRectProperty = $System_Windows_DependencyProperty.Register('SourceRect', $System_Windows_Rect, $System_Windows_Media_Imaging_BitmapImage, new $System_Windows_FrameworkPropertyMetadata(null, function(sender, e) {
 			ss.cast(sender, $System_Windows_Media_Imaging_BitmapImage).$OnSourceRectChanged(e);
 		}, null, false, false, false, false, 0), null);
+	})();
+	(function() {
+		$System_Windows_Media_MatrixTransform.MatrixProperty = $System_Windows_DependencyProperty.Register('Matrix', $System_Windows_Media_Matrix, $System_Windows_Media_MatrixTransform, new $System_Windows_FrameworkPropertyMetadata($System_Windows_Media_Matrix.Identity, null, null, false, false, false, false, 0), null);
 	})();
 	(function() {
 		$System_Windows_Media_RadialGradientBrush.CenterProperty = $System_Windows_DependencyProperty.Register('Center', $System_Windows_Point, $System_Windows_Media_RadialGradientBrush, new $System_Windows_FrameworkPropertyMetadata(new $System_Windows_Point.$ctor1(0.5, 0.5), null, null, false, false, false, false, 0), null);
@@ -24599,6 +25979,10 @@
 		$System_Windows_Media_SkewTransform.AngleYProperty = $System_Windows_DependencyProperty.Register('AngleY', Number, $System_Windows_Media_SkewTransform, new $System_Windows_FrameworkPropertyMetadata(0, $System_Windows_Media_SkewTransform.$SetMatrix, null, false, false, false, false, 0), null);
 		$System_Windows_Media_SkewTransform.CenterXProperty = $System_Windows_DependencyProperty.Register('CenterX', Number, $System_Windows_Media_SkewTransform, new $System_Windows_FrameworkPropertyMetadata(0, $System_Windows_Media_SkewTransform.$SetMatrix, null, false, false, false, false, 0), null);
 		$System_Windows_Media_SkewTransform.CenterYProperty = $System_Windows_DependencyProperty.Register('CenterY', Number, $System_Windows_Media_SkewTransform, new $System_Windows_FrameworkPropertyMetadata(0, $System_Windows_Media_SkewTransform.$SetMatrix, null, false, false, false, false, 0), null);
+	})();
+	(function() {
+		$System_Windows_Media_TranslateTransform.XProperty = $System_Windows_DependencyProperty.Register('X', Number, $System_Windows_Media_TranslateTransform, new $System_Windows_FrameworkPropertyMetadata(0, $System_Windows_Media_TranslateTransform.$SetMatrix, null, false, false, false, false, 0), null);
+		$System_Windows_Media_TranslateTransform.YProperty = $System_Windows_DependencyProperty.Register('Y', Number, $System_Windows_Media_TranslateTransform, new $System_Windows_FrameworkPropertyMetadata(0, $System_Windows_Media_TranslateTransform.$SetMatrix, null, false, false, false, false, 0), null);
 	})();
 	(function() {
 		$System_Windows_Media_Animation_$ColorAnimationOperations.$Default = new $System_Windows_Media_Animation_$ColorAnimationOperations();

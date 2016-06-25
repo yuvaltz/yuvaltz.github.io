@@ -10,14 +10,14 @@
 	var $Granular_Host_$HtmlStyleDictionaryExtensions = function() {
 	};
 	$Granular_Host_$HtmlStyleDictionaryExtensions.__typeName = 'Granular.Host.$HtmlStyleDictionaryExtensions';
-	$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackground = function(style, background, converter) {
+	$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackground = function(style, background, targetRect, converter) {
 		style.ClearValue('background-color');
 		style.ClearValue('background-image');
 		if (ss.isInstanceOfType(background, System.Windows.Media.SolidColorBrush)) {
 			style.SetValue('background-color', converter.ToColorString$1(ss.cast(background, System.Windows.Media.SolidColorBrush)));
 		}
 		else if (ss.isValue(background)) {
-			style.SetValue('background-image', $Granular_Host_HtmlValueConverterExtensions.ToImageString(converter, background));
+			style.SetValue('background-image', $Granular_Host_HtmlValueConverterExtensions.ToImageString(converter, background, targetRect));
 		}
 	};
 	$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackgroundLocation = function(style, location, converter) {
@@ -41,7 +41,7 @@
 		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackgroundSize(style, bounds.get_Size(), converter);
 	};
 	$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBorderThickness = function(style, borderThickness, converter) {
-		if (ss.referenceEquals(borderThickness, System.Windows.Thickness.Zero)) {
+		if (System.Windows.Thickness.op_Equality(borderThickness, System.Windows.Thickness.Zero)) {
 			style.ClearValue('border-style');
 			style.ClearValue('border-width');
 			style.ClearValue('border-image-slice');
@@ -52,14 +52,14 @@
 			style.SetValue('border-image-slice', converter.ToImplicitValueString$2(borderThickness));
 		}
 	};
-	$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBorderBrush = function(style, borderBrush, converter) {
+	$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBorderBrush = function(style, borderBrush, targetSize, converter) {
 		style.ClearValue('border-color');
 		style.ClearValue('border-image-source');
 		if (ss.isInstanceOfType(borderBrush, System.Windows.Media.SolidColorBrush)) {
 			style.SetValue('border-color', converter.ToColorString$1(ss.cast(borderBrush, System.Windows.Media.SolidColorBrush)));
 		}
 		else if (ss.isValue(borderBrush)) {
-			style.SetValue('border-image-source', $Granular_Host_HtmlValueConverterExtensions.ToImageString(converter, borderBrush));
+			style.SetValue('border-image-source', $Granular_Host_HtmlValueConverterExtensions.ToImageString(converter, borderBrush, new System.Windows.Rect(targetSize)));
 		}
 	};
 	$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBounds = function(style, bounds, converter) {
@@ -137,11 +137,13 @@
 		}
 	};
 	$Granular_Host_$HtmlStyleDictionaryExtensions.$SetTransform = function(style, transform, converter) {
-		if (ss.referenceEquals(transform, System.Windows.Media.Transform.Identity)) {
+		if (System.Windows.Media.Matrix.op_Equality(transform, System.Windows.Media.Matrix.Identity)) {
 			style.ClearValue('transform');
+			style.ClearValue('transform-origin');
 		}
 		else {
-			style.SetValue('transform', transform.get_Value().toString());
+			style.SetValue('transform', converter.ToTransformString(transform));
+			style.SetValue('transform-origin', '0 0');
 		}
 	};
 	$Granular_Host_$HtmlStyleDictionaryExtensions.$SetFontFamily = function(style, fontFamily, converter) {
@@ -247,12 +249,38 @@
 		//
 	};
 	$Granular_Host_HtmlValueConverter.__typeName = 'Granular.Host.HtmlValueConverter';
+	$Granular_Host_HtmlValueConverter.$ScaleGradientStops$1 = function(gradientStops, startPoint, endPoint, targetSize) {
+		if (startPoint.get_X() === endPoint.get_X()) {
+			return ((startPoint.get_Y() < endPoint.get_Y()) ? $Granular_Host_HtmlValueConverter.$ScaleGradientStops(gradientStops, startPoint.get_Y() / targetSize.get_Height(), endPoint.get_Y() / targetSize.get_Height()) : $Granular_Host_HtmlValueConverter.$ScaleGradientStops(gradientStops, 1 - startPoint.get_Y() / targetSize.get_Height(), 1 - endPoint.get_Y() / targetSize.get_Height()));
+		}
+		if (startPoint.get_Y() === endPoint.get_Y()) {
+			return ((startPoint.get_X() < endPoint.get_X()) ? $Granular_Host_HtmlValueConverter.$ScaleGradientStops(gradientStops, startPoint.get_X() / targetSize.get_Width(), endPoint.get_X() / targetSize.get_Width()) : $Granular_Host_HtmlValueConverter.$ScaleGradientStops(gradientStops, 1 - startPoint.get_X() / targetSize.get_Width(), 1 - endPoint.get_X() / targetSize.get_Width()));
+		}
+		var direction = System.Windows.Point.op_Subtraction(endPoint, startPoint);
+		var directionLength = System.Windows.PointExtensions.GetLength(direction);
+		var sin = direction.get_Y() / directionLength;
+		var cos = direction.get_X() / directionLength;
+		// generated gradient image size
+		var generatedImageWidth = Granular.Extensions.DoubleExtensions.Abs(cos) * targetSize.get_Width() + Granular.Extensions.DoubleExtensions.Abs(sin) * targetSize.get_Height();
+		var generatedImageHeight = Granular.Extensions.DoubleExtensions.Abs(sin) * targetSize.get_Width() + Granular.Extensions.DoubleExtensions.Abs(cos) * targetSize.get_Height();
+		// transformation from a unit square to the generated gradient image rectangle
+		var matrix = System.Windows.Media.Matrix.op_Multiply(System.Windows.Media.Matrix.op_Multiply(System.Windows.Media.Matrix.op_Multiply(System.Windows.Media.Matrix.TranslationMatrix(-0.5, -0.5), System.Windows.Media.Matrix.ScalingMatrix(generatedImageWidth, generatedImageHeight, 0, 0)), new System.Windows.Media.Matrix(cos, sin, -sin, cos, 0, 0)), System.Windows.Media.Matrix.TranslationMatrix(targetSize.get_Width() / 2, targetSize.get_Height() / 2));
+		// translate to the target rectangle center
+		var relativeStart = System.Windows.Media.Matrix.op_Multiply$1(startPoint, matrix.get_Inverse());
+		var relativeEnd = System.Windows.Media.Matrix.op_Multiply$1(endPoint, matrix.get_Inverse());
+		return $Granular_Host_HtmlValueConverter.$ScaleGradientStops(gradientStops, relativeStart.get_X(), relativeEnd.get_X());
+	};
+	$Granular_Host_HtmlValueConverter.$ScaleGradientStops = function(gradientStops, start, end) {
+		return Enumerable.from(gradientStops).select(function(gradientStop) {
+			return new System.Windows.Media.GradientStop.$ctor1(gradientStop.get_Color(), start + gradientStop.get_Offset() * (end - start));
+		}).toArray();
+	};
 	$Granular_Host_HtmlValueConverter.$GetReflectedGradientStops = function(gradientStops) {
 		return Enumerable.from(gradientStops).select(function(gradientStop) {
 			return new System.Windows.Media.GradientStop.$ctor1(gradientStop.get_Color(), gradientStop.get_Offset() / 2);
 		}).concat(Enumerable.from(gradientStops).select(function(gradientStop1) {
 			return new System.Windows.Media.GradientStop.$ctor1(gradientStop1.get_Color(), 1 - gradientStop1.get_Offset() / 2);
-		}).reverse());
+		}).reverse()).toArray();
 	};
 	global.Granular.Host.HtmlValueConverter = $Granular_Host_HtmlValueConverter;
 	////////////////////////////////////////////////////////////////////////////////
@@ -260,12 +288,12 @@
 	var $Granular_Host_HtmlValueConverterExtensions = function() {
 	};
 	$Granular_Host_HtmlValueConverterExtensions.__typeName = 'Granular.Host.HtmlValueConverterExtensions';
-	$Granular_Host_HtmlValueConverterExtensions.ToImageString = function(converter, brush) {
+	$Granular_Host_HtmlValueConverterExtensions.ToImageString = function(converter, brush, targetRect) {
 		if (ss.isInstanceOfType(brush, System.Windows.Media.LinearGradientBrush)) {
-			return converter.ToImageString$1(ss.cast(brush, System.Windows.Media.LinearGradientBrush));
+			return converter.ToImageString$2(ss.cast(brush, System.Windows.Media.LinearGradientBrush), targetRect);
 		}
 		if (ss.isInstanceOfType(brush, System.Windows.Media.RadialGradientBrush)) {
-			return converter.ToImageString$2(ss.cast(brush, System.Windows.Media.RadialGradientBrush));
+			return converter.ToImageString$1(ss.cast(brush, System.Windows.Media.RadialGradientBrush));
 		}
 		if (ss.isInstanceOfType(brush, System.Windows.Media.ImageBrush)) {
 			return converter.ToImageString(ss.cast(brush, System.Windows.Media.ImageBrush));
@@ -412,9 +440,22 @@
 	// Granular.Host.RenderQueue
 	var $Granular_Host_RenderQueue = function() {
 		this.$items = null;
+		this.$isRenderScheduled = false;
 		this.$items = [];
 	};
 	$Granular_Host_RenderQueue.__typeName = 'Granular.Host.RenderQueue';
+	$Granular_Host_RenderQueue.$Render = function(items) {
+		var $t1 = ss.getEnumerator(items);
+		try {
+			while ($t1.moveNext()) {
+				var item = $t1.current();
+				item.Render();
+			}
+		}
+		finally {
+			$t1.dispose();
+		}
+	};
 	global.Granular.Host.RenderQueue = $Granular_Host_RenderQueue;
 	////////////////////////////////////////////////////////////////////////////////
 	// Granular.Host.TaskScheduler
@@ -446,7 +487,7 @@
 		this.$background = null;
 		this.$borderThickness = null;
 		this.$borderBrush = null;
-		this.$bounds = System.Windows.Rect.Zero;
+		this.$bounds = null;
 		this.$cornerRadius = null;
 		this.$isHitTestVisible = false;
 		this.$converter = null;
@@ -456,12 +497,11 @@
 		this.$borderThickness = System.Windows.Thickness.Zero;
 		this.$cornerRadius = System.Windows.CornerRadius.Zero;
 		this.get_Style().SetValue('background-clip', 'content-box');
-		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackground(this.get_Style(), this.get_Background(), converter);
-		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBorderThickness(this.get_Style(), this.get_BorderThickness(), converter);
-		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBounds(this.get_Style(), new System.Windows.Rect.$ctor2(this.get_Bounds().get_Location(), System.Windows.SizeExtensions.Max(System.Windows.Size.op_Subtraction(this.get_Bounds().get_Size(), this.get_BorderThickness().get_Size()), System.Windows.Size.Zero)), converter);
-		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBorderBrush(this.get_Style(), this.get_BorderBrush(), converter);
-		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetCornerRadius(this.get_Style(), this.$cornerRadius, converter);
-		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetIsHitTestVisible(this.get_Style(), this.get_IsHitTestVisible() && ss.isValue(this.get_Background()));
+		this.$SetBackground();
+		this.$SetBorderBrush();
+		this.$SetBounds();
+		this.$SetCornerRadius();
+		this.$SetIsHitTestVisible();
 	};
 	$Granular_Host_Render_HtmlBorderRenderElement.__typeName = 'Granular.Host.Render.HtmlBorderRenderElement';
 	global.Granular.Host.Render.HtmlBorderRenderElement = $Granular_Host_Render_HtmlBorderRenderElement;
@@ -614,8 +654,7 @@
 		this.$bounds = System.Windows.Rect.Zero;
 		this.$isVisible = true;
 		this.$opacity = 1;
-		this.$transform = System.Windows.Media.Transform.Identity;
-		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackground(this.get_Style(), this.get_Background(), converter);
+		this.$transform = System.Windows.Media.Matrix.Identity;
 		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBounds(this.get_Style(), this.get_Bounds(), converter);
 		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetClipToBounds(this.get_Style(), this.get_ClipToBounds());
 		$Granular_Host_$HtmlStyleDictionaryExtensions.$SetIsHitTestVisible(this.get_Style(), this.get_IsHitTestVisible() && ss.isValue(this.get_Background()));
@@ -703,7 +742,7 @@
 			this.set_IsValid(true);
 		}
 	});
-	ss.initInterface($Granular_Host_IHtmlValueConverter, $asm, { ToPixelString: null, ToPercentString: null, ToDegreesString: null, ToImplicitValueString: null, ToPixelString$1: null, ToPercentString$1: null, ToImplicitValueString$1: null, ToPixelString$2: null, ToColorString: null, ToPixelString$3: null, ToImplicitValueString$2: null, ToUrlString: null, ToLinearGradientString: null, ToRadialGradientString: null, ToColorStopsString: null, ToColorString$1: null, ToImageString$1: null, ToImageString$2: null, ToImageString: null, ToFontStyleString: null, ToFontStretchString: null, ToFontWeightString: null, ToTextAlignmentString: null, ToOverflowString: null, ToHtmlContentString: null, ToWrapString: null, ToWhiteSpaceString: null, ToFontFamilyNamesString: null, ToBooleanString: null, ToMimeTypeString: null, ToCursorString: null, ConvertBackMouseButton: null, ConvertBackKey: null });
+	ss.initInterface($Granular_Host_IHtmlValueConverter, $asm, { ToPixelString: null, ToPercentString: null, ToDegreesString: null, ToImplicitValueString: null, ToPixelString$1: null, ToPercentString$1: null, ToImplicitValueString$1: null, ToPixelString$2: null, ToColorString: null, ToPixelString$3: null, ToImplicitValueString$2: null, ToUrlString: null, ToLinearGradientString: null, ToRadialGradientString: null, ToColorStopsString: null, ToColorString$1: null, ToImageString$2: null, ToImageString$1: null, ToImageString: null, ToFontStyleString: null, ToFontStretchString: null, ToFontWeightString: null, ToTextAlignmentString: null, ToOverflowString: null, ToHtmlContentString: null, ToWrapString: null, ToWhiteSpaceString: null, ToFontFamilyNamesString: null, ToBooleanString: null, ToMimeTypeString: null, ToCursorString: null, ToTransformString: null, ConvertBackMouseButton: null, ConvertBackKey: null });
 	ss.initClass($Granular_Host_HtmlValueConverter, $asm, {
 		ToPixelString: function(value) {
 			if (Granular.Extensions.DoubleExtensions.IsNaN(value) || !isFinite(value)) {
@@ -750,15 +789,33 @@
 		ToUrlString: function(url) {
 			return ss.formatString('url({0})', url);
 		},
-		ToLinearGradientString: function(brush) {
-			var gradientStops = ((brush.get_SpreadMethod() === 1) ? $Granular_Host_HtmlValueConverter.$GetReflectedGradientStops(brush.get_GradientStops()) : brush.get_GradientStops());
-			var repeatingPrefix = ((brush.get_SpreadMethod() === 2) ? 'repeating-' : '');
-			return ss.formatString('{0}linear-gradient({1}, {2})', repeatingPrefix, this.ToDegreesString(brush.get_Angle() + 90), this.ToColorStopsString(gradientStops));
+		ToLinearGradientString: function(brush, targetRect) {
+			if (System.Windows.Size.op_Equality(targetRect.get_Size(), System.Windows.Size.Zero)) {
+				return '';
+			}
+			var gradientStops = brush.get_GradientStops();
+			if (brush.get_SpreadMethod() === 1) {
+				gradientStops = $Granular_Host_HtmlValueConverter.$GetReflectedGradientStops(brush.get_GradientStops());
+			}
+			var startPoint = brush.get_StartPoint();
+			var endPoint = brush.get_EndPoint();
+			if (brush.get_MappingMode() === 0) {
+				startPoint = System.Windows.Point.op_Subtraction(startPoint, targetRect.get_Location());
+				endPoint = System.Windows.Point.op_Subtraction(endPoint, targetRect.get_Location());
+			}
+			else {
+				startPoint = System.Windows.Point.op_Multiply$2(startPoint, targetRect.get_Size());
+				endPoint = System.Windows.Point.op_Multiply$2(endPoint, targetRect.get_Size());
+			}
+			gradientStops = $Granular_Host_HtmlValueConverter.$ScaleGradientStops$1(gradientStops, startPoint, endPoint, targetRect.get_Size());
+			var angle = System.Windows.PointExtensions.GetAngle(System.Windows.Point.op_Subtraction(endPoint, startPoint));
+			var gradientType = ((brush.get_SpreadMethod() === 2) ? 'repeating-linear-gradient' : 'linear-gradient');
+			return ss.formatString('{0}({1}, {2})', gradientType, this.ToDegreesString(90 + 180 * (angle / Math.PI)), this.ToColorStopsString(gradientStops));
 		},
 		ToRadialGradientString: function(brush) {
 			var gradientStops = ((brush.get_SpreadMethod() === 1) ? $Granular_Host_HtmlValueConverter.$GetReflectedGradientStops(brush.get_GradientStops()) : brush.get_GradientStops());
-			var repeatingPrefix = ((brush.get_SpreadMethod() === 2) ? 'repeating-' : '');
-			return ss.formatString('{0}radial-gradient(ellipse {1} {2} at {3}, {4})', repeatingPrefix, this.ToPercentString(brush.get_RadiusX()), this.ToPercentString(brush.get_RadiusY()), this.ToPercentString$1(brush.get_GradientOrigin()), this.ToColorStopsString(gradientStops));
+			var gradientType = ((brush.get_SpreadMethod() === 2) ? 'repeating-radial-gradient' : 'radial-gradient');
+			return ss.formatString('{0}(ellipse {1} {2} at {3}, {4})', gradientType, this.ToPercentString(brush.get_RadiusX()), this.ToPercentString(brush.get_RadiusY()), this.ToPercentString$1(brush.get_GradientOrigin()), this.ToColorStopsString(gradientStops));
 		},
 		ToColorStopsString: function(gradientStops) {
 			return Enumerable.from(gradientStops).select(ss.mkdel(this, function(gradientStop) {
@@ -770,10 +827,10 @@
 		ToColorString$1: function(brush) {
 			return this.ToColorString(System.Windows.Media.ColorExtensions.ApplyOpacity(brush.get_Color(), brush.get_Opacity()));
 		},
-		ToImageString$1: function(brush) {
-			return this.ToLinearGradientString(brush);
+		ToImageString$2: function(brush, targetRect) {
+			return this.ToLinearGradientString(brush, targetRect);
 		},
-		ToImageString$2: function(brush) {
+		ToImageString$1: function(brush) {
 			return this.ToRadialGradientString(brush);
 		},
 		ToImageString: function(brush) {
@@ -1025,6 +1082,9 @@
 				}
 			}
 			throw new Granular.Exception('Unexpected CursorType "{0}"', [cursor.get_CursorType()]);
+		},
+		ToTransformString: function(matrix) {
+			return ss.formatString('matrix({0}, {1}, {2}, {3}, {4}, {5}', ss.round(matrix.get_M11(), 2), ss.round(matrix.get_M12(), 2), ss.round(matrix.get_M21(), 2), ss.round(matrix.get_M22(), 2), ss.round(matrix.get_OffsetX(), 2), ss.round(matrix.get_OffsetY(), 2));
 		},
 		ConvertBackMouseButton: function(buttonIndex) {
 			switch (buttonIndex) {
@@ -1376,7 +1436,7 @@
 		$OnKeyDown: function(e) {
 			var keyboardEvent = ss.cast(e, KeyboardEvent);
 			var key = this.$converter.ConvertBackKey(keyboardEvent.keyCode, keyboardEvent.location);
-			this.$keyDownHandled = this.get_KeyboardDevice().ProcessRawEvent(new System.Windows.Input.RawKeyboardEventArgs(key, 1, keyboardEvent.repeat, this.GetTimestamp()));
+			this.$keyDownHandled = this.$ProcessKeyboardEvent(new System.Windows.Input.RawKeyboardEventArgs(key, 1, keyboardEvent.repeat, this.GetTimestamp()));
 			if (this.$keyDownHandled) {
 				e.preventDefault();
 			}
@@ -1384,7 +1444,7 @@
 		$OnKeyUp: function(e) {
 			var keyboardEvent = ss.cast(e, KeyboardEvent);
 			var key = this.$converter.ConvertBackKey(keyboardEvent.keyCode, keyboardEvent.location);
-			this.$keyUpHandled = this.get_KeyboardDevice().ProcessRawEvent(new System.Windows.Input.RawKeyboardEventArgs(key, 0, keyboardEvent.repeat, this.GetTimestamp()));
+			this.$keyUpHandled = this.$ProcessKeyboardEvent(new System.Windows.Input.RawKeyboardEventArgs(key, 0, keyboardEvent.repeat, this.GetTimestamp()));
 			if (this.$keyDownHandled || this.$keyUpHandled) {
 				e.preventDefault();
 			}
@@ -1398,7 +1458,7 @@
 			var mouseEvent = ss.cast(e, MouseEvent);
 			var position = new System.Windows.Point.$ctor1(mouseEvent.pageX, mouseEvent.pageY);
 			var button = this.$converter.ConvertBackMouseButton(mouseEvent.button);
-			this.$mouseDownHandled = this.get_MouseDevice().ProcessRawEvent(new System.Windows.Input.RawMouseButtonEventArgs(button, 1, position, this.GetTimestamp()));
+			this.$mouseDownHandled = this.$ProcessMouseEvent(new System.Windows.Input.RawMouseButtonEventArgs(button, 1, position, this.GetTimestamp()));
 			if (this.$mouseDownHandled || ss.isValue(this.get_MouseDevice().get_CaptureTarget())) {
 				e.preventDefault();
 			}
@@ -1407,7 +1467,7 @@
 			var mouseEvent = ss.cast(e, MouseEvent);
 			var position = new System.Windows.Point.$ctor1(mouseEvent.pageX, mouseEvent.pageY);
 			var button = this.$converter.ConvertBackMouseButton(mouseEvent.button);
-			this.$mouseUpHandled = this.get_MouseDevice().ProcessRawEvent(new System.Windows.Input.RawMouseButtonEventArgs(button, 0, position, this.GetTimestamp()));
+			this.$mouseUpHandled = this.$ProcessMouseEvent(new System.Windows.Input.RawMouseButtonEventArgs(button, 0, position, this.GetTimestamp()));
 			if (this.$mouseDownHandled || this.$mouseMoveHandled || this.$mouseUpHandled || ss.isValue(this.get_MouseDevice().get_CaptureTarget())) {
 				e.preventDefault();
 			}
@@ -1416,7 +1476,7 @@
 			var wheelEvent = ss.cast(e, WheelEvent);
 			var position = new System.Windows.Point.$ctor1(wheelEvent.pageX, wheelEvent.pageY);
 			var delta = ((wheelEvent.deltaY > 0) ? -100 : 100);
-			if (this.get_MouseDevice().ProcessRawEvent(new System.Windows.Input.RawMouseWheelEventArgs(delta, position, this.GetTimestamp()))) {
+			if (this.$ProcessMouseEvent(new System.Windows.Input.RawMouseWheelEventArgs(delta, position, this.GetTimestamp()))) {
 				e.preventDefault();
 			}
 		},
@@ -1426,7 +1486,7 @@
 			}
 			var mouseEvent = ss.cast(e, MouseEvent);
 			var position = new System.Windows.Point.$ctor1(mouseEvent.pageX, mouseEvent.pageY);
-			this.$mouseMoveHandled = this.get_MouseDevice().ProcessRawEvent(new System.Windows.Input.RawMouseEventArgs(position, this.GetTimestamp()));
+			this.$mouseMoveHandled = this.$ProcessMouseEvent(new System.Windows.Input.RawMouseEventArgs(position, this.GetTimestamp()));
 			if (this.$mouseDownHandled || this.$mouseMoveHandled || ss.isValue(this.get_MouseDevice().get_CaptureTarget())) {
 				e.preventDefault();
 			}
@@ -1442,6 +1502,16 @@
 		GetTimestamp: function() {
 			return 0;
 			//(int)(DateTime.Now.GetTime());
+		},
+		$ProcessKeyboardEvent: function(keyboardEventArgs) {
+			return System.Windows.Threading.Dispatcher.CurrentDispatcher.Invoke$1(Boolean).call(System.Windows.Threading.Dispatcher.CurrentDispatcher, ss.mkdel(this, function() {
+				return this.get_KeyboardDevice().ProcessRawEvent(keyboardEventArgs);
+			}), 5);
+		},
+		$ProcessMouseEvent: function(mouseEventArgs) {
+			return System.Windows.Threading.Dispatcher.CurrentDispatcher.Invoke$1(Boolean).call(System.Windows.Threading.Dispatcher.CurrentDispatcher, ss.mkdel(this, function() {
+				return this.get_MouseDevice().ProcessRawEvent(mouseEventArgs);
+			}), 5);
 		}
 	}, null, [System.Windows.IPresentationSource]);
 	ss.initClass($Granular_Host_PresentationSourceFactory, $asm, {
@@ -1547,31 +1617,23 @@
 	ss.initClass($Granular_Host_RenderQueue, $asm, {
 		Add: function(item) {
 			this.$items.push(item);
-			if (this.$items.length === 1) {
-				window.requestAnimationFrame(ss.mkdel(this, function(time) {
-					this.$Render();
-				}));
-			}
-		},
-		$Render: function() {
-			var currentItems = Array.prototype.slice.call(this.$items);
-			ss.clear(this.$items);
-			var $t1 = ss.getEnumerator(currentItems);
-			try {
-				while ($t1.moveNext()) {
-					var item = $t1.current();
-					item.Render();
-				}
-			}
-			finally {
-				$t1.dispose();
+			if (!this.$isRenderScheduled) {
+				this.$isRenderScheduled = true;
+				System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeAsync(ss.mkdel(this, function() {
+					this.$isRenderScheduled = false;
+					var currentItems = Array.prototype.slice.call(this.$items);
+					ss.clear(this.$items);
+					window.requestAnimationFrame(function(time) {
+						$Granular_Host_RenderQueue.$Render(currentItems);
+					});
+				}), 7);
 			}
 		}
 	}, null, [$Granular_Host_IRenderQueue]);
 	ss.initClass($Granular_Host_TaskScheduler, $asm, {
 		ScheduleTask: function(timeSpan, action) {
 			var token = window.setTimeout(action, ss.Int32.trunc(timeSpan.ticks / 10000));
-			return new System.Windows.Disposable(function() {
+			return new Granular.Disposable(function() {
 				window.clearTimeout(token);
 			});
 		}
@@ -1664,8 +1726,8 @@
 				this.$background.remove_Changed(ss.mkdel(this, this.$OnBackgroundChanged));
 			}
 			this.$background = value;
-			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackground(this.get_Style(), this.$background, this.$converter);
-			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetIsHitTestVisible(this.get_Style(), this.get_IsHitTestVisible() && ss.isValue(this.$background));
+			this.$SetBackground();
+			this.$SetIsHitTestVisible();
 			if (ss.isValue(this.$background)) {
 				this.$background.add_Changed(ss.mkdel(this, this.$OnBackgroundChanged));
 			}
@@ -1674,12 +1736,13 @@
 			return this.$borderThickness;
 		},
 		set_BorderThickness: function(value) {
-			if (ss.referenceEquals(this.$borderThickness, value)) {
+			if (System.Windows.Thickness.op_Equality(this.$borderThickness, value)) {
 				return;
 			}
 			this.$borderThickness = value;
 			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBorderThickness(this.get_Style(), this.$borderThickness, this.$converter);
-			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBounds(this.get_Style(), new System.Windows.Rect.$ctor2(this.get_Bounds().get_Location(), System.Windows.SizeExtensions.Max(System.Windows.Size.op_Subtraction(this.get_Bounds().get_Size(), this.get_BorderThickness().get_Size()), System.Windows.Size.Zero)), this.$converter);
+			this.$SetBounds();
+			this.$SetBackground();
 			this.$SetCornerRadius();
 		},
 		get_BorderBrush: function() {
@@ -1693,7 +1756,7 @@
 				this.$borderBrush.remove_Changed(ss.mkdel(this, this.$OnBorderBrushChanged));
 			}
 			this.$borderBrush = value;
-			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBorderBrush(this.get_Style(), this.get_BorderBrush(), this.$converter);
+			this.$SetBorderBrush();
 			if (ss.isValue(this.$borderBrush)) {
 				this.$borderBrush.add_Changed(ss.mkdel(this, this.$OnBorderBrushChanged));
 			}
@@ -1706,7 +1769,9 @@
 				return;
 			}
 			this.$bounds = value;
-			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBounds(this.get_Style(), new System.Windows.Rect.$ctor2(this.get_Bounds().get_Location(), System.Windows.SizeExtensions.Max(System.Windows.Size.op_Subtraction(this.get_Bounds().get_Size(), this.get_BorderThickness().get_Size()), System.Windows.Size.Zero)), this.$converter);
+			this.$SetBounds();
+			this.$SetBackground();
+			this.$SetBorderBrush();
 		},
 		get_CornerRadius: function() {
 			return this.$cornerRadius;
@@ -1726,18 +1791,30 @@
 				return;
 			}
 			this.$isHitTestVisible = value;
-			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetIsHitTestVisible(this.get_Style(), this.$isHitTestVisible && ss.isValue(this.get_Background()));
+			this.$SetIsHitTestVisible();
+		},
+		$OnBackgroundChanged: function(sender, e) {
+			this.$SetBackground();
+		},
+		$OnBorderBrushChanged: function(sender, e) {
+			this.$SetBorderBrush();
+		},
+		$SetBackground: function() {
+			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackground(this.get_Style(), this.$background, new System.Windows.Rect.$ctor2(this.get_BorderThickness().get_Location(), System.Windows.SizeExtensions.Max(System.Windows.Size.op_Subtraction(this.get_Bounds().get_Size(), this.get_BorderThickness().get_Size()), System.Windows.Size.Zero)), this.$converter);
+		},
+		$SetBorderBrush: function() {
+			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBorderBrush(this.get_Style(), this.get_BorderBrush(), this.get_Bounds().get_Size(), this.$converter);
+		},
+		$SetBounds: function() {
+			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBounds(this.get_Style(), new System.Windows.Rect.$ctor2(this.get_Bounds().get_Location(), System.Windows.SizeExtensions.Max(System.Windows.Size.op_Subtraction(this.get_Bounds().get_Size(), this.get_BorderThickness().get_Size()), System.Windows.Size.Zero)), this.$converter);
 		},
 		$SetCornerRadius: function() {
 			// CornerRadius is relative to the center of the border line, interpolate the outline radius
-			var borderOutlineCornerRadius = new System.Windows.CornerRadius.$ctor1(this.get_CornerRadius().get_TopLeft() + (this.get_BorderThickness().get_Top() + this.get_BorderThickness().get_Left()) / 4, this.get_CornerRadius().get_TopRight() + (this.get_BorderThickness().get_Top() + this.get_BorderThickness().get_Right()) / 4, this.get_CornerRadius().get_BottomRight() + (this.get_BorderThickness().get_Bottom() + this.get_BorderThickness().get_Right()) / 4, this.get_CornerRadius().get_BottomLeft() + (this.get_BorderThickness().get_Bottom() + this.get_BorderThickness().get_Left()) / 4);
+			var borderOutlineCornerRadius = (System.Windows.CornerRadius.op_Equality(this.get_CornerRadius(), System.Windows.CornerRadius.Zero) ? System.Windows.CornerRadius.Zero : new System.Windows.CornerRadius.$ctor1(this.get_CornerRadius().get_TopLeft() + (this.get_BorderThickness().get_Top() + this.get_BorderThickness().get_Left()) / 4, this.get_CornerRadius().get_TopRight() + (this.get_BorderThickness().get_Top() + this.get_BorderThickness().get_Right()) / 4, this.get_CornerRadius().get_BottomRight() + (this.get_BorderThickness().get_Bottom() + this.get_BorderThickness().get_Right()) / 4, this.get_CornerRadius().get_BottomLeft() + (this.get_BorderThickness().get_Bottom() + this.get_BorderThickness().get_Left()) / 4));
 			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetCornerRadius(this.get_Style(), borderOutlineCornerRadius, this.$converter);
 		},
-		$OnBackgroundChanged: function(sender, e) {
-			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackground(this.get_Style(), this.get_Background(), this.$converter);
-		},
-		$OnBorderBrushChanged: function(sender, e) {
-			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBorderBrush(this.get_Style(), this.get_BorderBrush(), this.$converter);
+		$SetIsHitTestVisible: function() {
+			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetIsHitTestVisible(this.get_Style(), this.get_IsHitTestVisible() && ss.isValue(this.get_Background()));
 		}
 	}, $Granular_Host_Render_HtmlRenderElement, [$Granular_Host_IRenderItem, System.Windows.Media.IBorderRenderElement]);
 	ss.initClass($Granular_Host_Render_HtmlImageRenderElement, $asm, {
@@ -2228,7 +2305,7 @@
 			this.get_$ContentElement().get_Style().SetValue('border', '0px solid transparent');
 			this.get_$ContentElement().get_Style().SetValue('outline', '1px solid transparent');
 			this.get_$ContentElement().get_Style().SetValue('cursor', 'inherit');
-			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackground(this.get_$ContentElement().get_Style(), System.Windows.Media.Brushes.get_Transparent(), this.$converter);
+			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackground(this.get_$ContentElement().get_Style(), System.Windows.Media.Brushes.get_Transparent(), System.Windows.Rect.Zero, this.$converter);
 			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetLocation(this.get_$ContentElement().get_Style(), System.Windows.Point.Zero, this.$converter);
 			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetSize(this.get_$ContentElement().get_Style(), this.get_Bounds().get_Size(), this.$converter);
 			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetForeground(this.get_$ContentElement().get_Style(), this.get_Foreground(), this.$converter);
@@ -2355,7 +2432,7 @@
 				this.$background.remove_Changed(ss.mkdel(this, this.$OnBackgroundChanged));
 			}
 			this.$background = value;
-			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackground(this.get_Style(), this.$background, this.$converter);
+			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackground(this.get_Style(), this.$background, new System.Windows.Rect(this.get_Bounds().get_Size()), this.$converter);
 			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetIsHitTestVisible(this.get_Style(), this.get_IsHitTestVisible() && ss.isValue(this.$background));
 			if (ss.isValue(this.$background)) {
 				this.$background.add_Changed(ss.mkdel(this, this.$OnBackgroundChanged));
@@ -2370,6 +2447,7 @@
 			}
 			this.$bounds = value;
 			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBounds(this.get_Style(), this.$bounds, this.$converter);
+			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackground(this.get_Style(), this.$background, new System.Windows.Rect(this.get_Bounds().get_Size()), this.$converter);
 		},
 		get_ClipToBounds: function() {
 			return this.$clipToBounds;
@@ -2415,7 +2493,7 @@
 			return this.$transform;
 		},
 		set_Transform: function(value) {
-			if (ss.referenceEquals(this.$transform, value)) {
+			if (System.Windows.Media.Matrix.op_Equality(this.$transform, value)) {
 				return;
 			}
 			this.$transform = value;
@@ -2463,7 +2541,7 @@
 			this.InvalidateRender();
 		},
 		$OnBackgroundChanged: function(sender, e) {
-			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackground(this.get_Style(), this.get_Background(), this.$converter);
+			$Granular_Host_$HtmlStyleDictionaryExtensions.$SetBackground(this.get_Style(), this.$background, new System.Windows.Rect(this.get_Bounds().get_Size()), this.$converter);
 		}
 	}, $Granular_Host_Render_HtmlRenderElement, [$Granular_Host_IRenderItem, System.Windows.Media.IVisualRenderElement]);
 	(function() {
