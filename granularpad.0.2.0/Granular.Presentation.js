@@ -1,7 +1,7 @@
 /**
- * @version 0.2.1.0
+ * @version 0.2.0.0
  * @copyright Copyright ☺ 2016
- * @compiler Bridge.NET 15.7.0
+ * @compiler Bridge.NET 15.5.0
  */
 Bridge.assembly("Granular.Presentation", function ($asm, globals) {
     "use strict";
@@ -188,12 +188,12 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         ctor: function () {
             this.$initialize();
-            this.entries = new (Granular.Collections.ConvertedStringDictionary$2(System.Windows.DependencyProperty,System.Windows.IDependencyPropertyValueEntry))($asm.$.System.Windows.DependencyObject.f1);
-            this.readOnlyEntries = new (Granular.Collections.ConvertedStringDictionary$2(System.Windows.DependencyProperty,System.Windows.IDependencyPropertyValueEntry))($asm.$.System.Windows.DependencyObject.f1);
+            this.entries = new (System.Collections.Generic.Dictionary$2(System.Windows.DependencyProperty,System.Windows.IDependencyPropertyValueEntry))();
+            this.readOnlyEntries = new (System.Collections.Generic.Dictionary$2(System.Windows.DependencyProperty,System.Windows.IDependencyPropertyValueEntry))();
 
-            this.entryValueChangedEventHandler = Bridge.fn.cacheBind(this, this.onEntryValueChanged);
-            this.containedEntryValueChangedEventHandler = Bridge.fn.cacheBind(this, this.onContainedEntryValueChanged);
-            this.parentPropertyChangedEventHandler = Bridge.fn.cacheBind(this, this.onParentPropertyChanged);
+            this.entryValueChangedEventHandler = Bridge.fn.bind(this, this.onEntryValueChanged);
+            this.containedEntryValueChangedEventHandler = Bridge.fn.bind(this, this.onContainedEntryValueChanged);
+            this.parentPropertyChangedEventHandler = Bridge.fn.bind(this, this.onParentPropertyChanged);
         },
         containsValue: function (dependencyProperty) {
             var entry = { };
@@ -201,7 +201,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 return false;
             }
 
-            return entry.v.System$Windows$IDependencyPropertyValueEntry$getBaseValuePriority() > System.Windows.BaseValueSource.Inherited;
+            return entry.v.System$Windows$IDependencyPropertyValueEntry$getBaseValuePriority() > 2;
         },
         containsValue$1: function (dependencyPropertyKey) {
             return this.containsValue(dependencyPropertyKey.getDependencyProperty());
@@ -349,7 +349,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             var isContained = dependencyProperty.getIsAttached() || dependencyProperty.isContainedBy(Bridge.getType(this));
 
             var entry = new System.Windows.DependencyPropertyValueEntry(this, dependencyProperty, isContained ? propertyMetadata.getCoerceValueCallback() : null);
-            System.Windows.DependencyPropertyValueEntryExtensions.setBaseValue(entry, System.Windows.BaseValueSource.Default, propertyMetadata.getDefaultValue());
+            System.Windows.DependencyPropertyValueEntryExtensions.setBaseValue(entry, 1, propertyMetadata.getDefaultValue());
 
             if (isContained) {
                 entry.System$Windows$IDependencyPropertyValueEntry$addValueChanged(this.containedEntryValueChangedEventHandler);
@@ -391,29 +391,29 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
             if (this.inheritanceParent == null) {
                 // clear inherited values
-                $t = Bridge.getEnumerator(this.entries.getKeyValuePairs(), System.Collections.Generic.KeyValuePair$2(System.Windows.DependencyProperty,System.Windows.IDependencyPropertyValueEntry));
+                $t = Bridge.getEnumerator(this.entries);
                 while ($t.moveNext()) {
                     var pair = $t.getCurrent();
                     if (pair.key.getInherits()) {
-                        System.Windows.DependencyPropertyValueEntryExtensions.clearBaseValue(pair.value, System.Windows.BaseValueSource.Inherited);
+                        System.Windows.DependencyPropertyValueEntryExtensions.clearBaseValue(pair.value, 2);
                     }
                 }
             } else {
                 // update existing inherited values
-                $t1 = Bridge.getEnumerator(this.entries.getKeyValuePairs(), System.Collections.Generic.KeyValuePair$2(System.Windows.DependencyProperty,System.Windows.IDependencyPropertyValueEntry));
+                $t1 = Bridge.getEnumerator(this.entries);
                 while ($t1.moveNext()) {
                     var pair1 = $t1.getCurrent();
                     if (pair1.key.getInherits()) {
-                        System.Windows.DependencyPropertyValueEntryExtensions.setBaseValue(pair1.value, System.Windows.BaseValueSource.Inherited, this.inheritanceParent.getValue(pair1.key));
+                        System.Windows.DependencyPropertyValueEntryExtensions.setBaseValue(pair1.value, 2, this.inheritanceParent.getValue(pair1.key));
                     }
                 }
 
                 // add missing inherited values
-                $t2 = Bridge.getEnumerator(this.inheritanceParent.entries.getKeyValuePairs(), System.Collections.Generic.KeyValuePair$2(System.Windows.DependencyProperty,System.Windows.IDependencyPropertyValueEntry));
+                $t2 = Bridge.getEnumerator(this.inheritanceParent.entries);
                 while ($t2.moveNext()) {
                     var pair2 = $t2.getCurrent();
                     if (pair2.key.getInherits()) {
-                        System.Windows.DependencyPropertyValueEntryExtensions.setBaseValue(this.getInitializedValueEntry(pair2.key), System.Windows.BaseValueSource.Inherited, pair2.value.System$Windows$IDependencyPropertyValueEntry$getValue());
+                        System.Windows.DependencyPropertyValueEntryExtensions.setBaseValue(this.getInitializedValueEntry(pair2.key), 2, pair2.value.System$Windows$IDependencyPropertyValueEntry$getValue());
                     }
                 }
             }
@@ -425,16 +425,8 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         onParentPropertyChanged: function (sender, e) {
             if (e.getProperty().getInherits()) {
-                System.Windows.DependencyPropertyValueEntryExtensions.setBaseValue(this.getInitializedValueEntry(e.getProperty()), System.Windows.BaseValueSource.Inherited, e.getNewValue());
+                System.Windows.DependencyPropertyValueEntryExtensions.setBaseValue(this.getInitializedValueEntry(e.getProperty()), 2, e.getNewValue());
             }
-        }
-    });
-
-    Bridge.ns("System.Windows.DependencyObject", $asm.$);
-
-    Bridge.apply($asm.$.System.Windows.DependencyObject, {
-        f1: function (dependencyProperty) {
-            return dependencyProperty.getStringKey();
         }
     });
 
@@ -553,7 +545,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctor: function () {
             this.$initialize();
             this.innerCollection = new (Granular.Collections.ObservableCollection$1(Object)).ctor();
-            this.innerCollection.addCollectionChanged(Bridge.fn.cacheBind(this, this.onInnerCollectionChanged));
+            this.innerCollection.addCollectionChanged(Bridge.fn.bind(this, this.onInnerCollectionChanged));
         },
         getSourceCollection: function () {
             return this;
@@ -804,17 +796,17 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
             var oldItems;
             if (this.delegateView != null) {
-                this.delegateView.Granular$Collections$INotifyCollectionChanged$removeCollectionChanged(Bridge.fn.cacheBind(this, this.onDelegateViewCollectionChanged));
-                this.delegateView.Granular$Collections$ICollectionView$removeCurrentChanged(Bridge.fn.cacheBind(this, this.onDelegateViewCurrentChanged));
+                this.delegateView.Granular$Collections$INotifyCollectionChanged$removeCollectionChanged(Bridge.fn.bind(this, this.onDelegateViewCollectionChanged));
+                this.delegateView.Granular$Collections$ICollectionView$removeCurrentChanged(Bridge.fn.bind(this, this.onDelegateViewCurrentChanged));
                 oldItems = this.delegateView;
             } else {
-                oldItems = System.Array.init(0, null, Object);
+                oldItems = System.Array.init(0, null);
             }
 
             this.delegateView = collectionView || System.Windows.Data.CollectionView.empty;
 
-            this.delegateView.Granular$Collections$INotifyCollectionChanged$addCollectionChanged(Bridge.fn.cacheBind(this, this.onDelegateViewCollectionChanged));
-            this.delegateView.Granular$Collections$ICollectionView$addCurrentChanged(Bridge.fn.cacheBind(this, this.onDelegateViewCurrentChanged));
+            this.delegateView.Granular$Collections$INotifyCollectionChanged$addCollectionChanged(Bridge.fn.bind(this, this.onDelegateViewCollectionChanged));
+            this.delegateView.Granular$Collections$ICollectionView$addCurrentChanged(Bridge.fn.bind(this, this.onDelegateViewCurrentChanged));
 
             Granular.Collections.NotifyCollectionChangedEventHandlerExtensions.raise(this.CollectionChanged, this, Granular.Collections.NotifyCollectionChangedEventArgs.reset(oldItems, this.delegateView));
             Granular.Extensions.EventHandlerExtensions.raise$2(this.CurrentChanged, this);
@@ -895,6 +887,42 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
     Bridge.define("System.Windows.Controls.ListBox.ISelectionBehavior", {
         $kind: "interface"
+    });
+
+    Bridge.define("System.Windows.Controls.MeasureCache", {
+        capacity: 0,
+        availableSizes: null,
+        measuredSizes: null,
+        nextIndex: 0,
+        count: 0,
+        ctor: function (capacity) {
+            this.$initialize();
+            this.capacity = capacity;
+
+            this.availableSizes = System.Array.init(capacity, null);
+            this.measuredSizes = System.Array.init(capacity, null);
+        },
+        setMeasure: function (availableSize, measuredSize) {
+            this.availableSizes[this.nextIndex] = availableSize;
+            this.measuredSizes[this.nextIndex] = measuredSize;
+            this.nextIndex = (((this.nextIndex + 1) | 0)) % this.capacity;
+            this.count = Granular.Extensions.IntExtensions.min((((this.count + 1) | 0)), this.capacity);
+        },
+        tryGetMeasure: function (availableSize, measuredSize) {
+            for (var i = 0; i < this.count; i = (i + 1) | 0) {
+                if (System.Windows.SizeExtensions.isClose(this.availableSizes[i], availableSize)) {
+                    measuredSize.v = this.measuredSizes[i];
+                    return true;
+                }
+            }
+
+            measuredSize.v = System.Windows.Size.empty;
+            return false;
+        },
+        clear: function () {
+            this.count = 0;
+            this.nextIndex = 0;
+        }
     });
 
     Bridge.define("System.Windows.Controls.Orientation", {
@@ -1432,7 +1460,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.currentItemIndex = -1;
 
             if (Bridge.is(this.getSourceCollection(), Granular.Collections.INotifyCollectionChanged)) {
-                Bridge.cast(this.getSourceCollection(), Granular.Collections.INotifyCollectionChanged).Granular$Collections$INotifyCollectionChanged$addCollectionChanged(Bridge.fn.cacheBind(this, this.onSourceCollectionChanged));
+                Bridge.cast(this.getSourceCollection(), Granular.Collections.INotifyCollectionChanged).Granular$Collections$INotifyCollectionChanged$addCollectionChanged(Bridge.fn.bind(this, this.onSourceCollectionChanged));
             }
 
             this.resetInnerCollection();
@@ -1490,7 +1518,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         dispose: function () {
             if (Bridge.is(this.getSourceCollection(), Granular.Collections.INotifyCollectionChanged)) {
-                Bridge.cast(this.getSourceCollection(), Granular.Collections.INotifyCollectionChanged).Granular$Collections$INotifyCollectionChanged$removeCollectionChanged(Bridge.fn.cacheBind(this, this.onSourceCollectionChanged));
+                Bridge.cast(this.getSourceCollection(), Granular.Collections.INotifyCollectionChanged).Granular$Collections$INotifyCollectionChanged$removeCollectionChanged(Bridge.fn.bind(this, this.onSourceCollectionChanged));
             }
         },
         setCurrent$1: function (item) {
@@ -1522,7 +1550,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             Granular.Extensions.EventHandlerExtensions.raise$2(this.CurrentChanged, this);
         },
         resetInnerCollection: function () {
-            var oldInnerCollection = this.innerCollection || System.Array.init(0, null, Object);
+            var oldInnerCollection = this.innerCollection || System.Array.init(0, null);
 
             this.innerCollection = System.Linq.Enumerable.from(System.Windows.Data.CollectionView.translateCollection(System.Linq.Enumerable.from(this.getSourceCollection()).select(function(x) { return Bridge.cast(x, Object); }), this.filterPredicate, this.sortKeySelector, this.sortDirection)).toArray();
 
@@ -1703,10 +1731,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         }
     });
 
-    Bridge.define("System.Windows.Markup.IDeferredValueKeyProvider", {
-        $kind: "interface"
-    });
-
     Bridge.define("System.Windows.IDataTriggerConditionProvider", {
         $kind: "interface"
     });
@@ -1723,10 +1747,14 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         statics: {
             registeredProperties: null,
             registeredReadOnlyPropertiesKey: null,
+            typeRegisteredProperties: null,
+            typeFlattenedPropertiesCache: null,
             config: {
                 init: function () {
-                    this.registeredProperties = new (Granular.Collections.ConvertedStringDictionary$2(System.Windows.DependencyProperty.DependencyPropertyHashKey,System.Windows.DependencyProperty))($asm.$.System.Windows.DependencyProperty.f1);
-                    this.registeredReadOnlyPropertiesKey = new (Granular.Collections.ConvertedStringDictionary$2(System.Windows.DependencyProperty.DependencyPropertyHashKey,System.Windows.DependencyPropertyKey))($asm.$.System.Windows.DependencyProperty.f1);
+                    this.registeredProperties = new (System.Collections.Generic.Dictionary$2(System.Windows.DependencyProperty.DependencyPropertyHashKey,System.Windows.DependencyProperty))();
+                    this.registeredReadOnlyPropertiesKey = new (System.Collections.Generic.Dictionary$2(System.Windows.DependencyProperty.DependencyPropertyHashKey,System.Windows.DependencyPropertyKey))();
+                    this.typeRegisteredProperties = new (Granular.Collections.ListDictionary$2(Function,System.Windows.DependencyProperty))();
+                    this.typeFlattenedPropertiesCache = new (Granular.Collections.CacheDictionary$2(Function,System.Collections.Generic.IEnumerable$1(System.Windows.DependencyProperty))).ctor(System.Windows.DependencyProperty.resolveTypeFlattenedProperties);
                 }
             },
             register$1: function (key, propertyType, metadata, validateValueCallback, isAttached, isReadOnly) {
@@ -1797,6 +1825,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             addRegisteredProperty: function (key, dependencyProperty) {
                 System.Windows.DependencyProperty.verifyNotRegistered(key, dependencyProperty);
                 System.Windows.DependencyProperty.registeredProperties.add(key, dependencyProperty);
+                System.Windows.DependencyProperty.typeRegisteredProperties.add(key.getOwner(), dependencyProperty);
             },
             verifyNotRegistered: function (key, dependencyProperty) {
                 var registeredDependencyProperty = { };
@@ -1804,28 +1833,48 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     throw new Granular.Exception("Can't register dependency property \"{0}\", Type \"{1}\" already has a dependency property with the same name \"{2}\"", [dependencyProperty, Bridge.Reflection.getTypeName(key.getOwner()), registeredDependencyProperty.v]);
                 }
             },
-            getProperty: function (containingType, propertyName) {
+            getProperties: function (containingType) {
+                return System.Windows.DependencyProperty.typeRegisteredProperties.getValues(containingType);
+            },
+            getFlattenedProperties: function (containingType) {
+                return System.Windows.DependencyProperty.typeFlattenedPropertiesCache.getValue(containingType);
+            },
+            resolveTypeFlattenedProperties: function (containingType) {
                 var $t;
-                var dependencyProperty = { };
+                ($t=System.TypeExtensions.getTypeHandle(containingType), $t.$staticInit && $t.$staticInit());
 
-                while (containingType != null && !Bridge.referenceEquals(containingType, System.Windows.DependencyObject)) {
-                    ($t=System.TypeExtensions.getTypeHandle(containingType), $t.$staticInit && $t.$staticInit());
+                return Bridge.Reflection.getBaseType(containingType) != null ? System.Linq.Enumerable.from(System.Windows.DependencyProperty.getFlattenedProperties(Bridge.Reflection.getBaseType(containingType))).concat(System.Windows.DependencyProperty.getProperties(containingType)).toArray() : System.Linq.Enumerable.from(System.Windows.DependencyProperty.getProperties(containingType)).toArray();
+            },
+            getSingleProperty: function (containingType, propertyName) {
+                var properties = System.Linq.Enumerable.from(System.Windows.DependencyProperty.getFlattenedProperties(containingType)).where(function (property) {
+                        return Bridge.referenceEquals(property.getName(), propertyName);
+                    }).toArray();
 
-                    if (System.Windows.DependencyProperty.registeredProperties.tryGetValue(new System.Windows.DependencyProperty.DependencyPropertyHashKey(containingType, propertyName), dependencyProperty)) {
-                        return dependencyProperty.v;
-                    }
-
-                    containingType = Bridge.Reflection.getBaseType(containingType);
+                if (properties.length > 1) {
+                    throw new Granular.Exception("Type \"{0}\" contains more than one property named \"{1}\" ({2})", [Bridge.Reflection.getTypeName(containingType), propertyName, System.Linq.Enumerable.from(properties).select($asm.$.System.Windows.DependencyProperty.f1).aggregate($asm.$.System.Windows.DependencyProperty.f2)]);
                 }
 
-                return null;
+                return System.Linq.Enumerable.from(properties).firstOrDefault(null, null);
+            },
+            getOwnedProperty: function (ownerType, propertyName) {
+                var $t;
+                ($t=System.TypeExtensions.getTypeHandle(ownerType), $t.$staticInit && $t.$staticInit());
+
+                var property = { };
+                return System.Windows.DependencyProperty.registeredProperties.tryGetValue(new System.Windows.DependencyProperty.DependencyPropertyHashKey(ownerType, propertyName), property) ? property.v : null;
+            },
+            getProperty: function (containingType, propertyName) {
+                if (propertyName.getIsMemberName()) {
+                    containingType = System.Windows.Markup.TypeParser.parseType$1(propertyName.getContainingTypeName());
+                }
+
+                return System.Windows.DependencyProperty.getOwnedProperty(containingType, propertyName.getMemberName()) || System.Windows.DependencyProperty.getSingleProperty(Bridge.Reflection.getBaseType(containingType), propertyName.getMemberName());
             }
         },
         hashKey: null,
         typeMetadata: null,
         ownerMetadata: null,
         isMetadataOverridden: false,
-        hashCode: 0,
         typeMetadataCache: null,
         typeContainsCache: null,
         orderedTypeMetadataCache: null,
@@ -1837,8 +1886,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 ValidateValueCallback: null,
                 IsReadOnly: false,
                 Inherits: false,
-                IsAttached: false,
-                StringKey: null
+                IsAttached: false
             }
         },
         ctor: function (hashKey, propertyType, metadata, validateValueCallback, isAttached, isReadOnly) {
@@ -1850,20 +1898,18 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.setValidateValueCallback(validateValueCallback);
             this.setIsReadOnly(isReadOnly);
             this.setInherits(metadata.getInherits());
-            this.setStringKey(hashKey.getStringKey());
-            this.hashCode = hashKey.getHashCode();
 
             this.ownerMetadata = metadata;
             this.setIsAttached(isAttached);
 
-            this.typeMetadata = new (Granular.Collections.ConvertedStringDictionary$2(Function,System.Windows.PropertyMetadata))($asm.$.System.Windows.DependencyProperty.f2);
-            this.typeMetadata.Granular$Collections$IMinimalDictionary$2$Function$System$Windows$PropertyMetadata$add(this.getOwnerType(), this.ownerMetadata);
+            this.typeMetadata = new (System.Collections.Generic.Dictionary$2(Function,System.Windows.PropertyMetadata))();
+            this.typeMetadata.add(this.getOwnerType(), this.ownerMetadata);
 
-            this.typeMetadataCache = Granular.Collections.CacheDictionary$2(Function,System.Windows.PropertyMetadata).createUsingStringKeys(Bridge.fn.cacheBind(this, this.resolveTypeMetadata), $asm.$.System.Windows.DependencyProperty.f2);
-            this.typeContainsCache = Granular.Collections.CacheDictionary$2(Function,Boolean).createUsingStringKeys(Bridge.fn.cacheBind(this, this.resolveTypeContains), $asm.$.System.Windows.DependencyProperty.f2);
+            this.typeMetadataCache = new (Granular.Collections.CacheDictionary$2(Function,System.Windows.PropertyMetadata)).ctor(Bridge.fn.bind(this, this.resolveTypeMetadata));
+            this.typeContainsCache = new (Granular.Collections.CacheDictionary$2(Function,Boolean)).ctor(Bridge.fn.bind(this, this.resolveTypeContains));
         },
         getHashCode: function () {
-            return this.hashCode;
+            return this.hashKey.getHashCode();
         },
         toString: function () {
             return System.String.format("{0}.{1}", Bridge.Reflection.getTypeFullName(this.getOwnerType()), this.getName());
@@ -1872,7 +1918,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return System.Windows.DependencyProperty.isValidType(value, this.getPropertyType()) && (Bridge.staticEquals(this.getValidateValueCallback(), null) || this.getValidateValueCallback()(value));
         },
         overrideMetadata: function (forType, metadata) {
-            if (this.typeMetadata.Granular$Collections$IMinimalDictionary$2$Function$System$Windows$PropertyMetadata$containsKey(forType)) {
+            if (this.typeMetadata.containsKey(forType)) {
                 throw new Granular.Exception("DependencyProperty \"{0}\" already contains metadata for type \"{1}\"", [this, Bridge.Reflection.getTypeName(forType)]);
             }
 
@@ -1896,7 +1942,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 metadata.setDefaultValue(this.ownerMetadata.getDefaultValue());
             }
 
-            this.typeMetadata.Granular$Collections$IMinimalDictionary$2$Function$System$Windows$PropertyMetadata$add(forType, metadata);
+            this.typeMetadata.add(forType, metadata);
 
             this.typeMetadataCache.clear();
             this.orderedTypeMetadataCache = null;
@@ -1916,25 +1962,23 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return this;
         },
         getMetadata: function (type) {
+            return this.typeMetadataCache.getValue(type);
+        },
+        resolveTypeMetadata: function (type) {
             if (!this.isMetadataOverridden) {
                 return this.ownerMetadata;
             }
 
-            return this.typeMetadataCache.getValue(type);
-        },
-        resolveTypeMetadata: function (type) {
             var closestBaseType = System.Linq.Enumerable.from(this.getOrderedTypeMetadata()).where(function (baseType) {
                     return Bridge.referenceEquals(type, baseType) || (type.prototype instanceof baseType);
                 }).lastOrDefault(null, null);
-            return closestBaseType != null ? Granular.Collections.MinimalDictionaryExtensions.getValue(Function, System.Windows.PropertyMetadata, this.typeMetadata, closestBaseType) : this.ownerMetadata;
+            return closestBaseType != null ? this.typeMetadata.get(closestBaseType) : this.ownerMetadata;
         },
         isContainedBy: function (type) {
             return this.typeContainsCache.getValue(type);
         },
         resolveTypeContains: function (type) {
-            return System.Linq.Enumerable.from(this.typeMetadata.Granular$Collections$IMinimalDictionary$2$Function$System$Windows$PropertyMetadata$getKeys()).any(function (baseType) {
-                    return Bridge.referenceEquals(type, baseType) || (type.prototype instanceof baseType);
-                });
+            return System.Linq.Enumerable.from(System.Windows.DependencyProperty.getFlattenedProperties(type)).contains(this);
         },
         raiseMetadataPropertyChangedCallback: function (dependencyObject, e) {
             var $t;
@@ -1950,7 +1994,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     continue;
                 }
 
-                var propertyMetadata = Granular.Collections.MinimalDictionaryExtensions.getValue(Function, System.Windows.PropertyMetadata, this.typeMetadata, type);
+                var propertyMetadata = this.typeMetadata.get(type);
 
                 if (!Bridge.staticEquals(propertyMetadata.getPropertyChangedCallback(), null)) {
                     propertyMetadata.getPropertyChangedCallback()(dependencyObject, e);
@@ -1961,7 +2005,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             if (this.orderedTypeMetadataCache == null) {
                 // topological sorting, with the original owner type first, and each base class before all of its subclasses
                 var orderedTypes = Bridge.fn.bind(this, $asm.$.System.Windows.DependencyProperty.f3)(new (System.Collections.Generic.List$1(Function))());
-                var remainingTypes = System.Linq.Enumerable.from(this.typeMetadata.Granular$Collections$IMinimalDictionary$2$Function$System$Windows$PropertyMetadata$getKeys()).where(Bridge.fn.bind(this, $asm.$.System.Windows.DependencyProperty.f4)).toList(Function);
+                var remainingTypes = System.Linq.Enumerable.from(this.typeMetadata.getKeys()).where(Bridge.fn.bind(this, $asm.$.System.Windows.DependencyProperty.f4)).toList(Function);
 
                 while (System.Linq.Enumerable.from(remainingTypes).any()) {
                     (function () {
@@ -1985,11 +2029,11 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
     Bridge.ns("System.Windows.DependencyProperty", $asm.$);
 
     Bridge.apply($asm.$.System.Windows.DependencyProperty, {
-        f1: function (hashKey) {
-            return hashKey.getStringKey();
+        f1: function (property) {
+            return property.toString();
         },
-        f2: function (type) {
-            return Bridge.Reflection.getTypeFullName(type);
+        f2: function (s1, s2) {
+            return System.String.format("{0}, {1}", s1, s2);
         },
         f3: function (_o1) {
             _o1.add(this.getOwnerType());
@@ -2001,18 +2045,19 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
     });
 
     Bridge.define("System.Windows.DependencyProperty.DependencyPropertyHashKey", {
+        hashCode: 0,
         config: {
             properties: {
                 Owner: null,
-                Name: null,
-                StringKey: null
+                Name: null
             }
         },
         ctor: function (owner, name) {
             this.$initialize();
             this.setOwner(owner);
             this.setName(name);
-            this.setStringKey(System.String.concat(Bridge.Reflection.getTypeFullName(owner), ",", name));
+
+            this.hashCode = Bridge.getHashCode(this.getOwner()) ^ Bridge.getHashCode(this.getName());
         },
         equals: function (obj) {
             var other = Bridge.as(obj, System.Windows.DependencyProperty.DependencyPropertyHashKey);
@@ -2020,10 +2065,42 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return Bridge.referenceEquals(this, other) || !Bridge.referenceEquals(other, null) && Bridge.equals(this.getOwner(), other.getOwner()) && Bridge.equals(this.getName(), other.getName());
         },
         getHashCode: function () {
-            return Bridge.getHashCode(this.getStringKey());
+            return this.hashCode;
         },
         toString: function () {
             return System.String.format("{0}.{1}", Bridge.Reflection.getTypeFullName(this.getOwner()), this.getName());
+        }
+    });
+
+    Bridge.define("System.Windows.DependencyProperty.TypeComparer", {
+        inherits: [System.Collections.Generic.IComparer$1(Function)],
+        statics: {
+            default: null,
+            config: {
+                init: function () {
+                    this.default = new System.Windows.DependencyProperty.TypeComparer();
+                }
+            }
+        },
+        config: {
+            alias: [
+            "compare", "System$Collections$Generic$IComparer$1$Function$compare"
+            ]
+        },
+        ctor: function () {
+            this.$initialize();
+            //
+        },
+        compare: function (x, y) {
+            if ((y.prototype instanceof x)) {
+                return -1;
+            }
+
+            if ((x.prototype instanceof y)) {
+                return 1;
+            }
+
+            return 0;
         }
     });
 
@@ -2213,9 +2290,9 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             resourceElementCache: null,
             config: {
                 init: function () {
-                    this.resourceUriRegex = new RegExp("/([^;]*);component/(.*)");
-                    this.resourceDataCache = Granular.Collections.CacheDictionary$2(System.Uri,System.Array.type(System.Byte)).createUsingStringKeys(System.Windows.EmbeddedResourceLoader.resolveResourceData, $asm.$.System.Windows.EmbeddedResourceLoader.f1);
-                    this.resourceElementCache = Granular.Collections.CacheDictionary$2(System.Uri,Object).createUsingStringKeys(System.Windows.EmbeddedResourceLoader.resolveResourceElement, $asm.$.System.Windows.EmbeddedResourceLoader.f1);
+                    this.resourceUriRegex = new System.Text.RegularExpressions.Regex.ctor("/([^;]*);component/(.*)");
+                    this.resourceDataCache = new (Granular.Collections.CacheDictionary$2(System.Uri,Array)).ctor(System.Windows.EmbeddedResourceLoader.resolveResourceData, System.Windows.EmbeddedResourceLoader.UriEqualityComparer.default);
+                    this.resourceElementCache = new (Granular.Collections.CacheDictionary$2(System.Uri,Object)).ctor(System.Windows.EmbeddedResourceLoader.resolveResourceElement, System.Windows.EmbeddedResourceLoader.UriEqualityComparer.default);
                 }
             },
             loadResourceData: function (resourceUri) {
@@ -2258,16 +2335,16 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 return System.Windows.Markup.XamlLoader.load(System.Windows.Markup.XamlParser.parse(resourceString, resourceUri));
             },
             tryParseAbsolutePath: function (absolutePath, assemblyName, resourcePath) {
-                var matches = System.Windows.EmbeddedResourceLoader.resourceUriRegex.exec(absolutePath);
+                var match = System.Windows.EmbeddedResourceLoader.resourceUriRegex.match(absolutePath);
 
-                if (matches == null) {
+                if (!match.getSuccess()) {
                     assemblyName.v = null;
                     resourcePath.v = null;
                     return false;
                 }
 
-                assemblyName.v = matches[System.Windows.EmbeddedResourceLoader.ResourceUriAssemblyNameGroupIndex];
-                resourcePath.v = matches[System.Windows.EmbeddedResourceLoader.ResourceUriPathGroupIndex];
+                assemblyName.v = match.getGroups().get(System.Windows.EmbeddedResourceLoader.ResourceUriAssemblyNameGroupIndex).getValue();
+                resourcePath.v = match.getGroups().get(System.Windows.EmbeddedResourceLoader.ResourceUriPathGroupIndex).getValue();
                 return true;
             },
             verifyResourceUri: function (resourceUri) {
@@ -2279,14 +2356,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     throw new Granular.Exception("Resource uri \"{0}\" must be a pack uri", [System.UriExtensions.getAbsoluteUri(resourceUri)]);
                 }
             }
-        }
-    });
-
-    Bridge.ns("System.Windows.EmbeddedResourceLoader", $asm.$);
-
-    Bridge.apply($asm.$.System.Windows.EmbeddedResourceLoader, {
-        f1: function (uri) {
-            return System.UriExtensions.getAbsoluteUri(uri);
         }
     });
 
@@ -2320,52 +2389,100 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
     Bridge.define("System.Windows.EventManager", {
         statics: {
-            registeredEvents: null,
+            registeredRoutedEvents: null,
+            classHandlers: null,
+            flattenedClassHandlersCache: null,
             config: {
                 init: function () {
-                    this.registeredEvents = new (Granular.Collections.ConvertedStringDictionary$2(System.Windows.EventManager.RoutedEventHashKey,System.Windows.RoutedEvent))($asm.$.System.Windows.EventManager.f1);
+                    this.registeredRoutedEvents = new (System.Collections.Generic.Dictionary$2(System.Windows.EventManager.RoutedEventKey,System.Windows.RoutedEvent))();
+                    this.classHandlers = new (Granular.Collections.ListDictionary$2(System.Windows.EventManager.ClassHandlerKey,System.Windows.RoutedEventHandlerItem))();
+                    this.flattenedClassHandlersCache = new (Granular.Collections.CacheDictionary$2(System.Windows.EventManager.ClassHandlerKey,System.Collections.Generic.IEnumerable$1(System.Windows.RoutedEventHandlerItem))).ctor(System.Windows.EventManager.resolveFlattenedClassHandlers);
                 }
             },
             registerRoutedEvent: function (name, routingStrategy, handlerType, ownerType) {
-                var key = new System.Windows.EventManager.RoutedEventHashKey(ownerType, name);
+                var key = new System.Windows.EventManager.RoutedEventKey(ownerType, name);
 
-                if (System.Windows.EventManager.registeredEvents.containsKey(key)) {
+                if (System.Windows.EventManager.registeredRoutedEvents.containsKey(key)) {
                     throw new Granular.Exception("RoutedEvent {0}.{1} is already registered", [Bridge.Reflection.getTypeName(ownerType), name]);
                 }
 
                 var routedEvent = new System.Windows.RoutedEvent(name, routingStrategy, handlerType, ownerType);
 
-                System.Windows.EventManager.registeredEvents.add(key, routedEvent);
+                System.Windows.EventManager.registeredRoutedEvents.add(key, routedEvent);
 
                 return routedEvent;
             },
             addOwner: function (routedEvent, ownerType) {
-                var key = new System.Windows.EventManager.RoutedEventHashKey(ownerType, routedEvent.getName());
+                var key = new System.Windows.EventManager.RoutedEventKey(ownerType, routedEvent.getName());
 
-                if (System.Windows.EventManager.registeredEvents.containsKey(key)) {
+                if (System.Windows.EventManager.registeredRoutedEvents.containsKey(key)) {
                     throw new Granular.Exception("Type \"{0}\" is already an owner of RoutedEvent \"{1}\"", [Bridge.Reflection.getTypeName(key.getOwner()), routedEvent]);
                 }
 
-                System.Windows.EventManager.registeredEvents.add(key, routedEvent);
+                System.Windows.EventManager.registeredRoutedEvents.add(key, routedEvent);
             },
             registerClassHandler: function (classType, routedEvent, handler, handledEventsToo) {
-                routedEvent.registerClassHandler(classType, new System.Windows.RoutedEventHandlerItem(handler, handledEventsToo));
+                System.Windows.EventManager.registerClassHandler$1(classType, routedEvent, new System.Windows.RoutedEventHandlerItem(handler, handledEventsToo));
             },
-            getEvent: function (containingType, eventName) {
-                var $t;
-                var routedEvent = { };
+            registerClassHandler$1: function (classType, routedEvent, eventRouteItem) {
+                var key = new System.Windows.EventManager.ClassHandlerKey(classType, routedEvent);
 
-                while (containingType != null && !Bridge.referenceEquals(containingType, System.Windows.Media.Visual)) {
-                    ($t=System.TypeExtensions.getTypeHandle(containingType), $t.$staticInit && $t.$staticInit());
-
-                    if (System.Windows.EventManager.registeredEvents.tryGetValue(new System.Windows.EventManager.RoutedEventHashKey(containingType, eventName), routedEvent)) {
-                        return routedEvent.v;
-                    }
-
-                    containingType = Bridge.Reflection.getBaseType(containingType);
+                if (System.Windows.EventManager.flattenedClassHandlersCache.contains(key)) {
+                    throw new Granular.Exception("{0} class handler for \"{1}\" has already been queried, RegisterClassHandler should only be called from {0}'s static constructor", [Bridge.Reflection.getTypeName(classType), routedEvent]);
                 }
 
-                return null;
+                System.Windows.EventManager.classHandlers.add(key, eventRouteItem);
+            },
+            getClassHandlers: function (classType, routedEvent) {
+                return System.Windows.EventManager.classHandlers.getValues(new System.Windows.EventManager.ClassHandlerKey(classType, routedEvent));
+            },
+            getRoutedEvents: function (containingType, flattenHierarchy) {
+                var $t;
+                ($t=System.TypeExtensions.getTypeHandle(containingType), $t.$staticInit && $t.$staticInit());
+                return System.Linq.Enumerable.from(System.Windows.EventManager.registeredRoutedEvents.getKeys()).where(function (key) {
+                        return Bridge.referenceEquals(key.getOwner(), containingType) || flattenHierarchy && Bridge.Reflection.isAssignableFrom(key.getOwner(), containingType);
+                    }).select($asm.$.System.Windows.EventManager.f1);
+            },
+            getRoutedEvents$1: function (containingType, eventName, flattenHierarchy) {
+                var $t;
+                ($t=System.TypeExtensions.getTypeHandle(containingType), $t.$staticInit && $t.$staticInit());
+                return System.Linq.Enumerable.from(System.Windows.EventManager.registeredRoutedEvents.getKeys()).where(function (key) {
+                        return Bridge.referenceEquals(key.getName(), eventName) && (Bridge.referenceEquals(key.getOwner(), containingType) || flattenHierarchy && Bridge.Reflection.isAssignableFrom(key.getOwner(), containingType));
+                    }).select($asm.$.System.Windows.EventManager.f1);
+            },
+            findRoutedEvent: function (containingType, eventName) {
+                var routedEvents = System.Linq.Enumerable.from(System.Windows.EventManager.getRoutedEvents$1(containingType, eventName, true)).toArray();
+
+                if (routedEvents.length > 1) {
+                    throw new Granular.Exception("Type \"{0}\" contains more than one event named \"{1}\" ({2})", [Bridge.Reflection.getTypeName(containingType), eventName, System.Linq.Enumerable.from(routedEvents).select($asm.$.System.Windows.EventManager.f2).aggregate($asm.$.System.Windows.EventManager.f3)]);
+                }
+
+                return System.Linq.Enumerable.from(routedEvents).firstOrDefault(null, null);
+            },
+            getOwnedRoutedEvent: function (ownerType, eventName) {
+                return System.Linq.Enumerable.from(System.Windows.EventManager.getRoutedEvents$1(ownerType, eventName, false)).singleOrDefault(null, null);
+            },
+            getRoutedEvent: function (eventName) {
+                if (!eventName.getIsMemberName()) {
+                    throw new Granular.Exception("Invalid routed event name \"{0}\"", [eventName.getLocalName()]);
+                }
+
+                var ownerType = System.Windows.Markup.TypeParser.parseType$1(eventName.getContainingTypeName());
+                return System.Windows.EventManager.getOwnedRoutedEvent(ownerType, eventName.getMemberName());
+            },
+            getFlattenedClassHandlers: function (classType, routedEvent) {
+                return System.Windows.EventManager.flattenedClassHandlersCache.getValue(new System.Windows.EventManager.ClassHandlerKey(classType, routedEvent));
+            },
+            resolveFlattenedClassHandlers: function (key) {
+                var handlers = System.Array.init(0, null);
+
+                var type = key.getClassType();
+                while (type != null) {
+                    handlers = System.Linq.Enumerable.from(System.Windows.EventManager.classHandlers.getValues(new System.Windows.EventManager.ClassHandlerKey(type, key.getRoutedEvent()))).concat(handlers);
+                    type = Bridge.Reflection.getBaseType(type);
+                }
+
+                return System.Linq.Enumerable.from(handlers).toArray();
             }
         }
     });
@@ -2373,32 +2490,58 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
     Bridge.ns("System.Windows.EventManager", $asm.$);
 
     Bridge.apply($asm.$.System.Windows.EventManager, {
-        f1: function (hashKey) {
-            return hashKey.getKeyString();
+        f1: function (key) {
+            return System.Windows.EventManager.registeredRoutedEvents.get(key);
+        },
+        f2: function (routedEvent) {
+            return routedEvent.toString();
+        },
+        f3: function (s1, s2) {
+            return System.String.format("{0}, {1}", s1, s2);
         }
     });
 
-    Bridge.define("System.Windows.EventManager.RoutedEventHashKey", {
+    Bridge.define("System.Windows.EventManager.ClassHandlerKey", {
+        config: {
+            properties: {
+                ClassType: null,
+                RoutedEvent: null
+            }
+        },
+        ctor: function (classType, routedEvent) {
+            this.$initialize();
+            this.setClassType(classType);
+            this.setRoutedEvent(routedEvent);
+        },
+        equals: function (obj) {
+            var other = Bridge.as(obj, System.Windows.EventManager.ClassHandlerKey);
+
+            return Bridge.referenceEquals(this, other) || !Bridge.referenceEquals(other, null) && Bridge.equals(this.getClassType(), other.getClassType()) && Bridge.equals(this.getRoutedEvent(), other.getRoutedEvent());
+        },
+        getHashCode: function () {
+            return Bridge.getHashCode(this.getClassType()) ^ this.getRoutedEvent().getHashCode();
+        }
+    });
+
+    Bridge.define("System.Windows.EventManager.RoutedEventKey", {
         config: {
             properties: {
                 Owner: null,
-                Name: null,
-                KeyString: null
+                Name: null
             }
         },
         ctor: function (owner, name) {
             this.$initialize();
             this.setOwner(owner);
             this.setName(name);
-            this.setKeyString(System.String.concat(Bridge.Reflection.getTypeFullName(owner), ",", name));
         },
         equals: function (obj) {
-            var other = Bridge.as(obj, System.Windows.EventManager.RoutedEventHashKey);
+            var other = Bridge.as(obj, System.Windows.EventManager.RoutedEventKey);
 
             return Bridge.referenceEquals(this, other) || !Bridge.referenceEquals(other, null) && Bridge.equals(this.getOwner(), other.getOwner()) && Bridge.equals(this.getName(), other.getName());
         },
         getHashCode: function () {
-            return Bridge.getHashCode(this.getKeyString());
+            return Bridge.getHashCode(this.getOwner()) ^ Bridge.getHashCode(this.getName());
         },
         toString: function () {
             return System.String.format("{0}.{1}", Bridge.Reflection.getTypeFullName(this.getOwner()), this.getName());
@@ -2551,8 +2694,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             None: 0,
             AffectsMeasure: 1,
             AffectsArrange: 2,
-            AffectsParentMeasure: 4,
-            AffectsParentArrange: 8,
             Inherits: 32,
             BindsTwoWayByDefault: 256,
             AffectsVisualState: 2048
@@ -2693,7 +2834,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             cursors: null,
             config: {
                 init: function () {
-                    this.cursors = Granular.Collections.CacheDictionary$2(System.Windows.Input.CursorType,System.Windows.Input.Cursor).create($asm.$.System.Windows.Input.Cursors.f1);
+                    this.cursors = new (Granular.Collections.CacheDictionary$2(System.Windows.Input.CursorType,System.Windows.Input.Cursor)).ctor($asm.$.System.Windows.Input.Cursors.f1);
                 }
             },
             getNone: function () {
@@ -3270,12 +3411,12 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.$initialize();
             this.presentationSource = presentationSource;
 
-            presentationSource.System$Windows$IPresentationSource$getKeyboardDevice().addTargetChanged(Bridge.fn.cacheBind(this, this.onTargetChanged));
-            presentationSource.System$Windows$IPresentationSource$getKeyboardDevice().addPostProcessKey(Bridge.fn.cacheBind(this, this.onPostProcessKey));
+            presentationSource.System$Windows$IPresentationSource$getKeyboardDevice().addTargetChanged(Bridge.fn.bind(this, this.onTargetChanged));
+            presentationSource.System$Windows$IPresentationSource$getKeyboardDevice().addPostProcessKey(Bridge.fn.bind(this, this.onPostProcessKey));
         },
         dispose: function () {
-            this.presentationSource.System$Windows$IPresentationSource$getKeyboardDevice().removeTargetChanged(Bridge.fn.cacheBind(this, this.onTargetChanged));
-            this.presentationSource.System$Windows$IPresentationSource$getKeyboardDevice().removePostProcessKey(Bridge.fn.cacheBind(this, this.onPostProcessKey));
+            this.presentationSource.System$Windows$IPresentationSource$getKeyboardDevice().removeTargetChanged(Bridge.fn.bind(this, this.onTargetChanged));
+            this.presentationSource.System$Windows$IPresentationSource$getKeyboardDevice().removePostProcessKey(Bridge.fn.bind(this, this.onPostProcessKey));
         },
         onTargetChanged: function (sender, e) {
             if (this.focusVisualAdorner != null) {
@@ -3807,26 +3948,19 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         beginUpdateLayout: function () {
             if (this.updateLayoutOperation == null || this.updateLayoutOperation.getStatus() === System.Windows.Threading.DispatcherOperationStatus.Completed) {
-                this.updateLayoutOperation = System.Windows.Threading.Dispatcher.currentDispatcher.invokeAsync(Bridge.fn.cacheBind(this, this.updateLayout));
+                this.updateLayoutOperation = System.Windows.Threading.Dispatcher.currentDispatcher.invokeAsync(Bridge.fn.bind(this, this.updateLayout));
             }
         },
         updateLayout: function () {
             while (this.measureQueue.getCount() > 0 || this.arrangeQueue.getCount() > 0) {
                 while (this.measureQueue.getCount() > 0) {
                     var element = this.getTopElement(this.measureQueue);
-                    var previousDesiredSize = element.getDesiredSize();
-
-                    element.measure(element.getPreviousAvailableSize());
-
-                    if (System.Windows.Size.op_Inequality(previousDesiredSize, element.getDesiredSize())) {
-                        element.invalidateArrange();
-                        element.invalidateParentMeasure();
-                    }
+                    element.measure(element.getVisualParent() == null || element.getPreviousAvailableSize().getIsEmpty() ? System.Windows.Size.infinity : element.getPreviousAvailableSize());
                 }
 
                 while (this.arrangeQueue.getCount() > 0) {
                     var element1 = this.getTopElement(this.arrangeQueue);
-                    element1.arrange(element1.getPreviousFinalRect());
+                    element1.arrange(element1.getVisualParent() == null || element1.getPreviousFinalRect().getIsEmpty() ? new System.Windows.Rect.$ctor3(element1.getDesiredSize()) : element1.getPreviousFinalRect());
                 }
 
                 while (this.updatedElements.getCount() > 0 && this.measureQueue.getCount() === 0 && this.arrangeQueue.getCount() === 0) {
@@ -3841,7 +3975,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             var $t;
             var topElement = null;
 
-            $t = Bridge.getEnumerator(measureQueue, System.Windows.UIElement);
+            $t = Bridge.getEnumerator(measureQueue);
             while ($t.moveNext()) {
                 var element = $t.getCurrent();
                 if (topElement == null || topElement.getVisualLevel() > element.getVisualLevel()) {
@@ -3868,8 +4002,8 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
     Bridge.define("System.Windows.Markup.PropertyAttribute", {
         inherits: [System.Attribute],
         statics: {
-            resolvePropertyName: function (T, type) {
-                return Granular.Compatibility.Linq.Enumerable.firstOrDefault(String, Granular.Compatibility.Linq.Enumerable.select(T, String, Granular.Compatibility.Linq.Enumerable.ofType(T, Bridge.Reflection.getAttributes(type, null, true)), $asm.$.System.Windows.Markup.PropertyAttribute.f1));
+            getPropertyName: function (T, type) {
+                return System.Linq.Enumerable.from(Bridge.Reflection.getAttributes(type, null, true)).ofType(T).select($asm.$.System.Windows.Markup.PropertyAttribute.f1).defaultIfEmpty("").first();
             }
         },
         config: {
@@ -3892,64 +4026,14 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         }
     });
 
-    Bridge.define("System.Windows.Markup.DeferredValueKeyProviderAttribute", {
-        inherits: [System.Attribute],
-        config: {
-            properties: {
-                ProviderType: null
-            }
-        },
-        ctor: function (providerType) {
-            this.$initialize();
-            System.Attribute.ctor.call(this);
-            this.setProviderType(providerType);
-        }
-    });
-
-    Bridge.define("System.Windows.Markup.DeferredValueKeyProviders", {
-        statics: {
-            deferredValueKeyProviderCache: null,
-            config: {
-                init: function () {
-                    this.deferredValueKeyProviderCache = Granular.Collections.CacheDictionary$2(Function,System.Windows.Markup.IDeferredValueKeyProvider).createUsingStringKeys(System.Windows.Markup.DeferredValueKeyProviders.resolveDeferredValueKeyProvider, $asm.$.System.Windows.Markup.DeferredValueKeyProviders.f1);
-                }
-            },
-            getDeferredValueKeyProvider: function (type) {
-                return System.Windows.Markup.DeferredValueKeyProviders.deferredValueKeyProviderCache.getValue(type);
-            },
-            resolveDeferredValueKeyProvider: function (type) {
-                var deferredValueKeyProviderAttribute = Bridge.as(System.Linq.Enumerable.from(Bridge.Reflection.getAttributes(type, System.Windows.Markup.DeferredValueKeyProviderAttribute, false)).firstOrDefault(null, null), System.Windows.Markup.DeferredValueKeyProviderAttribute);
-                if (deferredValueKeyProviderAttribute != null) {
-                    return Bridge.as(Bridge.createInstance(deferredValueKeyProviderAttribute.getProviderType()), System.Windows.Markup.IDeferredValueKeyProvider);
-                }
-
-                return null;
-            }
-        }
-    });
-
-    Bridge.ns("System.Windows.Markup.DeferredValueKeyProviders", $asm.$);
-
-    Bridge.apply($asm.$.System.Windows.Markup.DeferredValueKeyProviders, {
-        f1: function (type) {
-            return Bridge.Reflection.getTypeFullName(type);
-        }
-    });
-
     Bridge.define("System.Windows.Markup.ElementCollectionContentInitailizer", {
         statics: {
-            isCollectionTypeCache: null,
-            config: {
-                init: function () {
-                    this.isCollectionTypeCache = Granular.Collections.CacheDictionary$2(Function,Boolean).createUsingStringKeys(System.Windows.Markup.ElementCollectionContentInitailizer.resolveIsCollectionType, $asm.$.System.Windows.Markup.ElementCollectionContentInitailizer.f1);
-                }
-            },
             create: function (values, containingType) {
                 var keyType = { };
                 var valueType = { };
 
                 if (System.Windows.Markup.ElementCollectionContentInitailizer.tryGetDictionaryGenericArguments(containingType, keyType, valueType)) {
-                    return new System.Windows.Markup.ElementDictionaryContentInitializer(containingType, keyType.v, valueType.v, values);
+                    return new System.Windows.Markup.ElementDictionaryContentInitializer(keyType.v, valueType.v, values);
                 }
 
                 if (System.Windows.Markup.ElementCollectionContentInitailizer.tryGetCollectionGenericArgument(containingType, valueType)) {
@@ -3959,9 +4043,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 throw new Granular.Exception("Can't initialize type \"{0}\" content", [Bridge.Reflection.getTypeName(containingType)]);
             },
             isCollectionType: function (type) {
-                return System.Windows.Markup.ElementCollectionContentInitailizer.isCollectionTypeCache.getValue(type);
-            },
-            resolveIsCollectionType: function (type) {
                 var keyType = { };
                 var valueType = { };
 
@@ -3971,7 +4052,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 var interfaceType = Granular.Extensions.TypeExtensions.getInterfaceType(type, System.Collections.Generic.IDictionary$2);
 
                 if (interfaceType != null) {
-                    var $arguments = Granular.Compatibility.Linq.Enumerable.toArray(Function, Granular.Compatibility.Type.getTypeInterfaceGenericArguments(type, interfaceType));
+                    var $arguments = System.Linq.Enumerable.from(Granular.Compatibility.Type.getTypeInterfaceGenericArguments(type, interfaceType)).toArray();
                     keyType.v = $arguments[0];
                     valueType.v = $arguments[1];
                     return true;
@@ -3985,21 +4066,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 var interfaceType = Granular.Extensions.TypeExtensions.getInterfaceType(type, System.Collections.Generic.ICollection$1);
 
                 if (interfaceType != null) {
-                    valueType.v = Granular.Compatibility.Linq.Enumerable.first(Function, Granular.Compatibility.Type.getTypeInterfaceGenericArguments(type, interfaceType));
+                    valueType.v = System.Linq.Enumerable.from(Granular.Compatibility.Type.getTypeInterfaceGenericArguments(type, interfaceType)).first();
                     return true;
                 }
 
                 valueType.v = null;
                 return false;
             }
-        }
-    });
-
-    Bridge.ns("System.Windows.Markup.ElementCollectionContentInitailizer", $asm.$);
-
-    Bridge.apply($asm.$.System.Windows.Markup.ElementCollectionContentInitailizer, {
-        f1: function (type) {
-            return Bridge.Reflection.getTypeFullName(type);
         }
     });
 
@@ -4010,66 +4083,35 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
     Bridge.define("System.Windows.Markup.ElementDictionaryContentInitializer.KeyValueElementFactory", {
         statics: {
             getKeyDirectiveFactory: function (element, keyType) {
-                var keyDirective = Granular.Compatibility.Linq.Enumerable.firstOrDefault$1(System.Windows.Markup.XamlMember, element.getDirectives(), $asm.$.System.Windows.Markup.ElementDictionaryContentInitializer.KeyValueElementFactory.f1);
+                var keyDirective = System.Linq.Enumerable.from(element.getDirectives()).firstOrDefault($asm.$.System.Windows.Markup.ElementDictionaryContentInitializer.KeyValueElementFactory.f1, null);
                 return keyDirective != null ? System.Windows.Markup.ElementFactory.fromValue(System.Windows.Markup.XamlMemberExtensions.getSingleValue(keyDirective), keyType, element.getNamespaces(), element.getSourceUri()) : null;
             },
             getKeyProperty: function (type) {
-                var propertyName = System.Windows.Markup.DictionaryKeyPropertyAttribute.getPropertyName(type);
-                return !Granular.Extensions.StringExtensions.isNullOrWhiteSpace(propertyName) ? System.Windows.Markup.PropertyAdapter.createAdapter(type, propertyName) : null;
-            },
-            getDeferredKeyFactory: function (xamlElement) {
-                var elementType = System.Windows.Markup.XamlElementExtensions.getElementType(xamlElement);
-
-                var provider = System.Windows.Markup.DeferredValueKeyProviders.getDeferredValueKeyProvider(elementType);
-                if (provider != null) {
-                    return new System.Windows.Markup.ElementDictionaryContentInitializer.DeferredKeyFactory(provider, xamlElement);
-                }
-
-                var keyPropertyName = System.Windows.Markup.DictionaryKeyPropertyAttribute.getPropertyName(elementType);
-                if (!Granular.Extensions.StringExtensions.isNullOrWhiteSpace(keyPropertyName)) {
-                    var keyMember = Granular.Compatibility.Linq.Enumerable.firstOrDefault$1(System.Windows.Markup.XamlMember, xamlElement.getMembers(), function (member) {
-                        return Bridge.referenceEquals(member.getName().getLocalName(), keyPropertyName);
-                    });
-                    if (keyMember != null) {
-                        var keyProperty = System.Windows.Markup.PropertyAdapter.createAdapter(elementType, keyPropertyName);
-                        return System.Windows.Markup.ElementFactory.fromValue(Granular.Compatibility.Linq.Enumerable.single(Object, keyMember.getValues()), keyProperty.System$Windows$Markup$IPropertyAdapter$getPropertyType(), xamlElement.getNamespaces(), xamlElement.getSourceUri());
-                    }
-                }
-
-                return null;
+                return System.Windows.Markup.PropertyAdapter.createAdapter(type, new System.Windows.Markup.XamlName(System.Windows.Markup.PropertyAttribute.getPropertyName(System.Windows.Markup.DictionaryKeyPropertyAttribute, type)));
             }
         },
         valueFactory: null,
         keyDirectiveFactory: null,
-        deferredKeyFactory: null,
         keyProperty: null,
-        ctor: function (keyType, valueFactory, xamlElement, isValueDeferred) {
+        ctor: function (keyType, valueFactory, xamlElement) {
             this.$initialize();
             this.valueFactory = valueFactory;
 
-            this.keyDirectiveFactory = System.Windows.Markup.ElementDictionaryContentInitializer.KeyValueElementFactory.getKeyDirectiveFactory(xamlElement, keyType);
-            this.deferredKeyFactory = isValueDeferred && this.keyDirectiveFactory == null ? System.Windows.Markup.ElementDictionaryContentInitializer.KeyValueElementFactory.getDeferredKeyFactory(xamlElement) : null;
             this.keyProperty = System.Windows.Markup.ElementDictionaryContentInitializer.KeyValueElementFactory.getKeyProperty(valueFactory.System$Windows$Markup$IElementFactory$getElementType());
+            this.keyDirectiveFactory = System.Windows.Markup.ElementDictionaryContentInitializer.KeyValueElementFactory.getKeyDirectiveFactory(xamlElement, keyType);
 
-            if (this.keyDirectiveFactory == null && this.deferredKeyFactory == null && this.keyProperty == null) {
+            if (this.keyDirectiveFactory == null && this.keyProperty == null) {
                 throw new Granular.Exception("Dictionary item \"{0}\" must have a key", [xamlElement.getName()]);
             }
         },
         createElement: function (context) {
             var element = this.valueFactory.System$Windows$Markup$IElementFactory$createElement(context);
 
-            var key = null;
+            var key = this.keyDirectiveFactory != null ? this.keyDirectiveFactory.System$Windows$Markup$IElementFactory$createElement(context) : this.keyProperty.System$Windows$Markup$IPropertyAdapter$getValue(element);
 
-            if (this.keyDirectiveFactory != null) {
-                key = this.keyDirectiveFactory.System$Windows$Markup$IElementFactory$createElement(context);
-
-                if (this.keyProperty != null) {
-                    this.keyProperty.System$Windows$Markup$IPropertyAdapter$setValue(element, key, context.getValueSource());
-                }
-            } else if (this.deferredKeyFactory != null) {
-                key = this.deferredKeyFactory.System$Windows$Markup$IElementFactory$createElement(context);
-            } else {
-                key = this.keyProperty.System$Windows$Markup$IPropertyAdapter$getValue(element);
+            if (this.keyDirectiveFactory != null && this.keyProperty != null) {
+                // key property exists, but the key directive was used, so update the property
+                this.keyProperty.System$Windows$Markup$IPropertyAdapter$setValue(element, key, context.getValueSource());
             }
 
             return new (System.Collections.Generic.KeyValuePair$2(Object,Object))(key, element);
@@ -4086,7 +4128,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
     Bridge.define("System.Windows.Markup.ElementMemberInitializer", {
         statics: {
-            create: function (containingType, memberName, values, namespaces, sourceUri) {
+            create: function (memberName, containingType, values, namespaces, sourceUri) {
                 var propertyAdapter = System.Windows.Markup.PropertyAdapter.createAdapter(containingType, memberName);
                 if (propertyAdapter != null) {
                     return System.Windows.Markup.ElementPropertyMemberInitializer.create(propertyAdapter, values, namespaces, sourceUri);
@@ -4100,19 +4142,19 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 throw new Granular.Exception("Type \"{0}\" does not contain a member named \"{1}\"", [Bridge.Reflection.getTypeName(containingType), memberName]);
             },
             getEventHandlerName: function (memberName, values) {
-                if (!Granular.Compatibility.Linq.Enumerable.any(Object, values)) {
+                if (!System.Linq.Enumerable.from(values).any()) {
                     throw new Granular.Exception("Member \"{0}\" doesn't have values", [memberName]);
                 }
 
-                if (Granular.Compatibility.Linq.Enumerable.count(Object, values) > 1) {
+                if (System.Linq.Enumerable.from(values).count() > 1) {
                     throw new Granular.Exception("Member \"{0}\" cannot have multiple values", [memberName]);
                 }
 
-                if (!(Bridge.is(Granular.Compatibility.Linq.Enumerable.first(Object, values), String))) {
+                if (!(Bridge.is(System.Linq.Enumerable.from(values).first(), String))) {
                     throw new Granular.Exception("Member \"{0}\" value is not an event handler name", [memberName]);
                 }
 
-                return Bridge.cast(Granular.Compatibility.Linq.Enumerable.first(Object, values), String);
+                return Bridge.cast(System.Linq.Enumerable.from(values).first(), String);
             }
         }
     });
@@ -4122,7 +4164,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             adaptersCache: null,
             config: {
                 init: function () {
-                    this.adaptersCache = Granular.Collections.CacheDictionary$2(System.Windows.Markup.TypeMemberKey,System.Windows.Markup.IEventAdapter).createUsingStringKeys$1(System.Windows.Markup.EventAdapter.tryCreateAdapter, $asm.$.System.Windows.Markup.EventAdapter.f1);
+                    this.adaptersCache = new (Granular.Collections.CacheDictionary$2(System.Windows.Markup.TypeMemberKey,System.Windows.Markup.IEventAdapter)).$ctor2(System.Windows.Markup.EventAdapter.tryCreateAdapter);
                 }
             },
             createAdapter: function (targetType, eventName) {
@@ -4153,23 +4195,24 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 return false;
             },
             getRoutedEvent: function (containingType, eventName) {
-                return System.Windows.EventManager.getEvent(containingType, eventName);
+                var eventMemberName = eventName.getMemberName();
+                var eventContainingType = eventName.getIsMemberName() ? System.Windows.Markup.TypeParser.parseType$1(eventName.getContainingTypeName()) : containingType;
+
+                return System.Windows.EventManager.findRoutedEvent(containingType, eventMemberName);
             },
             getClrEvent: function (containingType, eventName) {
-                return Bridge.Reflection.getMembers(containingType, 2, 84 | 256, eventName);
+                var eventMemberName = eventName.getMemberName();
+                var eventContainingType = eventName.getIsMemberName() ? System.Windows.Markup.TypeParser.parseType$1(eventName.getContainingTypeName()) : containingType;
+
+                return Bridge.Reflection.getMembers(eventContainingType, 2, 84 | 256, eventMemberName);
             },
             getEventProperty: function (containingType, eventName) {
-                var eventProperty = Granular.Extensions.TypeExtensions.getInstanceProperty(containingType, eventName);
+                var eventMemberName = eventName.getMemberName();
+                var eventContainingType = eventName.getIsMemberName() ? System.Windows.Markup.TypeParser.parseType$1(eventName.getContainingTypeName()) : containingType;
+
+                var eventProperty = Granular.Extensions.TypeExtensions.getInstanceProperty(eventContainingType, eventMemberName);
                 return eventProperty != null && System.Reflection.PropertyInfoExtensions.isDelegate(eventProperty) ? eventProperty : null;
             }
-        }
-    });
-
-    Bridge.ns("System.Windows.Markup.EventAdapter", $asm.$);
-
-    Bridge.apply($asm.$.System.Windows.Markup.EventAdapter, {
-        f1: function (typeMemberKey) {
-            return typeMemberKey.getStringKey();
         }
     });
 
@@ -4228,7 +4271,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             typeConverterCache: null,
             config: {
                 init: function () {
-                    this.typeConverterCache = Granular.Collections.CacheDictionary$2(Function,System.Windows.Markup.ITypeConverter).createUsingStringKeys(System.Windows.Markup.KnownTypes.resolveTypeConverter, $asm.$.System.Windows.Markup.KnownTypes.f1);
+                    this.typeConverterCache = new (Granular.Collections.CacheDictionary$2(Function,System.Windows.Markup.ITypeConverter)).ctor(System.Windows.Markup.KnownTypes.resolveTypeConverter);
                 }
             },
             getTypeConverter: function (type) {
@@ -4272,10 +4315,10 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 }
 
                 if ((type.$genericTypeDefinition !== undefined) && Bridge.referenceEquals(Bridge.Reflection.getGenericTypeDefinition(type), System.Nullable$1)) {
-                    return System.Windows.Markup.KnownTypes.getTypeConverter(Granular.Compatibility.Linq.Enumerable.first(Function, Bridge.Reflection.getGenericArguments(type)));
+                    return System.Windows.Markup.KnownTypes.getTypeConverter(System.Linq.Enumerable.from(Bridge.Reflection.getGenericArguments(type)).first());
                 }
 
-                var typeConverterAttribute = Bridge.as(Granular.Compatibility.Linq.Enumerable.firstOrDefault(Object, Bridge.Reflection.getAttributes(type, System.Windows.Markup.TypeConverterAttribute, false)), System.Windows.Markup.TypeConverterAttribute);
+                var typeConverterAttribute = Bridge.as(System.Linq.Enumerable.from(Bridge.Reflection.getAttributes(type, System.Windows.Markup.TypeConverterAttribute, false)).firstOrDefault(null, null), System.Windows.Markup.TypeConverterAttribute);
                 if (typeConverterAttribute != null) {
                     return Bridge.as(Bridge.createInstance(typeConverterAttribute.getConverterType()), System.Windows.Markup.ITypeConverter);
                 }
@@ -4285,20 +4328,12 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         }
     });
 
-    Bridge.ns("System.Windows.Markup.KnownTypes", $asm.$);
-
-    Bridge.apply($asm.$.System.Windows.Markup.KnownTypes, {
-        f1: function (type) {
-            return Bridge.Reflection.getTypeFullName(type);
-        }
-    });
-
     Bridge.define("System.Windows.Markup.PropertyAdapter", {
         statics: {
             adaptersCache: null,
             config: {
                 init: function () {
-                    this.adaptersCache = Granular.Collections.CacheDictionary$2(System.Windows.Markup.TypeMemberKey,System.Windows.Markup.IPropertyAdapter).createUsingStringKeys$1(System.Windows.Markup.PropertyAdapter.tryCreateAdapter, $asm.$.System.Windows.Markup.PropertyAdapter.f1);
+                    this.adaptersCache = new (Granular.Collections.CacheDictionary$2(System.Windows.Markup.TypeMemberKey,System.Windows.Markup.IPropertyAdapter)).$ctor2(System.Windows.Markup.PropertyAdapter.tryCreateAdapter);
                 }
             },
             createAdapter: function (targetType, propertyName) {
@@ -4307,6 +4342,10 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             },
             tryCreateAdapter: function (key, adapter) {
                 adapter.v = null;
+
+                if (key.getMemberName().getIsEmpty()) {
+                    return false;
+                }
 
                 var dependencyProperty = System.Windows.DependencyProperty.getProperty(key.getType(), key.getMemberName());
                 if (dependencyProperty != null) {
@@ -4323,17 +4362,12 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 return false;
             },
             getClrProperty: function (containingType, propertyName) {
-                var propertyInfo = Granular.Extensions.TypeExtensions.getInstanceProperty(containingType, propertyName);
+                var propertyMemberName = propertyName.getMemberName();
+                var propertyContainingType = propertyName.getIsMemberName() ? System.Windows.Markup.TypeParser.parseType$1(propertyName.getContainingTypeName()) : containingType;
+
+                var propertyInfo = Granular.Extensions.TypeExtensions.getInstanceProperty(propertyContainingType, propertyMemberName);
                 return propertyInfo != null && !System.Reflection.PropertyInfoExtensions.isDelegate(propertyInfo) ? propertyInfo : null;
             }
-        }
-    });
-
-    Bridge.ns("System.Windows.Markup.PropertyAdapter", $asm.$);
-
-    Bridge.apply($asm.$.System.Windows.Markup.PropertyAdapter, {
-        f1: function (typeMemberKey) {
-            return typeMemberKey.getStringKey();
         }
     });
 
@@ -4342,7 +4376,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             lexer: null,
             config: {
                 init: function () {
-                    this.lexer = new System.Windows.Markup.Lexer([new System.Windows.Markup.RegexTokenDefinition(System.Windows.Markup.PropertyPathParser.TokenType.Terminal, new RegExp("^[\\(\\)\\[\\]\\.,]")), new System.Windows.Markup.RegexTokenDefinition(System.Windows.Markup.PropertyPathParser.TokenType.Value, new RegExp("^[^\\(\\)\\[\\]\\.\\,]*"))]);
+                    this.lexer = new System.Windows.Markup.Lexer([new System.Windows.Markup.RegexTokenDefinition(System.Windows.Markup.PropertyPathParser.TokenType.Terminal, new System.Text.RegularExpressions.Regex.ctor("[\\(\\)\\[\\]\\.,]")), new System.Windows.Markup.RegexTokenDefinition(System.Windows.Markup.PropertyPathParser.TokenType.Value, new System.Text.RegularExpressions.Regex.ctor("[^\\(\\)\\[\\]\\.\\,]*"))]);
                 }
             }
         },
@@ -4464,10 +4498,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         }
     });
 
-    Bridge.define("System.Windows.Markup.SupportsValueProviderAttribute", {
-        inherits: [System.Attribute]
-    });
-
     Bridge.define("System.Windows.Markup.TypeConverter", {
         statics: {
             empty: null,
@@ -4536,17 +4566,15 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         config: {
             properties: {
                 Type: null,
-                MemberName: null,
-                StringKey: null
+                MemberName: null
             }
         },
         ctor: function (type, memberName) {
             this.$initialize();
             this.setType(type);
             this.setMemberName(memberName);
-            this.setStringKey(System.String.concat(Bridge.Reflection.getTypeFullName(this.getType()), ",", this.getMemberName()));
 
-            this.hashCode = Bridge.getHashCode(this.getStringKey());
+            this.hashCode = Bridge.getHashCode(type) ^ memberName.getHashCode();
         },
         equals: function (obj) {
             var other = Bridge.as(obj, System.Windows.Markup.TypeMemberKey);
@@ -4557,7 +4585,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return this.hashCode;
         },
         toString: function () {
-            return System.String.format("{0}.{1}", Bridge.Reflection.getTypeFullName(this.getType()), this.getMemberName());
+            return System.String.format("{0}.{1}", Bridge.Reflection.getTypeFullName(this.getType()), this.getMemberName().getLocalName());
         }
     });
 
@@ -4569,7 +4597,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             xmlnsDefinitionAttributesCache: null,
             config: {
                 init: function () {
-                    this.resolvedTypesCache = Granular.Collections.CacheDictionary$2(System.Windows.Markup.XamlName,Function).createUsingStringKeys$1(System.Windows.Markup.TypeParser.tryResolveType, $asm.$.System.Windows.Markup.TypeParser.f1);
+                    this.resolvedTypesCache = new (Granular.Collections.CacheDictionary$2(System.Windows.Markup.XamlName,Function)).$ctor2(System.Windows.Markup.TypeParser.tryResolveType);
                 }
             },
             parseType: function (prefixedTypeName, namespaces) {
@@ -4601,7 +4629,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             },
             tryGetType$2: function (xamlName, type) {
                 var $t;
-                if (Granular.Compatibility.String.startsWith$1(xamlName.getNamespaceName(), System.Windows.Markup.TypeParser.clrNamespacePrefix)) {
+                if (System.String.startsWith(xamlName.getNamespaceName(), System.Windows.Markup.TypeParser.clrNamespacePrefix)) {
                     var clrNamespace = System.Windows.Markup.TypeParser.getClrNamespace(xamlName.getNamespaceName().substr(System.Windows.Markup.TypeParser.clrNamespacePrefix.length));
                     var assemblyName = System.Windows.Markup.TypeParser.getAssemblyName(xamlName.getNamespaceName().substr(System.Windows.Markup.TypeParser.clrNamespacePrefix.length));
 
@@ -4658,7 +4686,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             },
             getXmlnsDefinitionAttributes: function () {
                 if (System.Windows.Markup.TypeParser.xmlnsDefinitionAttributesCache == null) {
-                    System.Windows.Markup.TypeParser.xmlnsDefinitionAttributesCache = System.Linq.Enumerable.from(Object.keys(System.Reflection.Assembly.assemblies).map(function(n) { return System.Reflection.Assembly.assemblies[n]; })).selectMany($asm.$.System.Windows.Markup.TypeParser.f2).toArray();
+                    System.Windows.Markup.TypeParser.xmlnsDefinitionAttributesCache = System.Linq.Enumerable.from(Object.keys(System.Reflection.Assembly.assemblies).map(function(n) { return System.Reflection.Assembly.assemblies[n]; })).selectMany($asm.$.System.Windows.Markup.TypeParser.f1).toArray();
                 }
 
                 return System.Windows.Markup.TypeParser.xmlnsDefinitionAttributesCache;
@@ -4669,10 +4697,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
     Bridge.ns("System.Windows.Markup.TypeParser", $asm.$);
 
     Bridge.apply($asm.$.System.Windows.Markup.TypeParser, {
-        f1: function (xamlName) {
-            return xamlName.getFullName();
-        },
-        f2: function (assembly) {
+        f1: function (assembly) {
             return Granular.Extensions.AssemblyExtensions.getCustomAttributesCached(System.Windows.Markup.XmlnsDefinitionAttribute, assembly);
         }
     });
@@ -4698,29 +4723,16 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         }
     });
 
-    Bridge.define("System.Windows.Markup.XamlNameExtensions", {
-        statics: {
-            resolveContainingType: function (name, defaultContainingType) {
-                return name.getHasContainingTypeName() ? System.Windows.Markup.TypeParser.parseType$1(new System.Windows.Markup.XamlName(name.getContainingTypeName(), name.getNamespaceName())) : defaultContainingType;
-            }
-        }
-    });
-
     Bridge.define("System.Windows.Markup.XamlTypes", {
         statics: {
+            typeProviders: null,
+            config: {
+                init: function () {
+                    this.typeProviders = $asm.$.System.Windows.Markup.XamlTypes.f1(new (System.Collections.Generic.Dictionary$2(System.Windows.Markup.XamlName,Function))());
+                }
+            },
             tryParseXamlType: function (name, type) {
-                if (System.Windows.Markup.XamlName.op_Equality(name, System.Windows.Markup.XamlLanguage.nullTypeName)) {
-                    type.v = System.Windows.Markup.XamlTypes.NullProvider;
-                    return true;
-                }
-
-                if (System.Windows.Markup.XamlName.op_Equality(name, System.Windows.Markup.XamlLanguage.typeTypeName)) {
-                    type.v = System.Windows.Markup.XamlTypes.TypeProvider;
-                    return true;
-                }
-
-                type.v = null;
-                return false;
+                return System.Windows.Markup.XamlTypes.typeProviders.System$Collections$Generic$IDictionary$2$System$Windows$Markup$XamlName$Function$tryGetValue(name, type);
             },
             parseXamlType: function (xamlName) {
                 var type = { };
@@ -4731,6 +4743,16 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
                 return type.v;
             }
+        }
+    });
+
+    Bridge.ns("System.Windows.Markup.XamlTypes", $asm.$);
+
+    Bridge.apply($asm.$.System.Windows.Markup.XamlTypes, {
+        f1: function (_o2) {
+            _o2.add(System.Windows.Markup.XamlLanguage.nullTypeName, System.Windows.Markup.XamlTypes.NullProvider);
+            _o2.add(System.Windows.Markup.XamlLanguage.typeTypeName, System.Windows.Markup.XamlTypes.TypeProvider);
+            return _o2;
         }
     });
 
@@ -4758,12 +4780,12 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         statics: {
             clearAnimationClocks: function (animatable, dependencyProperty, layerOwner) {
                 if (layerOwner === void 0) { layerOwner = null; }
-                animatable.System$Windows$Media$Animation$IAnimatable$setAnimationClocks(dependencyProperty, System.Array.init(0, null, System.Windows.Media.Animation.AnimationTimelineClock), layerOwner);
+                animatable.System$Windows$Media$Animation$IAnimatable$setAnimationClocks(dependencyProperty, System.Array.init(0, null), layerOwner);
             },
             applyAnimationClock: function (animatable, dependencyProperty, animationClock, handoffBehavior, layerOwner) {
                 if (handoffBehavior === void 0) { handoffBehavior = 0; }
                 if (layerOwner === void 0) { layerOwner = null; }
-                var animationClocks = animationClock != null ? System.Array.init([animationClock], System.Windows.Media.Animation.AnimationTimelineClock) : System.Array.init(0, null, System.Windows.Media.Animation.AnimationTimelineClock);
+                var animationClocks = animationClock != null ? [animationClock] : System.Array.init(0, null);
                 System.Windows.Media.Animation.AnimatableExtensions.applyAnimationClocks(animatable, dependencyProperty, animationClocks, handoffBehavior, layerOwner);
             },
             applyAnimationClocks: function (animatable, dependencyProperty, animationClocks, handoffBehavior, layerOwner) {
@@ -4815,7 +4837,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         ctor: function () {
             this.$initialize();
-            this.clocks = System.Array.init(0, null, System.Windows.Media.Animation.AnimationTimelineClock);
+            this.clocks = System.Array.init(0, null);
             this.snapshotValue = System.Windows.Media.Animation.AnimationLayer.unsetValue;
         },
         getHasValue: function () {
@@ -4869,7 +4891,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             $t = Bridge.getEnumerator(newClocks, System.Windows.Media.Animation.AnimationTimelineClock);
             while ($t.moveNext()) {
                 var clock = $t.getCurrent();
-                clock.addInvalidated(Bridge.fn.cacheBind(this, this.onClockInvalidated));
+                clock.addInvalidated(Bridge.fn.bind(this, this.onClockInvalidated));
             }
         },
         detachClocks: function (oldClocks) {
@@ -4877,7 +4899,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             $t = Bridge.getEnumerator(oldClocks, System.Windows.Media.Animation.AnimationTimelineClock);
             while ($t.moveNext()) {
                 var clock = $t.getCurrent();
-                clock.removeInvalidated(Bridge.fn.cacheBind(this, this.onClockInvalidated));
+                clock.removeInvalidated(Bridge.fn.bind(this, this.onClockInvalidated));
             }
         },
         onClockInvalidated: function (sender, e) {
@@ -4907,7 +4929,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctor: function () {
             this.$initialize();
             this.defaultLayer = new System.Windows.Media.Animation.AnimationLayer();
-            this.defaultLayer.addClockInvalidated(Bridge.fn.cacheBind(this, this.onAnimationLayerClockInvalidated));
+            this.defaultLayer.addClockInvalidated(Bridge.fn.bind(this, this.onAnimationLayerClockInvalidated));
 
             this.layers = new (System.Collections.Generic.Dictionary$2(System.Windows.Media.Animation.AnimationLayerKey,System.Windows.Media.Animation.AnimationLayer))();
         },
@@ -4957,7 +4979,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
             if (!this.layers.tryGetValue(key, layer)) {
                 layer.v = new System.Windows.Media.Animation.AnimationLayer();
-                layer.v.addClockInvalidated(Bridge.fn.cacheBind(this, this.onAnimationLayerClockInvalidated));
+                layer.v.addClockInvalidated(Bridge.fn.bind(this, this.onAnimationLayerClockInvalidated));
 
                 this.layers.add(key, layer.v);
             }
@@ -4972,7 +4994,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             if (this.layers.tryGetValue(key, layer)) {
-                layer.v.removeClockInvalidated(Bridge.fn.cacheBind(this, this.onAnimationLayerClockInvalidated));
+                layer.v.removeClockInvalidated(Bridge.fn.bind(this, this.onAnimationLayerClockInvalidated));
                 layer.v.dispose();
 
                 this.layers.remove(key);
@@ -5072,7 +5094,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 return new System.Windows.Media.Color(255, r, g, b);
             },
             fromUInt32: function (argb) {
-                return new System.Windows.Media.Color((((((argb & 4278190080) >>> 0)) >>> 24) & 255), (((((argb & 16711680) >>> 0)) >>> 16) & 255), (((((argb & 65280) >>> 0)) >>> 8) & 255), ((((argb & 255) >>> 0)) & 255));
+                return new System.Windows.Media.Color(((((((argb & 4278190080) >>> 0)) >>> 24)) & 255), ((((((argb & 16711680) >>> 0)) >>> 16)) & 255), ((((((argb & 65280) >>> 0)) >>> 8)) & 255), (((((argb & 255) >>> 0))) & 255));
             },
             op_Equality: function (color1, color2) {
                 return Bridge.equals(color1, color2);
@@ -5093,7 +5115,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 return System.Windows.Media.Color.op_Multiply$1(color, scalar);
             }
         },
-        hashCode: 0,
         config: {
             properties: {
                 A: 0,
@@ -5108,8 +5129,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.setR(r);
             this.setG(g);
             this.setB(b);
-
-            this.hashCode = this.getA() ^ this.getR() ^ this.getG() ^ this.getB();
         },
         equals: function (obj) {
             var other = Bridge.as(obj, System.Windows.Media.Color);
@@ -5117,7 +5136,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return Bridge.referenceEquals(this, other) || !Bridge.referenceEquals(other, null) && this.getA() === other.getA() && this.getR() === other.getR() && this.getG() === other.getG() && this.getB() === other.getB();
         },
         getHashCode: function () {
-            return this.hashCode;
+            return Bridge.getHashCode(this.getA()) ^ Bridge.getHashCode(this.getR()) ^ Bridge.getHashCode(this.getG()) ^ Bridge.getHashCode(this.getB());
         },
         toString: function () {
             return System.String.format("#{0:X2}{1:X2}{2:X2}{3:X2}", this.getA(), this.getR(), this.getG(), this.getB());
@@ -5206,6 +5225,10 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             } else {
                 if (size.getIsPartiallyEmpty()) {
                     throw new Granular.Exception("Can't create Rect with a size with an empty dimension");
+                }
+
+                if (size.getWidth() < 0 || size.getHeight() < 0) {
+                    throw new Granular.Exception("Can't create Rect with a negative size");
                 }
 
                 this.setIsEmpty(false);
@@ -5567,7 +5590,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
     });
 
     Bridge.define("System.Windows.Media.Animation.Storyboard.TargetKey", {
-        hashCode: 0,
         config: {
             properties: {
                 Target: null,
@@ -5578,7 +5600,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.$initialize();
             this.setTarget(target);
             this.setTargetProperty(targetProperty);
-            this.hashCode = Bridge.getHashCode(this.getTarget()) ^ this.getTargetProperty().getHashCode();
         },
         equals: function (obj) {
             var other = Bridge.as(obj, System.Windows.Media.Animation.Storyboard.TargetKey);
@@ -5586,7 +5607,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return Bridge.referenceEquals(this, other) || !Bridge.referenceEquals(other, null) && Bridge.equals(this.getTarget(), other.getTarget()) && Bridge.equals(this.getTargetProperty(), other.getTargetProperty());
         },
         getHashCode: function () {
-            return this.hashCode;
+            return Bridge.getHashCode(this.getTarget()) ^ this.getTargetProperty().getHashCode();
         }
     });
 
@@ -5595,7 +5616,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             brushes: null,
             config: {
                 init: function () {
-                    this.brushes = Granular.Collections.CacheDictionary$2(System.Windows.Media.Color,System.Windows.Media.SolidColorBrush).create(System.Windows.Media.Brushes.createBrush);
+                    this.brushes = new (Granular.Collections.CacheDictionary$2(System.Windows.Media.Color,System.Windows.Media.SolidColorBrush)).ctor(System.Windows.Media.Brushes.createBrush);
                 }
             },
             getAliceBlue: function () {
@@ -6492,7 +6513,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         $ctor1: function (familyName) {
             this.$initialize();
-            this.setFamilyNames(System.Array.init([familyName], String));
+            this.setFamilyNames([familyName]);
         },
         ctor: function (familyNames) {
             this.$initialize();
@@ -6828,58 +6849,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         }
     });
 
-    Bridge.define("System.Windows.Media.RenderElementDictionary$1", function (T) { return {
-        createElement: null,
-        factory: null,
-        element: Bridge.getDefaultValue(T),
-        config: {
-            properties: {
-                Count: 0,
-                Factories: null,
-                Elements: null
-            }
-        },
-        ctor: function (createElement) {
-            this.$initialize();
-            this.createElement = createElement;
-            this.setFactories(System.Array.init(0, null, System.Windows.Media.IRenderElementFactory));
-            this.setElements(System.Array.init(0, function (){
-                return Bridge.getDefaultValue(T);
-            }, T));
-        },
-        getRenderElement: function (factory) {
-            if (this.factory == null) {
-                this.factory = factory;
-                this.element = this.createElement(factory);
-                this.setFactories(System.Array.init([factory], System.Windows.Media.IRenderElementFactory));
-                this.setElements(System.Array.init([this.element], T));
-                this.setCount(1);
-            } else if (!Bridge.referenceEquals(this.factory, factory)) {
-                throw new Granular.Exception("Render element was already created for a different IRenderElementFactory");
-            }
-
-            return this.element;
-        },
-        removeRenderElement: function (factory) {
-            if (!Bridge.referenceEquals(this.factory, factory)) {
-                return;
-            }
-
-            this.factory = null;
-            this.element = null;
-            this.setFactories(System.Array.init(0, null, System.Windows.Media.IRenderElementFactory));
-            this.setElements(System.Array.init(0, function (){
-                return Bridge.getDefaultValue(T);
-            }, T));
-            this.setCount(0);
-        },
-        setRenderElementsProperty: function (setter) {
-            if (this.element != null) {
-                setter(this.element);
-            }
-        }
-    }; });
-
     Bridge.define("System.Windows.Media.RenderImageState", {
         $kind: "enum",
         statics: {
@@ -7002,11 +6971,11 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.setVisual(visual);
             this.ancestor = ancestor;
 
-            visual.addVisualAncestorChanged(Bridge.fn.cacheBind(this, this.onVisualAncestorChanged));
+            visual.addVisualAncestorChanged(Bridge.fn.bind(this, this.onVisualAncestorChanged));
         },
         dispose: function () {
             if (this.getVisual() != null) {
-                this.getVisual().removeVisualAncestorChanged(Bridge.fn.cacheBind(this, this.onVisualAncestorChanged));
+                this.getVisual().removeVisualAncestorChanged(Bridge.fn.bind(this, this.onVisualAncestorChanged));
                 this.setVisual(null);
             }
         },
@@ -7223,7 +7192,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             empty: null,
             config: {
                 init: function () {
-                    this.empty = new System.Windows.PropertyPath(System.Array.init(0, null, System.Windows.IPropertyPathElement));
+                    this.empty = new System.Windows.PropertyPath(System.Array.init(0, null));
                 }
             },
             parse: function (value, namespaces) {
@@ -7232,22 +7201,23 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 return new System.Windows.PropertyPath(parser.parse());
             },
             fromDependencyProperty: function (dependencyProperty) {
-                return new System.Windows.PropertyPath(System.Array.init([new System.Windows.DependencyPropertyPathElement(dependencyProperty)], System.Windows.DependencyPropertyPathElement));
+                return new System.Windows.PropertyPath([new System.Windows.DependencyPropertyPathElement(dependencyProperty)]);
             }
         },
         config: {
             properties: {
-                Elements: null,
-                IsEmpty: false
+                Elements: null
             }
         },
         ctor: function (elements) {
             this.$initialize();
             this.setElements(elements);
-            this.setIsEmpty(!Granular.Compatibility.Linq.Enumerable.any(System.Windows.IPropertyPathElement, this.getElements()));
+        },
+        getIsEmpty: function () {
+            return !System.Linq.Enumerable.from(this.getElements()).any();
         },
         toString: function () {
-            return Granular.Compatibility.Linq.Enumerable.aggregate(String, Granular.Compatibility.Linq.Enumerable.defaultIfEmpty$1(String, Granular.Compatibility.Linq.Enumerable.select(System.Windows.IPropertyPathElement, String, this.getElements(), $asm.$.System.Windows.PropertyPath.f1), ""), $asm.$.System.Windows.PropertyPath.f2);
+            return System.Linq.Enumerable.from(this.getElements()).select($asm.$.System.Windows.PropertyPath.f1).defaultIfEmpty("").aggregate($asm.$.System.Windows.PropertyPath.f2);
         }
     });
 
@@ -7278,10 +7248,10 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
     Bridge.define("System.Windows.PropertyPathExtensions", {
         statics: {
             getBasePropertyPath: function (propertyPath) {
-                return Granular.Compatibility.Linq.Enumerable.count(System.Windows.IPropertyPathElement, propertyPath.getElements()) > 1 ? new System.Windows.PropertyPath(Granular.Compatibility.Linq.Enumerable.take(System.Windows.IPropertyPathElement, propertyPath.getElements(), ((Granular.Compatibility.Linq.Enumerable.count(System.Windows.IPropertyPathElement, propertyPath.getElements()) - 1) | 0))) : System.Windows.PropertyPath.empty;
+                return System.Linq.Enumerable.from(propertyPath.getElements()).count() > 1 ? new System.Windows.PropertyPath(System.Linq.Enumerable.from(propertyPath.getElements()).take(((System.Linq.Enumerable.from(propertyPath.getElements()).count() - 1) | 0))) : System.Windows.PropertyPath.empty;
             },
             insert: function (propertyPath, index, element) {
-                var elements = Granular.Compatibility.Linq.Enumerable.toArray(System.Windows.IPropertyPathElement, Granular.Compatibility.Linq.Enumerable.concat(System.Windows.IPropertyPathElement, Granular.Compatibility.Linq.Enumerable.concat(System.Windows.IPropertyPathElement, Granular.Compatibility.Linq.Enumerable.take(System.Windows.IPropertyPathElement, propertyPath.getElements(), index), System.Array.init([element], System.Windows.IPropertyPathElement)), Granular.Compatibility.Linq.Enumerable.skip(System.Windows.IPropertyPathElement, propertyPath.getElements(), index)));
+                var elements = System.Linq.Enumerable.from(propertyPath.getElements()).take(index).concat([element]).concat(System.Linq.Enumerable.from(propertyPath.getElements()).skip(index)).toArray();
                 return new System.Windows.PropertyPath(elements);
             },
             tryGetValue: function (propertyPath, root, value) {
@@ -7290,7 +7260,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     return false;
                 }
 
-                if (Granular.Compatibility.Linq.Enumerable.count(System.Windows.IPropertyPathElement, propertyPath.getElements()) > 1) {
+                if (System.Linq.Enumerable.from(propertyPath.getElements()).count() > 1) {
                     var baseValue = { };
 
                     if (!System.Windows.PropertyPathExtensions.tryGetValue(System.Windows.PropertyPathExtensions.getBasePropertyPath(propertyPath), root, baseValue)) {
@@ -7301,7 +7271,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     root = baseValue.v;
                 }
 
-                return Granular.Compatibility.Linq.Enumerable.last(System.Windows.IPropertyPathElement, propertyPath.getElements()).System$Windows$IPropertyPathElement$tryGetValue(root, value);
+                return System.Linq.Enumerable.from(propertyPath.getElements()).last().System$Windows$IPropertyPathElement$tryGetValue(root, value);
             }
         }
     });
@@ -7353,7 +7323,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 return new System.Windows.Point.$ctor1(rect.getRight(), rect.getBottom());
             },
             getCorners: function (rect) {
-                return System.Array.init([System.Windows.RectExtensions.getTopLeft(rect), System.Windows.RectExtensions.getTopRight(rect), System.Windows.RectExtensions.getBottomLeft(rect), System.Windows.RectExtensions.getBottomRight(rect)], System.Windows.Point);
+                return [System.Windows.RectExtensions.getTopLeft(rect), System.Windows.RectExtensions.getTopRight(rect), System.Windows.RectExtensions.getBottomLeft(rect), System.Windows.RectExtensions.getBottomRight(rect)];
             },
             addOffset: function (rect, offset) {
                 if (System.Windows.Point.op_Equality(offset, System.Windows.Point.zero)) {
@@ -7420,7 +7390,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 }
             },
             fromKey: function (changedKey) {
-                return new System.Windows.ResourcesChangedEventArgs(System.Array.init([changedKey], Object));
+                return new System.Windows.ResourcesChangedEventArgs([changedKey]);
             },
             fromKeyCollection: function (changedKeys) {
                 return new System.Windows.ResourcesChangedEventArgs(changedKeys);
@@ -7437,15 +7407,12 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
     });
 
     Bridge.define("System.Windows.RoutedEvent", {
-        hashCode: 0,
-        classesHandlers: null,
         config: {
             properties: {
                 Name: null,
                 RoutingStrategy: 0,
                 HandlerType: null,
-                OwnerType: null,
-                StringKey: null
+                OwnerType: null
             }
         },
         ctor: function (name, routingStrategy, handlerType, ownerType) {
@@ -7454,46 +7421,16 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.setRoutingStrategy(routingStrategy);
             this.setHandlerType(handlerType);
             this.setOwnerType(ownerType);
-            this.setStringKey(System.String.concat(Bridge.Reflection.getTypeFullName(ownerType), ",", name));
-            this.hashCode = Bridge.getHashCode(this.getStringKey());
         },
         addOwner: function (ownerType) {
             System.Windows.EventManager.addOwner(this, ownerType);
             return this;
         },
         getHashCode: function () {
-            return this.hashCode;
+            return Bridge.getHashCode(this.getOwnerType()) ^ Bridge.getHashCode(this.getName());
         },
         toString: function () {
             return System.String.format("{0}.{1}", Bridge.Reflection.getTypeFullName(this.getOwnerType()), this.getName());
-        },
-        registerClassHandler: function (classType, routedEventHandlerItem) {
-            if (this.classesHandlers == null) {
-                this.classesHandlers = new (Granular.Collections.ListDictionary$2(Function,System.Windows.RoutedEventHandlerItem))();
-            }
-
-            this.classesHandlers.add(classType, routedEventHandlerItem);
-        },
-        getClassHandlers: function (classType) {
-            if (this.classesHandlers == null) {
-                return System.Array.init(0, null, System.Windows.RoutedEventHandlerItem);
-            }
-
-            var flattenedHandlers = null;
-            var classesHandlesCount = 0;
-
-            while (classType != null) {
-                var classHandlers = this.classesHandlers.getValues(classType);
-
-                if (System.Linq.Enumerable.from(classHandlers).any()) {
-                    flattenedHandlers = flattenedHandlers != null ? System.Linq.Enumerable.from(classHandlers).concat(flattenedHandlers) : classHandlers;
-                    classesHandlesCount = (classesHandlesCount + 1) | 0;
-                }
-
-                classType = Bridge.Reflection.getBaseType(classType);
-            }
-
-            return classesHandlesCount > 1 ? System.Linq.Enumerable.from(flattenedHandlers).toArray() : (flattenedHandlers || System.Array.init(0, null, System.Windows.RoutedEventHandlerItem));
         }
     });
 
@@ -7744,7 +7681,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         ctor: function () {
             this.$initialize();
-            this.setArgs(System.Array.init(0, null, String));
+            this.setArgs(System.Array.init(0, null));
         }
     });
 
@@ -7958,8 +7895,8 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         disableProcessingToken: null,
         ctor: function () {
             this.$initialize();
-            this.queue = new (Granular.Collections.PriorityQueue$1(System.Windows.Threading.DispatcherOperation))(11);
-            this.disableProcessingToken = new Granular.Disposable(Bridge.fn.cacheBind(this, this.enableProcessing));
+            this.queue = new (Granular.Collections.PriorityQueue$2(System.Windows.Threading.DispatcherPriority,System.Windows.Threading.DispatcherOperation)).ctor();
+            this.disableProcessingToken = new Granular.Disposable(Bridge.fn.bind(this, this.enableProcessing));
         },
         invoke$1: function (callback, priority) {
             if (priority === void 0) { priority = 9; }
@@ -8374,18 +8311,15 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             if (this.resources != null) {
-                this.resources.removeResourcesChanged(Bridge.fn.cacheBind(this, this.onResourcesChanged));
+                this.resources.removeResourcesChanged(Bridge.fn.bind(this, this.onResourcesChanged));
             }
 
             this.resources = value;
 
             if (this.resources != null) {
-                this.resources.addResourcesChanged(Bridge.fn.cacheBind(this, this.onResourcesChanged));
+                this.resources.addResourcesChanged(Bridge.fn.bind(this, this.onResourcesChanged));
             }
             Granular.Extensions.EventHandlerExtensions.raise$4(System.Windows.ResourcesChangedEventArgs, this.ResourcesChanged, this, System.Windows.ResourcesChangedEventArgs.reset);
-        },
-        System$Windows$IResourceContainer$getIsEmpty: function () {
-            return false;
         },
         run: function () {
             this.onStartup(System.Windows.StartupEventArgs.empty);
@@ -8494,6 +8428,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         visualTransform: null,
         visualLevel: 0,
         visualRenderElements: null,
+        containsContentRenderElement: false,
         hitTestBounds: null,
         isHitTestBoundsValid: false,
         config: {
@@ -8513,7 +8448,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.visualChildren = new (System.Collections.Generic.List$1(System.Windows.Media.Visual))();
             this.setVisualChildren(new (System.Collections.ObjectModel.ReadOnlyCollection$1(System.Windows.Media.Visual))(this.visualChildren));
 
-            this.visualRenderElements = new (System.Windows.Media.RenderElementDictionary$1(System.Windows.Media.IVisualRenderElement))(Bridge.fn.cacheBind(this, this.createRenderElement));
+            this.visualRenderElements = new (System.Collections.Generic.Dictionary$2(System.Windows.Media.IRenderElementFactory,System.Windows.Media.IVisualRenderElement))();
 
             this.setVisualBackground(null);
             this.setVisualBounds(System.Windows.Rect.zero);
@@ -8534,14 +8469,14 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             if (this.visualParent != null) {
-                this.visualParent.removeVisualAncestorChanged(Bridge.fn.cacheBind(this, this.onVisualAncestorChanged$1));
+                this.visualParent.removeVisualAncestorChanged(Bridge.fn.bind(this, this.onVisualAncestorChanged$1));
             }
 
             var oldVisualParent = this.visualParent;
             this.visualParent = value;
 
             if (this.visualParent != null) {
-                this.visualParent.addVisualAncestorChanged(Bridge.fn.cacheBind(this, this.onVisualAncestorChanged$1));
+                this.visualParent.addVisualAncestorChanged(Bridge.fn.bind(this, this.onVisualAncestorChanged$1));
             }
 
             this.onVisualParentChanged(oldVisualParent, this.visualParent);
@@ -8576,7 +8511,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
             this.visualBackground = value;
 
-            $t = Bridge.getEnumerator(this.visualRenderElements.getElements());
+            $t = Bridge.getEnumerator(this.visualRenderElements.getValues(), System.Windows.Media.IVisualRenderElement);
             while ($t.moveNext()) {
                 var visualRenderElement = $t.getCurrent();
                 visualRenderElement.System$Windows$Media$IVisualRenderElement$setBackground(this.visualBackground);
@@ -8593,7 +8528,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
             this.visualBounds = value;
 
-            $t = Bridge.getEnumerator(this.visualRenderElements.getElements());
+            $t = Bridge.getEnumerator(this.visualRenderElements.getValues(), System.Windows.Media.IVisualRenderElement);
             while ($t.moveNext()) {
                 var visualRenderElement = $t.getCurrent();
                 visualRenderElement.System$Windows$Media$IVisualRenderElement$setBounds(this.visualBounds);
@@ -8615,7 +8550,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
             this.visualClipToBounds = value;
 
-            $t = Bridge.getEnumerator(this.visualRenderElements.getElements());
+            $t = Bridge.getEnumerator(this.visualRenderElements.getValues(), System.Windows.Media.IVisualRenderElement);
             while ($t.moveNext()) {
                 var visualRenderElement = $t.getCurrent();
                 visualRenderElement.System$Windows$Media$IVisualRenderElement$setClipToBounds(this.visualClipToBounds);
@@ -8634,7 +8569,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
             this.visualIsHitTestVisible = value;
 
-            $t = Bridge.getEnumerator(this.visualRenderElements.getElements());
+            $t = Bridge.getEnumerator(this.visualRenderElements.getValues(), System.Windows.Media.IVisualRenderElement);
             while ($t.moveNext()) {
                 var visualRenderElement = $t.getCurrent();
                 visualRenderElement.System$Windows$Media$IVisualRenderElement$setIsHitTestVisible(this.visualIsHitTestVisible);
@@ -8651,7 +8586,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
             this.visualIsVisible = value;
 
-            $t = Bridge.getEnumerator(this.visualRenderElements.getElements());
+            $t = Bridge.getEnumerator(this.visualRenderElements.getValues(), System.Windows.Media.IVisualRenderElement);
             while ($t.moveNext()) {
                 var visualRenderElement = $t.getCurrent();
                 visualRenderElement.System$Windows$Media$IVisualRenderElement$setIsVisible(this.visualIsVisible);
@@ -8668,7 +8603,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
             this.visualOpacity = value;
 
-            $t = Bridge.getEnumerator(this.visualRenderElements.getElements());
+            $t = Bridge.getEnumerator(this.visualRenderElements.getValues(), System.Windows.Media.IVisualRenderElement);
             while ($t.moveNext()) {
                 var visualRenderElement = $t.getCurrent();
                 visualRenderElement.System$Windows$Media$IVisualRenderElement$setOpacity(this.visualOpacity);
@@ -8685,7 +8620,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
             this.visualTransform = value;
 
-            $t = Bridge.getEnumerator(this.visualRenderElements.getElements());
+            $t = Bridge.getEnumerator(this.visualRenderElements.getValues(), System.Windows.Media.IVisualRenderElement);
             while ($t.moveNext()) {
                 var visualRenderElement = $t.getCurrent();
                 visualRenderElement.System$Windows$Media$IVisualRenderElement$setTransform(this.visualTransform);
@@ -8716,11 +8651,11 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             child.setVisualParent(this);
             this.visualChildren.add(child);
 
-            var renderChildIndex = (this.visualChildren.getCount() - 1) | 0;
-            $t = Bridge.getEnumerator(this.visualRenderElements.getFactories());
+            var renderChildIndex = this.containsContentRenderElement ? this.visualChildren.getCount() : ((this.visualChildren.getCount() - 1) | 0);
+            $t = Bridge.getEnumerator(this.visualRenderElements.getKeys(), System.Windows.Media.IRenderElementFactory);
             while ($t.moveNext()) {
                 var factory = $t.getCurrent();
-                this.visualRenderElements.getRenderElement(factory).System$Windows$Media$IVisualRenderElement$insertChild(renderChildIndex, child.getRenderElement(factory));
+                this.visualRenderElements.get(factory).System$Windows$Media$IVisualRenderElement$insertChild(renderChildIndex, child.getRenderElement(factory));
             }
 
             this.invalidateHitTestBounds();
@@ -8734,10 +8669,10 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.visualChildren.remove(child);
             child.setVisualParent(null);
 
-            $t = Bridge.getEnumerator(this.visualRenderElements.getFactories());
+            $t = Bridge.getEnumerator(this.visualRenderElements.getKeys(), System.Windows.Media.IRenderElementFactory);
             while ($t.moveNext()) {
                 var factory = $t.getCurrent();
-                this.visualRenderElements.getRenderElement(factory).System$Windows$Media$IVisualRenderElement$removeChild(child.getRenderElement(factory));
+                this.visualRenderElements.get(factory).System$Windows$Media$IVisualRenderElement$removeChild(child.getRenderElement(factory));
             }
 
             this.invalidateHitTestBounds();
@@ -8752,13 +8687,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.visualChildren.remove(child);
             this.visualChildren.insert(newIndex, child);
 
-            $t = Bridge.getEnumerator(this.visualRenderElements.getFactories());
+            $t = Bridge.getEnumerator(this.visualRenderElements.getKeys(), System.Windows.Media.IRenderElementFactory);
             while ($t.moveNext()) {
                 var factory = $t.getCurrent();
                 var childRenderElement = child.getRenderElement(factory);
 
-                this.visualRenderElements.getRenderElement(factory).System$Windows$Media$IVisualRenderElement$removeChild(childRenderElement);
-                this.visualRenderElements.getRenderElement(factory).System$Windows$Media$IVisualRenderElement$insertChild(newIndex, childRenderElement);
+                this.visualRenderElements.get(factory).System$Windows$Media$IVisualRenderElement$removeChild(childRenderElement);
+                this.visualRenderElements.get(factory).System$Windows$Media$IVisualRenderElement$insertChild(newIndex, childRenderElement);
             }
         },
         clearVisualChildren: function () {
@@ -8780,36 +8715,48 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             Granular.Extensions.EventHandlerExtensions.raise$2(this.VisualAncestorChanged, this);
         },
         getRenderElement: function (factory) {
-            return this.visualRenderElements.getRenderElement(factory);
-        },
-        createRenderElement: function (factory) {
             var $t;
-            var visualRenderElement = factory.System$Windows$Media$IRenderElementFactory$createVisualRenderElement(this);
+            var visualRenderElement = { };
+            if (this.visualRenderElements.tryGetValue(factory, visualRenderElement)) {
+                return visualRenderElement.v;
+            }
 
-            visualRenderElement.System$Windows$Media$IVisualRenderElement$setBackground(this.getVisualBackground());
-            visualRenderElement.System$Windows$Media$IVisualRenderElement$setBounds(this.getVisualBounds());
-            visualRenderElement.System$Windows$Media$IVisualRenderElement$setClipToBounds(this.getVisualClipToBounds());
-            visualRenderElement.System$Windows$Media$IVisualRenderElement$setIsHitTestVisible(this.getVisualIsHitTestVisible());
-            visualRenderElement.System$Windows$Media$IVisualRenderElement$setIsVisible(this.getVisualIsVisible());
-            visualRenderElement.System$Windows$Media$IVisualRenderElement$setOpacity(this.getVisualOpacity());
-            visualRenderElement.System$Windows$Media$IVisualRenderElement$setTransform(this.getVisualTransform());
+            visualRenderElement.v = factory.System$Windows$Media$IRenderElementFactory$createVisualRenderElement(this);
 
-            visualRenderElement.System$Windows$Media$IVisualRenderElement$setContent(this.createRenderElementContentOverride(factory));
+            visualRenderElement.v.System$Windows$Media$IVisualRenderElement$setBackground(this.getVisualBackground());
+            visualRenderElement.v.System$Windows$Media$IVisualRenderElement$setBounds(this.getVisualBounds());
+            visualRenderElement.v.System$Windows$Media$IVisualRenderElement$setClipToBounds(this.getVisualClipToBounds());
+            visualRenderElement.v.System$Windows$Media$IVisualRenderElement$setIsHitTestVisible(this.getVisualIsHitTestVisible());
+            visualRenderElement.v.System$Windows$Media$IVisualRenderElement$setIsVisible(this.getVisualIsVisible());
+            visualRenderElement.v.System$Windows$Media$IVisualRenderElement$setOpacity(this.getVisualOpacity());
+            visualRenderElement.v.System$Windows$Media$IVisualRenderElement$setTransform(this.getVisualTransform());
 
             var index = 0;
             $t = Bridge.getEnumerator(this.getVisualChildren());
             while ($t.moveNext()) {
                 var child = $t.getCurrent();
                 child.getRenderElement(factory);
-                visualRenderElement.System$Windows$Media$IVisualRenderElement$insertChild(index, child.getRenderElement(factory));
+                visualRenderElement.v.System$Windows$Media$IVisualRenderElement$insertChild(index, child.getRenderElement(factory));
                 index = (index + 1) | 0;
             }
 
-            return visualRenderElement;
+            var contentRenderElement = this.createContentRenderElementOverride(factory);
+            if (contentRenderElement != null) {
+                visualRenderElement.v.System$Windows$Media$IVisualRenderElement$insertChild(0, contentRenderElement);
+            }
+
+            if (this.visualRenderElements.getCount() === 0) {
+                this.containsContentRenderElement = contentRenderElement != null;
+            } else if (this.containsContentRenderElement !== (contentRenderElement != null)) {
+                throw new Granular.Exception("ContentRenderElement for type \"{0}\" must be created for all of the factories or none of them", [Bridge.Reflection.getTypeName(Bridge.getType(this))]);
+            }
+
+            this.visualRenderElements.add(factory, visualRenderElement.v);
+            return visualRenderElement.v;
         },
         removeRenderElement: function (factory) {
             var $t;
-            this.visualRenderElements.removeRenderElement(factory);
+            this.visualRenderElements.remove(factory);
 
             $t = Bridge.getEnumerator(this.getVisualChildren());
             while ($t.moveNext()) {
@@ -8817,7 +8764,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 child.removeRenderElement(factory);
             }
         },
-        createRenderElementContentOverride: function (factory) {
+        createContentRenderElementOverride: function (factory) {
             return null;
         },
         onVisualBoundsChanged: function () {
@@ -8924,13 +8871,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             if (this.contextParent != null) {
-                this.contextParent.System$Windows$IContextElement$removeContextParentChanged(Bridge.fn.cacheBind(this, this.onContextParentAncestorChanged));
+                this.contextParent.System$Windows$IContextElement$removeContextParentChanged(Bridge.fn.bind(this, this.onContextParentAncestorChanged));
             }
 
             this.contextParent = value;
 
             if (this.contextParent != null) {
-                this.contextParent.System$Windows$IContextElement$addContextParentChanged(Bridge.fn.cacheBind(this, this.onContextParentAncestorChanged));
+                this.contextParent.System$Windows$IContextElement$addContextParentChanged(Bridge.fn.bind(this, this.onContextParentAncestorChanged));
             }
 
             Granular.Extensions.EventHandlerExtensions.raise$2(this.ContextParentChanged, this);
@@ -8957,24 +8904,16 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 return;
             }
 
-            var oldParentResourceContainer = this.parentResourceContainer;
-
             if (this.parentResourceContainer != null) {
-                this.parentResourceContainer.System$Windows$IResourceContainer$removeResourcesChanged(Bridge.fn.cacheBind(this, this.onParentResourcesChanged));
+                this.parentResourceContainer.System$Windows$IResourceContainer$removeResourcesChanged(Bridge.fn.bind(this, this.onParentResourcesChanged));
             }
 
             this.parentResourceContainer = value;
 
             if (this.parentResourceContainer != null) {
-                this.parentResourceContainer.System$Windows$IResourceContainer$addResourcesChanged(Bridge.fn.cacheBind(this, this.onParentResourcesChanged));
+                this.parentResourceContainer.System$Windows$IResourceContainer$addResourcesChanged(Bridge.fn.bind(this, this.onParentResourcesChanged));
             }
-
-            if (oldParentResourceContainer != null && !oldParentResourceContainer.System$Windows$IResourceContainer$getIsEmpty() || this.parentResourceContainer != null && !this.parentResourceContainer.System$Windows$IResourceContainer$getIsEmpty()) {
-                Granular.Extensions.EventHandlerExtensions.raise$4(System.Windows.ResourcesChangedEventArgs, this.ResourcesChanged, this, System.Windows.ResourcesChangedEventArgs.reset);
-            }
-        },
-        System$Windows$IResourceContainer$getIsEmpty: function () {
-            return this.getParentResourceContainer() == null || this.getParentResourceContainer().System$Windows$IResourceContainer$getIsEmpty();
+            Granular.Extensions.EventHandlerExtensions.raise$4(System.Windows.ResourcesChangedEventArgs, this.ResourcesChanged, this, System.Windows.ResourcesChangedEventArgs.reset);
         },
         onParentResourcesChanged: function (sender, e) {
             Granular.Extensions.EventHandlerExtensions.raise$4(System.Windows.ResourcesChangedEventArgs, this.ResourcesChanged, this, e);
@@ -9203,7 +9142,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctor: function (host) {
             this.$initialize();
             this.host = host;
-            this.host.System$Windows$Controls$Primitives$IGeneratorHost$getView().addCollectionChanged(Bridge.fn.cacheBind(this, this.onViewCollectionChanged));
+            this.host.System$Windows$Controls$Primitives$IGeneratorHost$getView().addCollectionChanged(Bridge.fn.bind(this, this.onViewCollectionChanged));
 
             this.generatedContainers = new (System.Collections.Generic.List$1(System.Windows.Controls.ItemContainerGenerator.GeneratedItemContainer))();
         },
@@ -9211,7 +9150,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return this.host.System$Windows$Controls$Primitives$IGeneratorHost$getView().getCount();
         },
         dispose: function () {
-            this.host.System$Windows$Controls$Primitives$IGeneratorHost$getView().removeCollectionChanged(Bridge.fn.cacheBind(this, this.onViewCollectionChanged));
+            this.host.System$Windows$Controls$Primitives$IGeneratorHost$getView().removeCollectionChanged(Bridge.fn.bind(this, this.onViewCollectionChanged));
             this.removeRange(0, this.getItemsCount());
         },
         onViewCollectionChanged: function (sender, e) {
@@ -9982,7 +9921,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.observableValue.addValueChanged(Bridge.fn.bind(this, $asm.$.System.Windows.Data.ContextSourceObserver.f1));
 
             if (Bridge.is(target, System.Windows.IContextElement)) {
-                Bridge.cast(target, System.Windows.IContextElement).System$Windows$IContextElement$addContextParentChanged(Bridge.fn.cacheBind(this, this.onTargetContextParentChanged));
+                Bridge.cast(target, System.Windows.IContextElement).System$Windows$IContextElement$addContextParentChanged(Bridge.fn.bind(this, this.onTargetContextParentChanged));
             }
         },
         getValue: function () {
@@ -9990,7 +9929,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         dispose: function () {
             if (Bridge.is(this.target, System.Windows.IContextElement)) {
-                Bridge.cast(this.target, System.Windows.IContextElement).System$Windows$IContextElement$removeContextParentChanged(Bridge.fn.cacheBind(this, this.onTargetContextParentChanged));
+                Bridge.cast(this.target, System.Windows.IContextElement).System$Windows$IContextElement$removeContextParentChanged(Bridge.fn.bind(this, this.onTargetContextParentChanged));
             }
         },
         onTargetContextParentChanged: function (sender, e) {
@@ -10043,7 +9982,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.dataContextValue.addValueChanged(Bridge.fn.bind(this, $asm.$.System.Windows.Data.DataContextSourceObserver.f2));
 
             if (Bridge.is(target, System.Windows.IContextElement)) {
-                Bridge.cast(target, System.Windows.IContextElement).System$Windows$IContextElement$addContextParentChanged(Bridge.fn.cacheBind(this, this.onTargetContextParentChanged));
+                Bridge.cast(target, System.Windows.IContextElement).System$Windows$IContextElement$addContextParentChanged(Bridge.fn.bind(this, this.onTargetContextParentChanged));
             }
         },
         getValue: function () {
@@ -10051,7 +9990,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         dispose: function () {
             if (Bridge.is(this.target, System.Windows.IContextElement)) {
-                Bridge.cast(this.target, System.Windows.IContextElement).System$Windows$IContextElement$removeContextParentChanged(Bridge.fn.cacheBind(this, this.onTargetContextParentChanged));
+                Bridge.cast(this.target, System.Windows.IContextElement).System$Windows$IContextElement$removeContextParentChanged(Bridge.fn.bind(this, this.onTargetContextParentChanged));
             }
 
             this.dataContextValue.dispose();
@@ -10259,7 +10198,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         getBaseObservableValueChangedEventHandler: function () {
             if (Bridge.staticEquals(this.baseObservableValueChangedEventHandler, null)) {
-                this.baseObservableValueChangedEventHandler = Bridge.fn.cacheBind(this, this.onBaseObservableValueChanged);
+                this.baseObservableValueChangedEventHandler = Bridge.fn.bind(this, this.onBaseObservableValueChanged);
             }
 
             return this.baseObservableValueChangedEventHandler;
@@ -10319,39 +10258,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         getValue: function () {
             return this.value;
-        }
-    });
-
-    Bridge.define("System.Windows.DataTemplateKeyProvider", {
-        inherits: [System.Windows.Markup.IDeferredValueKeyProvider],
-        config: {
-            alias: [
-            "getValueKey", "System$Windows$Markup$IDeferredValueKeyProvider$getValueKey"
-            ]
-        },
-        getValueKey: function (element) {
-            var keyMember = System.Linq.Enumerable.from(element.getMembers()).singleOrDefault($asm.$.System.Windows.DataTemplateKeyProvider.f1, null);
-            if (keyMember != null) {
-                return System.Windows.Markup.ElementFactory.fromValue(System.Linq.Enumerable.from(keyMember.getValues()).single(), Object, element.getNamespaces(), element.getSourceUri()).System$Windows$Markup$IElementFactory$createElement(new System.Windows.Markup.InitializeContext.ctor());
-            }
-
-            var dataTypeMember = System.Linq.Enumerable.from(element.getMembers()).singleOrDefault($asm.$.System.Windows.DataTemplateKeyProvider.f2, null);
-            if (dataTypeMember != null) {
-                return new System.Windows.TemplateKey(Bridge.cast(System.Windows.Markup.ElementFactory.fromValue(System.Linq.Enumerable.from(dataTypeMember.getValues()).single(), Function, element.getNamespaces(), element.getSourceUri()).System$Windows$Markup$IElementFactory$createElement(new System.Windows.Markup.InitializeContext.ctor()), Function));
-            }
-
-            throw new Granular.Exception(System.String.format("Can't create value key from \"{0}\"", element.getName()));
-        }
-    });
-
-    Bridge.ns("System.Windows.DataTemplateKeyProvider", $asm.$);
-
-    Bridge.apply($asm.$.System.Windows.DataTemplateKeyProvider, {
-        f1: function (member) {
-            return Bridge.referenceEquals(member.getName().getLocalName(), "Key");
-        },
-        f2: function (member) {
-            return Bridge.referenceEquals(member.getName().getLocalName(), "DataType");
         }
     });
 
@@ -10416,7 +10322,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             var ownerType = System.Windows.Markup.TypeParser.parseType(text.substr(0, typeSeparatorIndex), namespaces);
-            var dependencyProperty = System.Windows.DependencyProperty.getProperty(ownerType, text.substr(((typeSeparatorIndex + 1) | 0)));
+            var dependencyProperty = System.Windows.DependencyProperty.getOwnedProperty(ownerType, text.substr(((typeSeparatorIndex + 1) | 0)));
 
             if (dependencyProperty == null) {
                 throw new Granular.Exception("Can't find dependency property named \"{0}\"", [text]);
@@ -10472,7 +10378,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.dependencyProperty = dependencyProperty;
             this.coerceValueCallback = coerceValueCallback;
 
-            this.values = System.Array.init(14, null, Object);
+            this.values = System.Array.init(14, null);
             for (var i = 0; i < this.values.length; i = (i + 1) | 0) {
                 this.values[i] = System.Windows.Data.ObservableValue.unsetValue;
             }
@@ -10493,14 +10399,14 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         getNotifyValueChangedEventHandler: function () {
             if (Bridge.staticEquals(this.notifyValueChangedEventHandler, null)) {
-                this.notifyValueChangedEventHandler = Bridge.fn.cacheBind(this, this.onValueNotifyChanged);
+                this.notifyValueChangedEventHandler = Bridge.fn.bind(this, this.onValueNotifyChanged);
             }
 
             return this.notifyValueChangedEventHandler;
         },
         getIndexedObservableValueChangedEventHandler: function () {
             if (Bridge.staticEquals(this.indexedObservableValueChangedEventHandler, null)) {
-                this.indexedObservableValueChangedEventHandler = Bridge.fn.cacheBind(this, this.onIndexedObservableValueChanged);
+                this.indexedObservableValueChangedEventHandler = Bridge.fn.bind(this, this.onIndexedObservableValueChanged);
             }
 
             return this.indexedObservableValueChangedEventHandler;
@@ -10522,7 +10428,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
             if (Bridge.is(value, System.Windows.Data.IObservableValue)) {
                 if (this.observableValues == null) {
-                    this.observableValues = System.Array.init(14, null, System.Windows.DependencyPropertyValueEntry.IndexedObservableValue);
+                    this.observableValues = System.Array.init(14, null);
                 }
 
                 var indexedObservableValue = new System.Windows.DependencyPropertyValueEntry.IndexedObservableValue(priority, oldValue);
@@ -10714,10 +10620,10 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.routedEvent = routedEvent;
         },
         register: function () {
-            this.element.addHandler(this.routedEvent, Bridge.fn.cacheBind(this, this.routedEventHandler));
+            this.element.addHandler(this.routedEvent, Bridge.fn.bind(this, this.routedEventHandler));
         },
         dispose: function () {
-            this.element.removeHandler(this.routedEvent, Bridge.fn.cacheBind(this, this.routedEventHandler));
+            this.element.removeHandler(this.routedEvent, Bridge.fn.bind(this, this.routedEventHandler));
         },
         routedEventHandler: function (sender, e) {
             Granular.Extensions.EventHandlerExtensions.raise$2(this.EventRaised, this);
@@ -10755,8 +10661,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             properties: {
                 AffectsArrange: false,
                 AffectsMeasure: false,
-                AffectsParentArrange: false,
-                AffectsParentMeasure: false,
                 AffectsVisualState: false,
                 BindsTwoWayByDefault: false,
                 DefaultUpdateSourceTrigger: 0
@@ -10815,8 +10719,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             System.Windows.PropertyMetadata.$ctor3.call(this, defaultValue, propertyChangedCallback, coerceValueCallback);
             this.setAffectsArrange((flags & System.Windows.FrameworkPropertyMetadataOptions.AffectsArrange) !== 0);
             this.setAffectsMeasure((flags & System.Windows.FrameworkPropertyMetadataOptions.AffectsMeasure) !== 0);
-            this.setAffectsParentArrange((flags & System.Windows.FrameworkPropertyMetadataOptions.AffectsParentArrange) !== 0);
-            this.setAffectsParentMeasure((flags & System.Windows.FrameworkPropertyMetadataOptions.AffectsParentMeasure) !== 0);
             this.setAffectsVisualState((flags & System.Windows.FrameworkPropertyMetadataOptions.AffectsVisualState) !== 0);
             this.setBindsTwoWayByDefault((flags & System.Windows.FrameworkPropertyMetadataOptions.BindsTwoWayByDefault) !== 0);
             this.setInherits((flags & System.Windows.FrameworkPropertyMetadataOptions.Inherits) !== 0);
@@ -10899,19 +10801,19 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         equals: function (obj) {
             var other = Bridge.as(obj, System.Windows.IndexPropertyPathElement);
 
-            return Bridge.referenceEquals(this, other) || !Bridge.referenceEquals(other, null) && System.Windows.Markup.XamlName.op_Equality(this.getPropertyName(), other.getPropertyName()) && Granular.Compatibility.Linq.Enumerable.sequenceEqual(String, this.getIndexRawValues(), other.getIndexRawValues());
+            return Bridge.referenceEquals(this, other) || !Bridge.referenceEquals(other, null) && System.Windows.Markup.XamlName.op_Equality(this.getPropertyName(), other.getPropertyName()) && System.Linq.Enumerable.from(this.getIndexRawValues()).sequenceEqual(other.getIndexRawValues());
         },
         getHashCode: function () {
             return this.getPropertyName().getHashCode();
         },
         toString: function () {
-            var propertyName = this.getPropertyName().getHasContainingTypeName() ? System.String.format("({0})", this.getPropertyName().getLocalName()) : this.getPropertyName().getLocalName();
-            var indexRawValues = Granular.Compatibility.Linq.Enumerable.aggregate(String, Granular.Compatibility.Linq.Enumerable.defaultIfEmpty$1(String, this.getIndexRawValues(), ""), $asm.$.System.Windows.IndexPropertyPathElement.f1);
+            var propertyName = this.getPropertyName().getIsMemberName() ? System.String.format("({0})", this.getPropertyName().getLocalName()) : this.getPropertyName().getLocalName();
+            var indexRawValues = System.Linq.Enumerable.from(this.getIndexRawValues()).defaultIfEmpty("").aggregate($asm.$.System.Windows.IndexPropertyPathElement.f1);
 
             return System.String.format("{0}[{1}]", propertyName, indexRawValues);
         },
         tryGetValue: function (target, value) {
-            var containingType = System.Windows.Markup.XamlNameExtensions.resolveContainingType(this.getPropertyName(), Bridge.getType(target));
+            var propertyContainingType = this.getPropertyName().getIsMemberName() ? System.Windows.Markup.TypeParser.parseType$1(this.getPropertyName().getContainingTypeName()) : Bridge.getType(target);
             var propertyName = this.getPropertyName().getMemberName();
 
             var isDefaultIndexProperty = Granular.Extensions.StringExtensions.isNullOrEmpty(propertyName);
@@ -10926,18 +10828,18 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 }
 
                 target = indexPropertyValue.v;
-                containingType = Bridge.getType(indexPropertyValue.v);
+                propertyContainingType = Bridge.getType(indexPropertyValue.v);
                 isDefaultIndexProperty = true;
             }
 
-            var indexPropertyInfo = isDefaultIndexProperty ? Granular.Extensions.TypeExtensions.getDefaultIndexProperty(containingType) : Granular.Extensions.TypeExtensions.getInstanceProperty(containingType, propertyName);
+            var indexPropertyInfo = isDefaultIndexProperty ? Granular.Extensions.TypeExtensions.getDefaultIndexProperty(propertyContainingType) : Granular.Extensions.TypeExtensions.getInstanceProperty(propertyContainingType, propertyName);
 
             if (indexPropertyInfo == null) {
                 value.v = null;
                 return false;
             }
 
-            value.v = Bridge.Reflection.midel(indexPropertyInfo.g, target).apply(null, Granular.Compatibility.Linq.Enumerable.toArray(Object, this.parseIndexValues(indexPropertyInfo)));
+            value.v = Bridge.Reflection.midel(indexPropertyInfo.g, target).apply(null, System.Linq.Enumerable.from(this.parseIndexValues(indexPropertyInfo)).toArray());
             return true;
         },
         tryGetDependencyProperty: function (containingType, dependencyProperty) {
@@ -10948,11 +10850,11 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return new System.Windows.Data.IndexPropertyObserver(baseValueType, this, this.namespaces);
         },
         parseIndexValues: function (indexPropertyInfo) {
-            if (Granular.Compatibility.Linq.Enumerable.count(Object, (indexPropertyInfo.ipi || [])) !== Granular.Compatibility.Linq.Enumerable.count(String, this.getIndexRawValues())) {
+            if (System.Linq.Enumerable.from((indexPropertyInfo.ipi || [])).count() !== System.Linq.Enumerable.from(this.getIndexRawValues()).count()) {
                 throw new Granular.Exception("Invalid number of index parameters for \"{0}.{1}\"", [Bridge.Reflection.getTypeName(indexPropertyInfo.td), indexPropertyInfo.n]);
             }
 
-            return Granular.Compatibility.Linq.Enumerable.toArray(Object, Granular.Compatibility.Linq.Enumerable.zip(Object, String, Object, (indexPropertyInfo.ipi || []), this.getIndexRawValues(), Bridge.fn.bind(this, $asm.$.System.Windows.IndexPropertyPathElement.f2)));
+            return System.Linq.Enumerable.from((indexPropertyInfo.ipi || [])).zip(this.getIndexRawValues(), Bridge.fn.bind(this, $asm.$.System.Windows.IndexPropertyPathElement.f2)).toArray();
         }
     });
 
@@ -10978,7 +10880,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             if (Bridge.is(value, String)) {
                 var propertyInfo = Bridge.Reflection.getMembers(System.Windows.Input.Cursors, 16, 24 | 256, Bridge.cast(value, String));
                 if (propertyInfo != null) {
-                    return Bridge.Reflection.midel(propertyInfo.g, null).apply(null, System.Array.init(0, null, Object));
+                    return Bridge.Reflection.midel(propertyInfo.g, null).apply(null, System.Array.init(0, null));
                 }
             }
 
@@ -11268,7 +11170,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctor: function (presentationSource) {
             this.$initialize();
             this.presentationSource = presentationSource;
-            presentationSource.System$Windows$IPresentationSource$addHitTestInvalidated(Bridge.fn.cacheBind(this, this.onHitTestInvalidated));
+            presentationSource.System$Windows$IPresentationSource$addHitTestInvalidated(Bridge.fn.bind(this, this.onHitTestInvalidated));
 
             this.pressedButtons = new (System.Collections.Generic.HashSet$1(System.Windows.Input.MouseButton))();
             this.setPosition(System.Windows.Point.zero);
@@ -11321,7 +11223,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             Granular.Extensions.EventHandlerExtensions.raise$2(this.CursorChanged, this);
         },
         dispose: function () {
-            this.presentationSource.System$Windows$IPresentationSource$removeHitTestInvalidated(Bridge.fn.cacheBind(this, this.onHitTestInvalidated));
+            this.presentationSource.System$Windows$IPresentationSource$removeHitTestInvalidated(Bridge.fn.bind(this, this.onHitTestInvalidated));
         },
         setTarget$1: function () {
             this.setTarget(this.getIsActive() ? this.getCaptureTarget() || this.getHitTarget() : null);
@@ -11396,8 +11298,8 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.setCaptureTarget(null);
         },
         onTargetChanged: function (oldTarget, newTarget) {
-            var oldTargetPath = oldTarget != null ? System.Linq.Enumerable.from(oldTarget.System$Windows$IInputElement$getPathFromRoot()).toArray() : System.Array.init(0, null, System.Windows.IInputElement);
-            var newTargetPath = newTarget != null ? System.Linq.Enumerable.from(newTarget.System$Windows$IInputElement$getPathFromRoot()).toArray() : System.Array.init(0, null, System.Windows.IInputElement);
+            var oldTargetPath = oldTarget != null ? System.Linq.Enumerable.from(oldTarget.System$Windows$IInputElement$getPathFromRoot()).toArray() : System.Array.init(0, null);
+            var newTargetPath = newTarget != null ? System.Linq.Enumerable.from(newTarget.System$Windows$IInputElement$getPathFromRoot()).toArray() : System.Array.init(0, null);
 
             var splitIndex = 0;
             while (splitIndex < oldTargetPath.length && splitIndex < newTargetPath.length && Bridge.referenceEquals(oldTargetPath[splitIndex], newTargetPath[splitIndex])) {
@@ -11533,7 +11435,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
             this.$initialize();
             this.property = property;
-            this.index = index || System.Array.init(0, null, Object);
+            this.index = index || System.Array.init(0, null);
         },
         getPropertyType: function () {
             return this.property.rt;
@@ -11577,32 +11479,10 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
     Bridge.define("System.Windows.Markup.ContentPropertyAttribute", {
         inherits: [System.Windows.Markup.PropertyAttribute],
-        statics: {
-            propertyNameCache: null,
-            config: {
-                init: function () {
-                    this.propertyNameCache = Granular.Collections.CacheDictionary$2(Function,String).createUsingStringKeys($asm.$.System.Windows.Markup.ContentPropertyAttribute.f1, $asm.$.System.Windows.Markup.ContentPropertyAttribute.f2);
-                }
-            },
-            getPropertyName: function (type) {
-                return System.Windows.Markup.ContentPropertyAttribute.propertyNameCache.getValue(type);
-            }
-        },
         ctor: function (name) {
             this.$initialize();
             System.Windows.Markup.PropertyAttribute.ctor.call(this, name);
             //
-        }
-    });
-
-    Bridge.ns("System.Windows.Markup.ContentPropertyAttribute", $asm.$);
-
-    Bridge.apply($asm.$.System.Windows.Markup.ContentPropertyAttribute, {
-        f1: function (type) {
-            return System.Windows.Markup.PropertyAttribute.resolvePropertyName(System.Windows.Markup.ContentPropertyAttribute, type);
-        },
-        f2: function (type) {
-            return Bridge.Reflection.getTypeFullName(type);
         }
     });
 
@@ -11670,32 +11550,10 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
     Bridge.define("System.Windows.Markup.DictionaryKeyPropertyAttribute", {
         inherits: [System.Windows.Markup.PropertyAttribute],
-        statics: {
-            propertyNameCache: null,
-            config: {
-                init: function () {
-                    this.propertyNameCache = Granular.Collections.CacheDictionary$2(Function,String).createUsingStringKeys($asm.$.System.Windows.Markup.DictionaryKeyPropertyAttribute.f1, $asm.$.System.Windows.Markup.DictionaryKeyPropertyAttribute.f2);
-                }
-            },
-            getPropertyName: function (type) {
-                return System.Windows.Markup.DictionaryKeyPropertyAttribute.propertyNameCache.getValue(type);
-            }
-        },
         ctor: function (name) {
             this.$initialize();
             System.Windows.Markup.PropertyAttribute.ctor.call(this, name);
             //
-        }
-    });
-
-    Bridge.ns("System.Windows.Markup.DictionaryKeyPropertyAttribute", $asm.$);
-
-    Bridge.apply($asm.$.System.Windows.Markup.DictionaryKeyPropertyAttribute, {
-        f1: function (type) {
-            return System.Windows.Markup.PropertyAttribute.resolvePropertyName(System.Windows.Markup.DictionaryKeyPropertyAttribute, type);
-        },
-        f2: function (type) {
-            return Bridge.Reflection.getTypeFullName(type);
         }
     });
 
@@ -11739,9 +11597,9 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         ctor: function (valueTargetType, values) {
             this.$initialize();
-            this.elementsFactory = Granular.Compatibility.Linq.Enumerable.toArray(System.Windows.Markup.IElementFactory, Granular.Compatibility.Linq.Enumerable.select(Object, System.Windows.Markup.IElementFactory, values, function (value) {
-                return System.Windows.Markup.ElementFactory.fromValue(value, valueTargetType, System.Windows.Markup.XamlNamespaces.empty, null);
-            }));
+            this.elementsFactory = System.Linq.Enumerable.from(values).select(function (value) {
+                    return System.Windows.Markup.ElementFactory.fromValue(value, valueTargetType, System.Windows.Markup.XamlNamespaces.empty, null);
+                }).toArray();
         },
         initializeElement: function (element, context) {
             var $t;
@@ -11756,30 +11614,28 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
     Bridge.define("System.Windows.Markup.ElementDictionaryContentInitializer", {
         inherits: [System.Windows.Markup.IElementInitializer],
         statics: {
-            createElementsFactories: function (dictionaryType, keyType, valueType, values) {
+            createElementsFactories: function (keyType, valueType, values) {
                 var $t;
-                if (Granular.Compatibility.Linq.Enumerable.any$1(Object, values, $asm.$.System.Windows.Markup.ElementDictionaryContentInitializer.f1)) {
-                    throw new Granular.Exception("Can't add a value of type \"{0}\" to a dictionary, as it cannot have a key", [Bridge.Reflection.getTypeName(Bridge.getType(Granular.Compatibility.Linq.Enumerable.first$1(Object, values, $asm.$.System.Windows.Markup.ElementDictionaryContentInitializer.f1)))]);
+                if (System.Linq.Enumerable.from(values).any($asm.$.System.Windows.Markup.ElementDictionaryContentInitializer.f1)) {
+                    throw new Granular.Exception("Can't add a value of type \"{0}\" to a dictionary, as it cannot have a key", [Bridge.Reflection.getTypeName(Bridge.getType(System.Linq.Enumerable.from(values).first($asm.$.System.Windows.Markup.ElementDictionaryContentInitializer.f1)))]);
                 }
 
                 var valuesElements = System.Linq.Enumerable.from(values).select(function(x) { return Bridge.cast(x, System.Windows.Markup.XamlElement); });
-
-                var isValueProviderSupported = Granular.Compatibility.Linq.Enumerable.any(System.Windows.Markup.SupportsValueProviderAttribute, Granular.Compatibility.Linq.Enumerable.ofType(System.Windows.Markup.SupportsValueProviderAttribute, Bridge.Reflection.getAttributes(dictionaryType, null, true)));
 
                 var list = new (System.Collections.Generic.List$1(System.Windows.Markup.ElementDictionaryContentInitializer.KeyValueElementFactory))();
 
                 $t = Bridge.getEnumerator(valuesElements, System.Windows.Markup.XamlElement);
                 while ($t.moveNext()) {
                     var contentChild = $t.getCurrent();
-                    var isShared = Granular.Compatibility.Linq.Enumerable.all(System.Windows.Markup.XamlMember, contentChild.getDirectives(), $asm.$.System.Windows.Markup.ElementDictionaryContentInitializer.f2);
+                    var isShared = System.Linq.Enumerable.from(contentChild.getDirectives()).all($asm.$.System.Windows.Markup.ElementDictionaryContentInitializer.f2);
 
-                    if (!isShared && !isValueProviderSupported) {
-                        throw new Granular.Exception(System.String.format("Can't add a non shared value to \"{0}\" as it does not declare a \"SupportsValueProvider\" attribute", Bridge.Reflection.getTypeFullName(dictionaryType)));
+                    var contentChildFactory = System.Windows.Markup.ElementFactory.fromXamlElement(contentChild, valueType);
+
+                    if (!isShared) {
+                        contentChildFactory = new System.Windows.Markup.ElementDictionaryContentInitializer.ValueProviderFactory(contentChildFactory);
                     }
 
-                    var contentChildFactory = isValueProviderSupported ? new System.Windows.Markup.ElementDictionaryContentInitializer.DeferredValueFactory(contentChild, valueType, isShared) : System.Windows.Markup.ElementFactory.fromXamlElement(contentChild, valueType);
-
-                    list.add(new System.Windows.Markup.ElementDictionaryContentInitializer.KeyValueElementFactory(keyType, contentChildFactory, contentChild, isValueProviderSupported));
+                    list.add(new System.Windows.Markup.ElementDictionaryContentInitializer.KeyValueElementFactory(keyType, contentChildFactory, contentChild));
                 }
 
                 return list;
@@ -11791,9 +11647,9 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             "initializeElement", "System$Windows$Markup$IElementInitializer$initializeElement"
             ]
         },
-        ctor: function (dictionaryType, keyType, valueType, values) {
+        ctor: function (keyType, valueType, values) {
             this.$initialize();
-            this.keyElementFactories = System.Windows.Markup.ElementDictionaryContentInitializer.createElementsFactories(dictionaryType, keyType, valueType, values);
+            this.keyElementFactories = System.Windows.Markup.ElementDictionaryContentInitializer.createElementsFactories(keyType, valueType, values);
         },
         initializeElement: function (element, context) {
             var $t;
@@ -11818,34 +11674,8 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         }
     });
 
-    Bridge.define("System.Windows.Markup.ElementDictionaryContentInitializer.DeferredKeyFactory", {
+    Bridge.define("System.Windows.Markup.ElementDictionaryContentInitializer.ValueProviderFactory", {
         inherits: [System.Windows.Markup.IElementFactory],
-        provider: null,
-        element: null,
-        config: {
-            alias: [
-            "getElementType", "System$Windows$Markup$IElementFactory$getElementType",
-            "createElement", "System$Windows$Markup$IElementFactory$createElement"
-            ]
-        },
-        ctor: function (provider, element) {
-            this.$initialize();
-            this.provider = provider;
-            this.element = element;
-        },
-        getElementType: function () {
-            return Object;
-        },
-        createElement: function (context) {
-            return this.provider.System$Windows$Markup$IDeferredValueKeyProvider$getValueKey(this.element);
-        }
-    });
-
-    Bridge.define("System.Windows.Markup.ElementDictionaryContentInitializer.DeferredValueFactory", {
-        inherits: [System.Windows.Markup.IElementFactory],
-        element: null,
-        targetType: null,
-        isShared: false,
         elementFactory: null,
         config: {
             alias: [
@@ -11853,28 +11683,17 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             "createElement", "System$Windows$Markup$IElementFactory$createElement"
             ]
         },
-        ctor: function (element, targetType, isShared) {
+        ctor: function (elementFactory) {
             this.$initialize();
-            this.element = element;
-            this.targetType = targetType;
-            this.isShared = isShared;
+            this.elementFactory = elementFactory;
         },
         getElementType: function () {
             return System.Windows.Markup.ValueProvider;
         },
         createElement: function (context) {
-            var value = null;
-
             return new System.Windows.Markup.ValueProvider(Bridge.fn.bind(this, function () {
-                if (this.elementFactory == null) {
-                    this.elementFactory = System.Windows.Markup.ElementFactory.fromXamlElement(this.element, this.targetType);
-                }
-
-                if (value == null || !this.isShared) {
-                    value = this.elementFactory.System$Windows$Markup$IElementFactory$createElement(context);
-                }
-
-                return value;
+                var localContext = new System.Windows.Markup.InitializeContext.$ctor1(null, null, new System.Windows.NameScope(context.getNameScope()), context.getTemplatedParent(), context.getValueSource());
+                return this.elementFactory.System$Windows$Markup$IElementFactory$createElement(localContext);
             }));
         }
     });
@@ -11922,7 +11741,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             fromXamlElement: function (element, targetType) {
                 var elementType = System.Windows.Markup.XamlElementExtensions.getElementType(element);
 
-                if (Granular.Compatibility.Linq.Enumerable.any(Object, element.getValues()) && Granular.Extensions.StringExtensions.isNullOrEmpty(System.Windows.Markup.ContentPropertyAttribute.getPropertyName(elementType)) && !System.Windows.Markup.ElementCollectionContentInitailizer.isCollectionType(elementType)) {
+                if (System.Linq.Enumerable.from(element.getValues()).any() && Granular.Extensions.StringExtensions.isNullOrEmpty(System.Windows.Markup.PropertyAttribute.getPropertyName(System.Windows.Markup.ContentPropertyAttribute, elementType)) && !System.Windows.Markup.ElementCollectionContentInitailizer.isCollectionType(elementType)) {
                     return System.Windows.Markup.ElementFactory.fromElementFactory(System.Windows.Markup.ElementFactory.fromXamlElementContent(element), targetType, element.getNamespaces(), element.getSourceUri());
                 }
 
@@ -11932,15 +11751,15 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 return System.Windows.Markup.ElementFactory.fromElementFactory(elementFactory, targetType, element.getNamespaces(), element.getSourceUri());
             },
             fromXamlElementContent: function (element) {
-                if (Granular.Compatibility.Linq.Enumerable.any(System.Windows.Markup.XamlMember, element.getMembers())) {
+                if (System.Linq.Enumerable.from(element.getMembers()).any()) {
                     throw new Granular.Exception("Element \"{0}\" can't have members, as it's not a collection type and does not declare ContentProperty and can only be converted from its content", [element.getName()]);
                 }
 
-                if (Granular.Compatibility.Linq.Enumerable.count(Object, element.getValues()) > 1) {
+                if (System.Linq.Enumerable.from(element.getValues()).count() > 1) {
                     throw new Granular.Exception("Element \"{0}\" can't have multiple children, as it's not a collection type and does not declare ContentProperty and can only be converted from its content", [element.getName()]);
                 }
 
-                return System.Windows.Markup.ElementFactory.fromValue(Granular.Compatibility.Linq.Enumerable.first(Object, element.getValues()), System.Windows.Markup.XamlElementExtensions.getElementType(element), element.getNamespaces(), element.getSourceUri());
+                return System.Windows.Markup.ElementFactory.fromValue(System.Linq.Enumerable.from(element.getValues()).first(), System.Windows.Markup.XamlElementExtensions.getElementType(element), element.getNamespaces(), element.getSourceUri());
             },
             fromElementFactory: function (elementFactory, targetType, namespaces, sourceUri) {
                 if (Bridge.Reflection.isAssignableFrom(System.Windows.Markup.IMarkupExtension, elementFactory.System$Windows$Markup$IElementFactory$getElementType())) {
@@ -11987,13 +11806,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 }
             },
             createContentInitializer: function (element, elementType) {
-                if (!Granular.Compatibility.Linq.Enumerable.any(Object, element.getValues())) {
+                if (!System.Linq.Enumerable.from(element.getValues()).any()) {
                     return null;
                 }
 
-                var contentPropertyName = System.Windows.Markup.ContentPropertyAttribute.getPropertyName(elementType);
+                var contentPropertyName = System.Windows.Markup.PropertyAttribute.getPropertyName(System.Windows.Markup.ContentPropertyAttribute, elementType);
                 if (!Granular.Extensions.StringExtensions.isNullOrEmpty(contentPropertyName)) {
-                    return System.Windows.Markup.ElementMemberInitializer.create(elementType, contentPropertyName, element.getValues(), element.getNamespaces(), element.getSourceUri());
+                    return System.Windows.Markup.ElementMemberInitializer.create(new System.Windows.Markup.XamlName(contentPropertyName), elementType, element.getValues(), element.getNamespaces(), element.getSourceUri());
                 }
 
                 if (System.Windows.Markup.ElementCollectionContentInitailizer.isCollectionType(elementType)) {
@@ -12013,16 +11832,16 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     // markup extensions may contain members with an empty name, the name should be resolved from the member index
                     var memberName = member.getName().getIsEmpty() ? System.Windows.Markup.ElementInitializer.getParameterName(elementType, index) : member.getName();
 
-                    list.add(System.Windows.Markup.ElementMemberInitializer.create(System.Windows.Markup.XamlNameExtensions.resolveContainingType(memberName, elementType), memberName.getMemberName(), member.getValues(), member.getNamespaces(), member.getSourceUri()));
+                    list.add(System.Windows.Markup.ElementMemberInitializer.create(memberName, elementType, member.getValues(), member.getNamespaces(), member.getSourceUri()));
                     index = (index + 1) | 0;
                 }
 
                 return list;
             },
             getParameterName: function (type, index) {
-                var parameterAttribute = Granular.Compatibility.Linq.Enumerable.firstOrDefault$1(System.Windows.Markup.MarkupExtensionParameterAttribute, Granular.Compatibility.Linq.Enumerable.ofType(System.Windows.Markup.MarkupExtensionParameterAttribute, Bridge.Reflection.getAttributes(type, null, true)), function (attribute) {
-                    return attribute.getIndex() === index;
-                });
+                var parameterAttribute = System.Linq.Enumerable.from(Bridge.Reflection.getAttributes(type, null, true)).ofType(System.Windows.Markup.MarkupExtensionParameterAttribute).firstOrDefault(function (attribute) {
+                        return attribute.getIndex() === index;
+                    }, null);
 
                 if (parameterAttribute == null) {
                     throw new Granular.Exception("Type \"{0}\" does not declare MarkupExtensionParameter for index {1}", [Bridge.Reflection.getTypeName(type), index]);
@@ -12031,12 +11850,11 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 return new System.Windows.Markup.XamlName(parameterAttribute.getName());
             },
             getNameDirectiveValue: function (element) {
-                var nameDirective = Granular.Compatibility.Linq.Enumerable.firstOrDefault$1(System.Windows.Markup.XamlMember, element.getDirectives(), $asm.$.System.Windows.Markup.ElementInitializer.f1);
+                var nameDirective = System.Linq.Enumerable.from(element.getDirectives()).firstOrDefault($asm.$.System.Windows.Markup.ElementInitializer.f1, null);
                 return nameDirective != null ? Bridge.cast(System.Windows.Markup.XamlMemberExtensions.getSingleValue(nameDirective), String) : null;
             },
             getNameProperty: function (type) {
-                var propertyName = System.Windows.Markup.RuntimeNamePropertyAttribute.getPropertyName(type);
-                return !Granular.Extensions.StringExtensions.isNullOrWhiteSpace(propertyName) ? System.Windows.Markup.PropertyAdapter.createAdapter(type, propertyName) : null;
+                return System.Windows.Markup.PropertyAdapter.createAdapter(type, new System.Windows.Markup.XamlName(System.Windows.Markup.PropertyAttribute.getPropertyName(System.Windows.Markup.RuntimeNamePropertyAttribute, type)));
             },
             setFieldValue: function (target, fieldName, fieldValue) {
                 var fieldInfo = Bridge.Reflection.getMembers(Bridge.getType(target), 4, Granular.Compatibility.BindingFlags.InstanceNonPublic | 256, fieldName);
@@ -12159,12 +11977,12 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         inherits: [System.Windows.Markup.IElementInitializer],
         statics: {
             create: function (propertyAdapter, values, namespaces, sourceUri) {
-                if (!Granular.Compatibility.Linq.Enumerable.any(Object, values)) {
+                if (!System.Linq.Enumerable.from(values).any()) {
                     return System.Windows.Markup.ElementInitializer.empty;
                 }
 
-                if (Granular.Compatibility.Linq.Enumerable.count(Object, values) === 1) {
-                    var value = Granular.Compatibility.Linq.Enumerable.first(Object, values);
+                if (System.Linq.Enumerable.from(values).count() === 1) {
+                    var value = System.Linq.Enumerable.from(values).first();
 
                     if (Bridge.referenceEquals(propertyAdapter.System$Windows$Markup$IPropertyAdapter$getPropertyType(), System.Windows.IFrameworkElementFactory)) {
                         return new System.Windows.Markup.FrameworkElementFactoryInitializer(propertyAdapter, System.Windows.Markup.ElementFactory.fromValue(value, null, namespaces, sourceUri));
@@ -12186,8 +12004,8 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     return new System.Windows.Markup.ElementPropertyMemberInitializer.ElementPropertyMemberFactoryInitializer(propertyAdapter, propertyContentInitializer);
                 }
 
-                if (Granular.Compatibility.Linq.Enumerable.count(Object, values) === 1) {
-                    var value1 = Granular.Compatibility.Linq.Enumerable.first(Object, values);
+                if (System.Linq.Enumerable.from(values).count() === 1) {
+                    var value1 = System.Linq.Enumerable.from(values).first();
                     throw new Granular.Exception("Cannot assign value of type \"{0}\" to member of type \"{1}\"", [Bridge.is(value1, System.Windows.Markup.XamlElement) ? System.Windows.Markup.XamlElementExtensions.getElementType(Bridge.cast(value1, System.Windows.Markup.XamlElement)) : Bridge.getType(value1), Bridge.Reflection.getTypeName(propertyAdapter.System$Windows$Markup$IPropertyAdapter$getPropertyType())]);
                 }
 
@@ -12271,7 +12089,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return this.eventProperty.rt;
         },
         addHandler: function (target, handler) {
-            Bridge.Reflection.midel(this.eventProperty.s, target).apply(null, System.Array.init(0, null, Object).concat(handler));
+            Bridge.Reflection.midel(this.eventProperty.s, target).apply(null, System.Array.init(0, null).concat(handler));
         }
     });
 
@@ -12402,32 +12220,10 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
     Bridge.define("System.Windows.Markup.RuntimeNamePropertyAttribute", {
         inherits: [System.Windows.Markup.PropertyAttribute],
-        statics: {
-            propertyNameCache: null,
-            config: {
-                init: function () {
-                    this.propertyNameCache = Granular.Collections.CacheDictionary$2(Function,String).createUsingStringKeys($asm.$.System.Windows.Markup.RuntimeNamePropertyAttribute.f1, $asm.$.System.Windows.Markup.RuntimeNamePropertyAttribute.f2);
-                }
-            },
-            getPropertyName: function (type) {
-                return System.Windows.Markup.RuntimeNamePropertyAttribute.propertyNameCache.getValue(type);
-            }
-        },
         ctor: function (name) {
             this.$initialize();
             System.Windows.Markup.PropertyAttribute.ctor.call(this, name);
             //
-        }
-    });
-
-    Bridge.ns("System.Windows.Markup.RuntimeNamePropertyAttribute", $asm.$);
-
-    Bridge.apply($asm.$.System.Windows.Markup.RuntimeNamePropertyAttribute, {
-        f1: function (type) {
-            return System.Windows.Markup.PropertyAttribute.resolvePropertyName(System.Windows.Markup.RuntimeNamePropertyAttribute, type);
-        },
-        f2: function (type) {
-            return Bridge.Reflection.getTypeFullName(type);
         }
     });
 
@@ -13476,7 +13272,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
     Bridge.apply($asm.$.System.Windows.Media.Animation.RootClock, {
         f1: function () {
-            System.Windows.Threading.Dispatcher.currentDispatcher.invokeAsync(Bridge.fn.cacheBind(this, this.tick), System.Windows.Threading.DispatcherPriority.Render);
+            System.Windows.Threading.Dispatcher.currentDispatcher.invokeAsync(Bridge.fn.bind(this, this.tick), System.Windows.Threading.DispatcherPriority.Render);
         }
     });
 
@@ -13637,21 +13433,21 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             if (Bridge.is(value, String)) {
                 var stringValue = Bridge.cast(value, String).trim();
 
-                if (stringValue.length === 9 && stringValue.charCodeAt(0) === 35) {
+                if (System.String.startsWith(stringValue, "#") && stringValue.length === 9) {
                     return System.Windows.Media.Color.fromUInt32(Granular.Compatibility.Convert.toUInt32(stringValue.substr(1), 16));
                 }
 
-                if (stringValue.length === 7 && stringValue.charCodeAt(0) === 35) {
+                if (System.String.startsWith(stringValue, "#") && stringValue.length === 7) {
                     return System.Windows.Media.Color.fromUInt32(((4278190080 | Granular.Compatibility.Convert.toUInt32(stringValue.substr(1), 16)) >>> 0));
                 }
 
-                if (stringValue.length === 4 && stringValue.charCodeAt(0) === 35) {
+                if (System.String.startsWith(stringValue, "#") && stringValue.length === 4) {
                     return System.Windows.Media.Color.fromUInt32(((4278190080 | Granular.Compatibility.Convert.toUInt32(System.String.format("{0}{0}{1}{1}{2}{2}", String.fromCharCode(stringValue.charCodeAt(1)), String.fromCharCode(stringValue.charCodeAt(2)), String.fromCharCode(stringValue.charCodeAt(3))), 16)) >>> 0));
                 }
 
                 var propertyInfo = Bridge.Reflection.getMembers(System.Windows.Media.Colors, 16, 24 | 256, stringValue);
                 if (propertyInfo != null) {
-                    return Bridge.Reflection.midel(propertyInfo.g, null).apply(null, System.Array.init(0, null, Object));
+                    return Bridge.Reflection.midel(propertyInfo.g, null).apply(null, System.Array.init(0, null));
                 }
             }
 
@@ -13780,7 +13576,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             $t = Bridge.getEnumerator(this.conditions, System.Windows.IDataTriggerCondition);
             while ($t.moveNext()) {
                 var condition = $t.getCurrent();
-                condition.System$Windows$IDataTriggerCondition$addIsMatchedChanged(Bridge.fn.cacheBind(this, this.onConditionIsMatchedChanged));
+                condition.System$Windows$IDataTriggerCondition$addIsMatchedChanged(Bridge.fn.bind(this, this.onConditionIsMatchedChanged));
             }
 
             this.setIsMatched(System.Linq.Enumerable.from(this.conditions).all($asm.$.System.Windows.MultiDataTriggerCondition.f2));
@@ -13790,7 +13586,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             $t = Bridge.getEnumerator(this.conditions, System.Windows.IDataTriggerCondition);
             while ($t.moveNext()) {
                 var condition = $t.getCurrent();
-                condition.System$Windows$IDataTriggerCondition$removeIsMatchedChanged(Bridge.fn.cacheBind(this, this.onConditionIsMatchedChanged));
+                condition.System$Windows$IDataTriggerCondition$removeIsMatchedChanged(Bridge.fn.bind(this, this.onConditionIsMatchedChanged));
 
                 if (Bridge.is(condition, System.IDisposable)) {
                     Bridge.cast(condition, System.IDisposable).System$IDisposable$dispose();
@@ -13929,17 +13725,17 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         inherits: [System.Windows.IPropertyPathElement],
         statics: {
             tryGetValue: function (target, propertyName, value) {
-                var containingType = System.Windows.Markup.XamlNameExtensions.resolveContainingType(propertyName, Bridge.getType(target));
-
-                var dependencyProperty = System.Windows.DependencyProperty.getProperty(containingType, propertyName.getMemberName());
+                var dependencyProperty = System.Windows.DependencyProperty.getProperty(Bridge.getType(target), propertyName);
                 if (dependencyProperty != null && Bridge.is(target, System.Windows.DependencyObject)) {
                     value.v = Bridge.cast(target, System.Windows.DependencyObject).getValue(dependencyProperty);
                     return true;
                 }
 
-                var propertyInfo = Granular.Extensions.TypeExtensions.getInstanceProperty(containingType, propertyName.getMemberName());
-                if (propertyInfo != null && !Granular.Compatibility.Linq.Enumerable.any(Object, (propertyInfo.ipi || []))) {
-                    value.v = Bridge.Reflection.midel(propertyInfo.g, target).apply(null, System.Array.init(0, null, Object));
+                var propertyContainingType = propertyName.getIsMemberName() ? System.Windows.Markup.TypeParser.parseType$1(propertyName.getContainingTypeName()) : Bridge.getType(target);
+
+                var propertyInfo = Granular.Extensions.TypeExtensions.getInstanceProperty(propertyContainingType, propertyName.getMemberName());
+                if (propertyInfo != null && !System.Linq.Enumerable.from((propertyInfo.ipi || [])).any()) {
+                    value.v = Bridge.Reflection.midel(propertyInfo.g, target).apply(null, System.Array.init(0, null));
                     return true;
                 }
 
@@ -13970,26 +13766,26 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return this.getPropertyName().getHashCode();
         },
         toString: function () {
-            return this.getPropertyName().getHasContainingTypeName() ? System.String.format("({0})", this.getPropertyName().getLocalName()) : this.getPropertyName().getLocalName();
+            return this.getPropertyName().getIsMemberName() ? System.String.format("({0})", this.getPropertyName().getLocalName()) : this.getPropertyName().getLocalName();
         },
         tryGetValue: function (target, value) {
             return System.Windows.PropertyPathElement.tryGetValue(target, this.getPropertyName(), value);
         },
         tryGetDependencyProperty: function (containingType, dependencyProperty) {
-            dependencyProperty.v = System.Windows.DependencyProperty.getProperty(System.Windows.Markup.XamlNameExtensions.resolveContainingType(this.getPropertyName(), containingType), this.getPropertyName().getMemberName());
+            dependencyProperty.v = System.Windows.DependencyProperty.getProperty(containingType, this.getPropertyName());
             return dependencyProperty.v != null;
         },
         createPropertyObserver: function (baseValueType) {
-            var containingType = System.Windows.Markup.XamlNameExtensions.resolveContainingType(this.getPropertyName(), baseValueType);
-
-            var dependencyProperty = System.Windows.DependencyProperty.getProperty(containingType, this.getPropertyName().getMemberName());
+            var dependencyProperty = System.Windows.DependencyProperty.getProperty(baseValueType, this.getPropertyName());
             if (dependencyProperty != null) {
                 return new System.Windows.Data.DependencyPropertyObserver(dependencyProperty);
             }
 
-            var propertyInfo = Granular.Extensions.TypeExtensions.getInstanceProperty(containingType, this.getPropertyName().getMemberName());
+            var propertyContainingType = this.getPropertyName().getIsMemberName() ? System.Windows.Markup.TypeParser.parseType$1(this.getPropertyName().getContainingTypeName()) : baseValueType;
+
+            var propertyInfo = Granular.Extensions.TypeExtensions.getInstanceProperty(propertyContainingType, this.getPropertyName().getMemberName());
             if (propertyInfo != null) {
-                return new System.Windows.Data.ClrPropertyObserver(propertyInfo, System.Array.init(0, null, Object));
+                return new System.Windows.Data.ClrPropertyObserver(propertyInfo, System.Array.init(0, null));
             }
 
             return null;
@@ -14091,7 +13887,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         inherits: [System.Collections.Generic.IDictionary$2(Object,Object),System.Windows.IResourceContainer,System.Windows.Markup.IUriContext],
         statics: {
             getMergedDictionariesKeys: function (dictionary) {
-                return System.Linq.Enumerable.from(Bridge.cast(dictionary, System.Collections.Generic.IDictionary$2(Object,Object)).System$Collections$Generic$IDictionary$2$Object$Object$getKeys()).concat(System.Linq.Enumerable.from(dictionary.getMergedDictionaries()).selectMany(System.Windows.ResourceDictionary.getMergedDictionariesKeys));
+                return System.Linq.Enumerable.from(System.Collections.Generic.DictionaryExtensions.getKeys(Object, Object, dictionary)).concat(System.Linq.Enumerable.from(dictionary.getMergedDictionaries()).selectMany(System.Windows.ResourceDictionary.getMergedDictionariesKeys));
             },
             loadResourceDictionary: function (source) {
                 return Bridge.as(System.Windows.Application.loadComponent(source), System.Windows.ResourceDictionary);
@@ -14113,22 +13909,17 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             "removeResourcesChanged", "System$Windows$IResourceContainer$removeResourcesChanged",
             "getBaseUri", "System$Windows$Markup$IUriContext$getBaseUri",
             "setBaseUri", "System$Windows$Markup$IUriContext$setBaseUri",
-            "getCount", "System$Collections$Generic$ICollection$1$System$Collections$Generic$KeyValuePair$2$Object$Object$getCount",
-            "getIsEmpty", "System$Windows$IResourceContainer$getIsEmpty",
-            "getKeys", "System$Collections$Generic$IDictionary$2$Object$Object$getKeys",
-            "getValues", "System$Collections$Generic$IDictionary$2$Object$Object$getValues",
+            "getCount", "System$Collections$Generic$IDictionary$2$Object$Object$getCount",
             "getItem", "System$Collections$Generic$IDictionary$2$Object$Object$getItem",
             "setItem", "System$Collections$Generic$IDictionary$2$Object$Object$setItem",
-            "getIsReadOnly", "System$Collections$Generic$ICollection$1$System$Collections$Generic$KeyValuePair$2$Object$Object$getIsReadOnly",
             "tryGetValue", "System$Collections$Generic$IDictionary$2$Object$Object$tryGetValue",
-            "add", "System$Collections$Generic$IDictionary$2$Object$Object$add",
-            "clear", "System$Collections$Generic$ICollection$1$System$Collections$Generic$KeyValuePair$2$Object$Object$clear"
+            "add", "System$Collections$Generic$IDictionary$2$Object$Object$add"
             ]
         },
         ctor: function () {
             this.$initialize();
             this.setMergedDictionaries(new (Granular.Collections.ObservableCollection$1(System.Windows.ResourceDictionary)).ctor());
-            this.getMergedDictionaries().addCollectionChanged(Bridge.fn.cacheBind(this, this.onMergedDictionariesCollectionChanged));
+            this.getMergedDictionaries().addCollectionChanged(Bridge.fn.bind(this, this.onMergedDictionariesCollectionChanged));
 
             this.dictionary = new (System.Collections.Generic.Dictionary$2(Object,Object))();
         },
@@ -14152,15 +13943,12 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
         },
         getCount: function () {
-            return this.dictionary.getCount();
+            return ((this.dictionary.getCount() + System.Linq.Enumerable.from(this.getMergedDictionaries()).select($asm.$.System.Windows.ResourceDictionary.f1).defaultIfEmpty(0).sum()) | 0);
         },
-        getIsEmpty: function () {
-            return this.getCount() === 0 && System.Linq.Enumerable.from(this.getMergedDictionaries()).all($asm.$.System.Windows.ResourceDictionary.f1);
-        },
-        getKeys: function () {
+        System$Collections$Generic$IDictionary$2$Object$Object$getKeys: function () {
             return this.dictionary.getKeys();
         },
-        getValues: function () {
+        System$Collections$Generic$IDictionary$2$Object$Object$getValues: function () {
             return this.dictionary.getValues();
         },
         getItem: function (key) {
@@ -14184,10 +13972,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         tryGetValue: function (key, value) {
             var $t;
             if (this.dictionary.tryGetValue(key, value)) {
-                if (Bridge.is(value.v, System.Windows.Markup.IValueProvider)) {
-                    value.v = Bridge.cast(value.v, System.Windows.Markup.IValueProvider).System$Windows$Markup$IValueProvider$provideValue();
-                }
-
                 return true;
             }
 
@@ -14206,7 +13990,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.dictionary.set(key, value);
             Granular.Extensions.EventHandlerExtensions.raise$4(System.Windows.ResourcesChangedEventArgs, this.ResourcesChanged, this, System.Windows.ResourcesChangedEventArgs.fromKey(key));
         },
-        System$Collections$Generic$ICollection$1$System$Collections$Generic$KeyValuePair$2$Object$Object$add: function (item) {
+        add$1: function (item) {
             this.add(item.key, item.value);
         },
         clear: function () {
@@ -14214,16 +13998,14 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.dictionary.clear();
             Granular.Extensions.EventHandlerExtensions.raise$4(System.Windows.ResourcesChangedEventArgs, this.ResourcesChanged, this, e);
         },
-        contains: function (key) {
-            return System.Array.contains(this.dictionary.getKeys(), key, Object) || System.Linq.Enumerable.from(this.getMergedDictionaries()).any(function (d) {
-                    return System.Array.contains(Bridge.cast(d, System.Collections.Generic.IDictionary$2(Object,Object)).System$Collections$Generic$IDictionary$2$Object$Object$getKeys(), key, Object);
-                });
+        contains$1: function (key) {
+            return System.Array.contains(this.dictionary.getKeys(), key, Object) || System.Linq.Enumerable.from(this.getMergedDictionaries()).selectMany($asm.$.System.Windows.ResourceDictionary.f2).contains(key);
         },
-        System$Collections$Generic$ICollection$1$System$Collections$Generic$KeyValuePair$2$Object$Object$contains: function (item) {
+        contains: function (item) {
             var value = { };
             return this.tryGetValue(item.key, value) && Bridge.referenceEquals(item.value, value.v);
         },
-        remove: function (key) {
+        remove$1: function (key) {
             if (this.dictionary.remove(key)) {
                 Granular.Extensions.EventHandlerExtensions.raise$4(System.Windows.ResourcesChangedEventArgs, this.ResourcesChanged, this, System.Windows.ResourcesChangedEventArgs.fromKey(key));
                 return true;
@@ -14232,10 +14014,10 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return false;
         },
         System$Collections$Generic$IDictionary$2$Object$Object$remove: function (key) {
-            return this.remove(key);
+            return this.remove$1(key);
         },
-        System$Collections$Generic$ICollection$1$System$Collections$Generic$KeyValuePair$2$Object$Object$remove: function (item) {
-            return System.Array.contains(Bridge.cast(this, System.Collections.Generic.ICollection$1(System.Collections.Generic.KeyValuePair$2(Object,Object))), item, System.Collections.Generic.KeyValuePair$2(Object,Object)) && this.remove(item.key);
+        remove: function (item) {
+            return System.Array.contains(Bridge.cast(this, System.Collections.Generic.ICollection$1(System.Collections.Generic.KeyValuePair$2(Object,Object))), item, System.Collections.Generic.KeyValuePair$2(Object,Object)) && this.remove$1(item.key);
         },
         System$Collections$IEnumerable$getEnumerator: function () {
             return this.dictionary.getEnumerator();
@@ -14248,13 +14030,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             $t = Bridge.getEnumerator(e.getOldItems(), Object);
             while ($t.moveNext()) {
                 var dictionary = Bridge.cast($t.getCurrent(), System.Windows.ResourceDictionary);
-                dictionary.removeResourcesChanged(Bridge.fn.cacheBind(this, this.onMergeDictionaryResourcesChanged));
+                dictionary.removeResourcesChanged(Bridge.fn.bind(this, this.onMergeDictionaryResourcesChanged));
             }
 
             $t1 = Bridge.getEnumerator(e.getNewItems(), Object);
             while ($t1.moveNext()) {
                 var dictionary1 = Bridge.cast($t1.getCurrent(), System.Windows.ResourceDictionary);
-                dictionary1.addResourcesChanged(Bridge.fn.cacheBind(this, this.onMergeDictionaryResourcesChanged));
+                dictionary1.addResourcesChanged(Bridge.fn.bind(this, this.onMergeDictionaryResourcesChanged));
             }
 
             if (e.getAction() !== Granular.Collections.NotifyCollectionChangedAction.Move) {
@@ -14269,9 +14051,9 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return this.tryGetValue(resourceKey, value);
         },
         System$Collections$Generic$IDictionary$2$Object$Object$containsKey: function (key) {
-            return this.contains(key);
+            return this.contains$1(key);
         },
-        System$Collections$Generic$ICollection$1$System$Collections$Generic$KeyValuePair$2$Object$Object$copyTo: function (array, arrayIndex) {
+        copyTo: function (array, arrayIndex) {
             var $t;
             ($t=System.Linq.Enumerable.from(this.dictionary).toArray(), System.Array.copy($t, 0, array, arrayIndex, $t.length));
         }
@@ -14280,8 +14062,11 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
     Bridge.ns("System.Windows.ResourceDictionary", $asm.$);
 
     Bridge.apply($asm.$.System.Windows.ResourceDictionary, {
-        f1: function (dictionary) {
-            return dictionary.getIsEmpty();
+        f1: function (mergedDictionary) {
+            return mergedDictionary.getCount();
+        },
+        f2: function (d) {
+            return System.Collections.Generic.DictionaryExtensions.getKeys(Object, Object, d);
         }
     });
 
@@ -14319,13 +14104,14 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             var text = value.toString().trim();
 
             var eventName = System.Windows.Markup.XamlName.fromPrefixedName(text, namespaces);
-            var containingType = System.Windows.Markup.XamlNameExtensions.resolveContainingType(eventName, null);
 
-            if (containingType == null) {
+            if (!eventName.getIsMemberName()) {
                 throw new Granular.Exception("Invalid routed event name \"{0}\"", [eventName.getLocalName()]);
             }
 
-            var routedEvent = System.Windows.EventManager.getEvent(containingType, eventName.getMemberName());
+            var containingType = System.Windows.Markup.TypeParser.parseType$1(eventName.getContainingTypeName());
+
+            var routedEvent = System.Windows.EventManager.findRoutedEvent(containingType, eventName.getMemberName());
 
             if (routedEvent == null) {
                 throw new Granular.Exception("Can't find a routed event named \"{0}\"", [eventName]);
@@ -14472,7 +14258,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
     Bridge.define("System.Windows.StyleKey", {
         inherits: [System.Windows.IResourceKey],
-        hashCode: 0,
         config: {
             properties: {
                 TargetType: null
@@ -14484,8 +14269,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctor: function (targetType) {
             this.$initialize();
             this.setTargetType(targetType);
-
-            this.hashCode = Bridge.getHashCode(this.getTargetType());
         },
         getAssembly: function () {
             return this.getTargetType() != null ? Bridge.Reflection.getTypeAssembly(this.getTargetType()) : null;
@@ -14496,43 +14279,10 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return Bridge.referenceEquals(this, other) || !Bridge.referenceEquals(other, null) && Bridge.equals(this.getTargetType(), other.getTargetType());
         },
         getHashCode: function () {
-            return this.hashCode;
+            return Bridge.getHashCode(this.getTargetType());
         },
         toString: function () {
             return System.String.format("StyleKey({0})", Bridge.Reflection.getTypeName(this.getTargetType()));
-        }
-    });
-
-    Bridge.define("System.Windows.StyleKeyProvider", {
-        inherits: [System.Windows.Markup.IDeferredValueKeyProvider],
-        config: {
-            alias: [
-            "getValueKey", "System$Windows$Markup$IDeferredValueKeyProvider$getValueKey"
-            ]
-        },
-        getValueKey: function (element) {
-            var keyMember = System.Linq.Enumerable.from(element.getMembers()).singleOrDefault($asm.$.System.Windows.StyleKeyProvider.f1, null);
-            if (keyMember != null) {
-                return System.Windows.Markup.ElementFactory.fromValue(System.Linq.Enumerable.from(keyMember.getValues()).single(), Object, element.getNamespaces(), element.getSourceUri()).System$Windows$Markup$IElementFactory$createElement(new System.Windows.Markup.InitializeContext.ctor());
-            }
-
-            var targetTypeMember = System.Linq.Enumerable.from(element.getMembers()).singleOrDefault($asm.$.System.Windows.StyleKeyProvider.f2, null);
-            if (targetTypeMember != null) {
-                return new System.Windows.StyleKey(Bridge.cast(System.Windows.Markup.ElementFactory.fromValue(System.Linq.Enumerable.from(targetTypeMember.getValues()).single(), Function, element.getNamespaces(), element.getSourceUri()).System$Windows$Markup$IElementFactory$createElement(new System.Windows.Markup.InitializeContext.ctor()), Function));
-            }
-
-            throw new Granular.Exception(System.String.format("Can't create value key from \"{0}\"", element.getName()));
-        }
-    });
-
-    Bridge.ns("System.Windows.StyleKeyProvider", $asm.$);
-
-    Bridge.apply($asm.$.System.Windows.StyleKeyProvider, {
-        f1: function (member) {
-            return Bridge.referenceEquals(member.getName().getLocalName(), "Key");
-        },
-        f2: function (member) {
-            return Bridge.referenceEquals(member.getName().getLocalName(), "TargetType");
         }
     });
 
@@ -14540,58 +14290,43 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         inherits: [System.Windows.IResourceContainer],
         statics: {
             ThemeName: "Generic",
-            ThemeNameAndColor: "Generic",
-            resolveAssemblyThemeResources: function (assembly, value) {
-                var themeInfoAttribute = Granular.Extensions.AssemblyExtensions.firstOrDefaultCustomAttributeCached(System.Windows.ThemeInfoAttribute, assembly);
-
-                if (themeInfoAttribute == null || themeInfoAttribute.getGenericDictionaryLocation() === System.Windows.ResourceDictionaryLocation.None) {
-                    value.v = null;
-                    return false;
-                }
-
-                var themeResourcesAssemblyName = themeInfoAttribute.getGenericDictionaryLocation() === System.Windows.ResourceDictionaryLocation.SourceAssembly ? System.AssemblyExtensions.getName(assembly).getName() : System.String.format("{0}.{1}", System.AssemblyExtensions.getName(assembly).getName(), System.Windows.SystemResources.ThemeName);
-
-                value.v = Bridge.cast(System.Windows.EmbeddedResourceLoader.loadResourceElement(Granular.Compatibility.Uri.createAbsoluteUri(System.String.format("pack://application:,,,/{0};component/Themes/{1}.xaml", themeResourcesAssemblyName, System.Windows.SystemResources.ThemeNameAndColor))), System.Windows.ResourceDictionary);
-                return true;
-            }
+            ThemeNameAndColor: "Generic"
         },
-        themeResourcesCache: null,
+        resourcesCache: null,
         config: {
             alias: [
-            "getIsEmpty", "System$Windows$IResourceContainer$getIsEmpty",
             "tryGetResource", "System$Windows$IResourceContainer$tryGetResource"
             ]
         },
         ctor: function () {
             this.$initialize();
-            this.themeResourcesCache = Granular.Collections.CacheDictionary$2(System.Reflection.Assembly,System.Windows.ResourceDictionary).createUsingStringKeys$1(System.Windows.SystemResources.resolveAssemblyThemeResources, $asm.$.System.Windows.SystemResources.f1);
-        },
-        getIsEmpty: function () {
-            return false;
+            this.resourcesCache = new (Granular.Collections.CacheDictionary$2(Object,Object)).$ctor2(Bridge.fn.bind(this, this.tryResolveResource));
         },
         System$Windows$IResourceContainer$addResourcesChanged: function (value) {
         },
         System$Windows$IResourceContainer$removeResourcesChanged: function (value) {
         },
         tryGetResource: function (resourceKey, value) {
-            var $t;
+            return this.resourcesCache.tryGetValue(resourceKey, value);
+        },
+        tryResolveResource: function (resourceKey, value) {
             value.v = null;
 
-            var assembly = ($t = (Bridge.as(resourceKey, System.Windows.IResourceKey))) != null ? $t.System$Windows$IResourceKey$getAssembly() : null;
-            if (assembly == null) {
+            if (!(Bridge.is(resourceKey, System.Windows.IResourceKey)) || Bridge.cast(resourceKey, System.Windows.IResourceKey).System$Windows$IResourceKey$getAssembly() == null) {
                 return false;
             }
 
-            var themeResources = { };
-            return this.themeResourcesCache.tryGetValue(assembly, themeResources) && themeResources.v.tryGetValue(resourceKey, value);
-        }
-    });
+            var assembly = Bridge.cast(resourceKey, System.Windows.IResourceKey).System$Windows$IResourceKey$getAssembly();
+            var themeInfoAttribute = Granular.Extensions.AssemblyExtensions.firstOrDefaultCustomAttributeCached(System.Windows.ThemeInfoAttribute, assembly);
 
-    Bridge.ns("System.Windows.SystemResources", $asm.$);
+            if (themeInfoAttribute == null || themeInfoAttribute.getGenericDictionaryLocation() === System.Windows.ResourceDictionaryLocation.None) {
+                return false;
+            }
 
-    Bridge.apply($asm.$.System.Windows.SystemResources, {
-        f1: function (assembly) {
-            return assembly.name;
+            var assemblyName = themeInfoAttribute.getGenericDictionaryLocation() === System.Windows.ResourceDictionaryLocation.SourceAssembly ? System.AssemblyExtensions.getName(assembly).getName() : System.String.format("{0}.{1}", System.AssemblyExtensions.getName(assembly).getName(), System.Windows.SystemResources.ThemeName);
+
+            var resourceDictionary = Bridge.cast(System.Windows.EmbeddedResourceLoader.loadResourceElement(Granular.Compatibility.Uri.createAbsoluteUri(System.String.format("pack://application:,,,/{0};component/Themes/{1}.xaml", assemblyName, System.Windows.SystemResources.ThemeNameAndColor))), System.Windows.ResourceDictionary);
+            return resourceDictionary.tryGetValue(resourceKey, value);
         }
     });
 
@@ -14609,7 +14344,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         provideValue: function (context) {
             return Bridge.merge(new System.Windows.Data.Binding(), {
-                setPath: new System.Windows.PropertyPath(System.Array.init([this.getProperty()], System.Windows.IPropertyPathElement)),
+                setPath: new System.Windows.PropertyPath([this.getProperty()]),
                 setRelativeSource: Bridge.merge(new System.Windows.Data.RelativeSource(), {
                     setMode: System.Windows.Data.RelativeSourceMode.TemplatedParent
                 } ),
@@ -14621,7 +14356,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
     Bridge.define("System.Windows.TemplateKey", {
         inherits: [System.Windows.IResourceKey],
-        hashCode: 0,
         config: {
             properties: {
                 TargetType: null
@@ -14633,7 +14367,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctor: function (targetType) {
             this.$initialize();
             this.setTargetType(targetType);
-            this.hashCode = Bridge.getHashCode(targetType);
         },
         getAssembly: function () {
             return this.getTargetType() != null ? Bridge.Reflection.getTypeAssembly(this.getTargetType()) : null;
@@ -14644,7 +14377,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return Bridge.referenceEquals(this, other) || !Bridge.referenceEquals(other, null) && Bridge.equals(this.getTargetType(), other.getTargetType());
         },
         getHashCode: function () {
-            return this.hashCode;
+            return Bridge.getHashCode(this.getTargetType());
         },
         toString: function () {
             return System.String.format("TemplateKey({0})", Bridge.Reflection.getTypeName(this.getTargetType()));
@@ -14723,10 +14456,10 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         register: function () {
             this.setIsMatched(Granular.Compatibility.EqualityComparer.default.equals2(this.element.getValue(this.property), this.value));
 
-            this.element.addPropertyChanged(Bridge.fn.cacheBind(this, this.onPropertyChanged));
+            this.element.addPropertyChanged(Bridge.fn.bind(this, this.onPropertyChanged));
         },
         dispose: function () {
-            this.element.removePropertyChanged(Bridge.fn.cacheBind(this, this.onPropertyChanged));
+            this.element.removePropertyChanged(Bridge.fn.bind(this, this.onPropertyChanged));
         },
         onPropertyChanged: function (sender, e) {
             if (!Bridge.referenceEquals(e.getProperty(), this.property)) {
@@ -14808,7 +14541,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             config: {
                 init: function () {
                     this.opacityProperty = System.Windows.DependencyProperty.register("Opacity", System.Double, System.Windows.UIElement, new System.Windows.FrameworkPropertyMetadata.$ctor6(1.0, $asm.$.System.Windows.UIElement.f14));
-                    this.visibilityProperty = System.Windows.DependencyProperty.register("Visibility", System.Windows.Visibility, System.Windows.UIElement, new System.Windows.FrameworkPropertyMetadata.$ctor3(System.Windows.Visibility.Visible, System.Windows.FrameworkPropertyMetadataOptions.AffectsParentMeasure, $asm.$.System.Windows.UIElement.f15));
+                    this.visibilityProperty = System.Windows.DependencyProperty.register("Visibility", System.Windows.Visibility, System.Windows.UIElement, new System.Windows.FrameworkPropertyMetadata.$ctor3(System.Windows.Visibility.Visible, System.Windows.FrameworkPropertyMetadataOptions.AffectsMeasure, $asm.$.System.Windows.UIElement.f15));
                     this.isVisiblePropertyKey = System.Windows.DependencyProperty.registerReadOnly("IsVisible", Boolean, System.Windows.UIElement, new System.Windows.FrameworkPropertyMetadata.$ctor7(true, $asm.$.System.Windows.UIElement.f16, $asm.$.System.Windows.UIElement.f17));
                     this.isVisibleProperty = System.Windows.UIElement.isVisiblePropertyKey.getDependencyProperty();
                     this.isEnabledProperty = System.Windows.DependencyProperty.register("IsEnabled", Boolean, System.Windows.UIElement, new System.Windows.FrameworkPropertyMetadata.$ctor7(true, $asm.$.System.Windows.UIElement.f18, $asm.$.System.Windows.UIElement.f19));
@@ -14859,6 +14592,23 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     Bridge.cast(element, System.Windows.UIElement).removeHandler(routedEvent, handler);
                 }
             },
+            getClosestLogicalChild: function (rootElement, childElement) {
+                while (!Bridge.referenceEquals(childElement, rootElement) && childElement != null) {
+                    var element = childElement;
+
+                    while (element != null) {
+                        if (Bridge.referenceEquals(element, rootElement)) {
+                            return childElement;
+                        }
+
+                        element = element.getLogicalParent();
+                    }
+
+                    childElement = Bridge.as(childElement.getVisualParent(), System.Windows.UIElement);
+                }
+
+                return childElement;
+            },
             onMouseEnter: function (sender, e) {
                 Bridge.cast(sender, System.Windows.UIElement).setIsMouseOver(true);
                 Bridge.cast(sender, System.Windows.UIElement).onMouseEnter(e);
@@ -14887,6 +14637,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
         },
         logicalParent: null,
+        desiredSize: null,
         logicalChildren: null,
         isRootElement: false,
         animatableRootClock: null,
@@ -14903,7 +14654,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             properties: {
                 IsMeasureValid: false,
                 IsArrangeValid: false,
-                DesiredSize: null,
                 LogicalChildren: null,
                 PreviousAvailableSize: null,
                 PreviousFinalRect: null
@@ -14921,10 +14671,9 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.logicalChildren = new (System.Collections.Generic.List$1(Object))();
             this.setLogicalChildren(new (System.Collections.ObjectModel.ReadOnlyCollection$1(Object))(this.logicalChildren));
             this.routedEventHandlers = new (Granular.Collections.ListDictionary$2(System.Windows.RoutedEvent,System.Windows.RoutedEventHandlerItem))();
-            this.routedEventHandlersCache = Granular.Collections.CacheDictionary$2(System.Windows.RoutedEvent,System.Collections.Generic.IEnumerable$1(System.Windows.RoutedEventHandlerItem)).createUsingStringKeys(Bridge.fn.cacheBind(this, this.resolveRoutedEventHandlers), $asm.$.System.Windows.UIElement.f26);
-            this.setDesiredSize(System.Windows.Size.zero);
+            this.routedEventHandlersCache = new (Granular.Collections.CacheDictionary$2(System.Windows.RoutedEvent,System.Collections.Generic.IEnumerable$1(System.Windows.RoutedEventHandlerItem))).ctor(Bridge.fn.bind(this, this.resolveRoutedEventHandlers));
             this.setPreviousFinalRect(System.Windows.Rect.empty);
-            this.setPreviousAvailableSize(System.Windows.Size.infinity);
+            this.setPreviousAvailableSize(System.Windows.Size.empty);
             this.previousDesiredSize = System.Windows.Size.empty;
 
             this.setVisualClipToBounds(this.getClipToBounds());
@@ -14932,7 +14681,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.setVisualIsVisible(this.getIsVisible());
             this.setVisualOpacity(this.getOpacity());
 
-            this.disableMeasureInvalidationToken = new Granular.Disposable(Bridge.fn.bind(this, $asm.$.System.Windows.UIElement.f27));
+            this.disableMeasureInvalidationToken = new Granular.Disposable(Bridge.fn.bind(this, $asm.$.System.Windows.UIElement.f26));
         },
         getLogicalParent: function () {
             return this.logicalParent;
@@ -14946,6 +14695,19 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.logicalParent = value;
             this.setInheritanceParent$1();
             this.onLogicalParentChanged(oldLogicalParent, this.logicalParent);
+        },
+        getDesiredSize: function () {
+            return this.desiredSize;
+        },
+        setDesiredSize: function (value) {
+            if (System.Windows.Size.op_Equality(this.desiredSize, value)) {
+                return;
+            }
+
+            this.desiredSize = value;
+            if (this.getVisualParent() != null) {
+                Bridge.cast(this.getVisualParent(), System.Windows.UIElement).invalidateMeasure();
+            }
         },
         getRenderSize: function () {
             return this.getVisualSize();
@@ -15214,20 +14976,22 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.routedEventHandlersCache.remove(routedEvent);
         },
         raiseEvent: function (e) {
-            var eventRoute = new System.Windows.EventRoute(e.getRoutedEvent(), this.getEventRouteItems(e.getRoutedEvent(), this, this));
+            var eventRoute = new System.Windows.EventRoute(e.getRoutedEvent(), this.getEventRouteItems(e.getRoutedEvent(), this));
             e.setSource(this);
             eventRoute.invokeHandlers(e);
         },
-        getEventRouteItems: function (routedEvent, originalSource, logicalSource) {
+        getEventRouteItems: function (routedEvent, originalSource) {
+            var logicalSource = System.Windows.UIElement.getClosestLogicalChild(this, originalSource);
+
             var items = System.Linq.Enumerable.from(this.getRoutedEventHandlers(routedEvent)).select(Bridge.fn.bind(this, function (handler) {
                     return new System.Windows.EventRouteItem(handler, originalSource, logicalSource, this);
                 }));
 
             if (routedEvent.getRoutingStrategy() === System.Windows.RoutingStrategy.Bubble || routedEvent.getRoutingStrategy() === System.Windows.RoutingStrategy.Tunnel) {
-                var visualParent = Bridge.as(this.getVisualParent(), System.Windows.UIElement);
+                var parent = Bridge.as(this.getVisualParent(), System.Windows.UIElement);
 
-                if (visualParent != null) {
-                    var parentItems = visualParent.getEventRouteItems(routedEvent, originalSource, !Bridge.referenceEquals(this.getLogicalParent(), visualParent) ? visualParent : logicalSource);
+                if (parent != null) {
+                    var parentItems = parent.getEventRouteItems(routedEvent, this);
 
                     if (routedEvent.getRoutingStrategy() === System.Windows.RoutingStrategy.Bubble) {
                         items = System.Linq.Enumerable.from(items).concat(parentItems);
@@ -15243,10 +15007,10 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return this.routedEventHandlersCache.getValue(routedEvent);
         },
         resolveRoutedEventHandlers: function (routedEvent) {
-            return System.Linq.Enumerable.from(routedEvent.getClassHandlers(Bridge.getType(this))).concat(this.getRoutedEventHandlersOverride(routedEvent)).concat(this.routedEventHandlers.getValues(routedEvent)).toArray();
+            return System.Linq.Enumerable.from(System.Windows.EventManager.getFlattenedClassHandlers(Bridge.getType(this), routedEvent)).concat(this.getRoutedEventHandlersOverride(routedEvent)).concat(this.routedEventHandlers.getValues(routedEvent)).toArray();
         },
         getRoutedEventHandlersOverride: function (routedEvent) {
-            return System.Array.init(0, null, System.Windows.RoutedEventHandlerItem);
+            return System.Array.init(0, null);
         },
         updateLayout: function () {
             System.Windows.LayoutManager.current.updateLayout();
@@ -15258,17 +15022,25 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 $t1 = this.disableMeasureInvalidation();
                 try {
                     if (this.getVisibility() === System.Windows.Visibility.Collapsed) {
+                        System.Windows.LayoutManager.current.removeMeasure(this);
                         this.setDesiredSize(System.Windows.Size.zero);
-                    } else if (this.getIsMeasureValid() && System.Windows.SizeExtensions.isClose(this.getPreviousAvailableSize(), availableSize)) {
-                        this.setDesiredSize(this.previousDesiredSize);
-                    } else {
-                        this.setDesiredSize(this.measureCore(availableSize));
-
-                        this.setPreviousAvailableSize(availableSize);
-                        this.previousDesiredSize = this.getDesiredSize();
+                        return;
                     }
 
+                    if (this.getIsMeasureValid() && System.Windows.SizeExtensions.isClose(this.getPreviousAvailableSize(), availableSize)) {
+                        System.Windows.LayoutManager.current.removeMeasure(this);
+                        this.setDesiredSize(this.previousDesiredSize);
+                        return;
+                    }
+
+                    this.invalidateArrange();
+
+                    this.setDesiredSize(this.measureCore(availableSize));
+
                     this.setIsMeasureValid(true);
+
+                    this.setPreviousAvailableSize(availableSize);
+                    this.previousDesiredSize = this.getDesiredSize();
                     System.Windows.LayoutManager.current.removeMeasure(this);
                 }
                 finally {
@@ -15287,17 +15059,12 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return System.Windows.Size.empty;
         },
         invalidateMeasure: function () {
-            if (this.disableMeasureInvalidationRequests > 0 || !this.getIsMeasureValid()) {
+            if (this.disableMeasureInvalidationRequests > 0 || !this.getIsMeasureValid() && !this.getPreviousAvailableSize().getIsEmpty()) {
                 return;
             }
 
             this.setIsMeasureValid(false);
             System.Windows.LayoutManager.current.addMeasure(this);
-        },
-        invalidateParentMeasure: function () {
-            if (this.getVisualParent() != null) {
-                Bridge.cast(this.getVisualParent(), System.Windows.UIElement).invalidateMeasure();
-            }
         },
         arrange: function (finalRect) {
             var $t, $t1;
@@ -15305,12 +15072,17 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             try {
                 $t1 = this.disableMeasureInvalidation();
                 try {
-                    if (this.getVisibility() !== System.Windows.Visibility.Visible || this.getIsArrangeValid() && System.Windows.RectExtensions.isClose(finalRect, this.getPreviousFinalRect())) {
+                    if (this.getVisibility() === System.Windows.Visibility.Collapsed) {
                         System.Windows.LayoutManager.current.removeArrange(this);
                         return;
                     }
 
-                    if (!this.getIsMeasureValid()) {
+                    if (this.getIsArrangeValid() && System.Windows.RectExtensions.isClose(finalRect, this.getPreviousFinalRect())) {
+                        System.Windows.LayoutManager.current.removeArrange(this);
+                        return;
+                    }
+
+                    if (!this.getIsMeasureValid() || !System.Windows.SizeExtensions.isClose(this.getPreviousAvailableSize(), finalRect.getSize())) {
                         this.measure(finalRect.getSize());
                     }
 
@@ -15337,17 +15109,12 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             //
         },
         invalidateArrange: function () {
-            if (!this.getIsArrangeValid()) {
+            if (!this.getIsArrangeValid() && !this.getPreviousFinalRect().getIsEmpty()) {
                 return;
             }
 
             this.setIsArrangeValid(false);
             System.Windows.LayoutManager.current.addArrange(this);
-        },
-        invalidateParentArrange: function () {
-            if (this.getVisualParent() != null) {
-                Bridge.cast(this.getVisualParent(), System.Windows.UIElement).invalidateArrange();
-            }
         },
         disableMeasureInvalidation: function () {
             this.disableMeasureInvalidationRequests = (this.disableMeasureInvalidationRequests + 1) | 0;
@@ -15361,11 +15128,11 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             //
         },
         onVisualParentChanged: function (oldVisualParent, newVisualParent) {
+            this.setInheritanceParent$1();
+
             this.coerceValue(System.Windows.UIElement.isVisibleProperty);
             this.coerceValue(System.Windows.UIElement.isEnabledProperty);
             this.coerceValue(System.Windows.UIElement.isHitTestVisibleProperty);
-
-            this.setInheritanceParent$1();
 
             if (oldVisualParent != null) {
                 Bridge.cast(oldVisualParent, System.Windows.UIElement).invalidateMeasure();
@@ -15457,7 +15224,15 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
         },
         onVisibilityChanged: function (e) {
-            this.setDesiredSize(this.getVisibility() === System.Windows.Visibility.Collapsed ? System.Windows.Size.zero : this.previousDesiredSize);
+            if (this.getVisibility() !== System.Windows.Visibility.Collapsed) {
+                if (!this.getIsMeasureValid()) {
+                    System.Windows.LayoutManager.current.addMeasure(this);
+                }
+
+                if (!this.getIsArrangeValid()) {
+                    System.Windows.LayoutManager.current.addArrange(this);
+                }
+            }
 
             this.setIsVisible(this.getVisibility() === System.Windows.Visibility.Visible);
         },
@@ -15687,10 +15462,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         f25: function (sender, e) {
             Bridge.cast(sender, System.Windows.UIElement).onRenderTransformOriginChanged(e);
         },
-        f26: function (routedEvent) {
-            return routedEvent.getStringKey();
-        },
-        f27: function () {
+        f26: function () {
             Bridge.identity(this.disableMeasureInvalidationRequests, (this.disableMeasureInvalidationRequests = (this.disableMeasureInvalidationRequests - 1) | 0));
         }
     });
@@ -15741,7 +15513,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return System.Nullable.getValue(Bridge.cast(this.actualWidthValueEntry.System$Windows$IDependencyPropertyValueEntry$getValue(), System.Double));
         },
         setActualWidth: function (value) {
-            System.Windows.DependencyPropertyValueEntryExtensions.setBaseValue(this.actualWidthValueEntry, System.Windows.BaseValueSource.Local, value);
+            System.Windows.DependencyPropertyValueEntryExtensions.setBaseValue(this.actualWidthValueEntry, 11, value);
         },
         System$Windows$Controls$IDefinitionBase$getActualLength: function () {
             return this.getActualWidth();
@@ -15763,6 +15535,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
     Bridge.define("System.Windows.Controls.ControlTemplate", {
         inherits: [System.Windows.FrameworkTemplate],
         targetType: null,
+        key: null,
         ctor: function () {
             this.$initialize();
             System.Windows.FrameworkTemplate.ctor.call(this);
@@ -15777,6 +15550,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             this.targetType = value;
+        },
+        getKey: function () {
+            var $t;
+            return ($t = this.key, $t != null ? $t : new System.Windows.TemplateKey(this.getTargetType()));
+        },
+        setKey: function (value) {
+            this.key = value;
         }
     });
 
@@ -15830,7 +15610,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return System.Nullable.getValue(Bridge.cast(this.actualHeightValueEntry.System$Windows$IDependencyPropertyValueEntry$getValue(), System.Double));
         },
         setActualHeight: function (value) {
-            System.Windows.DependencyPropertyValueEntryExtensions.setBaseValue(this.actualHeightValueEntry, System.Windows.BaseValueSource.Local, value);
+            System.Windows.DependencyPropertyValueEntryExtensions.setBaseValue(this.actualHeightValueEntry, 11, value);
         },
         System$Windows$Controls$IDefinitionBase$getActualLength: function () {
             return this.getActualHeight();
@@ -15943,7 +15723,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.disableTargetUpdate = new Granular.ReentrancyLock();
 
             this.targetValue = new System.Windows.Data.ObservableValue.$ctor1(this.getTarget().getValue(this.getTargetProperty()));
-            this.targetValue.addValueChanged(Bridge.fn.cacheBind(this, this.onTargetValueChanged));
+            this.targetValue.addValueChanged(Bridge.fn.bind(this, this.onTargetValueChanged));
 
             var resolvedBindingMode = this.getMode() === System.Windows.Data.BindingMode.Default ? System.Windows.Data.BindingExpression.getDefaultBindingMode(this.getTarget(), this.getTargetProperty()) : this.getMode();
 
@@ -15964,7 +15744,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             if (this.getUpdateSourceTrigger() === System.Windows.Data.UpdateSourceTrigger.LostFocus && this.isSourceUpdateMode && Bridge.is(this.getTarget(), System.Windows.UIElement)) {
-                Bridge.cast(this.getTarget(), System.Windows.UIElement).addLostFocus(Bridge.fn.cacheBind(this, this.onLostFocus));
+                Bridge.cast(this.getTarget(), System.Windows.UIElement).addLostFocus(Bridge.fn.bind(this, this.onLostFocus));
             }
         },
         getValue: function () {
@@ -15978,7 +15758,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             if (this.getUpdateSourceTrigger() === System.Windows.Data.UpdateSourceTrigger.LostFocus && this.isSourceUpdateMode && Bridge.is(this.getTarget(), System.Windows.UIElement)) {
-                Bridge.cast(this.getTarget(), System.Windows.UIElement).removeLostFocus(Bridge.fn.cacheBind(this, this.onLostFocus));
+                Bridge.cast(this.getTarget(), System.Windows.UIElement).removeLostFocus(Bridge.fn.bind(this, this.onLostFocus));
             }
 
             this.setTarget(null);
@@ -16122,7 +15902,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 return false;
             }
 
-            Bridge.Reflection.midel(this.propertySetMethod, this.baseValue).apply(null, System.Linq.Enumerable.from(this.index).concat(System.Array.init([value], Object)).toArray());
+            Bridge.Reflection.midel(this.propertySetMethod, this.baseValue).apply(null, System.Linq.Enumerable.from(this.index).concat([value]).toArray());
             this.observableValue.setBaseValue(this.getValue$1());
             return true;
         },
@@ -16135,11 +15915,11 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         registerNotifiers: function () {
             if (this.currentPropertyNotifier != null) {
-                this.currentPropertyNotifier.System$ComponentModel$INotifyPropertyChanged$removePropertyChanged(Bridge.fn.cacheBind(this, this.onNotifierPropertyChanged));
+                this.currentPropertyNotifier.System$ComponentModel$INotifyPropertyChanged$removePropertyChanged(Bridge.fn.bind(this, this.onNotifierPropertyChanged));
             }
 
             if (this.currentCollectionNotifier != null) {
-                this.currentCollectionNotifier.Granular$Collections$INotifyCollectionChanged$removeCollectionChanged(Bridge.fn.cacheBind(this, this.onNotifierCollectionChanged));
+                this.currentCollectionNotifier.Granular$Collections$INotifyCollectionChanged$removeCollectionChanged(Bridge.fn.bind(this, this.onNotifierCollectionChanged));
             }
 
             this.currentPropertyNotifier = Bridge.as(this.baseValue, System.ComponentModel.INotifyPropertyChanged);
@@ -16149,11 +15929,11 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             if (this.currentPropertyNotifier != null) {
-                this.currentPropertyNotifier.System$ComponentModel$INotifyPropertyChanged$addPropertyChanged(Bridge.fn.cacheBind(this, this.onNotifierPropertyChanged));
+                this.currentPropertyNotifier.System$ComponentModel$INotifyPropertyChanged$addPropertyChanged(Bridge.fn.bind(this, this.onNotifierPropertyChanged));
             }
 
             if (this.currentCollectionNotifier != null) {
-                this.currentCollectionNotifier.Granular$Collections$INotifyCollectionChanged$addCollectionChanged(Bridge.fn.cacheBind(this, this.onNotifierCollectionChanged));
+                this.currentCollectionNotifier.Granular$Collections$INotifyCollectionChanged$addCollectionChanged(Bridge.fn.bind(this, this.onNotifierCollectionChanged));
             }
         },
         onNotifierPropertyChanged: function (sender, e) {
@@ -16166,7 +15946,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         dispose: function () {
             if (this.currentPropertyNotifier != null) {
-                this.currentPropertyNotifier.System$ComponentModel$INotifyPropertyChanged$removePropertyChanged(Bridge.fn.cacheBind(this, this.onNotifierPropertyChanged));
+                this.currentPropertyNotifier.System$ComponentModel$INotifyPropertyChanged$removePropertyChanged(Bridge.fn.bind(this, this.onNotifierPropertyChanged));
             }
         }
     });
@@ -16234,13 +16014,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         registerDependencyObject: function () {
             if (this.currentDependencyObject != null) {
-                this.currentDependencyObject.removePropertyChanged(Bridge.fn.cacheBind(this, this.onDependencyObjectPropertyChanged));
+                this.currentDependencyObject.removePropertyChanged(Bridge.fn.bind(this, this.onDependencyObjectPropertyChanged));
             }
 
             this.currentDependencyObject = Bridge.as(this.baseValue, System.Windows.DependencyObject);
 
             if (this.currentDependencyObject != null) {
-                this.currentDependencyObject.addPropertyChanged(Bridge.fn.cacheBind(this, this.onDependencyObjectPropertyChanged));
+                this.currentDependencyObject.addPropertyChanged(Bridge.fn.bind(this, this.onDependencyObjectPropertyChanged));
             }
         },
         onDependencyObjectPropertyChanged: function (sender, e) {
@@ -16250,7 +16030,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         dispose: function () {
             if (this.currentDependencyObject != null) {
-                this.currentDependencyObject.removePropertyChanged(Bridge.fn.cacheBind(this, this.onDependencyObjectPropertyChanged));
+                this.currentDependencyObject.removePropertyChanged(Bridge.fn.bind(this, this.onDependencyObjectPropertyChanged));
             }
         }
     });
@@ -16304,21 +16084,19 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
     Bridge.define("System.Windows.Data.IndexPropertyObserver", {
         inherits: [System.Windows.Data.IPropertyObserver,System.IDisposable],
         statics: {
-            createBaseObserver: function (containingType, propertyName) {
+            createBaseObserver: function (propertyContainingType, propertyName) {
                 if (propertyName.getIsEmpty()) {
                     return null;
                 }
 
-                containingType = System.Windows.Markup.XamlNameExtensions.resolveContainingType(propertyName, containingType);
-
-                var dependencyProperty = System.Windows.DependencyProperty.getProperty(containingType, propertyName.getMemberName());
+                var dependencyProperty = System.Windows.DependencyProperty.getProperty(propertyContainingType, propertyName);
                 if (dependencyProperty != null) {
                     return new System.Windows.Data.DependencyPropertyObserver(dependencyProperty);
                 }
 
-                var propertyInfo = Granular.Extensions.TypeExtensions.getInstanceProperty(containingType, propertyName.getMemberName());
+                var propertyInfo = Granular.Extensions.TypeExtensions.getInstanceProperty(propertyContainingType, propertyName.getMemberName());
                 if (propertyInfo != null && !System.Linq.Enumerable.from((propertyInfo.ipi || [])).any()) {
-                    return new System.Windows.Data.ClrPropertyObserver(propertyInfo, System.Array.init(0, null, Object));
+                    return new System.Windows.Data.ClrPropertyObserver(propertyInfo, System.Array.init(0, null));
                 }
 
                 return null;
@@ -16660,7 +16438,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctor: function () {
             System.Windows.FreezableCollection$1(T).$ctor1.call(this, System.Array.init(0, function (){
                 return Bridge.getDefaultValue(T);
-            }, T));
+            }));
             //
         },
         $ctor1: function (collection) {
@@ -16668,7 +16446,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             System.Windows.Freezable.ctor.call(this);
             var $t;
             this.collection = new (Granular.Collections.ObservableCollection$1(T)).$ctor1(collection);
-            this.collection.addCollectionChanged(Bridge.fn.cacheBind(this, this.onCollectionChanged));
+            this.collection.addCollectionChanged(Bridge.fn.bind(this, this.onCollectionChanged));
 
             $t = Bridge.getEnumerator(collection, T);
             while ($t.moveNext()) {
@@ -16678,7 +16456,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 }
 
                 if (Bridge.is(value, System.Windows.INotifyChanged)) {
-                    Bridge.cast(value, System.Windows.INotifyChanged).System$Windows$INotifyChanged$addChanged(Bridge.fn.cacheBind(this, this.onItemChanged));
+                    Bridge.cast(value, System.Windows.INotifyChanged).System$Windows$INotifyChanged$addChanged(Bridge.fn.bind(this, this.onItemChanged));
                 }
             }
     },
@@ -16704,7 +16482,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             if (Bridge.is(value, System.Windows.INotifyChanged)) {
-                Bridge.cast(value, System.Windows.INotifyChanged).System$Windows$INotifyChanged$removeChanged(Bridge.fn.cacheBind(this, this.onItemChanged));
+                Bridge.cast(value, System.Windows.INotifyChanged).System$Windows$INotifyChanged$removeChanged(Bridge.fn.bind(this, this.onItemChanged));
             }
         }
 
@@ -16716,7 +16494,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             if (Bridge.is(value1, System.Windows.INotifyChanged)) {
-                Bridge.cast(value1, System.Windows.INotifyChanged).System$Windows$INotifyChanged$addChanged(Bridge.fn.cacheBind(this, this.onItemChanged));
+                Bridge.cast(value1, System.Windows.INotifyChanged).System$Windows$INotifyChanged$addChanged(Bridge.fn.bind(this, this.onItemChanged));
             }
         }
 
@@ -17121,7 +16899,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.observableValue.addValueChanged(Bridge.fn.bind(this, $asm.$.System.Windows.Media.Animation.AnimationExpression.f1));
 
             this.layers = new System.Windows.Media.Animation.AnimationLayerCollection();
-            this.layers.addLayerInvalidated(Bridge.fn.cacheBind(this, this.onLayerInvalidated));
+            this.layers.addLayerInvalidated(Bridge.fn.bind(this, this.onLayerInvalidated));
 
             this.setAnimationValue();
         },
@@ -17360,14 +17138,9 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             keyTimeProperty: null,
             config: {
                 init: function () {
-                    this.valueProperty = System.Windows.Media.Animation.KeyFrame$1(T).dependencyPropertyRegisterNonGeneric("Value", T, System.Windows.Media.Animation.KeyFrame$1(T), new System.Windows.FrameworkPropertyMetadata.ctor());
-                    this.keyTimeProperty = System.Windows.Media.Animation.KeyFrame$1(T).dependencyPropertyRegisterNonGeneric("KeyTime", System.Windows.Media.Animation.KeyTime, System.Windows.Media.Animation.KeyFrame$1(T), new System.Windows.FrameworkPropertyMetadata.ctor());
+                    this.valueProperty = System.Windows.DependencyProperty.register("Value", T, System.Windows.Media.Animation.KeyFrame$1(T), new System.Windows.FrameworkPropertyMetadata.ctor());
+                    this.keyTimeProperty = System.Windows.DependencyProperty.register("KeyTime", System.Windows.Media.Animation.KeyTime, System.Windows.Media.Animation.KeyFrame$1(T), new System.Windows.FrameworkPropertyMetadata.ctor());
                 }
-            },
-            dependencyPropertyRegisterNonGeneric: function (name, propertyType, ownerType, metadata, validateValueCallback) {
-                if (metadata === void 0) { metadata = null; }
-                if (validateValueCallback === void 0) { validateValueCallback = null; }
-                return (T.$isTypeParameter || false) ? null : System.Windows.DependencyProperty.register(name, propertyType, ownerType, metadata, validateValueCallback);
             }
         },
         getValue$5: function () {
@@ -17426,6 +17199,8 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         resourceKey: null,
         observableValue: null,
         resourceContainer: null,
+        currentValueProvider: null,
+        currentValue: null,
         config: {
             events: {
                 ValueChanged: null
@@ -17447,14 +17222,14 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.observableValue.addValueChanged(Bridge.fn.bind(this, $asm.$.System.Windows.ResourceReferenceExpression.f1));
             this.observableValue.setBaseValue(this.getResourceValue());
 
-            resourceContainer.System$Windows$IResourceContainer$addResourcesChanged(Bridge.fn.cacheBind(this, this.onResourcesChanged));
+            resourceContainer.System$Windows$IResourceContainer$addResourcesChanged(Bridge.fn.bind(this, this.onResourcesChanged));
         },
         getValue: function () {
             return this.observableValue.getValue();
         },
         dispose: function () {
             this.observableValue.setBaseValue(System.Windows.Data.ObservableValue.unsetValue);
-            this.resourceContainer.System$Windows$IResourceContainer$removeResourcesChanged(Bridge.fn.cacheBind(this, this.onResourcesChanged));
+            this.resourceContainer.System$Windows$IResourceContainer$removeResourcesChanged(Bridge.fn.bind(this, this.onResourcesChanged));
         },
         onResourcesChanged: function (sender, e) {
             if (e.contains(this.resourceKey)) {
@@ -17466,7 +17241,21 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         getResourceValue: function () {
             var value = { };
-            return this.resourceContainer.System$Windows$IResourceContainer$tryGetResource(this.resourceKey, value) ? value.v : System.Windows.Data.ObservableValue.unsetValue;
+
+            if (!this.resourceContainer.System$Windows$IResourceContainer$tryGetResource(this.resourceKey, value)) {
+                return System.Windows.Data.ObservableValue.unsetValue;
+            }
+
+            if (!(Bridge.is(value.v, System.Windows.Markup.IValueProvider))) {
+                return value.v;
+            }
+
+            if (!Bridge.referenceEquals(this.currentValueProvider, value.v)) {
+                this.currentValueProvider = Bridge.cast(value.v, System.Windows.Markup.IValueProvider);
+                this.currentValue = this.currentValueProvider.System$Windows$Markup$IValueProvider$provideValue();
+            }
+
+            return this.currentValue;
         }
     });
 
@@ -17689,7 +17478,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             actualHeightPropertyKey: null,
             actualHeightProperty: null,
             styleProperty: null,
-            defaultStyleKeyProperty: null,
             focusVisualStyleProperty: null,
             dataContextProperty: null,
             cursorProperty: null,
@@ -17698,26 +17486,25 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             config: {
                 init: function () {
                     this.initializedEvent = System.Windows.EventManager.registerRoutedEvent("Initialized", System.Windows.RoutingStrategy.Direct, Function, System.Windows.FrameworkElement);
-                    this.horizontalAlignmentProperty = System.Windows.DependencyProperty.register("HorizontalAlignment", System.Windows.HorizontalAlignment, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor3(System.Windows.HorizontalAlignment.Stretch, 3, $asm.$.System.Windows.FrameworkElement.f1));
-                    this.verticalAlignmentProperty = System.Windows.DependencyProperty.register("VerticalAlignment", System.Windows.VerticalAlignment, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor3(System.Windows.VerticalAlignment.Stretch, 3, $asm.$.System.Windows.FrameworkElement.f1));
-                    this.marginProperty = System.Windows.DependencyProperty.register("Margin", System.Windows.Thickness, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor2(System.Windows.Thickness.zero, 3));
-                    this.widthProperty = System.Windows.DependencyProperty.register("Width", System.Double, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor3(Number.NaN, 3, $asm.$.System.Windows.FrameworkElement.f2));
-                    this.heightProperty = System.Windows.DependencyProperty.register("Height", System.Double, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor3(Number.NaN, 3, $asm.$.System.Windows.FrameworkElement.f2));
-                    this.minWidthProperty = System.Windows.DependencyProperty.register("MinWidth", System.Double, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor3(0.0, 3, $asm.$.System.Windows.FrameworkElement.f3));
-                    this.minHeightProperty = System.Windows.DependencyProperty.register("MinHeight", System.Double, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor3(0.0, 3, $asm.$.System.Windows.FrameworkElement.f3));
-                    this.maxWidthProperty = System.Windows.DependencyProperty.register("MaxWidth", System.Double, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor3(Number.POSITIVE_INFINITY, 3, $asm.$.System.Windows.FrameworkElement.f4));
-                    this.maxHeightProperty = System.Windows.DependencyProperty.register("MaxHeight", System.Double, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor3(Number.POSITIVE_INFINITY, 3, $asm.$.System.Windows.FrameworkElement.f4));
+                    this.horizontalAlignmentProperty = System.Windows.DependencyProperty.register("HorizontalAlignment", System.Windows.HorizontalAlignment, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor3(System.Windows.HorizontalAlignment.Stretch, System.Windows.FrameworkPropertyMetadataOptions.AffectsMeasure, $asm.$.System.Windows.FrameworkElement.f1));
+                    this.verticalAlignmentProperty = System.Windows.DependencyProperty.register("VerticalAlignment", System.Windows.VerticalAlignment, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor3(System.Windows.VerticalAlignment.Stretch, System.Windows.FrameworkPropertyMetadataOptions.AffectsMeasure, $asm.$.System.Windows.FrameworkElement.f1));
+                    this.marginProperty = System.Windows.DependencyProperty.register("Margin", System.Windows.Thickness, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor2(System.Windows.Thickness.zero, System.Windows.FrameworkPropertyMetadataOptions.AffectsMeasure));
+                    this.widthProperty = System.Windows.DependencyProperty.register("Width", System.Double, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor3(Number.NaN, System.Windows.FrameworkPropertyMetadataOptions.AffectsMeasure, $asm.$.System.Windows.FrameworkElement.f2));
+                    this.heightProperty = System.Windows.DependencyProperty.register("Height", System.Double, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor3(Number.NaN, System.Windows.FrameworkPropertyMetadataOptions.AffectsMeasure, $asm.$.System.Windows.FrameworkElement.f2));
+                    this.minWidthProperty = System.Windows.DependencyProperty.register("MinWidth", System.Double, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor3(0.0, System.Windows.FrameworkPropertyMetadataOptions.AffectsMeasure, $asm.$.System.Windows.FrameworkElement.f3));
+                    this.minHeightProperty = System.Windows.DependencyProperty.register("MinHeight", System.Double, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor3(0.0, System.Windows.FrameworkPropertyMetadataOptions.AffectsMeasure, $asm.$.System.Windows.FrameworkElement.f3));
+                    this.maxWidthProperty = System.Windows.DependencyProperty.register("MaxWidth", System.Double, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor3(Number.POSITIVE_INFINITY, System.Windows.FrameworkPropertyMetadataOptions.AffectsMeasure, $asm.$.System.Windows.FrameworkElement.f4));
+                    this.maxHeightProperty = System.Windows.DependencyProperty.register("MaxHeight", System.Double, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor3(Number.POSITIVE_INFINITY, System.Windows.FrameworkPropertyMetadataOptions.AffectsMeasure, $asm.$.System.Windows.FrameworkElement.f4));
                     this.actualWidthPropertyKey = System.Windows.DependencyProperty.registerReadOnly("ActualWidth", System.Double, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.ctor());
                     this.actualWidthProperty = System.Windows.FrameworkElement.actualWidthPropertyKey.getDependencyProperty();
                     this.actualHeightPropertyKey = System.Windows.DependencyProperty.registerReadOnly("ActualHeight", System.Double, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.ctor());
                     this.actualHeightProperty = System.Windows.FrameworkElement.actualHeightPropertyKey.getDependencyProperty();
                     this.styleProperty = System.Windows.DependencyProperty.register("Style", System.Windows.Style, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor9(System.Windows.FrameworkPropertyMetadataOptions.AffectsMeasure, $asm.$.System.Windows.FrameworkElement.f5));
-                    this.defaultStyleKeyProperty = System.Windows.DependencyProperty.register("DefaultStyleKey", Object, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.ctor());
                     this.focusVisualStyleProperty = System.Windows.DependencyProperty.register("FocusVisualStyle", System.Windows.Style, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.ctor());
                     this.dataContextProperty = System.Windows.DependencyProperty.register("DataContext", Object, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor9(System.Windows.FrameworkPropertyMetadataOptions.Inherits, $asm.$.System.Windows.FrameworkElement.f6));
                     this.cursorProperty = System.Windows.DependencyProperty.register("Cursor", System.Windows.Input.Cursor, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor11($asm.$.System.Windows.FrameworkElement.f7));
                     this.forceCursorProperty = System.Windows.DependencyProperty.register("ForceCursor", Boolean, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor11($asm.$.System.Windows.FrameworkElement.f7));
-                    this.layoutTransformProperty = System.Windows.DependencyProperty.register("LayoutTransform", System.Windows.Media.Transform, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor3(System.Windows.Media.Transform.identity, 3, $asm.$.System.Windows.FrameworkElement.f8));
+                    this.layoutTransformProperty = System.Windows.DependencyProperty.register("LayoutTransform", System.Windows.Media.Transform, System.Windows.FrameworkElement, new System.Windows.FrameworkPropertyMetadata.$ctor3(System.Windows.Media.Transform.identity, System.Windows.FrameworkPropertyMetadataOptions.AffectsMeasure, $asm.$.System.Windows.FrameworkElement.f8));
                 }
             },
             getAlignmentOffset: function (container, alignedRectSize, horizontalAlignment, verticalAlignment) {
@@ -17749,6 +17536,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         resources: null,
         resourceInheritanceParent: null,
         appliedTemplate: null,
+        resourcesCache: null,
         layoutTransformValue: null,
         isDefaultAlignment: false,
         config: {
@@ -17776,7 +17564,9 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.$initialize();
             System.Windows.UIElement.ctor.call(this);
             this.setTriggers(new (Granular.Collections.ObservableCollection$1(System.Windows.ITrigger)).ctor());
-            this.getTriggers().addCollectionChanged(Bridge.fn.cacheBind(this, this.onTriggersCollectionChanged));
+            this.getTriggers().addCollectionChanged(Bridge.fn.bind(this, this.onTriggersCollectionChanged));
+
+            this.resourcesCache = new (Granular.Collections.CacheDictionary$2(Object,Object)).$ctor2(Bridge.fn.bind(this, this.tryResolveResource));
 
             this.actualWidthValueEntry = this.getValueEntry$1(System.Windows.FrameworkElement.actualWidthPropertyKey);
             this.actualHeightValueEntry = this.getValueEntry$1(System.Windows.FrameworkElement.actualHeightPropertyKey);
@@ -17852,13 +17642,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return System.Nullable.getValue(Bridge.cast(this.getValue$1(System.Windows.FrameworkElement.actualWidthPropertyKey), System.Double));
         },
         setActualWidth: function (value) {
-            System.Windows.DependencyPropertyValueEntryExtensions.setBaseValue(this.actualWidthValueEntry, System.Windows.BaseValueSource.Local, value);
+            System.Windows.DependencyPropertyValueEntryExtensions.setBaseValue(this.actualWidthValueEntry, 11, value);
         },
         getActualHeight: function () {
             return System.Nullable.getValue(Bridge.cast(this.getValue$1(System.Windows.FrameworkElement.actualHeightPropertyKey), System.Double));
         },
         setActualHeight: function (value) {
-            System.Windows.DependencyPropertyValueEntryExtensions.setBaseValue(this.actualHeightValueEntry, System.Windows.BaseValueSource.Local, value);
+            System.Windows.DependencyPropertyValueEntryExtensions.setBaseValue(this.actualHeightValueEntry, 11, value);
         },
         getTemplateChild: function () {
             return this.templateChild;
@@ -17888,12 +17678,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         setStyle: function (value) {
             this.setValue(System.Windows.FrameworkElement.styleProperty, value);
         },
-        getDefaultStyleKey: function () {
-            return this.getValue(System.Windows.FrameworkElement.defaultStyleKeyProperty);
-        },
-        setDefaultStyleKey: function (value) {
-            this.setValue(System.Windows.FrameworkElement.defaultStyleKeyProperty, value);
-        },
         getFocusVisualStyle: function () {
             return Bridge.cast(this.getValue(System.Windows.FrameworkElement.focusVisualStyleProperty), System.Windows.Style);
         },
@@ -17909,13 +17693,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             if (this.resources != null) {
-                this.resources.removeResourcesChanged(Bridge.fn.cacheBind(this, this.onResourceDictionaryChanged));
+                this.resources.removeResourcesChanged(Bridge.fn.bind(this, this.onResourceDictionaryChanged));
             }
 
             this.resources = value;
 
             if (this.resources != null) {
-                this.resources.addResourcesChanged(Bridge.fn.cacheBind(this, this.onResourceDictionaryChanged));
+                this.resources.addResourcesChanged(Bridge.fn.bind(this, this.onResourceDictionaryChanged));
             }
 
             this.raiseResourcesChanged(System.Windows.ResourcesChangedEventArgs.reset);
@@ -17928,24 +17712,17 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 return;
             }
 
-            var oldResourceInheritanceParent = this.resourceInheritanceParent;
-
             if (this.resourceInheritanceParent != null) {
-                this.resourceInheritanceParent.System$Windows$IResourceContainer$removeResourcesChanged(Bridge.fn.cacheBind(this, this.onParentResourcesChanged));
+                this.resourceInheritanceParent.System$Windows$IResourceContainer$removeResourcesChanged(Bridge.fn.bind(this, this.onParentResourcesChanged));
             }
 
             this.resourceInheritanceParent = value;
 
             if (this.resourceInheritanceParent != null) {
-                this.resourceInheritanceParent.System$Windows$IResourceContainer$addResourcesChanged(Bridge.fn.cacheBind(this, this.onParentResourcesChanged));
+                this.resourceInheritanceParent.System$Windows$IResourceContainer$addResourcesChanged(Bridge.fn.bind(this, this.onParentResourcesChanged));
             }
 
-            if (oldResourceInheritanceParent != null && !oldResourceInheritanceParent.System$Windows$IResourceContainer$getIsEmpty() || this.resourceInheritanceParent != null && !this.resourceInheritanceParent.System$Windows$IResourceContainer$getIsEmpty()) {
-                this.raiseResourcesChanged(System.Windows.ResourcesChangedEventArgs.reset);
-            }
-        },
-        System$Windows$IResourceContainer$getIsEmpty: function () {
-            return (this.getResourceInheritanceParent$1() == null || this.getResourceInheritanceParent$1().System$Windows$IResourceContainer$getIsEmpty()) && (this.getResources() == null || this.getResources().getIsEmpty());
+            this.raiseResourcesChanged(System.Windows.ResourcesChangedEventArgs.reset);
         },
         getDataContext: function () {
             return this.getValue(System.Windows.FrameworkElement.dataContextProperty);
@@ -17987,14 +17764,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 if (metadata.getAffectsArrange()) {
                     this.invalidateArrange();
                 }
-
-                if (metadata.getAffectsParentMeasure() && this.getVisualParent() != null) {
-                    Bridge.cast(this.getVisualParent(), System.Windows.UIElement).invalidateMeasure();
-                }
-
-                if (metadata.getAffectsParentArrange() && this.getVisualParent() != null) {
-                    Bridge.cast(this.getVisualParent(), System.Windows.UIElement).invalidateArrange();
-                }
             }
 
             if (!e.getIsSubPropertyChange()) {
@@ -18035,7 +17804,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return System.Windows.Size.zero;
         },
         arrangeCore: function (finalRect) {
-            var finalSize = this.isDefaultAlignment ? finalRect.getSize() : new System.Windows.Size(this.getHorizontalAlignment() !== System.Windows.HorizontalAlignment.Stretch ? Granular.Extensions.DoubleExtensions.min(this.getDesiredSize().getWidth(), finalRect.getWidth()) : finalRect.getWidth(), this.getVerticalAlignment() !== System.Windows.VerticalAlignment.Stretch ? Granular.Extensions.DoubleExtensions.min(this.getDesiredSize().getHeight(), finalRect.getHeight()) : finalRect.getHeight());
+            var finalSize = this.isDefaultAlignment ? finalRect.getSize() : new System.Windows.Size(this.getHorizontalAlignment() !== System.Windows.HorizontalAlignment.Stretch ? this.getDesiredSize().getWidth() : finalRect.getWidth(), this.getVerticalAlignment() !== System.Windows.VerticalAlignment.Stretch ? this.getDesiredSize().getHeight() : finalRect.getHeight());
 
             finalSize = System.Windows.Size.op_Subtraction(finalSize, this.getMargin().getSize());
 
@@ -18127,12 +17896,19 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
         },
         tryGetResource: function (resourceKey, value) {
-            if ((this.getResources() == null || !this.getResources().tryGetValue(resourceKey, value)) && (this.getResourceInheritanceParent$1() == null || !this.getResourceInheritanceParent$1().System$Windows$IResourceContainer$tryGetResource(resourceKey, value))) {
-                value.v = null;
-                return false;
+            return this.resourcesCache.tryGetValue(resourceKey, value);
+        },
+        tryResolveResource: function (resourceKey, value) {
+            if (this.getResources() != null && this.getResources().tryGetValue(resourceKey, value)) {
+                return true;
             }
 
-            return true;
+            if (this.getResourceInheritanceParent$1() != null && this.getResourceInheritanceParent$1().System$Windows$IResourceContainer$tryGetResource(resourceKey, value)) {
+                return true;
+            }
+
+            value.v = null;
+            return false;
         },
         onParentResourcesChanged: function (sender, e) {
             this.raiseResourcesChanged(e);
@@ -18145,22 +17921,28 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             Granular.Extensions.EventHandlerExtensions.raise$4(System.Windows.ResourcesChangedEventArgs, this.ResourcesChanged, this, e);
         },
         onResourcesChanged: function (e) {
-            if (this.getDefaultStyleKey() == null || !e.contains(this.getDefaultStyleKey())) {
-                return;
-            }
-
-            var value = { };
-            if (!this.tryGetResource(this.getDefaultStyleKey(), value)) {
-                value.v = null;
-            }
-
-            this.setValue(System.Windows.FrameworkElement.styleProperty, value.v, System.Windows.BaseValueSource.Default);
+            this.resourcesCache.clear();
+            this.setValue(System.Windows.FrameworkElement.styleProperty, this.getDefaultStyle(), System.Windows.BaseValueSource.Default);
         },
         setResourceInheritanceParent: function (parent) {
             this.setResourceInheritanceParent$1(parent);
         },
         onTemplateChildChanged: function () {
             //
+        },
+        getDefaultStyle: function () {
+            var type = Bridge.getType(this);
+
+            while (!Bridge.referenceEquals(type, System.Windows.FrameworkElement)) {
+                var value = { };
+                if (this.tryGetResource(new System.Windows.StyleKey(type), value)) {
+                    return Bridge.as(value.v, System.Windows.Style);
+                }
+
+                type = Bridge.Reflection.getBaseType(type);
+            }
+
+            return null;
         },
         onTriggersCollectionChanged: function (sender, e) {
             var $t, $t1;
@@ -18784,7 +18566,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             easingFunctionProperty: null,
             config: {
                 init: function () {
-                    this.easingFunctionProperty = System.Windows.Media.Animation.KeyFrame$1(T).dependencyPropertyRegisterNonGeneric("EasingFunction", System.Windows.Media.Animation.IEasingFunction, System.Windows.Media.Animation.EasingKeyFrame$1(T), new System.Windows.FrameworkPropertyMetadata.ctor());
+                    this.easingFunctionProperty = System.Windows.DependencyProperty.register("EasingFunction", System.Windows.Media.Animation.IEasingFunction, System.Windows.Media.Animation.EasingKeyFrame$1(T), new System.Windows.FrameworkPropertyMetadata.ctor());
                 }
             }
         },
@@ -18889,7 +18671,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.$initialize();
             System.Windows.Media.Animation.Timeline.ctor.call(this);
             this.setChildren(new (Granular.Collections.ObservableCollection$1(System.Windows.Media.Animation.Timeline)).ctor());
-            this.getChildren().addCollectionChanged(Bridge.fn.cacheBind(this, this.onChildrenCollectionChanged));
+            this.getChildren().addCollectionChanged(Bridge.fn.bind(this, this.onChildrenCollectionChanged));
         },
         createClock: function () {
             return this.createGroupClock(System.Linq.Enumerable.from(this.getChildren()).select($asm.$.System.Windows.Media.Animation.TimelineGroup.f1).toArray());
@@ -19167,7 +18949,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             this.invalidateMeasure();
-            this.invalidateArrange();
         },
         measureOverride: function (availableSize) {
             if (this.getChild() == null) {
@@ -19370,6 +19151,10 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
             return finalSize;
         },
+        onResourcesChanged: function (e) {
+            System.Windows.FrameworkElement.prototype.onResourcesChanged.call(this, e);
+            this.setValue(System.Windows.Controls.Control.templateProperty, this.getDefaultControlTemplate(), System.Windows.BaseValueSource.Default);
+        },
         updateVisualState: function (useTransitions) {
             //
         },
@@ -19378,6 +19163,20 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         getTemplate: function () {
             return this.getTemplate$1();
+        },
+        getDefaultControlTemplate: function () {
+            var type = Bridge.getType(this);
+
+            while (!Bridge.referenceEquals(type, System.Windows.FrameworkElement)) {
+                var value = { };
+                if (this.tryGetResource(new System.Windows.TemplateKey(type), value)) {
+                    return Bridge.as(value.v, System.Windows.Controls.ControlTemplate);
+                }
+
+                type = Bridge.Reflection.getBaseType(type);
+            }
+
+            return null;
         },
         raiseMouseButtonEvent: function (e, routedEvent) {
             var eventArgs = new System.Windows.Input.MouseButtonEventArgs(routedEvent, e.getOriginalSource(), e.getMouseDevice(), e.getTimestamp(), e.getAbsolutePosition(), e.getChangedButton(), e.getButtonState(), e.getClickCount());
@@ -19419,9 +19218,9 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 }
             },
             moveVisualChild: function (child, childZIndex) {
-                var childVisualIndex = Granular.Compatibility.Linq.Enumerable.count$1(System.Windows.Media.Visual, child.getVisualParent().getVisualChildren(), function (visual) {
-                    return !Bridge.referenceEquals(visual, child) && System.Windows.Controls.Panel.getZIndex(visual) <= childZIndex;
-                });
+                var childVisualIndex = System.Linq.Enumerable.from(child.getVisualParent().getVisualChildren()).count(function (visual) {
+                        return !Bridge.referenceEquals(visual, child) && System.Windows.Controls.Panel.getZIndex(visual) <= childZIndex;
+                    });
                 child.getVisualParent().setVisualChildIndex(child, childVisualIndex);
             }
         },
@@ -19435,7 +19234,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.$initialize();
             System.Windows.FrameworkElement.ctor.call(this);
             this.setChildren(new System.Windows.Controls.UIElementCollection(this));
-            this.getChildren().addCollectionChanged(Bridge.fn.cacheBind(this, this.onChildrenCollectionChanged));
+            this.getChildren().addCollectionChanged(Bridge.fn.bind(this, this.onChildrenCollectionChanged));
         },
         getIsItemsHost: function () {
             return System.Nullable.getValue(Bridge.cast(this.getValue(System.Windows.Controls.Panel.isItemsHostProperty), Boolean));
@@ -19452,14 +19251,14 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             if (this.itemContainerGenerator != null) {
-                this.itemContainerGenerator.System$Windows$Controls$Primitives$IItemContainerGenerator$removeItemsChanged(Bridge.fn.cacheBind(this, this.onGeneratorItemsChanged));
+                this.itemContainerGenerator.System$Windows$Controls$Primitives$IItemContainerGenerator$removeItemsChanged(Bridge.fn.bind(this, this.onGeneratorItemsChanged));
                 this.getChildren().clear();
             }
 
             this.itemContainerGenerator = value;
 
             if (this.itemContainerGenerator != null) {
-                this.itemContainerGenerator.System$Windows$Controls$Primitives$IItemContainerGenerator$addItemsChanged(Bridge.fn.cacheBind(this, this.onGeneratorItemsChanged));
+                this.itemContainerGenerator.System$Windows$Controls$Primitives$IItemContainerGenerator$addItemsChanged(Bridge.fn.bind(this, this.onGeneratorItemsChanged));
                 this.addChildren();
             }
         },
@@ -19492,7 +19291,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             if (e.getAction() === Granular.Collections.NotifyCollectionChangedAction.Move) {
-                var movedChildren = Granular.Compatibility.Linq.Enumerable.take(System.Windows.UIElement, Granular.Compatibility.Linq.Enumerable.skip(System.Windows.UIElement, this.getChildren(), e.getOldStartingIndex()), e.getContainersCount());
+                var movedChildren = System.Linq.Enumerable.from(this.getChildren()).skip(e.getOldStartingIndex()).take(e.getContainersCount());
                 Granular.Extensions.ListExtensions.removeRange(System.Windows.UIElement, this.getChildren(), e.getOldStartingIndex(), e.getContainersCount());
                 Granular.Extensions.ListExtensions.insertRange(System.Windows.UIElement, this.getChildren(), e.getNewStartingIndex(), movedChildren);
             }
@@ -19718,8 +19517,8 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 init: function () {
                     this.imageFailedEvent = System.Windows.EventManager.registerRoutedEvent("ImageFailed", System.Windows.RoutingStrategy.Bubble, Function, System.Windows.Controls.Image);
                     this.sourceProperty = System.Windows.DependencyProperty.register("Source", System.Windows.Media.ImageSource, System.Windows.Controls.Image, new System.Windows.FrameworkPropertyMetadata.$ctor11($asm.$.System.Windows.Controls.Image.f1));
-                    this.stretchProperty = System.Windows.DependencyProperty.register("Stretch", System.Windows.Media.Stretch, System.Windows.Controls.Image, new System.Windows.FrameworkPropertyMetadata.$ctor2(System.Windows.Media.Stretch.Uniform, 3));
-                    this.stretchDirectionProperty = System.Windows.DependencyProperty.register("StretchDirection", System.Windows.Controls.StretchDirection, System.Windows.Controls.Image, new System.Windows.FrameworkPropertyMetadata.$ctor2(System.Windows.Controls.StretchDirection.Both, 3));
+                    this.stretchProperty = System.Windows.DependencyProperty.register("Stretch", System.Windows.Media.Stretch, System.Windows.Controls.Image, new System.Windows.FrameworkPropertyMetadata.$ctor2(System.Windows.Media.Stretch.Uniform, System.Windows.FrameworkPropertyMetadataOptions.AffectsMeasure));
+                    this.stretchDirectionProperty = System.Windows.DependencyProperty.register("StretchDirection", System.Windows.Controls.StretchDirection, System.Windows.Controls.Image, new System.Windows.FrameworkPropertyMetadata.$ctor2(System.Windows.Controls.StretchDirection.Both, System.Windows.FrameworkPropertyMetadataOptions.AffectsMeasure));
                 }
             },
             getStretchRect: function (size, availableSize, stretch, stretchDirection) {
@@ -19759,7 +19558,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctor: function () {
             this.$initialize();
             System.Windows.FrameworkElement.ctor.call(this);
-            this.imageRenderElements = new (System.Windows.Media.RenderElementDictionary$1(System.Windows.Media.IImageRenderElement))(Bridge.fn.cacheBind(this, this.createRenderElement$1));
+            this.imageRenderElements = new (System.Collections.Generic.Dictionary$2(System.Windows.Media.IRenderElementFactory,System.Windows.Media.IImageRenderElement))();
         },
         addImageFailed: function (value) {
             this.addHandler(System.Windows.Controls.Image.imageFailedEvent, value);
@@ -19794,19 +19593,33 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             if (this.bitmapSource != null) {
-                this.bitmapSource.removeDownloadCompleted(Bridge.fn.cacheBind(this, this.onBitmapSourceDownloadCompleted));
-                this.bitmapSource.removeDownloadFailed(Bridge.fn.cacheBind(this, this.onBitmapSourceDownloadFailed));
+                this.bitmapSource.removeDownloadCompleted(Bridge.fn.bind(this, this.onBitmapSourceDownloadCompleted));
+                this.bitmapSource.removeDownloadFailed(Bridge.fn.bind(this, this.onBitmapSourceDownloadFailed));
             }
 
             this.bitmapSource = value;
 
             if (this.bitmapSource != null) {
-                this.bitmapSource.addDownloadCompleted(Bridge.fn.cacheBind(this, this.onBitmapSourceDownloadCompleted));
-                this.bitmapSource.addDownloadFailed(Bridge.fn.cacheBind(this, this.onBitmapSourceDownloadFailed));
+                this.bitmapSource.addDownloadCompleted(Bridge.fn.bind(this, this.onBitmapSourceDownloadCompleted));
+                this.bitmapSource.addDownloadFailed(Bridge.fn.bind(this, this.onBitmapSourceDownloadFailed));
             }
         },
-        createRenderElementContentOverride: function (factory) {
-            return this.imageRenderElements.getRenderElement(factory);
+        createContentRenderElementOverride: function (factory) {
+            var imageRenderElement = { };
+            if (this.imageRenderElements.tryGetValue(factory, imageRenderElement)) {
+                return imageRenderElement.v;
+            }
+
+            imageRenderElement.v = factory.System$Windows$Media$IRenderElementFactory$createImageRenderElement(this);
+
+            if (this.getSource() != null) {
+                imageRenderElement.v.System$Windows$Media$IImageRenderElement$setBounds(System.Windows.Controls.Image.getStretchRect(this.getSource().getSize(), this.getVisualBounds().getSize(), this.getStretch(), this.getStretchDirection()));
+                imageRenderElement.v.System$Windows$Media$IImageRenderElement$setSource(this.getSource());
+            }
+
+            this.imageRenderElements.add(factory, imageRenderElement.v);
+
+            return imageRenderElement.v;
         },
         measureOverride: function (availableSize) {
             if ((this.getStretch() === System.Windows.Media.Stretch.None || this.getStretchDirection() === System.Windows.Controls.StretchDirection.UpOnly) && this.getSource() != null) {
@@ -19816,45 +19629,28 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return System.Windows.Size.zero;
         },
         arrangeOverride: function (finalSize) {
-            this.setRenderElements(this.getSource(), finalSize);
+            var $t;
+            var imageRenderElementBounds = this.getSource() != null ? System.Windows.Controls.Image.getStretchRect(this.getSource().getSize(), finalSize, this.getStretch(), this.getStretchDirection()) : System.Windows.Rect.zero;
+
+            $t = Bridge.getEnumerator(this.imageRenderElements.getValues(), System.Windows.Media.IImageRenderElement);
+            while ($t.moveNext()) {
+                var imageRenderElement = $t.getCurrent();
+                imageRenderElement.System$Windows$Media$IImageRenderElement$setBounds(imageRenderElementBounds);
+                imageRenderElement.System$Windows$Media$IImageRenderElement$setSource(this.getSource());
+            }
 
             return finalSize;
         },
         onSourceChanged: function (e) {
             this.setBitmapSource(Bridge.as(this.getSource(), System.Windows.Media.Imaging.BitmapSource));
 
-            this.setRenderElements(this.getSource(), this.getRenderSize());
-
             this.invalidateMeasure();
         },
         onBitmapSourceDownloadCompleted: function (sender, e) {
-            this.setRenderElements(this.getSource(), this.getRenderSize());
-
             this.invalidateMeasure();
         },
         onBitmapSourceDownloadFailed: function (sender, e) {
             this.raiseEvent(new System.Windows.RoutedEventArgs(System.Windows.Controls.Image.imageFailedEvent, this));
-        },
-        createRenderElement$1: function (factory) {
-            var imageRenderElement = factory.System$Windows$Media$IRenderElementFactory$createImageRenderElement(this);
-
-            if (this.getSource() != null) {
-                imageRenderElement.System$Windows$Media$IImageRenderElement$setBounds(System.Windows.Controls.Image.getStretchRect(this.getSource().getSize(), this.getVisualBounds().getSize(), this.getStretch(), this.getStretchDirection()));
-                imageRenderElement.System$Windows$Media$IImageRenderElement$setSource(this.getSource());
-            }
-
-            return imageRenderElement;
-        },
-        setRenderElements: function (source, availableSize) {
-            var $t;
-            var bounds = source != null ? System.Windows.Controls.Image.getStretchRect(source.getSize(), availableSize, this.getStretch(), this.getStretchDirection()) : System.Windows.Rect.zero;
-
-            $t = Bridge.getEnumerator(this.imageRenderElements.getElements());
-            while ($t.moveNext()) {
-                var imageRenderElement = $t.getCurrent();
-                imageRenderElement.System$Windows$Media$IImageRenderElement$setBounds(bounds);
-                imageRenderElement.System$Windows$Media$IImageRenderElement$setSource(source);
-            }
         }
     });
 
@@ -20179,14 +19975,14 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
             if (this.popupLayer != null) {
                 this.popupLayer.removeChild(this.popupContainer);
-                this.popupLayer.removeClosePopupRequest(Bridge.fn.cacheBind(this, this.onClosePopupRequest));
+                this.popupLayer.removeClosePopupRequest(Bridge.fn.bind(this, this.onClosePopupRequest));
             }
 
             this.popupLayer = value;
 
             if (this.popupLayer != null) {
                 this.popupLayer.addChild(this.popupContainer);
-                this.popupLayer.addClosePopupRequest(Bridge.fn.cacheBind(this, this.onClosePopupRequest));
+                this.popupLayer.addClosePopupRequest(Bridge.fn.bind(this, this.onClosePopupRequest));
             }
 
             this.setPosition();
@@ -20521,16 +20317,17 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     this.fontStretchProperty = System.Windows.Documents.TextElement.fontStretchProperty.addOwner(System.Windows.Controls.TextBlock, new System.Windows.FrameworkPropertyMetadata.$ctor9(33, $asm.$.System.Windows.Controls.TextBlock.f7));
                     this.textAlignmentProperty = System.Windows.Documents.Block.textAlignmentProperty.addOwner(System.Windows.Controls.TextBlock, new System.Windows.FrameworkPropertyMetadata.$ctor9(System.Windows.FrameworkPropertyMetadataOptions.Inherits, $asm.$.System.Windows.Controls.TextBlock.f8));
                     this.textTrimmingProperty = System.Windows.DependencyProperty.register("TextTrimming", System.Windows.TextTrimming, System.Windows.Controls.TextBlock, new System.Windows.FrameworkPropertyMetadata.$ctor9(33, $asm.$.System.Windows.Controls.TextBlock.f9));
-                    this.textWrappingProperty = System.Windows.DependencyProperty.register("TextWrapping", System.Windows.TextWrapping, System.Windows.Controls.TextBlock, new System.Windows.FrameworkPropertyMetadata.$ctor3(System.Windows.TextWrapping.NoWrap, 33, $asm.$.System.Windows.Controls.TextBlock.f10));
+                    this.textWrappingProperty = System.Windows.DependencyProperty.register("TextWrapping", System.Windows.TextWrapping, System.Windows.Controls.TextBlock, new System.Windows.FrameworkPropertyMetadata.$ctor9(33, $asm.$.System.Windows.Controls.TextBlock.f10));
                 }
             }
         },
         textBlockRenderElements: null,
-        noWrapSize: null,
+        measureCache: null,
         ctor: function () {
             this.$initialize();
             System.Windows.FrameworkElement.ctor.call(this);
-            this.textBlockRenderElements = new (System.Windows.Media.RenderElementDictionary$1(System.Windows.Media.ITextBlockRenderElement))(Bridge.fn.cacheBind(this, this.createRenderElement$1));
+            this.measureCache = new System.Windows.Controls.MeasureCache(4);
+            this.textBlockRenderElements = new (System.Collections.Generic.Dictionary$2(System.Windows.Media.IRenderElementFactory,System.Windows.Media.ITextBlockRenderElement))();
         },
         getText: function () {
             return Bridge.cast(this.getValue(System.Windows.Controls.TextBlock.textProperty), String);
@@ -20592,24 +20389,46 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         setTextWrapping: function (value) {
             this.setValue(System.Windows.Controls.TextBlock.textWrappingProperty, value);
         },
-        createRenderElementContentOverride: function (factory) {
-            return this.textBlockRenderElements.getRenderElement(factory);
+        createContentRenderElementOverride: function (factory) {
+            var textBlockRenderElement = { };
+            if (this.textBlockRenderElements.tryGetValue(factory, textBlockRenderElement)) {
+                return textBlockRenderElement.v;
+            }
+
+            textBlockRenderElement.v = factory.System$Windows$Media$IRenderElementFactory$createTextBlockRenderElement(this);
+
+            textBlockRenderElement.v.System$Windows$Media$ITextBlockRenderElement$setBounds(new System.Windows.Rect.$ctor3(this.getVisualBounds().getSize()));
+            textBlockRenderElement.v.System$Windows$Media$ITextBlockRenderElement$setFontFamily(this.getFontFamily());
+            textBlockRenderElement.v.System$Windows$Media$ITextBlockRenderElement$setForeground(this.getForeground());
+            textBlockRenderElement.v.System$Windows$Media$ITextBlockRenderElement$setFontSize(this.getFontSize());
+            textBlockRenderElement.v.System$Windows$Media$ITextBlockRenderElement$setFontStyle(this.getFontStyle());
+            textBlockRenderElement.v.System$Windows$Media$ITextBlockRenderElement$setFontStretch(this.getFontStretch());
+            textBlockRenderElement.v.System$Windows$Media$ITextBlockRenderElement$setFontWeight(this.getFontWeight());
+            textBlockRenderElement.v.System$Windows$Media$ITextBlockRenderElement$setText(this.getText());
+            textBlockRenderElement.v.System$Windows$Media$ITextBlockRenderElement$setTextAlignment(this.getTextAlignment());
+            textBlockRenderElement.v.System$Windows$Media$ITextBlockRenderElement$setTextTrimming(this.getTextTrimming());
+            textBlockRenderElement.v.System$Windows$Media$ITextBlockRenderElement$setTextWrapping(this.getTextWrapping());
+
+            this.textBlockRenderElements.add(factory, textBlockRenderElement.v);
+
+            return textBlockRenderElement.v;
         },
         measureOverride: function (availableSize) {
-            var $t, $t1;
-            if (System.Windows.Size.op_Equality(this.noWrapSize, null)) {
-                this.noWrapSize = System.Windows.ApplicationHost.getCurrent().System$Windows$IApplicationHost$getTextMeasurementService().System$Windows$ITextMeasurementService$measure(($t = this.getText(), $t != null ? $t : ""), this.getFontSize(), new System.Windows.Media.Typeface.$ctor1(this.getFontFamily(), this.getFontStyle(), this.getFontWeight(), this.getFontStretch()), Number.POSITIVE_INFINITY);
+            var $t;
+            var measuredSize = { };
+
+            if (this.measureCache.tryGetMeasure(System.Windows.Size.fromWidth(availableSize.getWidth()), measuredSize)) {
+                return measuredSize.v;
             }
 
-            if (this.getTextWrapping() === System.Windows.TextWrapping.NoWrap || this.noWrapSize.getWidth() <= availableSize.getWidth()) {
-                return this.noWrapSize;
-            }
+            measuredSize.v = System.Windows.ApplicationHost.getCurrent().System$Windows$IApplicationHost$getTextMeasurementService().System$Windows$ITextMeasurementService$measure(($t = this.getText(), $t != null ? $t : ""), this.getFontSize(), new System.Windows.Media.Typeface.$ctor1(this.getFontFamily(), this.getFontStyle(), this.getFontWeight(), this.getFontStretch()), availableSize.getWidth());
+            this.measureCache.setMeasure(System.Windows.Size.fromWidth(availableSize.getWidth()), measuredSize.v);
 
-            return System.Windows.ApplicationHost.getCurrent().System$Windows$IApplicationHost$getTextMeasurementService().System$Windows$ITextMeasurementService$measure(($t1 = this.getText(), $t1 != null ? $t1 : ""), this.getFontSize(), new System.Windows.Media.Typeface.$ctor1(this.getFontFamily(), this.getFontStyle(), this.getFontWeight(), this.getFontStretch()), availableSize.getWidth());
+            return measuredSize.v;
         },
         arrangeOverride: function (finalSize) {
             var $t;
-            $t = Bridge.getEnumerator(this.textBlockRenderElements.getElements());
+            $t = Bridge.getEnumerator(this.textBlockRenderElements.getValues(), System.Windows.Media.ITextBlockRenderElement);
             while ($t.moveNext()) {
                 var textBlockRenderElement = $t.getCurrent();
                 textBlockRenderElement.System$Windows$Media$ITextBlockRenderElement$setBounds(new System.Windows.Rect.$ctor3(finalSize));
@@ -20618,45 +20437,36 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return finalSize;
         },
         onTextChanged: function (e) {
-            this.textBlockRenderElements.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBlock.f11));
-            this.noWrapSize = null;
+            this.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBlock.f11));
+            this.measureCache.clear();
         },
         onFontFamilyChanged: function (e) {
-            this.textBlockRenderElements.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBlock.f12));
-            this.noWrapSize = null;
+            this.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBlock.f12));
+            this.measureCache.clear();
         },
         onFontSizeChanged: function (e) {
-            this.textBlockRenderElements.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBlock.f13));
-            this.noWrapSize = null;
+            this.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBlock.f13));
+            this.measureCache.clear();
         },
         onFontStyleChanged: function (e) {
-            this.textBlockRenderElements.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBlock.f14));
-            this.noWrapSize = null;
+            this.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBlock.f14));
+            this.measureCache.clear();
         },
         onFontWeightChanged: function (e) {
-            this.textBlockRenderElements.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBlock.f15));
-            this.noWrapSize = null;
+            this.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBlock.f15));
+            this.measureCache.clear();
         },
         onFontStretchChanged: function (e) {
-            this.textBlockRenderElements.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBlock.f16));
-            this.noWrapSize = null;
+            this.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBlock.f16));
+            this.measureCache.clear();
         },
-        createRenderElement$1: function (factory) {
-            var textBlockRenderElement = factory.System$Windows$Media$IRenderElementFactory$createTextBlockRenderElement(this);
-
-            textBlockRenderElement.System$Windows$Media$ITextBlockRenderElement$setBounds(new System.Windows.Rect.$ctor3(this.getVisualBounds().getSize()));
-            textBlockRenderElement.System$Windows$Media$ITextBlockRenderElement$setFontFamily(this.getFontFamily());
-            textBlockRenderElement.System$Windows$Media$ITextBlockRenderElement$setForeground(this.getForeground());
-            textBlockRenderElement.System$Windows$Media$ITextBlockRenderElement$setFontSize(this.getFontSize());
-            textBlockRenderElement.System$Windows$Media$ITextBlockRenderElement$setFontStyle(this.getFontStyle());
-            textBlockRenderElement.System$Windows$Media$ITextBlockRenderElement$setFontStretch(this.getFontStretch());
-            textBlockRenderElement.System$Windows$Media$ITextBlockRenderElement$setFontWeight(this.getFontWeight());
-            textBlockRenderElement.System$Windows$Media$ITextBlockRenderElement$setText(this.getText());
-            textBlockRenderElement.System$Windows$Media$ITextBlockRenderElement$setTextAlignment(this.getTextAlignment());
-            textBlockRenderElement.System$Windows$Media$ITextBlockRenderElement$setTextTrimming(this.getTextTrimming());
-            textBlockRenderElement.System$Windows$Media$ITextBlockRenderElement$setTextWrapping(this.getTextWrapping());
-
-            return textBlockRenderElement;
+        setRenderElementsProperty: function (setter) {
+            var $t;
+            $t = Bridge.getEnumerator(this.textBlockRenderElements.getValues(), System.Windows.Media.ITextBlockRenderElement);
+            while ($t.moveNext()) {
+                var textBlockRenderElement = $t.getCurrent();
+                setter(textBlockRenderElement);
+            }
         }
     });
 
@@ -20667,7 +20477,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             Bridge.cast(sender, System.Windows.Controls.TextBlock).onTextChanged(e);
         },
         f2: function (sender, e) {
-            Bridge.cast(sender, System.Windows.Controls.TextBlock).textBlockRenderElements.setRenderElementsProperty(function (textBlockRenderElement) {
+            Bridge.cast(sender, System.Windows.Controls.TextBlock).setRenderElementsProperty(function (textBlockRenderElement) {
                 textBlockRenderElement.System$Windows$Media$ITextBlockRenderElement$setForeground(Bridge.cast(e.getNewValue(), System.Windows.Media.Brush));
             });
         },
@@ -20687,17 +20497,17 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             Bridge.cast(sender, System.Windows.Controls.TextBlock).onFontStretchChanged(e);
         },
         f8: function (sender, e) {
-            Bridge.cast(sender, System.Windows.Controls.TextBlock).textBlockRenderElements.setRenderElementsProperty(function (textBlockRenderElement) {
+            Bridge.cast(sender, System.Windows.Controls.TextBlock).setRenderElementsProperty(function (textBlockRenderElement) {
                 textBlockRenderElement.System$Windows$Media$ITextBlockRenderElement$setTextAlignment(System.Nullable.getValue(Bridge.cast(e.getNewValue(), System.Int32)));
             });
         },
         f9: function (sender, e) {
-            Bridge.cast(sender, System.Windows.Controls.TextBlock).textBlockRenderElements.setRenderElementsProperty(function (textBlockRenderElement) {
+            Bridge.cast(sender, System.Windows.Controls.TextBlock).setRenderElementsProperty(function (textBlockRenderElement) {
                 textBlockRenderElement.System$Windows$Media$ITextBlockRenderElement$setTextTrimming(System.Nullable.getValue(Bridge.cast(e.getNewValue(), System.Int32)));
             });
         },
         f10: function (sender, e) {
-            Bridge.cast(sender, System.Windows.Controls.TextBlock).textBlockRenderElements.setRenderElementsProperty(function (textBlockRenderElement) {
+            Bridge.cast(sender, System.Windows.Controls.TextBlock).setRenderElementsProperty(function (textBlockRenderElement) {
                 textBlockRenderElement.System$Windows$Media$ITextBlockRenderElement$setTextWrapping(System.Nullable.getValue(Bridge.cast(e.getNewValue(), System.Int32)));
             });
         },
@@ -20764,7 +20574,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctor: function () {
             this.$initialize();
             System.Windows.FrameworkElement.ctor.call(this);
-            this.textBoxRenderElements = new (System.Windows.Media.RenderElementDictionary$1(System.Windows.Media.ITextBoxRenderElement))(Bridge.fn.cacheBind(this, this.createRenderElement$1));
+            this.textBoxRenderElements = new (System.Collections.Generic.Dictionary$2(System.Windows.Media.IRenderElementFactory,System.Windows.Media.ITextBoxRenderElement))();
             this.measuredLineHeight = Number.NaN;
         },
         getText: function () {
@@ -20776,7 +20586,8 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             this.text = value;
-            this.textBoxRenderElements.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f11));
+            this.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f11));
+            this.invalidateMeasure();
             Granular.Extensions.EventHandlerExtensions.raise$2(this.TextChanged, this);
         },
         getMaxLength: function () {
@@ -20788,7 +20599,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             this.maxLength = value;
-            this.textBoxRenderElements.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f12));
+            this.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f12));
         },
         getCaretIndex: function () {
             return this.caretIndex;
@@ -20799,7 +20610,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             this.caretIndex = value;
-            this.textBoxRenderElements.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f13));
+            this.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f13));
             Granular.Extensions.EventHandlerExtensions.raise$2(this.CaretIndexChanged, this);
         },
         getSelectionStart: function () {
@@ -20811,7 +20622,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             this.selectionStart = value;
-            this.textBoxRenderElements.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f14));
+            this.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f14));
             Granular.Extensions.EventHandlerExtensions.raise$2(this.SelectionStartChanged, this);
         },
         getSelectionLength: function () {
@@ -20823,7 +20634,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             this.selectionLength = value;
-            this.textBoxRenderElements.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f15));
+            this.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f15));
             Granular.Extensions.EventHandlerExtensions.raise$2(this.SelectionLengthChanged, this);
         },
         getAcceptsReturn: function () {
@@ -20835,7 +20646,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             this.acceptsReturn = value;
-            this.textBoxRenderElements.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f16));
+            this.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f16));
         },
         getAcceptsTab: function () {
             return this.acceptsTab;
@@ -20846,7 +20657,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             this.acceptsTab = value;
-            this.textBoxRenderElements.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f17));
+            this.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f17));
         },
         getIsReadOnly: function () {
             return this.isReadOnly;
@@ -20868,7 +20679,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             this.horizontalScrollBarVisibility = value;
-            this.textBoxRenderElements.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f18));
+            this.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f18));
         },
         getVerticalScrollBarVisibility: function () {
             return this.verticalScrollBarVisibility;
@@ -20879,7 +20690,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             this.verticalScrollBarVisibility = value;
-            this.textBoxRenderElements.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f19));
+            this.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f19));
         },
         getSpellCheck: function () {
             return this.spellCheck;
@@ -20890,7 +20701,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             this.spellCheck = value;
-            this.textBoxRenderElements.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f20));
+            this.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f20));
         },
         getIsPassword: function () {
             return this.isPassword;
@@ -20906,22 +20717,72 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
             this.isPassword = value;
         },
-        createRenderElementContentOverride: function (factory) {
-            return this.textBoxRenderElements.getRenderElement(factory);
+        setRenderElementsProperty: function (setter) {
+            var $t;
+            $t = Bridge.getEnumerator(this.textBoxRenderElements.getValues(), System.Windows.Media.ITextBoxRenderElement);
+            while ($t.moveNext()) {
+                var textBoxRenderElement = $t.getCurrent();
+                setter(textBoxRenderElement);
+            }
+        },
+        createContentRenderElementOverride: function (factory) {
+            var textBoxRenderElement = { };
+            if (this.textBoxRenderElements.tryGetValue(factory, textBoxRenderElement)) {
+                return textBoxRenderElement.v;
+            }
+
+            textBoxRenderElement.v = factory.System$Windows$Media$IRenderElementFactory$createTextBoxRenderElement(this);
+
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$setCaretIndex(this.getCaretIndex());
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$setSelectionLength(this.getSelectionLength());
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$setSelectionStart(this.getSelectionStart());
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$setText(this.getText());
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$setMaxLength(this.getMaxLength());
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$setBounds(new System.Windows.Rect.$ctor3(this.getVisualSize()));
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$setAcceptsReturn(this.getAcceptsReturn());
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$setAcceptsTab(this.getAcceptsTab());
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$setIsPassword(this.isPassword);
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$setIsReadOnly(this.getIsReadOnly() || !this.getIsEnabled());
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$setIsHitTestVisible(this.getIsHitTestVisible() && this.getIsEnabled());
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$setSpellCheck(this.spellCheck);
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$setHorizontalScrollBarVisibility(this.getHorizontalScrollBarVisibility());
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$setVerticalScrollBarVisibility(this.getVerticalScrollBarVisibility());
+
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$setForeground(Bridge.cast(this.getValue(System.Windows.Controls.Control.foregroundProperty), System.Windows.Media.Brush));
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$setFontSize(System.Nullable.getValue(Bridge.cast(this.getValue(System.Windows.Controls.Control.fontSizeProperty), System.Double)));
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$setFontFamily(Bridge.cast(this.getValue(System.Windows.Controls.Control.fontFamilyProperty), System.Windows.Media.FontFamily));
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$setFontStretch(System.Nullable.getValue(Bridge.cast(this.getValue(System.Windows.Controls.Control.fontStretchProperty), System.Int32)));
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$setFontStyle(System.Nullable.getValue(Bridge.cast(this.getValue(System.Windows.Controls.Control.fontStyleProperty), System.Int32)));
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$setFontWeight(System.Nullable.getValue(Bridge.cast(this.getValue(System.Windows.Controls.Control.fontWeightProperty), System.Int32)));
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$setTextAlignment(System.Nullable.getValue(Bridge.cast(this.getValue(System.Windows.Controls.TextBox.textAlignmentProperty), System.Int32)));
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$setTextWrapping(System.Nullable.getValue(Bridge.cast(this.getValue(System.Windows.Controls.TextBox.textWrappingProperty), System.Int32)));
+
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$addTextChanged(Bridge.fn.bind(this, function (sender, e) {
+                this.setText(textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$getText());
+            }));
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$addCaretIndexChanged(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f21));
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$addSelectionStartChanged(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f22));
+            textBoxRenderElement.v.System$Windows$Media$ITextBoxRenderElement$addSelectionLengthChanged(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f23));
+
+            this.textBoxRenderElements.add(factory, textBoxRenderElement.v);
+
+            this.invalidateMeasure();
+
+            return textBoxRenderElement.v;
         },
         measureOverride: function (availableSize) {
             return new System.Windows.Size(0, this.getLineHeight());
         },
         arrangeOverride: function (finalSize) {
             var bounds = new System.Windows.Rect.$ctor3(finalSize);
-            this.textBoxRenderElements.setRenderElementsProperty(function (renderElement) {
+            this.setRenderElementsProperty(function (renderElement) {
                 renderElement.System$Windows$Media$ITextBoxRenderElement$setBounds(bounds);
             });
             return finalSize;
         },
         focusRenderElement: function () {
             var $t;
-            $t = Bridge.getEnumerator(this.textBoxRenderElements.getElements());
+            $t = Bridge.getEnumerator(this.textBoxRenderElements.getValues(), System.Windows.Media.ITextBoxRenderElement);
             while ($t.moveNext()) {
                 var textBoxRenderElement = $t.getCurrent();
                 textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$focus();
@@ -20929,7 +20790,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         clearFocusRenderElement: function () {
             var $t;
-            $t = Bridge.getEnumerator(this.textBoxRenderElements.getElements());
+            $t = Bridge.getEnumerator(this.textBoxRenderElements.getValues(), System.Windows.Media.ITextBoxRenderElement);
             while ($t.moveNext()) {
                 var textBoxRenderElement = $t.getCurrent();
                 textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$clearFocus();
@@ -20937,7 +20798,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         processRenderElementKeyEvent: function (e) {
             var $t;
-            $t = Bridge.getEnumerator(this.textBoxRenderElements.getElements());
+            $t = Bridge.getEnumerator(this.textBoxRenderElements.getValues(), System.Windows.Media.ITextBoxRenderElement);
             while ($t.moveNext()) {
                 var textBoxRenderElement = $t.getCurrent();
                 textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$processKeyEvent(e);
@@ -20948,10 +20809,10 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.setRenderElementsIsReadOnly();
         },
         setRenderElementsIsHitTestVisible: function () {
-            this.textBoxRenderElements.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f21));
+            this.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f24));
         },
         setRenderElementsIsReadOnly: function () {
-            this.textBoxRenderElements.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f22));
+            this.setRenderElementsProperty(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f25));
         },
         getLineHeight: function () {
             var fontSize = System.Nullable.getValue(Bridge.cast(this.getValue(System.Windows.Controls.Control.fontSizeProperty), System.Double));
@@ -20966,44 +20827,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.measuredLineHeight = System.Windows.ApplicationHost.getCurrent().System$Windows$IApplicationHost$getTextMeasurementService().System$Windows$ITextMeasurementService$measure("", fontSize, new System.Windows.Media.Typeface.$ctor1(fontFamily), Number.POSITIVE_INFINITY).getHeight();
 
             return this.measuredLineHeight;
-        },
-        createRenderElement$1: function (factory) {
-            var textBoxRenderElement = factory.System$Windows$Media$IRenderElementFactory$createTextBoxRenderElement(this);
-
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$setCaretIndex(this.getCaretIndex());
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$setSelectionLength(this.getSelectionLength());
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$setSelectionStart(this.getSelectionStart());
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$setText(this.getText());
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$setMaxLength(this.getMaxLength());
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$setBounds(new System.Windows.Rect.$ctor3(this.getVisualSize()));
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$setAcceptsReturn(this.getAcceptsReturn());
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$setAcceptsTab(this.getAcceptsTab());
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$setIsPassword(this.isPassword);
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$setIsReadOnly(this.getIsReadOnly() || !this.getIsEnabled());
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$setIsHitTestVisible(this.getIsHitTestVisible() && this.getIsEnabled());
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$setSpellCheck(this.spellCheck);
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$setHorizontalScrollBarVisibility(this.getHorizontalScrollBarVisibility());
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$setVerticalScrollBarVisibility(this.getVerticalScrollBarVisibility());
-
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$setForeground(Bridge.cast(this.getValue(System.Windows.Controls.Control.foregroundProperty), System.Windows.Media.Brush));
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$setFontSize(System.Nullable.getValue(Bridge.cast(this.getValue(System.Windows.Controls.Control.fontSizeProperty), System.Double)));
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$setFontFamily(Bridge.cast(this.getValue(System.Windows.Controls.Control.fontFamilyProperty), System.Windows.Media.FontFamily));
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$setFontStretch(System.Nullable.getValue(Bridge.cast(this.getValue(System.Windows.Controls.Control.fontStretchProperty), System.Int32)));
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$setFontStyle(System.Nullable.getValue(Bridge.cast(this.getValue(System.Windows.Controls.Control.fontStyleProperty), System.Int32)));
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$setFontWeight(System.Nullable.getValue(Bridge.cast(this.getValue(System.Windows.Controls.Control.fontWeightProperty), System.Int32)));
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$setTextAlignment(System.Nullable.getValue(Bridge.cast(this.getValue(System.Windows.Controls.TextBox.textAlignmentProperty), System.Int32)));
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$setTextWrapping(System.Nullable.getValue(Bridge.cast(this.getValue(System.Windows.Controls.TextBox.textWrappingProperty), System.Int32)));
-
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$addTextChanged(Bridge.fn.bind(this, function (sender, e) {
-                this.setText(textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$getText());
-            }));
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$addCaretIndexChanged(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f23));
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$addSelectionStartChanged(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f24));
-            textBoxRenderElement.System$Windows$Media$ITextBoxRenderElement$addSelectionLengthChanged(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.TextBoxView.f25));
-
-            this.invalidateMeasure();
-
-            return textBoxRenderElement;
         }
     });
 
@@ -21017,42 +20840,42 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             Bridge.cast(sender, System.Windows.Controls.TextBoxView).onIsEnabledChanged$1();
         },
         f3: function (sender, e) {
-            Bridge.cast(sender, System.Windows.Controls.TextBoxView).textBoxRenderElements.setRenderElementsProperty(function (renderElement) {
+            Bridge.cast(sender, System.Windows.Controls.TextBoxView).setRenderElementsProperty(function (renderElement) {
                 renderElement.System$Windows$Media$ITextBoxRenderElement$setForeground(Bridge.cast(e.getNewValue(), System.Windows.Media.Brush));
             });
         },
         f4: function (sender, e) {
-            Bridge.cast(sender, System.Windows.Controls.TextBoxView).textBoxRenderElements.setRenderElementsProperty(function (renderElement) {
+            Bridge.cast(sender, System.Windows.Controls.TextBoxView).setRenderElementsProperty(function (renderElement) {
                 renderElement.System$Windows$Media$ITextBoxRenderElement$setFontFamily(Bridge.cast(e.getNewValue(), System.Windows.Media.FontFamily));
             });
         },
         f5: function (sender, e) {
-            Bridge.cast(sender, System.Windows.Controls.TextBoxView).textBoxRenderElements.setRenderElementsProperty(function (renderElement) {
+            Bridge.cast(sender, System.Windows.Controls.TextBoxView).setRenderElementsProperty(function (renderElement) {
                 renderElement.System$Windows$Media$ITextBoxRenderElement$setFontSize(System.Nullable.getValue(Bridge.cast(e.getNewValue(), System.Double)));
             });
         },
         f6: function (sender, e) {
-            Bridge.cast(sender, System.Windows.Controls.TextBoxView).textBoxRenderElements.setRenderElementsProperty(function (renderElement) {
+            Bridge.cast(sender, System.Windows.Controls.TextBoxView).setRenderElementsProperty(function (renderElement) {
                 renderElement.System$Windows$Media$ITextBoxRenderElement$setFontStyle(System.Nullable.getValue(Bridge.cast(e.getNewValue(), System.Int32)));
             });
         },
         f7: function (sender, e) {
-            Bridge.cast(sender, System.Windows.Controls.TextBoxView).textBoxRenderElements.setRenderElementsProperty(function (renderElement) {
+            Bridge.cast(sender, System.Windows.Controls.TextBoxView).setRenderElementsProperty(function (renderElement) {
                 renderElement.System$Windows$Media$ITextBoxRenderElement$setFontStretch(System.Nullable.getValue(Bridge.cast(e.getNewValue(), System.Int32)));
             });
         },
         f8: function (sender, e) {
-            Bridge.cast(sender, System.Windows.Controls.TextBoxView).textBoxRenderElements.setRenderElementsProperty(function (renderElement) {
+            Bridge.cast(sender, System.Windows.Controls.TextBoxView).setRenderElementsProperty(function (renderElement) {
                 renderElement.System$Windows$Media$ITextBoxRenderElement$setFontWeight(System.Nullable.getValue(Bridge.cast(e.getNewValue(), System.Int32)));
             });
         },
         f9: function (sender, e) {
-            Bridge.cast(sender, System.Windows.Controls.TextBoxView).textBoxRenderElements.setRenderElementsProperty(function (renderElement) {
+            Bridge.cast(sender, System.Windows.Controls.TextBoxView).setRenderElementsProperty(function (renderElement) {
                 renderElement.System$Windows$Media$ITextBoxRenderElement$setTextAlignment(System.Nullable.getValue(Bridge.cast(e.getNewValue(), System.Int32)));
             });
         },
         f10: function (sender, e) {
-            Bridge.cast(sender, System.Windows.Controls.TextBoxView).textBoxRenderElements.setRenderElementsProperty(function (renderElement) {
+            Bridge.cast(sender, System.Windows.Controls.TextBoxView).setRenderElementsProperty(function (renderElement) {
                 renderElement.System$Windows$Media$ITextBoxRenderElement$setTextWrapping(System.Nullable.getValue(Bridge.cast(e.getNewValue(), System.Int32)));
             });
         },
@@ -21086,20 +20909,20 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         f20: function (renderElement) {
             renderElement.System$Windows$Media$ITextBoxRenderElement$setSpellCheck(this.spellCheck);
         },
-        f21: function (renderElement) {
-            renderElement.System$Windows$Media$ITextBoxRenderElement$setIsHitTestVisible(this.getIsHitTestVisible() && this.getIsEnabled());
-        },
-        f22: function (renderElement) {
-            renderElement.System$Windows$Media$ITextBoxRenderElement$setIsReadOnly(this.getIsReadOnly() || !this.getIsEnabled());
-        },
-        f23: function (sender, e) {
+        f21: function (sender, e) {
             this.setCaretIndex(Bridge.cast(sender, System.Windows.Media.ITextBoxRenderElement).System$Windows$Media$ITextBoxRenderElement$getCaretIndex());
         },
-        f24: function (sender, e) {
+        f22: function (sender, e) {
             this.setSelectionStart(Bridge.cast(sender, System.Windows.Media.ITextBoxRenderElement).System$Windows$Media$ITextBoxRenderElement$getSelectionStart());
         },
-        f25: function (sender, e) {
+        f23: function (sender, e) {
             this.setSelectionLength(Bridge.cast(sender, System.Windows.Media.ITextBoxRenderElement).System$Windows$Media$ITextBoxRenderElement$getSelectionLength());
+        },
+        f24: function (renderElement) {
+            renderElement.System$Windows$Media$ITextBoxRenderElement$setIsHitTestVisible(this.getIsHitTestVisible() && this.getIsEnabled());
+        },
+        f25: function (renderElement) {
+            renderElement.System$Windows$Media$ITextBoxRenderElement$setIsReadOnly(this.getIsReadOnly() || !this.getIsEnabled());
         }
     });
 
@@ -21227,7 +21050,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             $t = Bridge.getEnumerator(this.visualPath, System.Windows.Media.Visual);
             while ($t.moveNext()) {
                 var element = $t.getCurrent();
-                element.addVisualTransformChanged(Bridge.fn.cacheBind(this, this.onVisualTransformChanged));
+                element.addVisualTransformChanged(Bridge.fn.bind(this, this.onVisualTransformChanged));
             }
 
             this.setValue$3();
@@ -21240,7 +21063,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         $t = Bridge.getEnumerator(this.visualPath, System.Windows.Media.Visual);
         while ($t.moveNext()) {
             var element = $t.getCurrent();
-            element.removeVisualTransformChanged(Bridge.fn.cacheBind(this, this.onVisualTransformChanged));
+            element.removeVisualTransformChanged(Bridge.fn.bind(this, this.onVisualTransformChanged));
         }
     },
     onVisualTransformChanged: function (sender, e) {
@@ -21275,11 +21098,11 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             System.Windows.FrameworkElement.prototype.onVisualParentChanged.call(this, oldVisualParent, newVisualParent);
 
             if (oldVisualParent != null) {
-                Bridge.cast(oldVisualParent, System.Windows.UIElement).removeLayoutUpdated(Bridge.fn.cacheBind(this, this.onParentLayoutUpdated));
+                Bridge.cast(oldVisualParent, System.Windows.UIElement).removeLayoutUpdated(Bridge.fn.bind(this, this.onParentLayoutUpdated));
             }
 
             if (newVisualParent != null) {
-                Bridge.cast(newVisualParent, System.Windows.UIElement).addLayoutUpdated(Bridge.fn.cacheBind(this, this.onParentLayoutUpdated));
+                Bridge.cast(newVisualParent, System.Windows.UIElement).addLayoutUpdated(Bridge.fn.bind(this, this.onParentLayoutUpdated));
             }
         },
         onParentLayoutUpdated: function (sender, e) {
@@ -22102,7 +21925,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
             this.setChildren(new (System.Windows.FreezableCollection$1(System.Windows.Media.Transform)).ctor());
             this.getChildren().trySetContextParent(this);
-            this.getChildren().addChanged(Bridge.fn.cacheBind(this, this.onChildChanged));
+            this.getChildren().addChanged(Bridge.fn.bind(this, this.onChildChanged));
         },
         getValue$5: function () {
             return this.matrix;
@@ -22257,7 +22080,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctor: function () {
             this.$initialize();
             System.Windows.Controls.Decorator.ctor.call(this);
-            this.borderRenderElements = new (System.Windows.Media.RenderElementDictionary$1(System.Windows.Media.IBorderRenderElement))(Bridge.fn.cacheBind(this, this.createRenderElement$1));
+            this.borderRenderElements = new (System.Collections.Generic.Dictionary$2(System.Windows.Media.IRenderElementFactory,System.Windows.Media.IBorderRenderElement))();
         },
         getBackground: function () {
             return Bridge.cast(this.getValue(System.Windows.Controls.Border.backgroundProperty), System.Windows.Media.Brush);
@@ -22289,8 +22112,32 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         setPadding: function (value) {
             this.setValue(System.Windows.Controls.Border.paddingProperty, value);
         },
-        createRenderElementContentOverride: function (factory) {
-            return this.borderRenderElements.getRenderElement(factory);
+        setRenderElementsProperty: function (setter) {
+            var $t;
+            $t = Bridge.getEnumerator(this.borderRenderElements.getValues(), System.Windows.Media.IBorderRenderElement);
+            while ($t.moveNext()) {
+                var borderRenderElement = $t.getCurrent();
+                setter(borderRenderElement);
+            }
+        },
+        createContentRenderElementOverride: function (factory) {
+            var borderRenderElement = { };
+            if (this.borderRenderElements.tryGetValue(factory, borderRenderElement)) {
+                return borderRenderElement.v;
+            }
+
+            borderRenderElement.v = factory.System$Windows$Media$IRenderElementFactory$createBorderRenderElement(this);
+
+            borderRenderElement.v.System$Windows$Media$IBorderRenderElement$setBackground(this.getBackground());
+            borderRenderElement.v.System$Windows$Media$IBorderRenderElement$setBorderBrush(this.getBorderBrush());
+            borderRenderElement.v.System$Windows$Media$IBorderRenderElement$setBorderThickness(this.getBorderThickness());
+            borderRenderElement.v.System$Windows$Media$IBorderRenderElement$setBounds(new System.Windows.Rect.$ctor3(this.getVisualSize()));
+            borderRenderElement.v.System$Windows$Media$IBorderRenderElement$setCornerRadius(this.getCornerRadius());
+            borderRenderElement.v.System$Windows$Media$IBorderRenderElement$setIsHitTestVisible(this.getIsHitTestVisible());
+
+            this.borderRenderElements.add(factory, borderRenderElement.v);
+
+            return borderRenderElement.v;
         },
         measureOverride: function (availableSize) {
             return System.Windows.Size.op_Addition(System.Windows.Size.op_Addition(System.Windows.Controls.Decorator.prototype.measureOverride.call(this, System.Windows.SizeExtensions.max((System.Windows.Size.op_Subtraction(System.Windows.Size.op_Subtraction(availableSize, this.getBorderThickness().getSize()), this.getPadding().getSize())), System.Windows.Size.zero)), this.getBorderThickness().getSize()), this.getPadding().getSize());
@@ -22301,7 +22148,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 this.getChild().arrange(new System.Windows.Rect.$ctor2(System.Windows.Point.op_Addition(this.getBorderThickness().getLocation(), this.getPadding().getLocation()), System.Windows.SizeExtensions.max((System.Windows.Size.op_Subtraction(System.Windows.Size.op_Subtraction(finalSize, this.getBorderThickness().getSize()), this.getPadding().getSize())), System.Windows.Size.zero)));
             }
 
-            $t = Bridge.getEnumerator(this.borderRenderElements.getElements());
+            $t = Bridge.getEnumerator(this.borderRenderElements.getValues(), System.Windows.Media.IBorderRenderElement);
             while ($t.moveNext()) {
                 var borderRenderElement = $t.getCurrent();
                 borderRenderElement.System$Windows$Media$IBorderRenderElement$setBounds(new System.Windows.Rect.$ctor3(finalSize));
@@ -22311,18 +22158,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         hitTestOverride: function (position) {
             return System.Windows.SizeExtensions.contains(this.getVisualSize(), position) && (this.getBackground() != null || this.getBorderBrush() != null && System.Windows.Controls.Border.isOverBorder(position, this.getVisualSize(), this.getBorderThickness(), this.getCornerRadius()));
-        },
-        createRenderElement$1: function (factory) {
-            var borderRenderElement = factory.System$Windows$Media$IRenderElementFactory$createBorderRenderElement(this);
-
-            borderRenderElement.System$Windows$Media$IBorderRenderElement$setBackground(this.getBackground());
-            borderRenderElement.System$Windows$Media$IBorderRenderElement$setBorderBrush(this.getBorderBrush());
-            borderRenderElement.System$Windows$Media$IBorderRenderElement$setBorderThickness(this.getBorderThickness());
-            borderRenderElement.System$Windows$Media$IBorderRenderElement$setBounds(new System.Windows.Rect.$ctor3(this.getVisualSize()));
-            borderRenderElement.System$Windows$Media$IBorderRenderElement$setCornerRadius(this.getCornerRadius());
-            borderRenderElement.System$Windows$Media$IBorderRenderElement$setIsHitTestVisible(this.getIsHitTestVisible());
-
-            return borderRenderElement;
         }
     });
 
@@ -22330,27 +22165,27 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
     Bridge.apply($asm.$.System.Windows.Controls.Border, {
         f1: function (sender, e) {
-            Bridge.cast(sender, System.Windows.Controls.Border).borderRenderElements.setRenderElementsProperty(function (renderElement) {
+            Bridge.cast(sender, System.Windows.Controls.Border).setRenderElementsProperty(function (renderElement) {
                 renderElement.System$Windows$Media$IBorderRenderElement$setIsHitTestVisible(System.Nullable.getValue(Bridge.cast(e.getNewValue(), Boolean)));
             });
         },
         f2: function (sender, e) {
-            Bridge.cast(sender, System.Windows.Controls.Border).borderRenderElements.setRenderElementsProperty(function (renderElement) {
+            Bridge.cast(sender, System.Windows.Controls.Border).setRenderElementsProperty(function (renderElement) {
                 renderElement.System$Windows$Media$IBorderRenderElement$setBackground(Bridge.cast(e.getNewValue(), System.Windows.Media.Brush));
             });
         },
         f3: function (sender, e) {
-            Bridge.cast(sender, System.Windows.Controls.Border).borderRenderElements.setRenderElementsProperty(function (renderElement) {
+            Bridge.cast(sender, System.Windows.Controls.Border).setRenderElementsProperty(function (renderElement) {
                 renderElement.System$Windows$Media$IBorderRenderElement$setBorderBrush(Bridge.cast(e.getNewValue(), System.Windows.Media.Brush));
             });
         },
         f4: function (sender, e) {
-            Bridge.cast(sender, System.Windows.Controls.Border).borderRenderElements.setRenderElementsProperty(function (renderElement) {
+            Bridge.cast(sender, System.Windows.Controls.Border).setRenderElementsProperty(function (renderElement) {
                 renderElement.System$Windows$Media$IBorderRenderElement$setBorderThickness(Bridge.cast(e.getNewValue(), System.Windows.Thickness));
             });
         },
         f5: function (sender, e) {
-            Bridge.cast(sender, System.Windows.Controls.Border).borderRenderElements.setRenderElementsProperty(function (renderElement) {
+            Bridge.cast(sender, System.Windows.Controls.Border).setRenderElementsProperty(function (renderElement) {
                 renderElement.System$Windows$Media$IBorderRenderElement$setCornerRadius(Bridge.cast(e.getNewValue(), System.Windows.CornerRadius));
             });
         }
@@ -22359,9 +22194,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
     Bridge.define("System.Windows.Controls.ContentControl", {
         inherits: [System.Windows.Controls.Control,System.Windows.Controls.IItemContainer],
         statics: {
-            ctor: function () {
-                System.Windows.FrameworkElement.defaultStyleKeyProperty.overrideMetadata(System.Windows.Controls.ContentControl, new System.Windows.FrameworkPropertyMetadata.$ctor1(new System.Windows.StyleKey(System.Windows.Controls.ContentControl)));
-            },
             contentProperty: null,
             contentTemplateProperty: null,
             contentTemplateSelectorProperty: null,
@@ -22725,28 +22557,28 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 // find a starLength where:
                 // definitionBases.Sum(axis => axis.GetStarredLength(starLength)) == totalStarsLength
 
-                var starredAxis = Granular.Compatibility.Linq.Enumerable.where(System.Windows.Controls.IDefinitionBase, definitionBases, $asm.$.System.Windows.Controls.Grid.f1);
+                var starredAxis = System.Linq.Enumerable.from(definitionBases).where($asm.$.System.Windows.Controls.Grid.f1);
 
-                if (Granular.Compatibility.Linq.Enumerable.count(System.Windows.Controls.IDefinitionBase, starredAxis) === 0 || totalStarsLength <= 0) {
+                if (System.Linq.Enumerable.from(starredAxis).count() === 0 || totalStarsLength <= 0) {
                     return 0;
                 }
 
-                if (Granular.Compatibility.Linq.Enumerable.count(System.Windows.Controls.IDefinitionBase, starredAxis) === 1) {
+                if (System.Linq.Enumerable.from(starredAxis).count() === 1) {
                     return totalStarsLength;
                 }
 
-                var bounds = Granular.Compatibility.Linq.Enumerable.toArray(System.Double, Granular.Compatibility.Linq.Enumerable.union(System.Double, Granular.Compatibility.Linq.Enumerable.select(System.Windows.Controls.IDefinitionBase, System.Double, starredAxis, $asm.$.System.Windows.Controls.Grid.f2), Granular.Compatibility.Linq.Enumerable.select(System.Windows.Controls.IDefinitionBase, System.Double, starredAxis, $asm.$.System.Windows.Controls.Grid.f3)));
+                var bounds = System.Linq.Enumerable.from(starredAxis).select($asm.$.System.Windows.Controls.Grid.f2).union(System.Linq.Enumerable.from(starredAxis).select($asm.$.System.Windows.Controls.Grid.f3)).toArray();
 
-                var smallerBound = Granular.Compatibility.Linq.Enumerable.max$1(Granular.Compatibility.Linq.Enumerable.defaultIfEmpty$1(System.Double, Granular.Compatibility.Linq.Enumerable.where(System.Double, bounds, function (vertex) {
-                    return Granular.Compatibility.Linq.Enumerable.sum$1(System.Windows.Controls.IDefinitionBase, starredAxis, function (axis) {
-                        return System.Windows.Controls.Grid.getStarredAxisLength(axis, vertex);
-                    }) <= totalStarsLength;
-                }), Number.NaN));
-                var largerBound = Granular.Compatibility.Linq.Enumerable.min$1(Granular.Compatibility.Linq.Enumerable.defaultIfEmpty$1(System.Double, Granular.Compatibility.Linq.Enumerable.where(System.Double, bounds, function (vertex) {
-                    return Granular.Compatibility.Linq.Enumerable.sum$1(System.Windows.Controls.IDefinitionBase, starredAxis, function (axis) {
-                        return System.Windows.Controls.Grid.getStarredAxisLength(axis, vertex);
-                    }) >= totalStarsLength;
-                }), Number.NaN));
+                var smallerBound = System.Linq.Enumerable.from(bounds).where(function (vertex) {
+                        return System.Linq.Enumerable.from(starredAxis).sum(function (axis) {
+                                return System.Windows.Controls.Grid.getStarredAxisLength(axis, vertex);
+                            }) <= totalStarsLength;
+                    }).defaultIfEmpty(Number.NaN).max();
+                var largerBound = System.Linq.Enumerable.from(bounds).where(function (vertex) {
+                        return System.Linq.Enumerable.from(starredAxis).sum(function (axis) {
+                                return System.Windows.Controls.Grid.getStarredAxisLength(axis, vertex);
+                            }) >= totalStarsLength;
+                    }).defaultIfEmpty(Number.NaN).min();
 
                 if (!isNaN(smallerBound) && !isNaN(largerBound)) {
                     if (smallerBound === largerBound) {
@@ -22754,24 +22586,24 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     }
 
                     if (Granular.Compatibility.Double.isInfinity(largerBound)) {
-                        var totalSmallerStarsLength = Granular.Compatibility.Linq.Enumerable.sum$1(System.Windows.Controls.IDefinitionBase, Granular.Compatibility.Linq.Enumerable.where(System.Windows.Controls.IDefinitionBase, starredAxis, function (axis) {
-                            return axis.System$Windows$Controls$IDefinitionBase$getMaxLength() <= axis.System$Windows$Controls$IDefinitionBase$getLength().getValue() * smallerBound;
-                        }), function (axis) {
+                        var totalSmallerStarsLength = System.Linq.Enumerable.from(starredAxis).where(function (axis) {
+                                return axis.System$Windows$Controls$IDefinitionBase$getMaxLength() <= axis.System$Windows$Controls$IDefinitionBase$getLength().getValue() * smallerBound;
+                            }).sum(function (axis) {
                             return System.Windows.Controls.Grid.getStarredAxisLength(axis, smallerBound);
                         });
-                        var totalLargerStars = Granular.Compatibility.Linq.Enumerable.sum$1(System.Windows.Controls.IDefinitionBase, Granular.Compatibility.Linq.Enumerable.where(System.Windows.Controls.IDefinitionBase, starredAxis, function (axis) {
-                            return axis.System$Windows$Controls$IDefinitionBase$getMaxLength() > axis.System$Windows$Controls$IDefinitionBase$getLength().getValue() * smallerBound;
-                        }), $asm.$.System.Windows.Controls.Grid.f4);
+                        var totalLargerStars = System.Linq.Enumerable.from(starredAxis).where(function (axis) {
+                                return axis.System$Windows$Controls$IDefinitionBase$getMaxLength() > axis.System$Windows$Controls$IDefinitionBase$getLength().getValue() * smallerBound;
+                            }).sum($asm.$.System.Windows.Controls.Grid.f4);
 
                         return (totalStarsLength - totalSmallerStarsLength) / totalLargerStars;
                     }
 
-                    var smallerBoundTotalLength = Granular.Compatibility.Linq.Enumerable.sum$1(System.Windows.Controls.IDefinitionBase, starredAxis, function (axis) {
-                        return System.Windows.Controls.Grid.getStarredAxisLength(axis, smallerBound);
-                    });
-                    var largerBoundTotalLength = Granular.Compatibility.Linq.Enumerable.sum$1(System.Windows.Controls.IDefinitionBase, starredAxis, function (axis) {
-                        return System.Windows.Controls.Grid.getStarredAxisLength(axis, largerBound);
-                    });
+                    var smallerBoundTotalLength = System.Linq.Enumerable.from(starredAxis).sum(function (axis) {
+                            return System.Windows.Controls.Grid.getStarredAxisLength(axis, smallerBound);
+                        });
+                    var largerBoundTotalLength = System.Linq.Enumerable.from(starredAxis).sum(function (axis) {
+                            return System.Windows.Controls.Grid.getStarredAxisLength(axis, largerBound);
+                        });
 
                     return smallerBound + (largerBound - smallerBound) * (totalStarsLength - smallerBoundTotalLength) / (largerBoundTotalLength - smallerBoundTotalLength);
                 }
@@ -22799,21 +22631,21 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.setColumnDefinitions(new (System.Windows.FreezableCollection$1(System.Windows.Controls.ColumnDefinition)).ctor());
             this.getColumnDefinitions().trySetContextParent(this);
 
-            this.defaultRowDefinitions = System.Array.init([new System.Windows.Controls.RowDefinition()], System.Windows.Controls.RowDefinition);
-            this.defaultColumnDefinitions = System.Array.init([new System.Windows.Controls.ColumnDefinition()], System.Windows.Controls.ColumnDefinition);
+            this.defaultRowDefinitions = [new System.Windows.Controls.RowDefinition()];
+            this.defaultColumnDefinitions = [new System.Windows.Controls.ColumnDefinition()];
         },
         measureOverride: function (availableSize) {
             var $t;
-            var currentRowDefinitions = this.getRowDefinitions().getCount() === 0 ? this.defaultRowDefinitions : Granular.Compatibility.Linq.Enumerable.toArray(System.Windows.Controls.RowDefinition, this.getRowDefinitions());
-            var currentColumnDefinitions = this.getColumnDefinitions().getCount() === 0 ? this.defaultColumnDefinitions : Granular.Compatibility.Linq.Enumerable.toArray(System.Windows.Controls.ColumnDefinition, this.getColumnDefinitions());
+            var currentRowDefinitions = this.getRowDefinitions().getCount() === 0 ? this.defaultRowDefinitions : System.Linq.Enumerable.from(this.getRowDefinitions()).toArray();
+            var currentColumnDefinitions = this.getColumnDefinitions().getCount() === 0 ? this.defaultColumnDefinitions : System.Linq.Enumerable.from(this.getColumnDefinitions()).toArray();
 
             if (currentRowDefinitions.length === 1 && currentColumnDefinitions.length === 1) {
                 // optimization
                 return this.measureSingleCell(availableSize, currentColumnDefinitions[0].System$Windows$Controls$IDefinitionBase$getLength(), currentRowDefinitions[0].System$Windows$Controls$IDefinitionBase$getLength());
             }
 
-            var rowsLength = { v : Granular.Compatibility.Linq.Enumerable.toArray(System.Double, Granular.Compatibility.Linq.Enumerable.select(System.Windows.Controls.IDefinitionBase, System.Double, currentRowDefinitions, $asm.$.System.Windows.Controls.Grid.f5)) };
-            var columnsLength = { v : Granular.Compatibility.Linq.Enumerable.toArray(System.Double, Granular.Compatibility.Linq.Enumerable.select(System.Windows.Controls.IDefinitionBase, System.Double, currentColumnDefinitions, $asm.$.System.Windows.Controls.Grid.f5)) };
+            var rowsLength = { v : System.Linq.Enumerable.from(currentRowDefinitions).select($asm.$.System.Windows.Controls.Grid.f5).toArray() };
+            var columnsLength = { v : System.Linq.Enumerable.from(currentColumnDefinitions).select($asm.$.System.Windows.Controls.Grid.f5).toArray() };
 
             var row = { };
             var column = { };
@@ -22839,20 +22671,20 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             System.Windows.Controls.Grid.setBoundedValues(currentRowDefinitions, rowsLength);
             System.Windows.Controls.Grid.setBoundedValues(currentColumnDefinitions, columnsLength);
 
-            return new System.Windows.Size(Granular.Compatibility.Linq.Enumerable.sum(columnsLength.v), Granular.Compatibility.Linq.Enumerable.sum(rowsLength.v));
+            return new System.Windows.Size(System.Linq.Enumerable.from(columnsLength.v).sum(), System.Linq.Enumerable.from(rowsLength.v).sum());
         },
         arrangeOverride: function (finalSize) {
             var $t, $t1;
-            var currentRowDefinitions = this.getRowDefinitions().getCount() === 0 ? this.defaultRowDefinitions : Granular.Compatibility.Linq.Enumerable.toArray(System.Windows.Controls.RowDefinition, this.getRowDefinitions());
-            var currentColumnDefinitions = this.getColumnDefinitions().getCount() === 0 ? this.defaultColumnDefinitions : Granular.Compatibility.Linq.Enumerable.toArray(System.Windows.Controls.ColumnDefinition, this.getColumnDefinitions());
+            var currentRowDefinitions = this.getRowDefinitions().getCount() === 0 ? this.defaultRowDefinitions : System.Linq.Enumerable.from(this.getRowDefinitions()).toArray();
+            var currentColumnDefinitions = this.getColumnDefinitions().getCount() === 0 ? this.defaultColumnDefinitions : System.Linq.Enumerable.from(this.getColumnDefinitions()).toArray();
 
             if (currentRowDefinitions.length === 1 && currentColumnDefinitions.length === 1) {
                 // optimization
                 return this.arrangeSingleCell(finalSize, currentColumnDefinitions[0], currentRowDefinitions[0]);
             }
 
-            var rowsLength = { v : Granular.Compatibility.Linq.Enumerable.toArray(System.Double, Granular.Compatibility.Linq.Enumerable.select(System.Windows.Controls.IDefinitionBase, System.Double, currentRowDefinitions, $asm.$.System.Windows.Controls.Grid.f5)) };
-            var columnsLength = { v : Granular.Compatibility.Linq.Enumerable.toArray(System.Double, Granular.Compatibility.Linq.Enumerable.select(System.Windows.Controls.IDefinitionBase, System.Double, currentColumnDefinitions, $asm.$.System.Windows.Controls.Grid.f5)) };
+            var rowsLength = { v : System.Linq.Enumerable.from(currentRowDefinitions).select($asm.$.System.Windows.Controls.Grid.f5).toArray() };
+            var columnsLength = { v : System.Linq.Enumerable.from(currentColumnDefinitions).select($asm.$.System.Windows.Controls.Grid.f5).toArray() };
 
             var row = { };
             var column = { };
@@ -22873,8 +22705,8 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 }
             }
 
-            var rowStarLength = System.Windows.Controls.Grid.getStarLength(currentRowDefinitions, finalSize.getHeight() - Granular.Compatibility.Linq.Enumerable.sum(rowsLength.v));
-            var columnStarLength = System.Windows.Controls.Grid.getStarLength(currentColumnDefinitions, finalSize.getWidth() - Granular.Compatibility.Linq.Enumerable.sum(columnsLength.v));
+            var rowStarLength = System.Windows.Controls.Grid.getStarLength(currentRowDefinitions, finalSize.getHeight() - System.Linq.Enumerable.from(rowsLength.v).sum());
+            var columnStarLength = System.Windows.Controls.Grid.getStarLength(currentColumnDefinitions, finalSize.getWidth() - System.Linq.Enumerable.from(columnsLength.v).sum());
 
             System.Windows.Controls.Grid.setStarLengths(currentRowDefinitions, rowStarLength, rowsLength);
             System.Windows.Controls.Grid.setStarLengths(currentColumnDefinitions, columnStarLength, columnsLength);
@@ -22890,7 +22722,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 var child1 = Bridge.cast($t1.getCurrent(), System.Windows.FrameworkElement);
                 System.Windows.Controls.Grid.getChildPosition(child1, currentRowDefinitions.length, currentColumnDefinitions.length, row, column, rowSpan, columnSpan);
 
-                child1.arrange(new System.Windows.Rect.$ctor1(Granular.Compatibility.Linq.Enumerable.sum(Granular.Compatibility.Linq.Enumerable.take(System.Double, columnsLength.v, column.v)), Granular.Compatibility.Linq.Enumerable.sum(Granular.Compatibility.Linq.Enumerable.take(System.Double, rowsLength.v, row.v)), Granular.Compatibility.Linq.Enumerable.sum(Granular.Compatibility.Linq.Enumerable.take(System.Double, Granular.Compatibility.Linq.Enumerable.skip(System.Double, columnsLength.v, column.v), columnSpan.v)), Granular.Compatibility.Linq.Enumerable.sum(Granular.Compatibility.Linq.Enumerable.take(System.Double, Granular.Compatibility.Linq.Enumerable.skip(System.Double, rowsLength.v, row.v), rowSpan.v))));
+                child1.arrange(new System.Windows.Rect.$ctor1(System.Linq.Enumerable.from(columnsLength.v).take(column.v).sum(), System.Linq.Enumerable.from(rowsLength.v).take(row.v).sum(), System.Linq.Enumerable.from(columnsLength.v).skip(column.v).take(columnSpan.v).sum(), System.Linq.Enumerable.from(rowsLength.v).skip(row.v).take(rowSpan.v).sum()));
             }
 
             return finalSize;
@@ -22952,9 +22784,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
     Bridge.define("System.Windows.Controls.ItemsControl", {
         inherits: [System.Windows.Controls.Control,System.Windows.Controls.Primitives.IGeneratorHost],
         statics: {
-            ctor: function () {
-                System.Windows.FrameworkElement.defaultStyleKeyProperty.overrideMetadata(System.Windows.Controls.ItemsControl, new System.Windows.FrameworkPropertyMetadata.$ctor1(new System.Windows.StyleKey(System.Windows.Controls.ItemsControl)));
-            },
             itemsSourceProperty: null,
             itemContainerStyleProperty: null,
             itemContainerStyleSelectorProperty: null,
@@ -23107,7 +22936,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 System.Windows.UIElement.isMouseOverProperty.overrideMetadata(System.Windows.Controls.PasswordBox, new System.Windows.FrameworkPropertyMetadata.$ctor8(System.Windows.FrameworkPropertyMetadataOptions.AffectsVisualState));
                 System.Windows.UIElement.isFocusedProperty.overrideMetadata(System.Windows.Controls.PasswordBox, new System.Windows.FrameworkPropertyMetadata.$ctor8(System.Windows.FrameworkPropertyMetadataOptions.AffectsVisualState));
                 System.Windows.FrameworkElement.cursorProperty.overrideMetadata(System.Windows.Controls.PasswordBox, new System.Windows.FrameworkPropertyMetadata.$ctor1(System.Windows.Input.Cursors.getIBeam()));
-                System.Windows.FrameworkElement.defaultStyleKeyProperty.overrideMetadata(System.Windows.Controls.PasswordBox, new System.Windows.FrameworkPropertyMetadata.$ctor1(new System.Windows.StyleKey(System.Windows.Controls.PasswordBox)));
             },
             passwordChangedEvent: null,
             maxLengthProperty: null,
@@ -23408,7 +23236,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         statics: {
             ctor: function () {
                 System.Windows.UIElement.focusableProperty.overrideMetadata(System.Windows.Controls.Primitives.Thumb, new System.Windows.FrameworkPropertyMetadata.$ctor1(false));
-                System.Windows.FrameworkElement.defaultStyleKeyProperty.overrideMetadata(System.Windows.Controls.Primitives.Thumb, new System.Windows.FrameworkPropertyMetadata.$ctor1(new System.Windows.StyleKey(System.Windows.Controls.Primitives.Thumb)));
             },
             dragStartedEvent: null,
             dragDeltaEvent: null,
@@ -23753,15 +23580,8 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     this.orientationProperty = System.Windows.DependencyProperty.register("Orientation", System.Windows.Controls.Orientation, System.Windows.Controls.StackPanel, new System.Windows.FrameworkPropertyMetadata.$ctor1(System.Windows.Controls.Orientation.Vertical));
                     this.flowDirectionProperty = System.Windows.DependencyProperty.register("FlowDirection", System.Windows.FlowDirection, System.Windows.Controls.StackPanel, new System.Windows.FrameworkPropertyMetadata.$ctor1(System.Windows.FlowDirection.TopDown));
                 }
-            },
-            createSize: function (orientation, mainLength, crossLength) {
-                return orientation === System.Windows.Controls.Orientation.Horizontal ? new System.Windows.Size(mainLength, crossLength) : new System.Windows.Size(crossLength, mainLength);
-            },
-            createRect: function (orientation, mainStart, crossStart, mainLength, crossLength) {
-                return orientation === System.Windows.Controls.Orientation.Horizontal ? new System.Windows.Rect.$ctor1(mainStart, crossStart, mainLength, crossLength) : new System.Windows.Rect.$ctor1(crossStart, mainStart, crossLength, mainLength);
             }
         },
-        measuredCrossLength: 0,
         getOrientation: function () {
             return System.Nullable.getValue(Bridge.cast(this.getValue(System.Windows.Controls.StackPanel.orientationProperty), System.Int32));
         },
@@ -23779,61 +23599,57 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         measureOverride: function (availableSize) {
             var $t;
-            var availableCrossLength = this.getCrossLength(availableSize);
-            var measureSize = System.Windows.Controls.StackPanel.createSize(this.getOrientation(), Number.POSITIVE_INFINITY, availableCrossLength);
-
             var mainLength = 0;
             var crossLength = 0;
 
             $t = Bridge.getEnumerator(this.getChildren());
             while ($t.moveNext()) {
                 var child = Bridge.cast($t.getCurrent(), System.Windows.FrameworkElement);
-                child.measure(measureSize);
+                this.measureChild(child, Number.POSITIVE_INFINITY, this.getCrossLength(availableSize));
 
                 mainLength += this.getMainLength(child.getDesiredSize());
                 crossLength = Math.max(crossLength, this.getCrossLength(child.getDesiredSize()));
             }
 
-            this.measuredCrossLength = availableCrossLength;
-
-            return System.Windows.Controls.StackPanel.createSize(this.getOrientation(), mainLength, crossLength);
+            return this.createSize(mainLength, crossLength);
         },
         arrangeOverride: function (finalSize) {
-            var $t, $t1;
+            var $t;
             var panelMainLength = System.Linq.Enumerable.from(this.getChildren()).select(Bridge.fn.bind(this, $asm.$.System.Windows.Controls.StackPanel.f1)).sum();
             var panelCrossLength = this.getCrossLength(finalSize);
 
-            if (this.measuredCrossLength !== panelCrossLength) {
-                var measureSize = System.Windows.Controls.StackPanel.createSize(this.getOrientation(), Number.POSITIVE_INFINITY, panelCrossLength);
-
-                $t = Bridge.getEnumerator(this.getChildren());
-                while ($t.moveNext()) {
-                    var child = Bridge.cast($t.getCurrent(), System.Windows.FrameworkElement);
-                    child.measure(measureSize);
-                }
-
-                this.measuredCrossLength = panelCrossLength;
-            }
-
             var childrenMainLength = 0;
-            $t1 = Bridge.getEnumerator(this.getChildren());
-            while ($t1.moveNext()) {
-                var child1 = $t1.getCurrent();
-                var childMainLength = this.getMainLength(child1.getDesiredSize());
+            $t = Bridge.getEnumerator(this.getChildren());
+            while ($t.moveNext()) {
+                var child = $t.getCurrent();
+                var childMainLength = this.getMainLength(child.getDesiredSize());
                 var childMainStart = this.getIsNormalFlow() ? childrenMainLength : panelMainLength - childrenMainLength - childMainLength;
 
-                child1.arrange(System.Windows.Controls.StackPanel.createRect(this.getOrientation(), childMainStart, 0, childMainLength, panelCrossLength));
+                this.arrangeChild(child, childMainStart, 0, childMainLength, panelCrossLength);
 
                 childrenMainLength += childMainLength;
             }
 
-            return System.Windows.Controls.StackPanel.createSize(this.getOrientation(), this.getMainLength(finalSize), panelCrossLength);
+            return this.createSize(this.getMainLength(finalSize), panelCrossLength);
+        },
+        createSize: function (mainLength, crossLength) {
+            if (this.getOrientation() === System.Windows.Controls.Orientation.Horizontal) {
+                return new System.Windows.Size(mainLength, crossLength);
+            }
+
+            return new System.Windows.Size(crossLength, mainLength);
         },
         getMainLength: function (size) {
             return this.getOrientation() === System.Windows.Controls.Orientation.Horizontal ? size.getWidth() : size.getHeight();
         },
         getCrossLength: function (size) {
             return this.getOrientation() === System.Windows.Controls.Orientation.Horizontal ? size.getHeight() : size.getWidth();
+        },
+        measureChild: function (child, availableMainLength, availableCrossLength) {
+            child.measure(this.getOrientation() === System.Windows.Controls.Orientation.Horizontal ? new System.Windows.Size(availableMainLength, availableCrossLength) : new System.Windows.Size(availableCrossLength, availableMainLength));
+        },
+        arrangeChild: function (child, finalMainStart, finalCrossStart, finalMainLength, finalCrossLength) {
+            child.arrange(this.getOrientation() === System.Windows.Controls.Orientation.Horizontal ? new System.Windows.Rect.$ctor1(finalMainStart, finalCrossStart, finalMainLength, finalCrossLength) : new System.Windows.Rect.$ctor1(finalCrossStart, finalMainStart, finalCrossLength, finalMainLength));
         }
     });
 
@@ -23911,7 +23727,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 totalCrossLength += groupMaxCrossLength;
             }
 
-            return this.createSize(maxMainLength, totalCrossLength);
+            return finalSize;
         },
         getElementGroups: function (size) {
             var $t;
@@ -24459,7 +24275,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             //
         },
         $ctor2: function (angle, startColor, endColor) {
-            System.Windows.Media.LinearGradientBrush.$ctor3.call(this, System.Windows.Media.LinearGradientBrush.getStartPoint(angle), System.Windows.Media.LinearGradientBrush.getEndPoint(angle), System.Array.init([new System.Windows.Media.GradientStop.$ctor1(startColor, 0), new System.Windows.Media.GradientStop.$ctor1(endColor, 1)], System.Windows.Media.GradientStop));
+            System.Windows.Media.LinearGradientBrush.$ctor3.call(this, System.Windows.Media.LinearGradientBrush.getStartPoint(angle), System.Windows.Media.LinearGradientBrush.getEndPoint(angle), [new System.Windows.Media.GradientStop.$ctor1(startColor, 0), new System.Windows.Media.GradientStop.$ctor1(endColor, 1)]);
             //
         },
         $ctor1: function (angle, gradientStops) {
@@ -24467,7 +24283,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             //
         },
         $ctor4: function (startPoint, endPoint, startColor, endColor) {
-            System.Windows.Media.LinearGradientBrush.$ctor3.call(this, startPoint, endPoint, System.Array.init([new System.Windows.Media.GradientStop.$ctor1(startColor, 0), new System.Windows.Media.GradientStop.$ctor1(endColor, 1)], System.Windows.Media.GradientStop));
+            System.Windows.Media.LinearGradientBrush.$ctor3.call(this, startPoint, endPoint, [new System.Windows.Media.GradientStop.$ctor1(startColor, 0), new System.Windows.Media.GradientStop.$ctor1(endColor, 1)]);
             //
         },
         $ctor3: function (startPoint, endPoint, gradientStops) {
@@ -24512,7 +24328,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             //
         },
         $ctor2: function (startColor, endColor) {
-            System.Windows.Media.RadialGradientBrush.$ctor1.call(this, System.Array.init([new System.Windows.Media.GradientStop.$ctor1(startColor, 0), new System.Windows.Media.GradientStop.$ctor1(endColor, 1)], System.Windows.Media.GradientStop));
+            System.Windows.Media.RadialGradientBrush.$ctor1.call(this, [new System.Windows.Media.GradientStop.$ctor1(startColor, 0), new System.Windows.Media.GradientStop.$ctor1(endColor, 1)]);
             //
         },
         $ctor1: function (gradientStops) {
@@ -24754,11 +24570,11 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         onCommandChanged: function (oldValue, newValue) {
             if (oldValue != null) {
-                oldValue.System$Windows$Input$ICommand$removeCanExecuteChanged(Bridge.fn.cacheBind(this, this.updateCommandStatus));
+                oldValue.System$Windows$Input$ICommand$removeCanExecuteChanged(Bridge.fn.bind(this, this.updateCommandStatus));
             }
 
             if (newValue != null) {
-                newValue.System$Windows$Input$ICommand$addCanExecuteChanged(Bridge.fn.cacheBind(this, this.updateCommandStatus));
+                newValue.System$Windows$Input$ICommand$addCanExecuteChanged(Bridge.fn.bind(this, this.updateCommandStatus));
                 this.updateCommandStatus(this, Object.empty);
             }
         },
@@ -24977,7 +24793,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 System.Windows.UIElement.isEnabledProperty.overrideMetadata(System.Windows.Controls.ListBoxItem, new System.Windows.FrameworkPropertyMetadata.$ctor8(System.Windows.FrameworkPropertyMetadataOptions.AffectsVisualState));
                 System.Windows.UIElement.isMouseOverProperty.overrideMetadata(System.Windows.Controls.ListBoxItem, new System.Windows.FrameworkPropertyMetadata.$ctor8(System.Windows.FrameworkPropertyMetadataOptions.AffectsVisualState));
                 System.Windows.Controls.Primitives.Selector.isSelectionActiveProperty.overrideMetadata(System.Windows.Controls.ListBoxItem, new System.Windows.FrameworkPropertyMetadata.$ctor8(2080));
-                System.Windows.FrameworkElement.defaultStyleKeyProperty.overrideMetadata(System.Windows.Controls.ListBoxItem, new System.Windows.FrameworkPropertyMetadata.$ctor1(new System.Windows.StyleKey(System.Windows.Controls.ListBoxItem)));
             },
             selectedEvent: null,
             unselectedEvent: null,
@@ -25059,7 +24874,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         statics: {
             ctor: function () {
                 System.Windows.UIElement.focusableProperty.overrideMetadata(System.Windows.Controls.Primitives.ScrollBar, new System.Windows.FrameworkPropertyMetadata.$ctor1(false));
-                System.Windows.FrameworkElement.defaultStyleKeyProperty.overrideMetadata(System.Windows.Controls.Primitives.ScrollBar, new System.Windows.FrameworkPropertyMetadata.$ctor1(new System.Windows.StyleKey(System.Windows.Controls.Primitives.ScrollBar)));
             },
             scrollEvent: null,
             orientationProperty: null,
@@ -25112,17 +24926,17 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             if (this.thumb != null) {
-                this.thumb.removeDragStarted(Bridge.fn.cacheBind(this, this.onThumbDragStarted));
-                this.thumb.removeDragDelta(Bridge.fn.cacheBind(this, this.onThumbDragDelta));
-                this.thumb.removeDragCompleted(Bridge.fn.cacheBind(this, this.onThumbDragCompleted));
+                this.thumb.removeDragStarted(Bridge.fn.bind(this, this.onThumbDragStarted));
+                this.thumb.removeDragDelta(Bridge.fn.bind(this, this.onThumbDragDelta));
+                this.thumb.removeDragCompleted(Bridge.fn.bind(this, this.onThumbDragCompleted));
             }
 
             this.thumb = value;
 
             if (this.thumb != null) {
-                this.thumb.addDragStarted(Bridge.fn.cacheBind(this, this.onThumbDragStarted));
-                this.thumb.addDragDelta(Bridge.fn.cacheBind(this, this.onThumbDragDelta));
-                this.thumb.addDragCompleted(Bridge.fn.cacheBind(this, this.onThumbDragCompleted));
+                this.thumb.addDragStarted(Bridge.fn.bind(this, this.onThumbDragStarted));
+                this.thumb.addDragDelta(Bridge.fn.bind(this, this.onThumbDragDelta));
+                this.thumb.addDragCompleted(Bridge.fn.bind(this, this.onThumbDragCompleted));
             }
         },
         getTrack: function () {
@@ -25150,13 +24964,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             if (this.decreasePageButton != null) {
-                this.decreasePageButton.removeClick(Bridge.fn.cacheBind(this, this.onDecreasePageClicked));
+                this.decreasePageButton.removeClick(Bridge.fn.bind(this, this.onDecreasePageClicked));
             }
 
             this.decreasePageButton = value;
 
             if (this.decreasePageButton != null) {
-                this.decreasePageButton.addClick(Bridge.fn.cacheBind(this, this.onDecreasePageClicked));
+                this.decreasePageButton.addClick(Bridge.fn.bind(this, this.onDecreasePageClicked));
             }
         },
         getIncreasePageButton: function () {
@@ -25168,13 +24982,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             if (this.increasePageButton != null) {
-                this.increasePageButton.removeClick(Bridge.fn.cacheBind(this, this.onIncreasePageClicked));
+                this.increasePageButton.removeClick(Bridge.fn.bind(this, this.onIncreasePageClicked));
             }
 
             this.increasePageButton = value;
 
             if (this.increasePageButton != null) {
-                this.increasePageButton.addClick(Bridge.fn.cacheBind(this, this.onIncreasePageClicked));
+                this.increasePageButton.addClick(Bridge.fn.bind(this, this.onIncreasePageClicked));
             }
         },
         getDecreaseLineButton: function () {
@@ -25186,13 +25000,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             if (this.decreaseLineButton != null) {
-                this.decreaseLineButton.removeClick(Bridge.fn.cacheBind(this, this.onDecreaseLineClicked));
+                this.decreaseLineButton.removeClick(Bridge.fn.bind(this, this.onDecreaseLineClicked));
             }
 
             this.decreaseLineButton = value;
 
             if (this.decreaseLineButton != null) {
-                this.decreaseLineButton.addClick(Bridge.fn.cacheBind(this, this.onDecreaseLineClicked));
+                this.decreaseLineButton.addClick(Bridge.fn.bind(this, this.onDecreaseLineClicked));
             }
         },
         getIncreaseLineButton: function () {
@@ -25204,13 +25018,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             if (this.increaseLineButton != null) {
-                this.increaseLineButton.removeClick(Bridge.fn.cacheBind(this, this.onIncreaseLineClicked));
+                this.increaseLineButton.removeClick(Bridge.fn.bind(this, this.onIncreaseLineClicked));
             }
 
             this.increaseLineButton = value;
 
             if (this.increaseLineButton != null) {
-                this.increaseLineButton.addClick(Bridge.fn.cacheBind(this, this.onIncreaseLineClicked));
+                this.increaseLineButton.addClick(Bridge.fn.bind(this, this.onIncreaseLineClicked));
             }
         },
         onApplyTemplate: function () {
@@ -25297,7 +25111,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 System.Windows.UIElement.focusableProperty.overrideMetadata(System.Windows.Controls.ProgressBar, new System.Windows.FrameworkPropertyMetadata.$ctor1(false));
                 System.Windows.Controls.Primitives.RangeBase.maximumProperty.overrideMetadata(System.Windows.Controls.ProgressBar, new System.Windows.FrameworkPropertyMetadata.$ctor1(100.0));
                 System.Windows.Controls.Control.foregroundProperty.overrideMetadata(System.Windows.Controls.ProgressBar, new System.Windows.FrameworkPropertyMetadata.$ctor9(System.Windows.FrameworkPropertyMetadataOptions.Inherits, $asm.$.System.Windows.Controls.ProgressBar.f1));
-                System.Windows.FrameworkElement.defaultStyleKeyProperty.overrideMetadata(System.Windows.Controls.ProgressBar, new System.Windows.FrameworkPropertyMetadata.$ctor1(new System.Windows.StyleKey(System.Windows.Controls.ProgressBar)));
             },
             isIndeterminateProperty: null,
             config: {
@@ -25326,13 +25139,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             if (this.track != null) {
-                this.track.removeLayoutUpdated(Bridge.fn.cacheBind(this, this.onTrackLayoutUpdated));
+                this.track.removeLayoutUpdated(Bridge.fn.bind(this, this.onTrackLayoutUpdated));
             }
 
             this.track = value;
 
             if (this.track != null) {
-                this.track.addLayoutUpdated(Bridge.fn.cacheBind(this, this.onTrackLayoutUpdated));
+                this.track.addLayoutUpdated(Bridge.fn.bind(this, this.onTrackLayoutUpdated));
             }
         },
         getIndicator: function () {
@@ -25344,13 +25157,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             if (this.indicator != null) {
-                this.indicator.removeLayoutUpdated(Bridge.fn.cacheBind(this, this.onIndicatorLayoutUpdated));
+                this.indicator.removeLayoutUpdated(Bridge.fn.bind(this, this.onIndicatorLayoutUpdated));
             }
 
             this.indicator = value;
 
             if (this.indicator != null) {
-                this.indicator.addLayoutUpdated(Bridge.fn.cacheBind(this, this.onIndicatorLayoutUpdated));
+                this.indicator.addLayoutUpdated(Bridge.fn.bind(this, this.onIndicatorLayoutUpdated));
             }
         },
         onApplyTemplate: function () {
@@ -25413,7 +25226,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             } else {
                 var color = this.getIsIndeterminate() ? Bridge.cast(this.getForeground(), System.Windows.Media.SolidColorBrush).getColor() : System.Windows.Media.Color.fromArgb(128, 255, 255, 255);
 
-                this.glow.setBackground(new System.Windows.Media.LinearGradientBrush.$ctor3(System.Windows.Point.zero, new System.Windows.Point.$ctor1(1, 0), System.Array.init([new System.Windows.Media.GradientStop.$ctor1(System.Windows.Media.Colors.getTransparent(), 0), new System.Windows.Media.GradientStop.$ctor1(color, 0.4), new System.Windows.Media.GradientStop.$ctor1(color, 0.6), new System.Windows.Media.GradientStop.$ctor1(System.Windows.Media.Colors.getTransparent(), 1)], System.Windows.Media.GradientStop)));
+                this.glow.setBackground(new System.Windows.Media.LinearGradientBrush.$ctor3(System.Windows.Point.zero, new System.Windows.Point.$ctor1(1, 0), [new System.Windows.Media.GradientStop.$ctor1(System.Windows.Media.Colors.getTransparent(), 0), new System.Windows.Media.GradientStop.$ctor1(color, 0.4), new System.Windows.Media.GradientStop.$ctor1(color, 0.6), new System.Windows.Media.GradientStop.$ctor1(System.Windows.Media.Colors.getTransparent(), 1)]));
             }
         },
         setGlowAnimation: function () {
@@ -25478,7 +25291,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         statics: {
             ctor: function () {
                 System.Windows.Controls.Control.isTabStopProperty.overrideMetadata(System.Windows.Controls.ScrollViewer, new System.Windows.FrameworkPropertyMetadata.$ctor1(false));
-                System.Windows.FrameworkElement.defaultStyleKeyProperty.overrideMetadata(System.Windows.Controls.ScrollViewer, new System.Windows.FrameworkPropertyMetadata.$ctor1(new System.Windows.StyleKey(System.Windows.Controls.ScrollViewer)));
             },
             scrollChangedEvent: null,
             canContentScrollProperty: null,
@@ -25664,13 +25476,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             if (this.horizontalScrollBar != null) {
-                this.horizontalScrollBar.removeValueChanged(Bridge.fn.cacheBind(this, this.onScrollBarValueChanged));
+                this.horizontalScrollBar.removeValueChanged(Bridge.fn.bind(this, this.onScrollBarValueChanged));
             }
 
             this.horizontalScrollBar = value;
 
             if (this.horizontalScrollBar != null) {
-                this.horizontalScrollBar.addValueChanged(Bridge.fn.cacheBind(this, this.onScrollBarValueChanged));
+                this.horizontalScrollBar.addValueChanged(Bridge.fn.bind(this, this.onScrollBarValueChanged));
             }
         },
         getVerticalScrollBar: function () {
@@ -25682,13 +25494,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
 
             if (this.verticalScrollBar != null) {
-                this.verticalScrollBar.removeValueChanged(Bridge.fn.cacheBind(this, this.onScrollBarValueChanged));
+                this.verticalScrollBar.removeValueChanged(Bridge.fn.bind(this, this.onScrollBarValueChanged));
             }
 
             this.verticalScrollBar = value;
 
             if (this.verticalScrollBar != null) {
-                this.verticalScrollBar.addValueChanged(Bridge.fn.cacheBind(this, this.onScrollBarValueChanged));
+                this.verticalScrollBar.addValueChanged(Bridge.fn.bind(this, this.onScrollBarValueChanged));
             }
         },
         onApplyTemplate: function () {
@@ -25807,7 +25619,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 System.Windows.Controls.Primitives.TextBoxBase.isReadOnlyProperty.overrideMetadata(System.Windows.Controls.TextBox, new System.Windows.FrameworkPropertyMetadata.$ctor11($asm.$.System.Windows.Controls.TextBox.f3));
                 System.Windows.Controls.SpellCheck.isEnabledProperty.overrideMetadata(System.Windows.Controls.TextBox, new System.Windows.FrameworkPropertyMetadata.$ctor11($asm.$.System.Windows.Controls.TextBox.f4));
                 System.Windows.FrameworkElement.cursorProperty.overrideMetadata(System.Windows.Controls.TextBox, new System.Windows.FrameworkPropertyMetadata.$ctor1(System.Windows.Input.Cursors.getIBeam()));
-                System.Windows.FrameworkElement.defaultStyleKeyProperty.overrideMetadata(System.Windows.Controls.TextBox, new System.Windows.FrameworkPropertyMetadata.$ctor1(new System.Windows.StyleKey(System.Windows.Controls.TextBox)));
             },
             textProperty: null,
             caretIndexProperty: null,
@@ -26023,7 +25834,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 System.Windows.Input.KeyboardNavigation.tabNavigationProperty.overrideMetadata(System.Windows.Window, new System.Windows.FrameworkPropertyMetadata.$ctor1(System.Windows.Input.KeyboardNavigationMode.Cycle));
                 System.Windows.Input.KeyboardNavigation.controlTabNavigationProperty.overrideMetadata(System.Windows.Window, new System.Windows.FrameworkPropertyMetadata.$ctor1(System.Windows.Input.KeyboardNavigationMode.Cycle));
                 System.Windows.Input.FocusManager.isFocusScopeProperty.overrideMetadata(System.Windows.Window, new System.Windows.FrameworkPropertyMetadata.$ctor1(true));
-                System.Windows.FrameworkElement.defaultStyleKeyProperty.overrideMetadata(System.Windows.Window, new System.Windows.FrameworkPropertyMetadata.$ctor1(new System.Windows.StyleKey(System.Windows.Window)));
             },
             titleProperty: null,
             config: {
@@ -26114,20 +25924,12 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
     });
 
     Bridge.define("System.Windows.Controls.Button", {
-        inherits: [System.Windows.Controls.Primitives.ButtonBase],
-        statics: {
-            ctor: function () {
-                System.Windows.FrameworkElement.defaultStyleKeyProperty.overrideMetadata(System.Windows.Controls.Button, new System.Windows.FrameworkPropertyMetadata.$ctor1(new System.Windows.StyleKey(System.Windows.Controls.Button)));
-            }
-        }
+        inherits: [System.Windows.Controls.Primitives.ButtonBase]
     });
 
     Bridge.define("System.Windows.Controls.Primitives.ToggleButton", {
         inherits: [System.Windows.Controls.Primitives.ButtonBase],
         statics: {
-            ctor: function () {
-                System.Windows.FrameworkElement.defaultStyleKeyProperty.overrideMetadata(System.Windows.Controls.Primitives.ToggleButton, new System.Windows.FrameworkPropertyMetadata.$ctor1(new System.Windows.StyleKey(System.Windows.Controls.Primitives.ToggleButton)));
-            },
             checkedEvent: null,
             uncheckedEvent: null,
             indeterminateEvent: null,
@@ -26238,7 +26040,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         statics: {
             ctor: function () {
                 System.Windows.Controls.Control.isTabStopProperty.overrideMetadata(System.Windows.Controls.Expander, new System.Windows.FrameworkPropertyMetadata.$ctor1(false));
-                System.Windows.FrameworkElement.defaultStyleKeyProperty.overrideMetadata(System.Windows.Controls.Expander, new System.Windows.FrameworkPropertyMetadata.$ctor1(new System.Windows.StyleKey(System.Windows.Controls.Expander)));
             },
             expandedEvent: null,
             collapsedEvent: null,
@@ -26324,7 +26125,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 System.Windows.Controls.Control.isTabStopProperty.overrideMetadata(System.Windows.Controls.ListBox, new System.Windows.FrameworkPropertyMetadata.$ctor1(false));
                 System.Windows.Input.KeyboardNavigation.directionalNavigationProperty.overrideMetadata(System.Windows.Controls.ListBox, new System.Windows.FrameworkPropertyMetadata.$ctor1(System.Windows.Input.KeyboardNavigationMode.Contained));
                 System.Windows.Input.KeyboardNavigation.tabNavigationProperty.overrideMetadata(System.Windows.Controls.ListBox, new System.Windows.FrameworkPropertyMetadata.$ctor1(System.Windows.Input.KeyboardNavigationMode.Once));
-                System.Windows.FrameworkElement.defaultStyleKeyProperty.overrideMetadata(System.Windows.Controls.ListBox, new System.Windows.FrameworkPropertyMetadata.$ctor1(new System.Windows.StyleKey(System.Windows.Controls.ListBox)));
             },
             selectedItemsPropertyKey: null,
             selectedItemsProperty: null,
@@ -26376,16 +26176,16 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             return new System.Windows.Controls.ListBoxItem();
         },
         onPrepareContainerForItem: function (item, container) {
-            container.addPreviewMouseDown(Bridge.fn.cacheBind(this, this.onItemContainerPreviewMouseDown)); // handled too
-            container.addMouseDown(Bridge.fn.cacheBind(this, this.onItemContainerMouseDown));
-            container.addKeyDown(Bridge.fn.cacheBind(this, this.onItemContainerKeyDown));
-            container.addGotKeyboardFocus(Bridge.fn.cacheBind(this, this.onItemContainerGotKeyboardFocus));
+            container.addPreviewMouseDown(Bridge.fn.bind(this, this.onItemContainerPreviewMouseDown)); // handled too
+            container.addMouseDown(Bridge.fn.bind(this, this.onItemContainerMouseDown));
+            container.addKeyDown(Bridge.fn.bind(this, this.onItemContainerKeyDown));
+            container.addGotKeyboardFocus(Bridge.fn.bind(this, this.onItemContainerGotKeyboardFocus));
         },
         onClearContainerForItem: function (item, container) {
-            container.removePreviewMouseDown(Bridge.fn.cacheBind(this, this.onItemContainerPreviewMouseDown)); // handled too
-            container.removeMouseDown(Bridge.fn.cacheBind(this, this.onItemContainerMouseDown));
-            container.removeKeyDown(Bridge.fn.cacheBind(this, this.onItemContainerKeyDown));
-            container.removeGotKeyboardFocus(Bridge.fn.cacheBind(this, this.onItemContainerGotKeyboardFocus));
+            container.removePreviewMouseDown(Bridge.fn.bind(this, this.onItemContainerPreviewMouseDown)); // handled too
+            container.removeMouseDown(Bridge.fn.bind(this, this.onItemContainerMouseDown));
+            container.removeKeyDown(Bridge.fn.bind(this, this.onItemContainerKeyDown));
+            container.removeGotKeyboardFocus(Bridge.fn.bind(this, this.onItemContainerGotKeyboardFocus));
         },
         onItemContainerPreviewMouseDown: function (sender, e) {
             if (e.getChangedButton() === System.Windows.Input.MouseButton.Left || e.getChangedButton() === System.Windows.Input.MouseButton.Right) {
@@ -26462,7 +26262,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         statics: {
             ctor: function () {
                 System.Windows.Controls.Primitives.ButtonBase.clickModeProperty.overrideMetadata(System.Windows.Controls.Primitives.RepeatButton, new System.Windows.FrameworkPropertyMetadata.$ctor1(System.Windows.Controls.ClickMode.Press));
-                System.Windows.FrameworkElement.defaultStyleKeyProperty.overrideMetadata(System.Windows.Controls.Primitives.RepeatButton, new System.Windows.FrameworkPropertyMetadata.$ctor1(new System.Windows.StyleKey(System.Windows.Controls.Primitives.RepeatButton)));
             },
             delayProperty: null,
             intervalProperty: null,
@@ -26478,7 +26277,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             this.$initialize();
             System.Windows.Controls.Primitives.ButtonBase.ctor.call(this);
             this.timer = new System.Windows.Threading.DispatcherTimer.ctor();
-            this.timer.addTick(Bridge.fn.cacheBind(this, this.onTimerTick));
+            this.timer.addTick(Bridge.fn.bind(this, this.onTimerTick));
         },
         getDelay: function () {
             return System.Nullable.getValue(Bridge.cast(this.getValue(System.Windows.Controls.Primitives.RepeatButton.delayProperty), System.Int32));
@@ -26514,20 +26313,12 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
     });
 
     Bridge.define("System.Windows.Controls.CheckBox", {
-        inherits: [System.Windows.Controls.Primitives.ToggleButton],
-        statics: {
-            ctor: function () {
-                System.Windows.FrameworkElement.defaultStyleKeyProperty.overrideMetadata(System.Windows.Controls.CheckBox, new System.Windows.FrameworkPropertyMetadata.$ctor1(new System.Windows.StyleKey(System.Windows.Controls.CheckBox)));
-            }
-        }
+        inherits: [System.Windows.Controls.Primitives.ToggleButton]
     });
 
     Bridge.define("System.Windows.Controls.RadioButton", {
         inherits: [System.Windows.Controls.Primitives.ToggleButton],
         statics: {
-            ctor: function () {
-                System.Windows.FrameworkElement.defaultStyleKeyProperty.overrideMetadata(System.Windows.Controls.RadioButton, new System.Windows.FrameworkPropertyMetadata.$ctor1(new System.Windows.StyleKey(System.Windows.Controls.RadioButton)));
-            },
             selectionGroupProperty: null,
             groupNameProperty: null,
             config: {
@@ -26573,13 +26364,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     this.currentGroup.System$Windows$Controls$ISelectionGroup$1$System$Windows$Controls$RadioButton$setSelection(null);
                 }
 
-                this.currentGroup.System$Windows$Controls$ISelectionGroup$1$System$Windows$Controls$RadioButton$removeSelectionChanged(Bridge.fn.cacheBind(this, this.onCurrentSelectionGroupChanged));
+                this.currentGroup.System$Windows$Controls$ISelectionGroup$1$System$Windows$Controls$RadioButton$removeSelectionChanged(Bridge.fn.bind(this, this.onCurrentSelectionGroupChanged));
             }
 
             this.currentGroup = value;
 
             if (this.currentGroup != null) {
-                this.currentGroup.System$Windows$Controls$ISelectionGroup$1$System$Windows$Controls$RadioButton$addSelectionChanged(Bridge.fn.cacheBind(this, this.onCurrentSelectionGroupChanged));
+                this.currentGroup.System$Windows$Controls$ISelectionGroup$1$System$Windows$Controls$RadioButton$addSelectionChanged(Bridge.fn.bind(this, this.onCurrentSelectionGroupChanged));
 
                 if (this.currentGroup.System$Windows$Controls$ISelectionGroup$1$System$Windows$Controls$RadioButton$getSelection() == null && System.Nullable.eq(this.getIsChecked(), true)) {
                     this.currentGroup.System$Windows$Controls$ISelectionGroup$1$System$Windows$Controls$RadioButton$setSelection(this);
@@ -26641,7 +26432,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
     });
 
     var $m = Bridge.setMetadata,
-        $n = [System,System.Windows,System.Windows.Data,Granular.Collections,System.Windows.Input,System.Windows.Media,System.Collections.Generic,System.Reflection,System.Windows.Media.Animation,System.Collections.ObjectModel,System.Windows.Markup,System.Collections,System.Windows.Controls,System.Windows.Controls.Primitives,System.Windows.Documents,System.Windows.Media.Imaging];
+        $n = [System,System.Windows,System.Windows.Data,Granular.Collections,System.Windows.Input,System.Windows.Media,System.Reflection,System.Collections.Generic,System.Windows.Media.Animation,System.Collections.ObjectModel,System.Collections,System.Windows.Controls,System.Windows.Controls.Primitives,System.Windows.Documents,System.Windows.Markup,System.Windows.Media.Imaging];
     $m($n[1].CornerRadius, function () { return {"at":[new System.Windows.Markup.TypeConverterAttribute(System.Windows.CornerRadiusTypeConverter)]}; });
     $m($n[2].ObservableValueChangedEventHandlerExtensions, function () { return {"at":[new System.Diagnostics.DebuggerNonUserCodeAttribute()]}; });
     $m($n[1].DependencyProperty, function () { return {"at":[new System.Windows.Markup.TypeConverterAttribute(System.Windows.DependencyPropertyTypeConverter)]}; });
@@ -26652,7 +26443,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
     $m($n[1].GridLength, function () { return {"at":[new System.Windows.Markup.TypeConverterAttribute(System.Windows.GridLengthTypeConverter)]}; });
     $m($n[4].Cursor, function () { return {"at":[new System.Windows.Markup.TypeConverterAttribute(System.Windows.Input.CursorTypeConverter)]}; });
     $m($n[4].KeyEventHandlerExtensions, function () { return {"at":[new System.Diagnostics.DebuggerNonUserCodeAttribute()]}; });
-    $m($n[10].XmlnsDefinitionAttribute, function () { return {"am":true}; });
+    $m($n[14].XmlnsDefinitionAttribute, function () { return {"am":true}; });
     $m($n[5].Color, function () { return {"at":[new System.Windows.Markup.TypeConverterAttribute(System.Windows.Media.ColorTypeConverter)]}; });
     $m($n[1].Rect, function () { return {"at":[new System.Windows.Markup.TypeConverterAttribute(System.Windows.RectTypeConverter)]}; });
     $m($n[1].Thickness, function () { return {"at":[new System.Windows.Markup.TypeConverterAttribute(System.Windows.ThicknessTypeConverter)]}; });
@@ -26667,83 +26458,82 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
     $m($n[2].ObservableValue, function () { return {"at":[new System.Diagnostics.DebuggerNonUserCodeAttribute()]}; });
     $m($n[2].StaticObservableValue, function () { return {"at":[new System.Diagnostics.DebuggerNonUserCodeAttribute()]}; });
     $m($n[1].DependencyPropertyValueEntry, function () { return {"at":[new System.Diagnostics.DebuggerNonUserCodeAttribute()]}; });
-    $m($n[10].MarkupExtensionParameterAttribute, function () { return {"am":true}; });
+    $m($n[14].MarkupExtensionParameterAttribute, function () { return {"am":true}; });
     $m($n[1].ReadOnlyDependencyPropertyValueEntry, function () { return {"at":[new System.Diagnostics.DebuggerNonUserCodeAttribute()]}; });
     $m($n[5].Transform, function () { return {"at":[new System.Windows.Markup.TypeConverterAttribute(System.Windows.Media.TransformTypeConverter)]}; });
     $m($n[5].Brush, function () { return {"at":[new System.Windows.Markup.TypeConverterAttribute(System.Windows.Media.BrushTypeConverter)]}; });
     $m($n[5].ImageSource, function () { return {"at":[new System.Windows.Markup.TypeConverterAttribute(System.Windows.Media.ImageSourceTypeConverter)]}; });
-    $m($n[12].TextBlock, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Text")]}; });
-    $m($n[14].Block, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("SiblingBlocks")]}; });
-    $m($n[14].Inline, function () { return {"at":[new System.Windows.Markup.TypeConverterAttribute(System.Windows.Documents.InlineConverter)]}; });
+    $m($n[11].TextBlock, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Text")]}; });
+    $m($n[13].Block, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("SiblingBlocks")]}; });
+    $m($n[13].Inline, function () { return {"at":[new System.Windows.Markup.TypeConverterAttribute(System.Windows.Documents.InlineConverter)]}; });
     $m($n[5].GradientBrush, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("GradientStops")]}; });
-    $m($n[12].ContentControl, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Content")]}; });
-    $m($n[13].RangeBase, function () { return {"at":[new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Normal"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "MouseOver"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Disabled"),new System.Windows.TemplateVisualStateAttribute.$ctor1("FocusStates", "Focused"),new System.Windows.TemplateVisualStateAttribute.$ctor1("FocusStates", "Unfocused")]}; });
-    $m($n[13].TextBoxBase, function () { return {"at":[new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Normal"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "MouseOver"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Disabled"),new System.Windows.TemplateVisualStateAttribute.$ctor1("FocusStates", "Focused"),new System.Windows.TemplateVisualStateAttribute.$ctor1("FocusStates", "Unfocused"),new System.Windows.TemplatePartAttribute.$ctor1("PART_ContentHost", System.Windows.Controls.Decorator)]}; });
-    $m($n[13].Thumb, function () { return {"at":[new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Normal"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "MouseOver"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Pressed"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Disabled"),new System.Windows.TemplateVisualStateAttribute.$ctor1("FocusStates", "Focused"),new System.Windows.TemplateVisualStateAttribute.$ctor1("FocusStates", "Unfocused")]}; });
-    $m($n[14].Paragraph, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Inlines")]}; });
-    $m($n[14].Run, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Text")]}; });
+    $m($n[11].ContentControl, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Content")]}; });
+    $m($n[12].RangeBase, function () { return {"at":[new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Normal"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "MouseOver"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Disabled"),new System.Windows.TemplateVisualStateAttribute.$ctor1("FocusStates", "Focused"),new System.Windows.TemplateVisualStateAttribute.$ctor1("FocusStates", "Unfocused")]}; });
+    $m($n[12].TextBoxBase, function () { return {"at":[new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Normal"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "MouseOver"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Disabled"),new System.Windows.TemplateVisualStateAttribute.$ctor1("FocusStates", "Focused"),new System.Windows.TemplateVisualStateAttribute.$ctor1("FocusStates", "Unfocused"),new System.Windows.TemplatePartAttribute.$ctor1("PART_ContentHost", System.Windows.Controls.Decorator)]}; });
+    $m($n[12].Thumb, function () { return {"at":[new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Normal"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "MouseOver"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Pressed"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Disabled"),new System.Windows.TemplateVisualStateAttribute.$ctor1("FocusStates", "Focused"),new System.Windows.TemplateVisualStateAttribute.$ctor1("FocusStates", "Unfocused")]}; });
+    $m($n[13].Paragraph, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Inlines")]}; });
+    $m($n[13].Run, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Text")]}; });
     $m($n[1].MultiTrigger, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Setters")]}; });
-    $m($n[13].ButtonBase, function () { return {"at":[new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Normal"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "MouseOver"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Pressed"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Disabled"),new System.Windows.TemplateVisualStateAttribute.$ctor1("FocusStates", "Focused"),new System.Windows.TemplateVisualStateAttribute.$ctor1("FocusStates", "Unfocused")]}; });
-    $m($n[12].ListBoxItem, function () { return {"at":[new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Normal"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "MouseOver"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Disabled"),new System.Windows.TemplateVisualStateAttribute.$ctor1("SelectionStates", "Selected"),new System.Windows.TemplateVisualStateAttribute.$ctor1("SelectionStates", "SelectedUnfocused"),new System.Windows.TemplateVisualStateAttribute.$ctor1("SelectionStates", "Unselected"),new System.Windows.TemplateVisualStateAttribute.$ctor1("FocusStates", "Focused"),new System.Windows.TemplateVisualStateAttribute.$ctor1("FocusStates", "Unfocused")]}; });
-    $m($n[13].ScrollBar, function () { return {"at":[new System.Windows.TemplatePartAttribute.$ctor1("PART_Track", System.Windows.Controls.Primitives.Track),new System.Windows.TemplatePartAttribute.$ctor1("PART_DecreaseButton", System.Windows.Controls.Primitives.ButtonBase),new System.Windows.TemplatePartAttribute.$ctor1("PART_IncreaseButton", System.Windows.Controls.Primitives.ButtonBase)]}; });
-    $m($n[12].ProgressBar, function () { return {"at":[new System.Windows.TemplatePartAttribute.$ctor1("PART_Track", System.Windows.FrameworkElement),new System.Windows.TemplatePartAttribute.$ctor1("PART_Indicator", System.Windows.FrameworkElement),new System.Windows.TemplatePartAttribute.$ctor1("PART_Glow", System.Windows.Controls.Border)]}; });
-    $m($n[12].ScrollViewer, function () { return {"at":[new System.Windows.TemplatePartAttribute.$ctor1("PART_HorizontalScrollBar", System.Windows.Controls.Primitives.ScrollBar),new System.Windows.TemplatePartAttribute.$ctor1("PART_VerticalScrollBar", System.Windows.Controls.Primitives.ScrollBar),new System.Windows.TemplatePartAttribute.$ctor1("PART_ScrollContentPresenter", System.Windows.Controls.ScrollContentPresenter)]}; });
-    $m($n[12].TextBox, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Text")]}; });
-    $m($n[13].ToggleButton, function () { return {"at":[new System.Windows.TemplateVisualStateAttribute.$ctor1("CheckStates", "Checked"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CheckStates", "Unchecked"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CheckStates", "Indeterminate")]}; });
-    $m($n[12].Expander, function () { return {"at":[new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Normal"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "MouseOver"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Disabled"),new System.Windows.TemplateVisualStateAttribute.$ctor1("ExpansionStates", "Expanded"),new System.Windows.TemplateVisualStateAttribute.$ctor1("ExpansionStates", "Collapsed")]}; });
-    $m($n[1].Application, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":"BaseUri","t":16,"rt":$n[0].Uri,"g":{"a":2,"n":"get_BaseUri","t":8,"sn":"getBaseUri","rt":$n[0].Uri},"s":{"a":2,"n":"set_BaseUri","t":8,"pi":[{"n":"value","pt":$n[0].Uri,"ps":0}],"sn":"setBaseUri","rt":Object,"p":[$n[0].Uri]}},{"a":2,"n":"MainWindow","t":16,"rt":$n[1].Window,"g":{"a":2,"n":"get_MainWindow","t":8,"sn":"getMainWindow","rt":$n[1].Window},"s":{"a":2,"n":"set_MainWindow","t":8,"pi":[{"n":"value","pt":$n[1].Window,"ps":0}],"sn":"setMainWindow","rt":Object,"p":[$n[1].Window]}},{"a":2,"n":"Resources","t":16,"rt":$n[1].ResourceDictionary,"g":{"a":2,"n":"get_Resources","t":8,"sn":"getResources","rt":$n[1].ResourceDictionary},"s":{"a":2,"n":"set_Resources","t":8,"pi":[{"n":"value","pt":$n[1].ResourceDictionary,"ps":0}],"sn":"setResources","rt":Object,"p":[$n[1].ResourceDictionary]}},{"a":2,"n":"StartupUri","t":16,"rt":$n[0].Uri,"g":{"a":2,"n":"get_StartupUri","t":8,"sn":"getStartupUri","rt":$n[0].Uri},"s":{"a":2,"n":"set_StartupUri","t":8,"pi":[{"n":"value","pt":$n[0].Uri,"ps":0}],"sn":"setStartupUri","rt":Object,"p":[$n[0].Uri]}},{"a":2,"n":"LoadCompleted","t":2,"ad":{"a":2,"n":"add_LoadCompleted","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"addLoadCompleted","rt":Object,"p":[Function]},"r":{"a":2,"n":"remove_LoadCompleted","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"removeLoadCompleted","rt":Object,"p":[Function]}},{"a":2,"n":"ResourcesChanged","t":2,"ad":{"a":2,"n":"add_ResourcesChanged","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"addResourcesChanged","rt":Object,"p":[Function]},"r":{"a":2,"n":"remove_ResourcesChanged","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"removeResourcesChanged","rt":Object,"p":[Function]}},{"a":2,"n":"Startup","t":2,"ad":{"a":2,"n":"add_Startup","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"addStartup","rt":Object,"p":[Function]},"r":{"a":2,"n":"remove_Startup","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"removeStartup","rt":Object,"p":[Function]}}]}; });
-    $m($n[1].Condition, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":"Binding","t":16,"rt":$n[2].Binding,"g":{"a":2,"n":"get_Binding","t":8,"sn":"getBinding","rt":$n[2].Binding},"s":{"a":2,"n":"set_Binding","t":8,"pi":[{"n":"value","pt":$n[2].Binding,"ps":0}],"sn":"setBinding","rt":Object,"p":[$n[2].Binding]}},{"a":2,"n":"Property","t":16,"rt":$n[1].IPropertyPathElement,"g":{"a":2,"n":"get_Property","t":8,"sn":"getProperty","rt":$n[1].IPropertyPathElement},"s":{"a":2,"n":"set_Property","t":8,"pi":[{"n":"value","pt":$n[1].IPropertyPathElement,"ps":0}],"sn":"setProperty","rt":Object,"p":[$n[1].IPropertyPathElement]}},{"a":2,"n":"SourceName","t":16,"rt":String,"g":{"a":2,"n":"get_SourceName","t":8,"sn":"getSourceName","rt":String},"s":{"a":2,"n":"set_SourceName","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setSourceName","rt":Object,"p":[String]}},{"a":2,"n":"Value","t":16,"rt":Object,"g":{"a":2,"n":"get_Value","t":8,"sn":"getValue","rt":Object},"s":{"a":2,"n":"set_Value","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setValue","rt":Object,"p":[Object]}}]}; });
-    $m($n[1].DataTemplate, function () { return {"att":1048577,"a":2,"at":[new System.Windows.Markup.DictionaryKeyPropertyAttribute("Key"),new System.Windows.Markup.DeferredValueKeyProviderAttribute(System.Windows.DataTemplateKeyProvider)],"m":[{"a":2,"n":"DataType","t":16,"rt":Function,"g":{"a":2,"n":"get_DataType","t":8,"sn":"getDataType","rt":Function},"s":{"a":2,"n":"set_DataType","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"setDataType","rt":Object,"p":[Function]}},{"a":2,"n":"Key","t":16,"rt":Object,"g":{"a":2,"n":"get_Key","t":8,"sn":"getKey","rt":Object},"s":{"a":2,"n":"set_Key","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setKey","rt":Object,"p":[Object]}}]}; });
-    $m($n[1].DataTrigger, function () { return {"att":1048577,"a":2,"at":[new System.Windows.Markup.ContentPropertyAttribute("Setters")],"m":[{"a":2,"n":"Binding","t":16,"rt":$n[2].Binding,"g":{"a":2,"n":"get_Binding","t":8,"sn":"getBinding","rt":$n[2].Binding},"s":{"a":2,"n":"set_Binding","t":8,"pi":[{"n":"value","pt":$n[2].Binding,"ps":0}],"sn":"setBinding","rt":Object,"p":[$n[2].Binding]}},{"a":2,"n":"Setters","t":16,"rt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction),"g":{"a":2,"n":"get_Setters","t":8,"sn":"getSetters","rt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction)},"s":{"a":1,"n":"set_Setters","t":8,"pi":[{"n":"value","pt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction),"ps":0}],"sn":"setSetters","rt":Object,"p":[$n[3].ObservableCollection$1(System.Windows.ITriggerAction)]}},{"a":2,"n":"Value","t":16,"rt":Object,"g":{"a":2,"n":"get_Value","t":8,"sn":"getValue$5","rt":Object},"s":{"a":2,"n":"set_Value","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setValue$5","rt":Object,"p":[Object]}}]}; });
-    $m($n[1].DynamicResourceExtension, function () { return {"att":1048577,"a":2,"at":[new System.Windows.Markup.MarkupExtensionParameterAttribute("ResourceKey", 0)],"m":[{"a":2,"n":"ResourceKey","t":16,"rt":Object,"g":{"a":2,"n":"get_ResourceKey","t":8,"sn":"getResourceKey","rt":Object},"s":{"a":2,"n":"set_ResourceKey","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setResourceKey","rt":Object,"p":[Object]}}]}; });
-    $m($n[1].EventSetter, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":"Event","t":16,"rt":$n[1].RoutedEvent,"g":{"a":2,"n":"get_Event","t":8,"sn":"getEvent","rt":$n[1].RoutedEvent},"s":{"a":2,"n":"set_Event","t":8,"pi":[{"n":"value","pt":$n[1].RoutedEvent,"ps":0}],"sn":"setEvent","rt":Object,"p":[$n[1].RoutedEvent]}},{"a":2,"n":"HandledEventsToo","t":16,"rt":Boolean,"g":{"a":2,"n":"get_HandledEventsToo","t":8,"sn":"getHandledEventsToo","rt":Boolean},"s":{"a":2,"n":"set_HandledEventsToo","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setHandledEventsToo","rt":Object,"p":[Boolean]}},{"a":2,"n":"Handler","t":16,"rt":Function,"g":{"a":2,"n":"get_Handler","t":8,"sn":"getHandler","rt":Function},"s":{"a":2,"n":"set_Handler","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"setHandler","rt":Object,"p":[Function]}}]}; });
-    $m($n[1].EventTrigger, function () { return {"att":1048577,"a":2,"at":[new System.Windows.Markup.ContentPropertyAttribute("Actions")],"m":[{"a":2,"n":"Actions","t":16,"rt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction),"g":{"a":2,"n":"get_Actions","t":8,"sn":"getActions","rt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction)},"s":{"a":1,"n":"set_Actions","t":8,"pi":[{"n":"value","pt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction),"ps":0}],"sn":"setActions","rt":Object,"p":[$n[3].ObservableCollection$1(System.Windows.ITriggerAction)]}},{"a":2,"n":"RoutedEvent","t":16,"rt":$n[1].RoutedEvent,"g":{"a":2,"n":"get_RoutedEvent","t":8,"sn":"getRoutedEvent","rt":$n[1].RoutedEvent},"s":{"a":2,"n":"set_RoutedEvent","t":8,"pi":[{"n":"value","pt":$n[1].RoutedEvent,"ps":0}],"sn":"setRoutedEvent","rt":Object,"p":[$n[1].RoutedEvent]}},{"a":2,"n":"SourceName","t":16,"rt":String,"g":{"a":2,"n":"get_SourceName","t":8,"sn":"getSourceName","rt":String},"s":{"a":2,"n":"set_SourceName","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setSourceName","rt":Object,"p":[String]}}]}; });
-    $m($n[1].FrameworkElement, function () { return {"att":1048577,"a":2,"at":[new System.Windows.Markup.RuntimeNamePropertyAttribute("Name")],"m":[{"a":2,"n":"ActualHeight","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_ActualHeight","t":8,"sn":"getActualHeight","rt":$n[0].Double},"s":{"a":1,"n":"set_ActualHeight","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setActualHeight","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"ActualSize","t":16,"rt":$n[1].Size,"g":{"a":2,"n":"get_ActualSize","t":8,"sn":"getActualSize","rt":$n[1].Size},"s":{"a":1,"n":"set_ActualSize","t":8,"pi":[{"n":"value","pt":$n[1].Size,"ps":0}],"sn":"setActualSize","rt":Object,"p":[$n[1].Size]}},{"a":2,"n":"ActualWidth","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_ActualWidth","t":8,"sn":"getActualWidth","rt":$n[0].Double},"s":{"a":1,"n":"set_ActualWidth","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setActualWidth","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"Cursor","t":16,"rt":$n[4].Cursor,"g":{"a":2,"n":"get_Cursor","t":8,"sn":"getCursor","rt":$n[4].Cursor},"s":{"a":2,"n":"set_Cursor","t":8,"pi":[{"n":"value","pt":$n[4].Cursor,"ps":0}],"sn":"setCursor","rt":Object,"p":[$n[4].Cursor]}},{"a":2,"n":"DataContext","t":16,"rt":Object,"g":{"a":2,"n":"get_DataContext","t":8,"sn":"getDataContext","rt":Object},"s":{"a":2,"n":"set_DataContext","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setDataContext","rt":Object,"p":[Object]}},{"a":2,"n":"DefaultStyleKey","t":16,"rt":Object,"g":{"a":2,"n":"get_DefaultStyleKey","t":8,"sn":"getDefaultStyleKey","rt":Object},"s":{"a":2,"n":"set_DefaultStyleKey","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setDefaultStyleKey","rt":Object,"p":[Object]}},{"a":2,"n":"FocusVisualStyle","t":16,"rt":$n[1].Style,"g":{"a":2,"n":"get_FocusVisualStyle","t":8,"sn":"getFocusVisualStyle","rt":$n[1].Style},"s":{"a":2,"n":"set_FocusVisualStyle","t":8,"pi":[{"n":"value","pt":$n[1].Style,"ps":0}],"sn":"setFocusVisualStyle","rt":Object,"p":[$n[1].Style]}},{"a":2,"n":"ForceCursor","t":16,"rt":Boolean,"g":{"a":2,"n":"get_ForceCursor","t":8,"sn":"getForceCursor","rt":Boolean},"s":{"a":2,"n":"set_ForceCursor","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setForceCursor","rt":Object,"p":[Boolean]}},{"a":2,"n":"Height","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_Height","t":8,"sn":"getHeight","rt":$n[0].Double},"s":{"a":2,"n":"set_Height","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setHeight","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"HorizontalAlignment","t":16,"rt":$n[1].HorizontalAlignment,"g":{"a":2,"n":"get_HorizontalAlignment","t":8,"sn":"getHorizontalAlignment","rt":$n[1].HorizontalAlignment},"s":{"a":2,"n":"set_HorizontalAlignment","t":8,"pi":[{"n":"value","pt":$n[1].HorizontalAlignment,"ps":0}],"sn":"setHorizontalAlignment","rt":Object,"p":[$n[1].HorizontalAlignment]}},{"a":2,"n":"IsInitialized","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsInitialized","t":8,"sn":"getIsInitialized","rt":Boolean},"s":{"a":1,"n":"set_IsInitialized","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsInitialized","rt":Object,"p":[Boolean]}},{"a":2,"n":"LayoutTransform","t":16,"rt":$n[5].Transform,"g":{"a":2,"n":"get_LayoutTransform","t":8,"sn":"getLayoutTransform","rt":$n[5].Transform},"s":{"a":2,"n":"set_LayoutTransform","t":8,"pi":[{"n":"value","pt":$n[5].Transform,"ps":0}],"sn":"setLayoutTransform","rt":Object,"p":[$n[5].Transform]}},{"a":2,"n":"Margin","t":16,"rt":$n[1].Thickness,"g":{"a":2,"n":"get_Margin","t":8,"sn":"getMargin","rt":$n[1].Thickness},"s":{"a":2,"n":"set_Margin","t":8,"pi":[{"n":"value","pt":$n[1].Thickness,"ps":0}],"sn":"setMargin","rt":Object,"p":[$n[1].Thickness]}},{"a":2,"n":"MaxHeight","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_MaxHeight","t":8,"sn":"getMaxHeight","rt":$n[0].Double},"s":{"a":2,"n":"set_MaxHeight","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setMaxHeight","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"MaxSize","t":16,"rt":$n[1].Size,"g":{"a":2,"n":"get_MaxSize","t":8,"sn":"getMaxSize","rt":$n[1].Size},"s":{"a":1,"n":"set_MaxSize","t":8,"pi":[{"n":"value","pt":$n[1].Size,"ps":0}],"sn":"setMaxSize","rt":Object,"p":[$n[1].Size]}},{"a":2,"n":"MaxWidth","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_MaxWidth","t":8,"sn":"getMaxWidth","rt":$n[0].Double},"s":{"a":2,"n":"set_MaxWidth","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setMaxWidth","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"MinHeight","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_MinHeight","t":8,"sn":"getMinHeight","rt":$n[0].Double},"s":{"a":2,"n":"set_MinHeight","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setMinHeight","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"MinSize","t":16,"rt":$n[1].Size,"g":{"a":2,"n":"get_MinSize","t":8,"sn":"getMinSize","rt":$n[1].Size},"s":{"a":1,"n":"set_MinSize","t":8,"pi":[{"n":"value","pt":$n[1].Size,"ps":0}],"sn":"setMinSize","rt":Object,"p":[$n[1].Size]}},{"a":2,"n":"MinWidth","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_MinWidth","t":8,"sn":"getMinWidth","rt":$n[0].Double},"s":{"a":2,"n":"set_MinWidth","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setMinWidth","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"Name","t":16,"rt":String,"g":{"a":2,"n":"get_Name","t":8,"sn":"getName","rt":String},"s":{"a":2,"n":"set_Name","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setName","rt":Object,"p":[String]}},{"a":2,"n":"Resources","t":16,"rt":$n[1].ResourceDictionary,"g":{"a":2,"n":"get_Resources","t":8,"sn":"getResources","rt":$n[1].ResourceDictionary},"s":{"a":2,"n":"set_Resources","t":8,"pi":[{"n":"value","pt":$n[1].ResourceDictionary,"ps":0}],"sn":"setResources","rt":Object,"p":[$n[1].ResourceDictionary]}},{"a":2,"n":"Size","t":16,"rt":$n[1].Size,"g":{"a":2,"n":"get_Size","t":8,"sn":"getSize","rt":$n[1].Size},"s":{"a":1,"n":"set_Size","t":8,"pi":[{"n":"value","pt":$n[1].Size,"ps":0}],"sn":"setSize","rt":Object,"p":[$n[1].Size]}},{"a":2,"n":"Style","t":16,"rt":$n[1].Style,"g":{"a":2,"n":"get_Style","t":8,"sn":"getStyle","rt":$n[1].Style},"s":{"a":2,"n":"set_Style","t":8,"pi":[{"n":"value","pt":$n[1].Style,"ps":0}],"sn":"setStyle","rt":Object,"p":[$n[1].Style]}},{"a":2,"n":"TemplateChild","t":16,"rt":$n[1].UIElement,"g":{"a":2,"n":"get_TemplateChild","t":8,"sn":"getTemplateChild","rt":$n[1].UIElement},"s":{"a":2,"n":"set_TemplateChild","t":8,"pi":[{"n":"value","pt":$n[1].UIElement,"ps":0}],"sn":"setTemplateChild","rt":Object,"p":[$n[1].UIElement]}},{"a":2,"n":"TemplatedParent","t":16,"rt":$n[1].FrameworkElement,"g":{"a":2,"n":"get_TemplatedParent","t":8,"sn":"getTemplatedParent","rt":$n[1].FrameworkElement},"s":{"a":4,"n":"set_TemplatedParent","t":8,"pi":[{"n":"value","pt":$n[1].FrameworkElement,"ps":0}],"sn":"setTemplatedParent","rt":Object,"p":[$n[1].FrameworkElement]}},{"a":2,"n":"Triggers","t":16,"rt":$n[3].ObservableCollection$1(System.Windows.ITrigger),"g":{"a":2,"n":"get_Triggers","t":8,"sn":"getTriggers","rt":$n[3].ObservableCollection$1(System.Windows.ITrigger)},"s":{"a":1,"n":"set_Triggers","t":8,"pi":[{"n":"value","pt":$n[3].ObservableCollection$1(System.Windows.ITrigger),"ps":0}],"sn":"setTriggers","rt":Object,"p":[$n[3].ObservableCollection$1(System.Windows.ITrigger)]}},{"a":2,"n":"VerticalAlignment","t":16,"rt":$n[1].VerticalAlignment,"g":{"a":2,"n":"get_VerticalAlignment","t":8,"sn":"getVerticalAlignment","rt":$n[1].VerticalAlignment},"s":{"a":2,"n":"set_VerticalAlignment","t":8,"pi":[{"n":"value","pt":$n[1].VerticalAlignment,"ps":0}],"sn":"setVerticalAlignment","rt":Object,"p":[$n[1].VerticalAlignment]}},{"a":2,"n":"Width","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_Width","t":8,"sn":"getWidth","rt":$n[0].Double},"s":{"a":2,"n":"set_Width","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setWidth","rt":Object,"p":[$n[0].Double]}}]}; });
-    $m($n[1].FrameworkTemplate, function () { return {"att":1048577,"a":2,"at":[new System.Windows.Markup.ContentPropertyAttribute("FrameworkElementFactory")],"m":[{"a":2,"n":"FrameworkElementFactory","t":16,"rt":$n[1].IFrameworkElementFactory,"g":{"a":2,"n":"get_FrameworkElementFactory","t":8,"sn":"getFrameworkElementFactory","rt":$n[1].IFrameworkElementFactory},"s":{"a":2,"n":"set_FrameworkElementFactory","t":8,"pi":[{"n":"value","pt":$n[1].IFrameworkElementFactory,"ps":0}],"sn":"setFrameworkElementFactory","rt":Object,"p":[$n[1].IFrameworkElementFactory]}},{"a":2,"n":"Triggers","t":16,"rt":$n[3].ObservableCollection$1(System.Windows.ITrigger),"g":{"a":2,"n":"get_Triggers","t":8,"sn":"getTriggers","rt":$n[3].ObservableCollection$1(System.Windows.ITrigger)},"s":{"a":1,"n":"set_Triggers","t":8,"pi":[{"n":"value","pt":$n[3].ObservableCollection$1(System.Windows.ITrigger),"ps":0}],"sn":"setTriggers","rt":Object,"p":[$n[3].ObservableCollection$1(System.Windows.ITrigger)]}}]}; });
-    $m($n[1].MultiDataTriggerBase, function () { return {"att":1048705,"a":2,"at":[new System.Windows.Markup.ContentPropertyAttribute("Setters")],"m":[{"a":2,"n":"Conditions","t":16,"rt":$n[3].ObservableCollection$1(System.Windows.Condition),"g":{"a":2,"n":"get_Conditions","t":8,"sn":"getConditions","rt":$n[3].ObservableCollection$1(System.Windows.Condition)},"s":{"a":1,"n":"set_Conditions","t":8,"pi":[{"n":"value","pt":$n[3].ObservableCollection$1(System.Windows.Condition),"ps":0}],"sn":"setConditions","rt":Object,"p":[$n[3].ObservableCollection$1(System.Windows.Condition)]}},{"a":2,"n":"Setters","t":16,"rt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction),"g":{"a":2,"n":"get_Setters","t":8,"sn":"getSetters","rt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction)},"s":{"a":1,"n":"set_Setters","t":8,"pi":[{"n":"value","pt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction),"ps":0}],"sn":"setSetters","rt":Object,"p":[$n[3].ObservableCollection$1(System.Windows.ITriggerAction)]}}]}; });
-    $m($n[1].Point, function () { return {"att":1048833,"a":2,"at":[new System.Windows.Markup.TypeConverterAttribute(System.Windows.PointTypeConverter)],"m":[{"a":2,"n":"IsEmpty","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsEmpty","t":8,"sn":"getIsEmpty","rt":Boolean},"s":{"a":1,"n":"set_IsEmpty","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsEmpty","rt":Object,"p":[Boolean]}},{"a":2,"n":"X","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_X","t":8,"sn":"getX","rt":$n[0].Double},"s":{"a":1,"n":"set_X","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setX","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"Y","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_Y","t":8,"sn":"getY","rt":$n[0].Double},"s":{"a":1,"n":"set_Y","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setY","rt":Object,"p":[$n[0].Double]}}]}; });
-    $m($n[1].ResourceDictionary, function () { return {"att":1048577,"a":2,"at":[new System.Windows.Markup.SupportsValueProviderAttribute()],"m":[{"a":2,"n":"BaseUri","t":16,"rt":$n[0].Uri,"g":{"a":2,"n":"get_BaseUri","t":8,"sn":"getBaseUri","rt":$n[0].Uri},"s":{"a":2,"n":"set_BaseUri","t":8,"pi":[{"n":"value","pt":$n[0].Uri,"ps":0}],"sn":"setBaseUri","rt":Object,"p":[$n[0].Uri]}},{"a":2,"n":"Count","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Count","t":8,"sn":"getCount","rt":$n[0].Int32}},{"a":2,"n":"IsEmpty","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsEmpty","t":8,"sn":"getIsEmpty","rt":Boolean}},{"a":2,"n":"IsReadOnly","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsReadOnly","t":8,"sn":"getIsReadOnly","rt":Boolean}},{"a":2,"n":"Keys","t":16,"rt":$n[6].ICollection$1(Object),"g":{"a":2,"n":"get_Keys","t":8,"sn":"getKeys","rt":$n[6].ICollection$1(Object)}},{"a":2,"n":"MergedDictionaries","t":16,"rt":$n[3].ObservableCollection$1(System.Windows.ResourceDictionary),"g":{"a":2,"n":"get_MergedDictionaries","t":8,"sn":"getMergedDictionaries","rt":$n[3].ObservableCollection$1(System.Windows.ResourceDictionary)},"s":{"a":1,"n":"set_MergedDictionaries","t":8,"pi":[{"n":"value","pt":$n[3].ObservableCollection$1(System.Windows.ResourceDictionary),"ps":0}],"sn":"setMergedDictionaries","rt":Object,"p":[$n[3].ObservableCollection$1(System.Windows.ResourceDictionary)]}},{"a":2,"n":"Source","t":16,"rt":$n[0].Uri,"g":{"a":2,"n":"get_Source","t":8,"sn":"getSource","rt":$n[0].Uri},"s":{"a":2,"n":"set_Source","t":8,"pi":[{"n":"value","pt":$n[0].Uri,"ps":0}],"sn":"setSource","rt":Object,"p":[$n[0].Uri]}},{"a":2,"n":"Values","t":16,"rt":$n[6].ICollection$1(Object),"g":{"a":2,"n":"get_Values","t":8,"sn":"getValues","rt":$n[6].ICollection$1(Object)}}]}; });
-    $m($n[1].ComponentResourceKey, function () { return {"att":1048833,"a":2,"m":[{"a":2,"n":"Assembly","t":16,"rt":$n[7].Assembly,"g":{"a":2,"n":"get_Assembly","t":8,"sn":"getAssembly","rt":$n[7].Assembly}},{"a":2,"n":"ResourceId","t":16,"rt":Object,"g":{"a":2,"n":"get_ResourceId","t":8,"sn":"getResourceId","rt":Object},"s":{"a":2,"n":"set_ResourceId","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setResourceId","rt":Object,"p":[Object]}},{"a":2,"n":"TypeInTargetAssembly","t":16,"rt":Function,"g":{"a":2,"n":"get_TypeInTargetAssembly","t":8,"sn":"getTypeInTargetAssembly","rt":Function},"s":{"a":2,"n":"set_TypeInTargetAssembly","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"setTypeInTargetAssembly","rt":Object,"p":[Function]}}]}; });
-    $m($n[1].Setter, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":"Property","t":16,"rt":$n[1].IPropertyPathElement,"g":{"a":2,"n":"get_Property","t":8,"sn":"getProperty","rt":$n[1].IPropertyPathElement},"s":{"a":2,"n":"set_Property","t":8,"pi":[{"n":"value","pt":$n[1].IPropertyPathElement,"ps":0}],"sn":"setProperty","rt":Object,"p":[$n[1].IPropertyPathElement]}},{"a":2,"n":"TargetName","t":16,"rt":String,"g":{"a":2,"n":"get_TargetName","t":8,"sn":"getTargetName","rt":String},"s":{"a":2,"n":"set_TargetName","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setTargetName","rt":Object,"p":[String]}},{"a":2,"n":"Value","t":16,"rt":Object,"g":{"a":2,"n":"get_Value","t":8,"sn":"getValue","rt":Object},"s":{"a":2,"n":"set_Value","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setValue","rt":Object,"p":[Object]}}]}; });
-    $m($n[1].StaticResourceExtension, function () { return {"att":1048577,"a":2,"at":[new System.Windows.Markup.MarkupExtensionParameterAttribute("ResourceKey", 0)],"m":[{"a":2,"n":"ResourceKey","t":16,"rt":Object,"g":{"a":2,"n":"get_ResourceKey","t":8,"sn":"getResourceKey","rt":Object},"s":{"a":2,"n":"set_ResourceKey","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setResourceKey","rt":Object,"p":[Object]}}]}; });
-    $m($n[1].Style, function () { return {"att":1048577,"a":2,"at":[new System.Windows.Markup.ContentPropertyAttribute("Setters"),new System.Windows.Markup.DictionaryKeyPropertyAttribute("Key"),new System.Windows.Markup.DeferredValueKeyProviderAttribute(System.Windows.StyleKeyProvider)],"m":[{"a":2,"n":"BasedOn","t":16,"rt":$n[1].Style,"g":{"a":2,"n":"get_BasedOn","t":8,"sn":"getBasedOn","rt":$n[1].Style},"s":{"a":2,"n":"set_BasedOn","t":8,"pi":[{"n":"value","pt":$n[1].Style,"ps":0}],"sn":"setBasedOn","rt":Object,"p":[$n[1].Style]}},{"a":2,"n":"Key","t":16,"rt":Object,"g":{"a":2,"n":"get_Key","t":8,"sn":"getKey","rt":Object},"s":{"a":2,"n":"set_Key","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setKey","rt":Object,"p":[Object]}},{"a":2,"n":"Setters","t":16,"rt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction),"g":{"a":2,"n":"get_Setters","t":8,"sn":"getSetters","rt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction)},"s":{"a":1,"n":"set_Setters","t":8,"pi":[{"n":"value","pt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction),"ps":0}],"sn":"setSetters","rt":Object,"p":[$n[3].ObservableCollection$1(System.Windows.ITriggerAction)]}},{"a":2,"n":"TargetType","t":16,"rt":Function,"g":{"a":2,"n":"get_TargetType","t":8,"sn":"getTargetType","rt":Function},"s":{"a":2,"n":"set_TargetType","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"setTargetType","rt":Object,"p":[Function]}},{"a":2,"n":"Triggers","t":16,"rt":$n[3].ObservableCollection$1(System.Windows.ITrigger),"g":{"a":2,"n":"get_Triggers","t":8,"sn":"getTriggers","rt":$n[3].ObservableCollection$1(System.Windows.ITrigger)},"s":{"a":1,"n":"set_Triggers","t":8,"pi":[{"n":"value","pt":$n[3].ObservableCollection$1(System.Windows.ITrigger),"ps":0}],"sn":"setTriggers","rt":Object,"p":[$n[3].ObservableCollection$1(System.Windows.ITrigger)]}}]}; });
-    $m($n[1].TemplateBindingExtension, function () { return {"att":1048577,"a":2,"at":[new System.Windows.Markup.MarkupExtensionParameterAttribute("Property", 0)],"m":[{"a":2,"n":"Converter","t":16,"rt":$n[2].IValueConverter,"g":{"a":2,"n":"get_Converter","t":8,"sn":"getConverter","rt":$n[2].IValueConverter},"s":{"a":2,"n":"set_Converter","t":8,"pi":[{"n":"value","pt":$n[2].IValueConverter,"ps":0}],"sn":"setConverter","rt":Object,"p":[$n[2].IValueConverter]}},{"a":2,"n":"ConverterParameter","t":16,"rt":Object,"g":{"a":2,"n":"get_ConverterParameter","t":8,"sn":"getConverterParameter","rt":Object},"s":{"a":2,"n":"set_ConverterParameter","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setConverterParameter","rt":Object,"p":[Object]}},{"a":2,"n":"Property","t":16,"rt":$n[1].IPropertyPathElement,"g":{"a":2,"n":"get_Property","t":8,"sn":"getProperty","rt":$n[1].IPropertyPathElement},"s":{"a":2,"n":"set_Property","t":8,"pi":[{"n":"value","pt":$n[1].IPropertyPathElement,"ps":0}],"sn":"setProperty","rt":Object,"p":[$n[1].IPropertyPathElement]}}]}; });
-    $m($n[1].Trigger, function () { return {"att":1048577,"a":2,"at":[new System.Windows.Markup.ContentPropertyAttribute("Setters")],"m":[{"a":2,"n":"Property","t":16,"rt":$n[1].IPropertyPathElement,"g":{"a":2,"n":"get_Property","t":8,"sn":"getProperty","rt":$n[1].IPropertyPathElement},"s":{"a":2,"n":"set_Property","t":8,"pi":[{"n":"value","pt":$n[1].IPropertyPathElement,"ps":0}],"sn":"setProperty","rt":Object,"p":[$n[1].IPropertyPathElement]}},{"a":2,"n":"Setters","t":16,"rt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction),"g":{"a":2,"n":"get_Setters","t":8,"sn":"getSetters","rt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction)},"s":{"a":1,"n":"set_Setters","t":8,"pi":[{"n":"value","pt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction),"ps":0}],"sn":"setSetters","rt":Object,"p":[$n[3].ObservableCollection$1(System.Windows.ITriggerAction)]}},{"a":2,"n":"SourceName","t":16,"rt":String,"g":{"a":2,"n":"get_SourceName","t":8,"sn":"getSourceName","rt":String},"s":{"a":2,"n":"set_SourceName","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setSourceName","rt":Object,"p":[String]}},{"a":2,"n":"Value","t":16,"rt":Object,"g":{"a":2,"n":"get_Value","t":8,"sn":"getValue$5","rt":Object},"s":{"a":2,"n":"set_Value","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setValue$5","rt":Object,"p":[Object]}}]}; });
-    $m($n[1].UIElement, function () { return {"att":1,"a":2,"m":[{"a":2,"n":"ClipToBounds","t":16,"rt":Boolean,"g":{"a":2,"n":"get_ClipToBounds","t":8,"sn":"getClipToBounds","rt":Boolean},"s":{"a":2,"n":"set_ClipToBounds","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setClipToBounds","rt":Object,"p":[Boolean]}},{"a":2,"n":"DesiredSize","t":16,"rt":$n[1].Size,"g":{"a":2,"n":"get_DesiredSize","t":8,"sn":"getDesiredSize","rt":$n[1].Size},"s":{"a":1,"n":"set_DesiredSize","t":8,"pi":[{"n":"value","pt":$n[1].Size,"ps":0}],"sn":"setDesiredSize","rt":Object,"p":[$n[1].Size]}},{"a":2,"n":"Focusable","t":16,"rt":Boolean,"g":{"a":2,"n":"get_Focusable","t":8,"sn":"getFocusable","rt":Boolean},"s":{"a":2,"n":"set_Focusable","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setFocusable","rt":Object,"p":[Boolean]}},{"a":2,"n":"IsArrangeValid","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsArrangeValid","t":8,"sn":"getIsArrangeValid","rt":Boolean},"s":{"a":1,"n":"set_IsArrangeValid","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsArrangeValid","rt":Object,"p":[Boolean]}},{"a":2,"n":"IsEnabled","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsEnabled","t":8,"sn":"getIsEnabled","rt":Boolean},"s":{"a":2,"n":"set_IsEnabled","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsEnabled","rt":Object,"p":[Boolean]}},{"a":2,"n":"IsFocused","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsFocused","t":8,"sn":"getIsFocused","rt":Boolean},"s":{"a":1,"n":"set_IsFocused","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsFocused","rt":Object,"p":[Boolean]}},{"a":2,"n":"IsHitTestVisible","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsHitTestVisible","t":8,"sn":"getIsHitTestVisible","rt":Boolean},"s":{"a":2,"n":"set_IsHitTestVisible","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsHitTestVisible","rt":Object,"p":[Boolean]}},{"a":2,"n":"IsKeyboardFocusWithin","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsKeyboardFocusWithin","t":8,"sn":"getIsKeyboardFocusWithin","rt":Boolean},"s":{"a":1,"n":"set_IsKeyboardFocusWithin","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsKeyboardFocusWithin","rt":Object,"p":[Boolean]}},{"a":2,"n":"IsKeyboardFocused","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsKeyboardFocused","t":8,"sn":"getIsKeyboardFocused","rt":Boolean},"s":{"a":1,"n":"set_IsKeyboardFocused","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsKeyboardFocused","rt":Object,"p":[Boolean]}},{"a":2,"n":"IsMeasureValid","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsMeasureValid","t":8,"sn":"getIsMeasureValid","rt":Boolean},"s":{"a":1,"n":"set_IsMeasureValid","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsMeasureValid","rt":Object,"p":[Boolean]}},{"a":2,"n":"IsMouseOver","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsMouseOver","t":8,"sn":"getIsMouseOver","rt":Boolean},"s":{"a":1,"n":"set_IsMouseOver","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsMouseOver","rt":Object,"p":[Boolean]}},{"a":2,"n":"IsRootElement","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsRootElement","t":8,"sn":"getIsRootElement","rt":Boolean},"s":{"a":2,"n":"set_IsRootElement","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsRootElement","rt":Object,"p":[Boolean]}},{"a":2,"n":"IsVisible","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsVisible","t":8,"sn":"getIsVisible","rt":Boolean},"s":{"a":1,"n":"set_IsVisible","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsVisible","rt":Object,"p":[Boolean]}},{"a":2,"n":"LogicalChildren","t":16,"rt":$n[6].IEnumerable$1(Object),"g":{"a":2,"n":"get_LogicalChildren","t":8,"sn":"getLogicalChildren","rt":$n[6].IEnumerable$1(Object)},"s":{"a":1,"n":"set_LogicalChildren","t":8,"pi":[{"n":"value","pt":$n[6].IEnumerable$1(Object),"ps":0}],"sn":"setLogicalChildren","rt":Object,"p":[$n[6].IEnumerable$1(Object)]}},{"a":2,"n":"LogicalParent","t":16,"rt":$n[1].UIElement,"g":{"a":2,"n":"get_LogicalParent","t":8,"sn":"getLogicalParent","rt":$n[1].UIElement},"s":{"a":1,"n":"set_LogicalParent","t":8,"pi":[{"n":"value","pt":$n[1].UIElement,"ps":0}],"sn":"setLogicalParent","rt":Object,"p":[$n[1].UIElement]}},{"a":2,"n":"Opacity","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_Opacity","t":8,"sn":"getOpacity","rt":$n[0].Double},"s":{"a":2,"n":"set_Opacity","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setOpacity","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"PreviousAvailableSize","t":16,"rt":$n[1].Size,"g":{"a":2,"n":"get_PreviousAvailableSize","t":8,"sn":"getPreviousAvailableSize","rt":$n[1].Size},"s":{"a":1,"n":"set_PreviousAvailableSize","t":8,"pi":[{"n":"value","pt":$n[1].Size,"ps":0}],"sn":"setPreviousAvailableSize","rt":Object,"p":[$n[1].Size]}},{"a":2,"n":"PreviousFinalRect","t":16,"rt":$n[1].Rect,"g":{"a":2,"n":"get_PreviousFinalRect","t":8,"sn":"getPreviousFinalRect","rt":$n[1].Rect},"s":{"a":1,"n":"set_PreviousFinalRect","t":8,"pi":[{"n":"value","pt":$n[1].Rect,"ps":0}],"sn":"setPreviousFinalRect","rt":Object,"p":[$n[1].Rect]}},{"a":2,"n":"RenderSize","t":16,"rt":$n[1].Size,"g":{"a":2,"n":"get_RenderSize","t":8,"sn":"getRenderSize","rt":$n[1].Size}},{"a":2,"n":"RenderTransform","t":16,"rt":$n[5].Transform,"g":{"a":2,"n":"get_RenderTransform","t":8,"sn":"getRenderTransform","rt":$n[5].Transform},"s":{"a":2,"n":"set_RenderTransform","t":8,"pi":[{"n":"value","pt":$n[5].Transform,"ps":0}],"sn":"setRenderTransform","rt":Object,"p":[$n[5].Transform]}},{"a":2,"n":"RenderTransformOrigin","t":16,"rt":$n[1].Point,"g":{"a":2,"n":"get_RenderTransformOrigin","t":8,"sn":"getRenderTransformOrigin","rt":$n[1].Point},"s":{"a":2,"n":"set_RenderTransformOrigin","t":8,"pi":[{"n":"value","pt":$n[1].Point,"ps":0}],"sn":"setRenderTransformOrigin","rt":Object,"p":[$n[1].Point]}},{"a":2,"n":"Visibility","t":16,"rt":$n[1].Visibility,"g":{"a":2,"n":"get_Visibility","t":8,"sn":"getVisibility","rt":$n[1].Visibility},"s":{"a":2,"n":"set_Visibility","t":8,"pi":[{"n":"value","pt":$n[1].Visibility,"ps":0}],"sn":"setVisibility","rt":Object,"p":[$n[1].Visibility]}}]}; });
-    $m($n[1].VisualState, function () { return {"att":1048577,"a":2,"at":[new System.Windows.Markup.RuntimeNamePropertyAttribute("Name"),new System.Windows.Markup.ContentPropertyAttribute("Storyboard")],"m":[{"a":2,"n":"Name","t":16,"rt":String,"g":{"a":2,"n":"get_Name","t":8,"sn":"getName","rt":String},"s":{"a":2,"n":"set_Name","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setName","rt":Object,"p":[String]}},{"a":2,"n":"Storyboard","t":16,"rt":$n[8].Storyboard,"g":{"a":2,"n":"get_Storyboard","t":8,"sn":"getStoryboard","rt":$n[8].Storyboard},"s":{"a":2,"n":"set_Storyboard","t":8,"pi":[{"n":"value","pt":$n[8].Storyboard,"ps":0}],"sn":"setStoryboard","rt":Object,"p":[$n[8].Storyboard]}}]}; });
-    $m($n[1].VisualStateGroup, function () { return {"att":1048577,"a":2,"at":[new System.Windows.Markup.ContentPropertyAttribute("States"),new System.Windows.Markup.RuntimeNamePropertyAttribute("Name")],"m":[{"a":2,"n":"CurrentState","t":16,"rt":$n[1].VisualState,"g":{"a":2,"n":"get_CurrentState","t":8,"sn":"getCurrentState","rt":$n[1].VisualState},"s":{"a":1,"n":"set_CurrentState","t":8,"pi":[{"n":"value","pt":$n[1].VisualState,"ps":0}],"sn":"setCurrentState","rt":Object,"p":[$n[1].VisualState]}},{"a":2,"n":"Name","t":16,"rt":String,"g":{"a":2,"n":"get_Name","t":8,"sn":"getName","rt":String},"s":{"a":2,"n":"set_Name","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setName","rt":Object,"p":[String]}},{"a":2,"n":"States","t":16,"rt":$n[1].FreezableCollection$1(System.Windows.VisualState),"g":{"a":2,"n":"get_States","t":8,"sn":"getStates","rt":$n[1].FreezableCollection$1(System.Windows.VisualState)},"s":{"a":1,"n":"set_States","t":8,"pi":[{"n":"value","pt":$n[1].FreezableCollection$1(System.Windows.VisualState),"ps":0}],"sn":"setStates","rt":Object,"p":[$n[1].FreezableCollection$1(System.Windows.VisualState)]}},{"a":2,"n":"Transitions","t":16,"rt":$n[1].FreezableCollection$1(System.Windows.VisualTransition),"g":{"a":2,"n":"get_Transitions","t":8,"sn":"getTransitions","rt":$n[1].FreezableCollection$1(System.Windows.VisualTransition)},"s":{"a":1,"n":"set_Transitions","t":8,"pi":[{"n":"value","pt":$n[1].FreezableCollection$1(System.Windows.VisualTransition),"ps":0}],"sn":"setTransitions","rt":Object,"p":[$n[1].FreezableCollection$1(System.Windows.VisualTransition)]}}]}; });
-    $m($n[1].VisualTransition, function () { return {"att":1048577,"a":2,"at":[new System.Windows.Markup.ContentPropertyAttribute("Storyboard")],"m":[{"a":2,"n":"From","t":16,"rt":String,"g":{"a":2,"n":"get_From","t":8,"sn":"getFrom","rt":String},"s":{"a":2,"n":"set_From","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setFrom","rt":Object,"p":[String]}},{"a":2,"n":"Storyboard","t":16,"rt":$n[8].Storyboard,"g":{"a":2,"n":"get_Storyboard","t":8,"sn":"getStoryboard","rt":$n[8].Storyboard},"s":{"a":2,"n":"set_Storyboard","t":8,"pi":[{"n":"value","pt":$n[8].Storyboard,"ps":0}],"sn":"setStoryboard","rt":Object,"p":[$n[8].Storyboard]}},{"a":2,"n":"To","t":16,"rt":String,"g":{"a":2,"n":"get_To","t":8,"sn":"getTo","rt":String},"s":{"a":2,"n":"set_To","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setTo","rt":Object,"p":[String]}}]}; });
-    $m($n[5].Brushes, function () { return {"att":1048961,"a":2,"s":true,"m":[{"a":2,"n":"AliceBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_AliceBlue","is":true,"t":8,"sn":"getAliceBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"AntiqueWhite","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_AntiqueWhite","is":true,"t":8,"sn":"getAntiqueWhite","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Aqua","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Aqua","is":true,"t":8,"sn":"getAqua","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Aquamarine","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Aquamarine","is":true,"t":8,"sn":"getAquamarine","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Azure","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Azure","is":true,"t":8,"sn":"getAzure","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Beige","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Beige","is":true,"t":8,"sn":"getBeige","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Bisque","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Bisque","is":true,"t":8,"sn":"getBisque","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Black","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Black","is":true,"t":8,"sn":"getBlack","rt":$n[5].SolidColorBrush}},{"a":2,"n":"BlanchedAlmond","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_BlanchedAlmond","is":true,"t":8,"sn":"getBlanchedAlmond","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Blue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Blue","is":true,"t":8,"sn":"getBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"BlueViolet","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_BlueViolet","is":true,"t":8,"sn":"getBlueViolet","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Brown","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Brown","is":true,"t":8,"sn":"getBrown","rt":$n[5].SolidColorBrush}},{"a":2,"n":"BurlyWood","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_BurlyWood","is":true,"t":8,"sn":"getBurlyWood","rt":$n[5].SolidColorBrush}},{"a":2,"n":"CadetBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_CadetBlue","is":true,"t":8,"sn":"getCadetBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Chartreuse","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Chartreuse","is":true,"t":8,"sn":"getChartreuse","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Chocolate","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Chocolate","is":true,"t":8,"sn":"getChocolate","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Coral","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Coral","is":true,"t":8,"sn":"getCoral","rt":$n[5].SolidColorBrush}},{"a":2,"n":"CornflowerBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_CornflowerBlue","is":true,"t":8,"sn":"getCornflowerBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Cornsilk","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Cornsilk","is":true,"t":8,"sn":"getCornsilk","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Crimson","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Crimson","is":true,"t":8,"sn":"getCrimson","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Cyan","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Cyan","is":true,"t":8,"sn":"getCyan","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkBlue","is":true,"t":8,"sn":"getDarkBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkCyan","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkCyan","is":true,"t":8,"sn":"getDarkCyan","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkGoldenrod","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkGoldenrod","is":true,"t":8,"sn":"getDarkGoldenrod","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkGray","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkGray","is":true,"t":8,"sn":"getDarkGray","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkGreen","is":true,"t":8,"sn":"getDarkGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkKhaki","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkKhaki","is":true,"t":8,"sn":"getDarkKhaki","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkMagenta","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkMagenta","is":true,"t":8,"sn":"getDarkMagenta","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkOliveGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkOliveGreen","is":true,"t":8,"sn":"getDarkOliveGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkOrange","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkOrange","is":true,"t":8,"sn":"getDarkOrange","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkOrchid","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkOrchid","is":true,"t":8,"sn":"getDarkOrchid","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkRed","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkRed","is":true,"t":8,"sn":"getDarkRed","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkSalmon","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkSalmon","is":true,"t":8,"sn":"getDarkSalmon","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkSeaGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkSeaGreen","is":true,"t":8,"sn":"getDarkSeaGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkSlateBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkSlateBlue","is":true,"t":8,"sn":"getDarkSlateBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkSlateGray","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkSlateGray","is":true,"t":8,"sn":"getDarkSlateGray","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkTurquoise","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkTurquoise","is":true,"t":8,"sn":"getDarkTurquoise","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkViolet","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkViolet","is":true,"t":8,"sn":"getDarkViolet","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DeepPink","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DeepPink","is":true,"t":8,"sn":"getDeepPink","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DeepSkyBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DeepSkyBlue","is":true,"t":8,"sn":"getDeepSkyBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DimGray","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DimGray","is":true,"t":8,"sn":"getDimGray","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DodgerBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DodgerBlue","is":true,"t":8,"sn":"getDodgerBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Firebrick","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Firebrick","is":true,"t":8,"sn":"getFirebrick","rt":$n[5].SolidColorBrush}},{"a":2,"n":"FloralWhite","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_FloralWhite","is":true,"t":8,"sn":"getFloralWhite","rt":$n[5].SolidColorBrush}},{"a":2,"n":"ForestGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_ForestGreen","is":true,"t":8,"sn":"getForestGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Fuchsia","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Fuchsia","is":true,"t":8,"sn":"getFuchsia","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Gainsboro","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Gainsboro","is":true,"t":8,"sn":"getGainsboro","rt":$n[5].SolidColorBrush}},{"a":2,"n":"GhostWhite","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_GhostWhite","is":true,"t":8,"sn":"getGhostWhite","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Gold","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Gold","is":true,"t":8,"sn":"getGold","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Goldenrod","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Goldenrod","is":true,"t":8,"sn":"getGoldenrod","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Gray","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Gray","is":true,"t":8,"sn":"getGray","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Green","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Green","is":true,"t":8,"sn":"getGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"GreenYellow","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_GreenYellow","is":true,"t":8,"sn":"getGreenYellow","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Honeydew","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Honeydew","is":true,"t":8,"sn":"getHoneydew","rt":$n[5].SolidColorBrush}},{"a":2,"n":"HotPink","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_HotPink","is":true,"t":8,"sn":"getHotPink","rt":$n[5].SolidColorBrush}},{"a":2,"n":"IndianRed","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_IndianRed","is":true,"t":8,"sn":"getIndianRed","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Indigo","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Indigo","is":true,"t":8,"sn":"getIndigo","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Ivory","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Ivory","is":true,"t":8,"sn":"getIvory","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Khaki","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Khaki","is":true,"t":8,"sn":"getKhaki","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Lavender","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Lavender","is":true,"t":8,"sn":"getLavender","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LavenderBlush","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LavenderBlush","is":true,"t":8,"sn":"getLavenderBlush","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LawnGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LawnGreen","is":true,"t":8,"sn":"getLawnGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LemonChiffon","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LemonChiffon","is":true,"t":8,"sn":"getLemonChiffon","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightBlue","is":true,"t":8,"sn":"getLightBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightCoral","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightCoral","is":true,"t":8,"sn":"getLightCoral","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightCyan","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightCyan","is":true,"t":8,"sn":"getLightCyan","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightGoldenrodYellow","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightGoldenrodYellow","is":true,"t":8,"sn":"getLightGoldenrodYellow","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightGray","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightGray","is":true,"t":8,"sn":"getLightGray","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightGreen","is":true,"t":8,"sn":"getLightGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightPink","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightPink","is":true,"t":8,"sn":"getLightPink","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightSalmon","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightSalmon","is":true,"t":8,"sn":"getLightSalmon","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightSeaGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightSeaGreen","is":true,"t":8,"sn":"getLightSeaGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightSkyBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightSkyBlue","is":true,"t":8,"sn":"getLightSkyBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightSlateGray","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightSlateGray","is":true,"t":8,"sn":"getLightSlateGray","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightSteelBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightSteelBlue","is":true,"t":8,"sn":"getLightSteelBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightYellow","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightYellow","is":true,"t":8,"sn":"getLightYellow","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Lime","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Lime","is":true,"t":8,"sn":"getLime","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LimeGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LimeGreen","is":true,"t":8,"sn":"getLimeGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Linen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Linen","is":true,"t":8,"sn":"getLinen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Magenta","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Magenta","is":true,"t":8,"sn":"getMagenta","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Maroon","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Maroon","is":true,"t":8,"sn":"getMaroon","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MediumAquamarine","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MediumAquamarine","is":true,"t":8,"sn":"getMediumAquamarine","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MediumBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MediumBlue","is":true,"t":8,"sn":"getMediumBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MediumOrchid","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MediumOrchid","is":true,"t":8,"sn":"getMediumOrchid","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MediumPurple","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MediumPurple","is":true,"t":8,"sn":"getMediumPurple","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MediumSeaGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MediumSeaGreen","is":true,"t":8,"sn":"getMediumSeaGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MediumSlateBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MediumSlateBlue","is":true,"t":8,"sn":"getMediumSlateBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MediumSpringGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MediumSpringGreen","is":true,"t":8,"sn":"getMediumSpringGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MediumTurquoise","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MediumTurquoise","is":true,"t":8,"sn":"getMediumTurquoise","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MediumVioletRed","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MediumVioletRed","is":true,"t":8,"sn":"getMediumVioletRed","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MidnightBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MidnightBlue","is":true,"t":8,"sn":"getMidnightBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MintCream","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MintCream","is":true,"t":8,"sn":"getMintCream","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MistyRose","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MistyRose","is":true,"t":8,"sn":"getMistyRose","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Moccasin","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Moccasin","is":true,"t":8,"sn":"getMoccasin","rt":$n[5].SolidColorBrush}},{"a":2,"n":"NavajoWhite","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_NavajoWhite","is":true,"t":8,"sn":"getNavajoWhite","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Navy","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Navy","is":true,"t":8,"sn":"getNavy","rt":$n[5].SolidColorBrush}},{"a":2,"n":"OldLace","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_OldLace","is":true,"t":8,"sn":"getOldLace","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Olive","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Olive","is":true,"t":8,"sn":"getOlive","rt":$n[5].SolidColorBrush}},{"a":2,"n":"OliveDrab","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_OliveDrab","is":true,"t":8,"sn":"getOliveDrab","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Orange","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Orange","is":true,"t":8,"sn":"getOrange","rt":$n[5].SolidColorBrush}},{"a":2,"n":"OrangeRed","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_OrangeRed","is":true,"t":8,"sn":"getOrangeRed","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Orchid","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Orchid","is":true,"t":8,"sn":"getOrchid","rt":$n[5].SolidColorBrush}},{"a":2,"n":"PaleGoldenrod","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_PaleGoldenrod","is":true,"t":8,"sn":"getPaleGoldenrod","rt":$n[5].SolidColorBrush}},{"a":2,"n":"PaleGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_PaleGreen","is":true,"t":8,"sn":"getPaleGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"PaleTurquoise","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_PaleTurquoise","is":true,"t":8,"sn":"getPaleTurquoise","rt":$n[5].SolidColorBrush}},{"a":2,"n":"PaleVioletRed","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_PaleVioletRed","is":true,"t":8,"sn":"getPaleVioletRed","rt":$n[5].SolidColorBrush}},{"a":2,"n":"PapayaWhip","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_PapayaWhip","is":true,"t":8,"sn":"getPapayaWhip","rt":$n[5].SolidColorBrush}},{"a":2,"n":"PeachPuff","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_PeachPuff","is":true,"t":8,"sn":"getPeachPuff","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Peru","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Peru","is":true,"t":8,"sn":"getPeru","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Pink","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Pink","is":true,"t":8,"sn":"getPink","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Plum","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Plum","is":true,"t":8,"sn":"getPlum","rt":$n[5].SolidColorBrush}},{"a":2,"n":"PowderBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_PowderBlue","is":true,"t":8,"sn":"getPowderBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Purple","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Purple","is":true,"t":8,"sn":"getPurple","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Red","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Red","is":true,"t":8,"sn":"getRed","rt":$n[5].SolidColorBrush}},{"a":2,"n":"RosyBrown","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_RosyBrown","is":true,"t":8,"sn":"getRosyBrown","rt":$n[5].SolidColorBrush}},{"a":2,"n":"RoyalBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_RoyalBlue","is":true,"t":8,"sn":"getRoyalBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"SaddleBrown","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_SaddleBrown","is":true,"t":8,"sn":"getSaddleBrown","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Salmon","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Salmon","is":true,"t":8,"sn":"getSalmon","rt":$n[5].SolidColorBrush}},{"a":2,"n":"SandyBrown","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_SandyBrown","is":true,"t":8,"sn":"getSandyBrown","rt":$n[5].SolidColorBrush}},{"a":2,"n":"SeaGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_SeaGreen","is":true,"t":8,"sn":"getSeaGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"SeaShell","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_SeaShell","is":true,"t":8,"sn":"getSeaShell","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Sienna","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Sienna","is":true,"t":8,"sn":"getSienna","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Silver","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Silver","is":true,"t":8,"sn":"getSilver","rt":$n[5].SolidColorBrush}},{"a":2,"n":"SkyBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_SkyBlue","is":true,"t":8,"sn":"getSkyBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"SlateBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_SlateBlue","is":true,"t":8,"sn":"getSlateBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"SlateGray","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_SlateGray","is":true,"t":8,"sn":"getSlateGray","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Snow","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Snow","is":true,"t":8,"sn":"getSnow","rt":$n[5].SolidColorBrush}},{"a":2,"n":"SpringGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_SpringGreen","is":true,"t":8,"sn":"getSpringGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"SteelBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_SteelBlue","is":true,"t":8,"sn":"getSteelBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Tan","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Tan","is":true,"t":8,"sn":"getTan","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Teal","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Teal","is":true,"t":8,"sn":"getTeal","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Thistle","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Thistle","is":true,"t":8,"sn":"getThistle","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Tomato","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Tomato","is":true,"t":8,"sn":"getTomato","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Transparent","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Transparent","is":true,"t":8,"sn":"getTransparent","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Turquoise","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Turquoise","is":true,"t":8,"sn":"getTurquoise","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Violet","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Violet","is":true,"t":8,"sn":"getViolet","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Wheat","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Wheat","is":true,"t":8,"sn":"getWheat","rt":$n[5].SolidColorBrush}},{"a":2,"n":"White","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_White","is":true,"t":8,"sn":"getWhite","rt":$n[5].SolidColorBrush}},{"a":2,"n":"WhiteSmoke","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_WhiteSmoke","is":true,"t":8,"sn":"getWhiteSmoke","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Yellow","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Yellow","is":true,"t":8,"sn":"getYellow","rt":$n[5].SolidColorBrush}},{"a":2,"n":"YellowGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_YellowGreen","is":true,"t":8,"sn":"getYellowGreen","rt":$n[5].SolidColorBrush}}]}; });
-    $m($n[5].Colors, function () { return {"att":1048961,"a":2,"s":true,"m":[{"a":2,"n":"AliceBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_AliceBlue","is":true,"t":8,"sn":"getAliceBlue","rt":$n[5].Color}},{"a":2,"n":"AntiqueWhite","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_AntiqueWhite","is":true,"t":8,"sn":"getAntiqueWhite","rt":$n[5].Color}},{"a":2,"n":"Aqua","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Aqua","is":true,"t":8,"sn":"getAqua","rt":$n[5].Color}},{"a":2,"n":"Aquamarine","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Aquamarine","is":true,"t":8,"sn":"getAquamarine","rt":$n[5].Color}},{"a":2,"n":"Azure","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Azure","is":true,"t":8,"sn":"getAzure","rt":$n[5].Color}},{"a":2,"n":"Beige","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Beige","is":true,"t":8,"sn":"getBeige","rt":$n[5].Color}},{"a":2,"n":"Bisque","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Bisque","is":true,"t":8,"sn":"getBisque","rt":$n[5].Color}},{"a":2,"n":"Black","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Black","is":true,"t":8,"sn":"getBlack","rt":$n[5].Color}},{"a":2,"n":"BlanchedAlmond","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_BlanchedAlmond","is":true,"t":8,"sn":"getBlanchedAlmond","rt":$n[5].Color}},{"a":2,"n":"Blue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Blue","is":true,"t":8,"sn":"getBlue","rt":$n[5].Color}},{"a":2,"n":"BlueViolet","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_BlueViolet","is":true,"t":8,"sn":"getBlueViolet","rt":$n[5].Color}},{"a":2,"n":"Brown","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Brown","is":true,"t":8,"sn":"getBrown","rt":$n[5].Color}},{"a":2,"n":"BurlyWood","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_BurlyWood","is":true,"t":8,"sn":"getBurlyWood","rt":$n[5].Color}},{"a":2,"n":"CadetBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_CadetBlue","is":true,"t":8,"sn":"getCadetBlue","rt":$n[5].Color}},{"a":2,"n":"Chartreuse","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Chartreuse","is":true,"t":8,"sn":"getChartreuse","rt":$n[5].Color}},{"a":2,"n":"Chocolate","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Chocolate","is":true,"t":8,"sn":"getChocolate","rt":$n[5].Color}},{"a":2,"n":"Coral","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Coral","is":true,"t":8,"sn":"getCoral","rt":$n[5].Color}},{"a":2,"n":"CornflowerBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_CornflowerBlue","is":true,"t":8,"sn":"getCornflowerBlue","rt":$n[5].Color}},{"a":2,"n":"Cornsilk","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Cornsilk","is":true,"t":8,"sn":"getCornsilk","rt":$n[5].Color}},{"a":2,"n":"Crimson","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Crimson","is":true,"t":8,"sn":"getCrimson","rt":$n[5].Color}},{"a":2,"n":"Cyan","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Cyan","is":true,"t":8,"sn":"getCyan","rt":$n[5].Color}},{"a":2,"n":"DarkBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkBlue","is":true,"t":8,"sn":"getDarkBlue","rt":$n[5].Color}},{"a":2,"n":"DarkCyan","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkCyan","is":true,"t":8,"sn":"getDarkCyan","rt":$n[5].Color}},{"a":2,"n":"DarkGoldenrod","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkGoldenrod","is":true,"t":8,"sn":"getDarkGoldenrod","rt":$n[5].Color}},{"a":2,"n":"DarkGray","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkGray","is":true,"t":8,"sn":"getDarkGray","rt":$n[5].Color}},{"a":2,"n":"DarkGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkGreen","is":true,"t":8,"sn":"getDarkGreen","rt":$n[5].Color}},{"a":2,"n":"DarkKhaki","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkKhaki","is":true,"t":8,"sn":"getDarkKhaki","rt":$n[5].Color}},{"a":2,"n":"DarkMagenta","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkMagenta","is":true,"t":8,"sn":"getDarkMagenta","rt":$n[5].Color}},{"a":2,"n":"DarkOliveGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkOliveGreen","is":true,"t":8,"sn":"getDarkOliveGreen","rt":$n[5].Color}},{"a":2,"n":"DarkOrange","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkOrange","is":true,"t":8,"sn":"getDarkOrange","rt":$n[5].Color}},{"a":2,"n":"DarkOrchid","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkOrchid","is":true,"t":8,"sn":"getDarkOrchid","rt":$n[5].Color}},{"a":2,"n":"DarkRed","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkRed","is":true,"t":8,"sn":"getDarkRed","rt":$n[5].Color}},{"a":2,"n":"DarkSalmon","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkSalmon","is":true,"t":8,"sn":"getDarkSalmon","rt":$n[5].Color}},{"a":2,"n":"DarkSeaGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkSeaGreen","is":true,"t":8,"sn":"getDarkSeaGreen","rt":$n[5].Color}},{"a":2,"n":"DarkSlateBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkSlateBlue","is":true,"t":8,"sn":"getDarkSlateBlue","rt":$n[5].Color}},{"a":2,"n":"DarkSlateGray","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkSlateGray","is":true,"t":8,"sn":"getDarkSlateGray","rt":$n[5].Color}},{"a":2,"n":"DarkTurquoise","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkTurquoise","is":true,"t":8,"sn":"getDarkTurquoise","rt":$n[5].Color}},{"a":2,"n":"DarkViolet","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkViolet","is":true,"t":8,"sn":"getDarkViolet","rt":$n[5].Color}},{"a":2,"n":"DeepPink","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DeepPink","is":true,"t":8,"sn":"getDeepPink","rt":$n[5].Color}},{"a":2,"n":"DeepSkyBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DeepSkyBlue","is":true,"t":8,"sn":"getDeepSkyBlue","rt":$n[5].Color}},{"a":2,"n":"DimGray","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DimGray","is":true,"t":8,"sn":"getDimGray","rt":$n[5].Color}},{"a":2,"n":"DodgerBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DodgerBlue","is":true,"t":8,"sn":"getDodgerBlue","rt":$n[5].Color}},{"a":2,"n":"Firebrick","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Firebrick","is":true,"t":8,"sn":"getFirebrick","rt":$n[5].Color}},{"a":2,"n":"FloralWhite","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_FloralWhite","is":true,"t":8,"sn":"getFloralWhite","rt":$n[5].Color}},{"a":2,"n":"ForestGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_ForestGreen","is":true,"t":8,"sn":"getForestGreen","rt":$n[5].Color}},{"a":2,"n":"Fuchsia","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Fuchsia","is":true,"t":8,"sn":"getFuchsia","rt":$n[5].Color}},{"a":2,"n":"Gainsboro","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Gainsboro","is":true,"t":8,"sn":"getGainsboro","rt":$n[5].Color}},{"a":2,"n":"GhostWhite","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_GhostWhite","is":true,"t":8,"sn":"getGhostWhite","rt":$n[5].Color}},{"a":2,"n":"Gold","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Gold","is":true,"t":8,"sn":"getGold","rt":$n[5].Color}},{"a":2,"n":"Goldenrod","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Goldenrod","is":true,"t":8,"sn":"getGoldenrod","rt":$n[5].Color}},{"a":2,"n":"Gray","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Gray","is":true,"t":8,"sn":"getGray","rt":$n[5].Color}},{"a":2,"n":"Green","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Green","is":true,"t":8,"sn":"getGreen","rt":$n[5].Color}},{"a":2,"n":"GreenYellow","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_GreenYellow","is":true,"t":8,"sn":"getGreenYellow","rt":$n[5].Color}},{"a":2,"n":"Honeydew","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Honeydew","is":true,"t":8,"sn":"getHoneydew","rt":$n[5].Color}},{"a":2,"n":"HotPink","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_HotPink","is":true,"t":8,"sn":"getHotPink","rt":$n[5].Color}},{"a":2,"n":"IndianRed","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_IndianRed","is":true,"t":8,"sn":"getIndianRed","rt":$n[5].Color}},{"a":2,"n":"Indigo","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Indigo","is":true,"t":8,"sn":"getIndigo","rt":$n[5].Color}},{"a":2,"n":"Ivory","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Ivory","is":true,"t":8,"sn":"getIvory","rt":$n[5].Color}},{"a":2,"n":"Khaki","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Khaki","is":true,"t":8,"sn":"getKhaki","rt":$n[5].Color}},{"a":2,"n":"Lavender","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Lavender","is":true,"t":8,"sn":"getLavender","rt":$n[5].Color}},{"a":2,"n":"LavenderBlush","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LavenderBlush","is":true,"t":8,"sn":"getLavenderBlush","rt":$n[5].Color}},{"a":2,"n":"LawnGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LawnGreen","is":true,"t":8,"sn":"getLawnGreen","rt":$n[5].Color}},{"a":2,"n":"LemonChiffon","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LemonChiffon","is":true,"t":8,"sn":"getLemonChiffon","rt":$n[5].Color}},{"a":2,"n":"LightBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightBlue","is":true,"t":8,"sn":"getLightBlue","rt":$n[5].Color}},{"a":2,"n":"LightCoral","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightCoral","is":true,"t":8,"sn":"getLightCoral","rt":$n[5].Color}},{"a":2,"n":"LightCyan","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightCyan","is":true,"t":8,"sn":"getLightCyan","rt":$n[5].Color}},{"a":2,"n":"LightGoldenrodYellow","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightGoldenrodYellow","is":true,"t":8,"sn":"getLightGoldenrodYellow","rt":$n[5].Color}},{"a":2,"n":"LightGray","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightGray","is":true,"t":8,"sn":"getLightGray","rt":$n[5].Color}},{"a":2,"n":"LightGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightGreen","is":true,"t":8,"sn":"getLightGreen","rt":$n[5].Color}},{"a":2,"n":"LightPink","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightPink","is":true,"t":8,"sn":"getLightPink","rt":$n[5].Color}},{"a":2,"n":"LightSalmon","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightSalmon","is":true,"t":8,"sn":"getLightSalmon","rt":$n[5].Color}},{"a":2,"n":"LightSeaGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightSeaGreen","is":true,"t":8,"sn":"getLightSeaGreen","rt":$n[5].Color}},{"a":2,"n":"LightSkyBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightSkyBlue","is":true,"t":8,"sn":"getLightSkyBlue","rt":$n[5].Color}},{"a":2,"n":"LightSlateGray","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightSlateGray","is":true,"t":8,"sn":"getLightSlateGray","rt":$n[5].Color}},{"a":2,"n":"LightSteelBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightSteelBlue","is":true,"t":8,"sn":"getLightSteelBlue","rt":$n[5].Color}},{"a":2,"n":"LightYellow","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightYellow","is":true,"t":8,"sn":"getLightYellow","rt":$n[5].Color}},{"a":2,"n":"Lime","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Lime","is":true,"t":8,"sn":"getLime","rt":$n[5].Color}},{"a":2,"n":"LimeGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LimeGreen","is":true,"t":8,"sn":"getLimeGreen","rt":$n[5].Color}},{"a":2,"n":"Linen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Linen","is":true,"t":8,"sn":"getLinen","rt":$n[5].Color}},{"a":2,"n":"Magenta","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Magenta","is":true,"t":8,"sn":"getMagenta","rt":$n[5].Color}},{"a":2,"n":"Maroon","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Maroon","is":true,"t":8,"sn":"getMaroon","rt":$n[5].Color}},{"a":2,"n":"MediumAquamarine","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MediumAquamarine","is":true,"t":8,"sn":"getMediumAquamarine","rt":$n[5].Color}},{"a":2,"n":"MediumBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MediumBlue","is":true,"t":8,"sn":"getMediumBlue","rt":$n[5].Color}},{"a":2,"n":"MediumOrchid","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MediumOrchid","is":true,"t":8,"sn":"getMediumOrchid","rt":$n[5].Color}},{"a":2,"n":"MediumPurple","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MediumPurple","is":true,"t":8,"sn":"getMediumPurple","rt":$n[5].Color}},{"a":2,"n":"MediumSeaGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MediumSeaGreen","is":true,"t":8,"sn":"getMediumSeaGreen","rt":$n[5].Color}},{"a":2,"n":"MediumSlateBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MediumSlateBlue","is":true,"t":8,"sn":"getMediumSlateBlue","rt":$n[5].Color}},{"a":2,"n":"MediumSpringGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MediumSpringGreen","is":true,"t":8,"sn":"getMediumSpringGreen","rt":$n[5].Color}},{"a":2,"n":"MediumTurquoise","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MediumTurquoise","is":true,"t":8,"sn":"getMediumTurquoise","rt":$n[5].Color}},{"a":2,"n":"MediumVioletRed","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MediumVioletRed","is":true,"t":8,"sn":"getMediumVioletRed","rt":$n[5].Color}},{"a":2,"n":"MidnightBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MidnightBlue","is":true,"t":8,"sn":"getMidnightBlue","rt":$n[5].Color}},{"a":2,"n":"MintCream","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MintCream","is":true,"t":8,"sn":"getMintCream","rt":$n[5].Color}},{"a":2,"n":"MistyRose","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MistyRose","is":true,"t":8,"sn":"getMistyRose","rt":$n[5].Color}},{"a":2,"n":"Moccasin","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Moccasin","is":true,"t":8,"sn":"getMoccasin","rt":$n[5].Color}},{"a":2,"n":"NavajoWhite","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_NavajoWhite","is":true,"t":8,"sn":"getNavajoWhite","rt":$n[5].Color}},{"a":2,"n":"Navy","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Navy","is":true,"t":8,"sn":"getNavy","rt":$n[5].Color}},{"a":2,"n":"OldLace","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_OldLace","is":true,"t":8,"sn":"getOldLace","rt":$n[5].Color}},{"a":2,"n":"Olive","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Olive","is":true,"t":8,"sn":"getOlive","rt":$n[5].Color}},{"a":2,"n":"OliveDrab","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_OliveDrab","is":true,"t":8,"sn":"getOliveDrab","rt":$n[5].Color}},{"a":2,"n":"Orange","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Orange","is":true,"t":8,"sn":"getOrange","rt":$n[5].Color}},{"a":2,"n":"OrangeRed","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_OrangeRed","is":true,"t":8,"sn":"getOrangeRed","rt":$n[5].Color}},{"a":2,"n":"Orchid","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Orchid","is":true,"t":8,"sn":"getOrchid","rt":$n[5].Color}},{"a":2,"n":"PaleGoldenrod","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_PaleGoldenrod","is":true,"t":8,"sn":"getPaleGoldenrod","rt":$n[5].Color}},{"a":2,"n":"PaleGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_PaleGreen","is":true,"t":8,"sn":"getPaleGreen","rt":$n[5].Color}},{"a":2,"n":"PaleTurquoise","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_PaleTurquoise","is":true,"t":8,"sn":"getPaleTurquoise","rt":$n[5].Color}},{"a":2,"n":"PaleVioletRed","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_PaleVioletRed","is":true,"t":8,"sn":"getPaleVioletRed","rt":$n[5].Color}},{"a":2,"n":"PapayaWhip","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_PapayaWhip","is":true,"t":8,"sn":"getPapayaWhip","rt":$n[5].Color}},{"a":2,"n":"PeachPuff","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_PeachPuff","is":true,"t":8,"sn":"getPeachPuff","rt":$n[5].Color}},{"a":2,"n":"Peru","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Peru","is":true,"t":8,"sn":"getPeru","rt":$n[5].Color}},{"a":2,"n":"Pink","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Pink","is":true,"t":8,"sn":"getPink","rt":$n[5].Color}},{"a":2,"n":"Plum","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Plum","is":true,"t":8,"sn":"getPlum","rt":$n[5].Color}},{"a":2,"n":"PowderBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_PowderBlue","is":true,"t":8,"sn":"getPowderBlue","rt":$n[5].Color}},{"a":2,"n":"Purple","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Purple","is":true,"t":8,"sn":"getPurple","rt":$n[5].Color}},{"a":2,"n":"Red","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Red","is":true,"t":8,"sn":"getRed","rt":$n[5].Color}},{"a":2,"n":"RosyBrown","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_RosyBrown","is":true,"t":8,"sn":"getRosyBrown","rt":$n[5].Color}},{"a":2,"n":"RoyalBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_RoyalBlue","is":true,"t":8,"sn":"getRoyalBlue","rt":$n[5].Color}},{"a":2,"n":"SaddleBrown","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_SaddleBrown","is":true,"t":8,"sn":"getSaddleBrown","rt":$n[5].Color}},{"a":2,"n":"Salmon","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Salmon","is":true,"t":8,"sn":"getSalmon","rt":$n[5].Color}},{"a":2,"n":"SandyBrown","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_SandyBrown","is":true,"t":8,"sn":"getSandyBrown","rt":$n[5].Color}},{"a":2,"n":"SeaGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_SeaGreen","is":true,"t":8,"sn":"getSeaGreen","rt":$n[5].Color}},{"a":2,"n":"SeaShell","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_SeaShell","is":true,"t":8,"sn":"getSeaShell","rt":$n[5].Color}},{"a":2,"n":"Sienna","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Sienna","is":true,"t":8,"sn":"getSienna","rt":$n[5].Color}},{"a":2,"n":"Silver","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Silver","is":true,"t":8,"sn":"getSilver","rt":$n[5].Color}},{"a":2,"n":"SkyBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_SkyBlue","is":true,"t":8,"sn":"getSkyBlue","rt":$n[5].Color}},{"a":2,"n":"SlateBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_SlateBlue","is":true,"t":8,"sn":"getSlateBlue","rt":$n[5].Color}},{"a":2,"n":"SlateGray","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_SlateGray","is":true,"t":8,"sn":"getSlateGray","rt":$n[5].Color}},{"a":2,"n":"Snow","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Snow","is":true,"t":8,"sn":"getSnow","rt":$n[5].Color}},{"a":2,"n":"SpringGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_SpringGreen","is":true,"t":8,"sn":"getSpringGreen","rt":$n[5].Color}},{"a":2,"n":"SteelBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_SteelBlue","is":true,"t":8,"sn":"getSteelBlue","rt":$n[5].Color}},{"a":2,"n":"Tan","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Tan","is":true,"t":8,"sn":"getTan","rt":$n[5].Color}},{"a":2,"n":"Teal","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Teal","is":true,"t":8,"sn":"getTeal","rt":$n[5].Color}},{"a":2,"n":"Thistle","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Thistle","is":true,"t":8,"sn":"getThistle","rt":$n[5].Color}},{"a":2,"n":"Tomato","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Tomato","is":true,"t":8,"sn":"getTomato","rt":$n[5].Color}},{"a":2,"n":"Transparent","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Transparent","is":true,"t":8,"sn":"getTransparent","rt":$n[5].Color}},{"a":2,"n":"Turquoise","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Turquoise","is":true,"t":8,"sn":"getTurquoise","rt":$n[5].Color}},{"a":2,"n":"Violet","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Violet","is":true,"t":8,"sn":"getViolet","rt":$n[5].Color}},{"a":2,"n":"Wheat","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Wheat","is":true,"t":8,"sn":"getWheat","rt":$n[5].Color}},{"a":2,"n":"White","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_White","is":true,"t":8,"sn":"getWhite","rt":$n[5].Color}},{"a":2,"n":"WhiteSmoke","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_WhiteSmoke","is":true,"t":8,"sn":"getWhiteSmoke","rt":$n[5].Color}},{"a":2,"n":"Yellow","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Yellow","is":true,"t":8,"sn":"getYellow","rt":$n[5].Color}},{"a":2,"n":"YellowGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_YellowGreen","is":true,"t":8,"sn":"getYellowGreen","rt":$n[5].Color}}]}; });
-    $m($n[5].FontFamily, function () { return {"att":1048577,"a":2,"at":[new System.Windows.Markup.TypeConverterAttribute(System.Windows.Media.FontFamilyTypeConverter)],"m":[{"a":2,"n":"FamilyName","t":16,"rt":String,"g":{"a":2,"n":"get_FamilyName","t":8,"sn":"getFamilyName","rt":String}},{"a":2,"n":"FamilyNames","t":16,"rt":$n[6].IEnumerable$1(String),"g":{"a":2,"n":"get_FamilyNames","t":8,"sn":"getFamilyNames","rt":$n[6].IEnumerable$1(String)},"s":{"a":1,"n":"set_FamilyNames","t":8,"pi":[{"n":"value","pt":$n[6].IEnumerable$1(String),"ps":0}],"sn":"setFamilyNames","rt":Object,"p":[$n[6].IEnumerable$1(String)]}}]}; });
-    $m($n[5].LinearGradientBrush, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":"EndPoint","t":16,"rt":$n[1].Point,"g":{"a":2,"n":"get_EndPoint","t":8,"sn":"getEndPoint","rt":$n[1].Point},"s":{"a":2,"n":"set_EndPoint","t":8,"pi":[{"n":"value","pt":$n[1].Point,"ps":0}],"sn":"setEndPoint","rt":Object,"p":[$n[1].Point]}},{"a":2,"n":"StartPoint","t":16,"rt":$n[1].Point,"g":{"a":2,"n":"get_StartPoint","t":8,"sn":"getStartPoint","rt":$n[1].Point},"s":{"a":2,"n":"set_StartPoint","t":8,"pi":[{"n":"value","pt":$n[1].Point,"ps":0}],"sn":"setStartPoint","rt":Object,"p":[$n[1].Point]}}]}; });
-    $m($n[5].TransformGroup, function () { return {"att":1048577,"a":2,"at":[new System.Windows.Markup.ContentPropertyAttribute("Children")],"m":[{"a":2,"n":"Children","t":16,"rt":$n[1].FreezableCollection$1(System.Windows.Media.Transform),"g":{"a":2,"n":"get_Children","t":8,"sn":"getChildren","rt":$n[1].FreezableCollection$1(System.Windows.Media.Transform)},"s":{"a":1,"n":"set_Children","t":8,"pi":[{"n":"value","pt":$n[1].FreezableCollection$1(System.Windows.Media.Transform),"ps":0}],"sn":"setChildren","rt":Object,"p":[$n[1].FreezableCollection$1(System.Windows.Media.Transform)]}},{"ov":true,"a":2,"n":"Value","t":16,"rt":$n[5].Matrix,"g":{"ov":true,"a":2,"n":"get_Value","t":8,"sn":"getValue$5","rt":$n[5].Matrix}}]}; });
-    $m($n[5].Visual, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":"VisualBounds","t":16,"rt":$n[1].Rect,"g":{"a":2,"n":"get_VisualBounds","t":8,"sn":"getVisualBounds","rt":$n[1].Rect},"s":{"a":3,"n":"set_VisualBounds","t":8,"pi":[{"n":"value","pt":$n[1].Rect,"ps":0}],"sn":"setVisualBounds","rt":Object,"p":[$n[1].Rect]}},{"a":2,"n":"VisualChildren","t":16,"rt":$n[9].ReadOnlyCollection$1(System.Windows.Media.Visual),"g":{"a":2,"n":"get_VisualChildren","t":8,"sn":"getVisualChildren","rt":$n[9].ReadOnlyCollection$1(System.Windows.Media.Visual)},"s":{"a":1,"n":"set_VisualChildren","t":8,"pi":[{"n":"value","pt":$n[9].ReadOnlyCollection$1(System.Windows.Media.Visual),"ps":0}],"sn":"setVisualChildren","rt":Object,"p":[$n[9].ReadOnlyCollection$1(System.Windows.Media.Visual)]}},{"a":2,"n":"VisualLevel","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_VisualLevel","t":8,"sn":"getVisualLevel","rt":$n[0].Int32}},{"a":2,"n":"VisualOffset","t":16,"rt":$n[1].Point,"g":{"a":2,"n":"get_VisualOffset","t":8,"sn":"getVisualOffset","rt":$n[1].Point}},{"a":2,"n":"VisualParent","t":16,"rt":$n[5].Visual,"g":{"a":2,"n":"get_VisualParent","t":8,"sn":"getVisualParent","rt":$n[5].Visual},"s":{"a":1,"n":"set_VisualParent","t":8,"pi":[{"n":"value","pt":$n[5].Visual,"ps":0}],"sn":"setVisualParent","rt":Object,"p":[$n[5].Visual]}},{"a":2,"n":"VisualSize","t":16,"rt":$n[1].Size,"g":{"a":2,"n":"get_VisualSize","t":8,"sn":"getVisualSize","rt":$n[1].Size}},{"a":2,"n":"VisualTransform","t":16,"rt":$n[5].Matrix,"g":{"a":2,"n":"get_VisualTransform","t":8,"sn":"getVisualTransform","rt":$n[5].Matrix},"s":{"a":1,"n":"set_VisualTransform","t":8,"pi":[{"n":"value","pt":$n[5].Matrix,"ps":0}],"sn":"setVisualTransform","rt":Object,"p":[$n[5].Matrix]}}]}; });
-    $m($n[15].BitmapSource, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":"IsDownloading","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsDownloading","t":8,"sn":"getIsDownloading","rt":Boolean},"s":{"a":1,"n":"set_IsDownloading","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsDownloading","rt":Object,"p":[Boolean]}},{"ov":true,"a":2,"n":"RenderImageSource","t":16,"rt":$n[5].IRenderImageSource,"g":{"ov":true,"a":2,"n":"get_RenderImageSource","t":8,"sn":"getRenderImageSource","rt":$n[5].IRenderImageSource}}]}; });
-    $m($n[8].KeyFramesAnimationTimeline$1, function (T) { return {"att":1048577,"a":2,"at":[new System.Windows.Markup.ContentPropertyAttribute("KeyFrames")],"m":[{"a":2,"n":"KeyFrames","t":16,"rt":$n[1].FreezableCollection$1(System.Windows.Media.Animation.KeyFrame$1(T)),"g":{"a":2,"n":"get_KeyFrames","t":8,"sn":"getKeyFrames","rt":$n[1].FreezableCollection$1(System.Windows.Media.Animation.KeyFrame$1(T))},"s":{"a":1,"n":"set_KeyFrames","t":8,"pi":[{"n":"value","pt":$n[1].FreezableCollection$1(System.Windows.Media.Animation.KeyFrame$1(T)),"ps":0}],"sn":"setKeyFrames","rt":Object,"p":[$n[1].FreezableCollection$1(System.Windows.Media.Animation.KeyFrame$1(T))]}}]}; });
-    $m($n[8].BeginStoryboard, function () { return {"att":1048577,"a":2,"at":[new System.Windows.Markup.RuntimeNamePropertyAttribute("Name"),new System.Windows.Markup.ContentPropertyAttribute("Storyboard")],"m":[{"a":2,"n":"HandoffBehavior","t":16,"rt":$n[8].HandoffBehavior,"g":{"a":2,"n":"get_HandoffBehavior","t":8,"sn":"getHandoffBehavior","rt":$n[8].HandoffBehavior},"s":{"a":2,"n":"set_HandoffBehavior","t":8,"pi":[{"n":"value","pt":$n[8].HandoffBehavior,"ps":0}],"sn":"setHandoffBehavior","rt":Object,"p":[$n[8].HandoffBehavior]}},{"a":2,"n":"Name","t":16,"rt":String,"g":{"a":2,"n":"get_Name","t":8,"sn":"getName","rt":String},"s":{"a":2,"n":"set_Name","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setName","rt":Object,"p":[String]}},{"a":2,"n":"Storyboard","t":16,"rt":$n[8].Storyboard,"g":{"a":2,"n":"get_Storyboard","t":8,"sn":"getStoryboard","rt":$n[8].Storyboard},"s":{"a":2,"n":"set_Storyboard","t":8,"pi":[{"n":"value","pt":$n[8].Storyboard,"ps":0}],"sn":"setStoryboard","rt":Object,"p":[$n[8].Storyboard]}}]}; });
-    $m($n[8].StoryboardAction, function () { return {"att":1048705,"a":2,"m":[{"a":2,"n":"BeginStoryboardName","t":16,"rt":String,"g":{"a":2,"n":"get_BeginStoryboardName","t":8,"sn":"getBeginStoryboardName","rt":String},"s":{"a":2,"n":"set_BeginStoryboardName","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setBeginStoryboardName","rt":Object,"p":[String]}}]}; });
-    $m($n[8].Timeline, function () { return {"att":1048705,"a":2,"m":[{"a":2,"n":"AutoReverse","t":16,"rt":Boolean,"g":{"a":2,"n":"get_AutoReverse","t":8,"sn":"getAutoReverse","rt":Boolean},"s":{"a":2,"n":"set_AutoReverse","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setAutoReverse","rt":Object,"p":[Boolean]}},{"a":2,"n":"BeginTime","t":16,"rt":$n[0].TimeSpan,"g":{"a":2,"n":"get_BeginTime","t":8,"sn":"getBeginTime","rt":$n[0].TimeSpan},"s":{"a":2,"n":"set_BeginTime","t":8,"pi":[{"n":"value","pt":$n[0].TimeSpan,"ps":0}],"sn":"setBeginTime","rt":Object,"p":[$n[0].TimeSpan]}},{"a":2,"n":"Duration","t":16,"rt":$n[1].Duration,"g":{"a":2,"n":"get_Duration","t":8,"sn":"getDuration","rt":$n[1].Duration},"s":{"a":2,"n":"set_Duration","t":8,"pi":[{"n":"value","pt":$n[1].Duration,"ps":0}],"sn":"setDuration","rt":Object,"p":[$n[1].Duration]}},{"a":2,"n":"FillBehavior","t":16,"rt":$n[8].FillBehavior,"g":{"a":2,"n":"get_FillBehavior","t":8,"sn":"getFillBehavior","rt":$n[8].FillBehavior},"s":{"a":2,"n":"set_FillBehavior","t":8,"pi":[{"n":"value","pt":$n[8].FillBehavior,"ps":0}],"sn":"setFillBehavior","rt":Object,"p":[$n[8].FillBehavior]}},{"a":2,"n":"Parent","t":16,"rt":$n[8].TimelineGroup,"g":{"a":2,"n":"get_Parent","t":8,"sn":"getParent","rt":$n[8].TimelineGroup},"s":{"a":2,"n":"set_Parent","t":8,"pi":[{"n":"value","pt":$n[8].TimelineGroup,"ps":0}],"sn":"setParent","rt":Object,"p":[$n[8].TimelineGroup]}},{"a":2,"n":"RepeatBehavior","t":16,"rt":$n[8].RepeatBehavior,"g":{"a":2,"n":"get_RepeatBehavior","t":8,"sn":"getRepeatBehavior","rt":$n[8].RepeatBehavior},"s":{"a":2,"n":"set_RepeatBehavior","t":8,"pi":[{"n":"value","pt":$n[8].RepeatBehavior,"ps":0}],"sn":"setRepeatBehavior","rt":Object,"p":[$n[8].RepeatBehavior]}}]}; });
-    $m($n[8].TimelineClock, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":"CurrentState","t":16,"rt":$n[8].ClockState,"g":{"a":2,"n":"get_CurrentState","t":8,"sn":"getCurrentState","rt":$n[8].ClockState},"s":{"a":1,"n":"set_CurrentState","t":8,"pi":[{"n":"value","pt":$n[8].ClockState,"ps":0}],"sn":"setCurrentState","rt":Object,"p":[$n[8].ClockState]}},{"a":2,"n":"Duration","t":16,"rt":$n[0].TimeSpan,"g":{"a":2,"n":"get_Duration","t":8,"sn":"getDuration","rt":$n[0].TimeSpan}},{"a":2,"n":"FirstTick","t":16,"rt":$n[0].TimeSpan,"g":{"a":2,"n":"get_FirstTick","t":8,"sn":"getFirstTick","rt":$n[0].TimeSpan}},{"a":2,"n":"IsFilling","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsFilling","t":8,"sn":"getIsFilling","rt":Boolean}},{"a":2,"n":"LastTick","t":16,"rt":$n[0].TimeSpan,"g":{"a":2,"n":"get_LastTick","t":8,"sn":"getLastTick","rt":$n[0].TimeSpan}},{"a":2,"n":"Timeline","t":16,"rt":$n[8].Timeline,"g":{"a":2,"n":"get_Timeline","t":8,"sn":"getTimeline","rt":$n[8].Timeline},"s":{"a":1,"n":"set_Timeline","t":8,"pi":[{"n":"value","pt":$n[8].Timeline,"ps":0}],"sn":"setTimeline","rt":Object,"p":[$n[8].Timeline]}}]}; });
-    $m($n[8].TimelineGroup, function () { return {"att":129,"a":2,"at":[new System.Windows.Markup.ContentPropertyAttribute("Children")],"m":[{"a":2,"n":"Children","t":16,"rt":$n[3].ObservableCollection$1(System.Windows.Media.Animation.Timeline),"g":{"a":2,"n":"get_Children","t":8,"sn":"getChildren","rt":$n[3].ObservableCollection$1(System.Windows.Media.Animation.Timeline)},"s":{"a":1,"n":"set_Children","t":8,"pi":[{"n":"value","pt":$n[3].ObservableCollection$1(System.Windows.Media.Animation.Timeline),"ps":0}],"sn":"setChildren","rt":Object,"p":[$n[3].ObservableCollection$1(System.Windows.Media.Animation.Timeline)]}}]}; });
-    $m($n[8].TimelineGroupClock, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":"Children","t":16,"rt":$n[6].IEnumerable$1(System.Windows.Media.Animation.TimelineClock),"g":{"a":2,"n":"get_Children","t":8,"sn":"getChildren","rt":$n[6].IEnumerable$1(System.Windows.Media.Animation.TimelineClock)},"s":{"a":1,"n":"set_Children","t":8,"pi":[{"n":"value","pt":$n[6].IEnumerable$1(System.Windows.Media.Animation.TimelineClock),"ps":0}],"sn":"setChildren","rt":Object,"p":[$n[6].IEnumerable$1(System.Windows.Media.Animation.TimelineClock)]}}]}; });
-    $m($n[10].XamlTypes.TypeProvider, function () { return {"td":$n[10].XamlTypes,"att":1048579,"a":1,"at":[new System.Windows.Markup.MarkupExtensionParameterAttribute("Type", 0)],"m":[{"a":2,"n":"Type","t":16,"rt":Function,"g":{"a":2,"n":"get_Type","t":8,"sn":"getType","rt":Function},"s":{"a":2,"n":"set_Type","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"setType","rt":Object,"p":[Function]}}]}; });
-    $m($n[14].Adorner, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":"AdornedElement","t":16,"rt":$n[1].UIElement,"g":{"a":2,"n":"get_AdornedElement","t":8,"sn":"getAdornedElement","rt":$n[1].UIElement},"s":{"a":1,"n":"set_AdornedElement","t":8,"pi":[{"n":"value","pt":$n[1].UIElement,"ps":0}],"sn":"setAdornedElement","rt":Object,"p":[$n[1].UIElement]}},{"a":2,"n":"Child","t":16,"rt":$n[1].UIElement,"g":{"a":2,"n":"get_Child","t":8,"sn":"getChild","rt":$n[1].UIElement},"s":{"a":2,"n":"set_Child","t":8,"pi":[{"n":"value","pt":$n[1].UIElement,"ps":0}],"sn":"setChild","rt":Object,"p":[$n[1].UIElement]}}]}; });
-    $m($n[2].Binding, function () { return {"att":1048577,"a":2,"at":[new System.Windows.Markup.MarkupExtensionParameterAttribute("Path", 0)],"m":[{"a":2,"n":"Converter","t":16,"rt":$n[2].IValueConverter,"g":{"a":2,"n":"get_Converter","t":8,"sn":"getConverter","rt":$n[2].IValueConverter},"s":{"a":2,"n":"set_Converter","t":8,"pi":[{"n":"value","pt":$n[2].IValueConverter,"ps":0}],"sn":"setConverter","rt":Object,"p":[$n[2].IValueConverter]}},{"a":2,"n":"ConverterParameter","t":16,"rt":Object,"g":{"a":2,"n":"get_ConverterParameter","t":8,"sn":"getConverterParameter","rt":Object},"s":{"a":2,"n":"set_ConverterParameter","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setConverterParameter","rt":Object,"p":[Object]}},{"a":2,"n":"ElementName","t":16,"rt":String,"g":{"a":2,"n":"get_ElementName","t":8,"sn":"getElementName","rt":String},"s":{"a":2,"n":"set_ElementName","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setElementName","rt":Object,"p":[String]}},{"a":2,"n":"FallbackValue","t":16,"rt":Object,"g":{"a":2,"n":"get_FallbackValue","t":8,"sn":"getFallbackValue","rt":Object},"s":{"a":2,"n":"set_FallbackValue","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setFallbackValue","rt":Object,"p":[Object]}},{"a":2,"n":"Mode","t":16,"rt":$n[2].BindingMode,"g":{"a":2,"n":"get_Mode","t":8,"sn":"getMode","rt":$n[2].BindingMode},"s":{"a":2,"n":"set_Mode","t":8,"pi":[{"n":"value","pt":$n[2].BindingMode,"ps":0}],"sn":"setMode","rt":Object,"p":[$n[2].BindingMode]}},{"a":2,"n":"Path","t":16,"rt":$n[1].PropertyPath,"g":{"a":2,"n":"get_Path","t":8,"sn":"getPath","rt":$n[1].PropertyPath},"s":{"a":2,"n":"set_Path","t":8,"pi":[{"n":"value","pt":$n[1].PropertyPath,"ps":0}],"sn":"setPath","rt":Object,"p":[$n[1].PropertyPath]}},{"a":2,"n":"RelativeSource","t":16,"rt":$n[2].RelativeSource,"g":{"a":2,"n":"get_RelativeSource","t":8,"sn":"getRelativeSource","rt":$n[2].RelativeSource},"s":{"a":2,"n":"set_RelativeSource","t":8,"pi":[{"n":"value","pt":$n[2].RelativeSource,"ps":0}],"sn":"setRelativeSource","rt":Object,"p":[$n[2].RelativeSource]}},{"a":2,"n":"Source","t":16,"rt":Object,"g":{"a":2,"n":"get_Source","t":8,"sn":"getSource","rt":Object},"s":{"a":2,"n":"set_Source","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setSource","rt":Object,"p":[Object]}},{"a":2,"n":"StringFormat","t":16,"rt":String,"g":{"a":2,"n":"get_StringFormat","t":8,"sn":"getStringFormat","rt":String},"s":{"a":2,"n":"set_StringFormat","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setStringFormat","rt":Object,"p":[String]}},{"a":2,"n":"TargetNullValue","t":16,"rt":Object,"g":{"a":2,"n":"get_TargetNullValue","t":8,"sn":"getTargetNullValue","rt":Object},"s":{"a":2,"n":"set_TargetNullValue","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setTargetNullValue","rt":Object,"p":[Object]}},{"a":2,"n":"UpdateSourceTrigger","t":16,"rt":$n[2].UpdateSourceTrigger,"g":{"a":2,"n":"get_UpdateSourceTrigger","t":8,"sn":"getUpdateSourceTrigger","rt":$n[2].UpdateSourceTrigger},"s":{"a":2,"n":"set_UpdateSourceTrigger","t":8,"pi":[{"n":"value","pt":$n[2].UpdateSourceTrigger,"ps":0}],"sn":"setUpdateSourceTrigger","rt":Object,"p":[$n[2].UpdateSourceTrigger]}}]}; });
-    $m($n[2].CollectionView, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":"CanFilter","t":16,"rt":Boolean,"g":{"a":2,"n":"get_CanFilter","t":8,"sn":"getCanFilter","rt":Boolean}},{"a":2,"n":"CanSort","t":16,"rt":Boolean,"g":{"a":2,"n":"get_CanSort","t":8,"sn":"getCanSort","rt":Boolean}},{"a":2,"n":"CurrentItem","t":16,"rt":Object,"g":{"a":2,"n":"get_CurrentItem","t":8,"sn":"getCurrentItem","rt":Object},"s":{"a":2,"n":"set_CurrentItem","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setCurrentItem","rt":Object,"p":[Object]}},{"a":2,"n":"CurrentItemIndex","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_CurrentItemIndex","t":8,"sn":"getCurrentItemIndex","rt":$n[0].Int32},"s":{"a":2,"n":"set_CurrentItemIndex","t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"sn":"setCurrentItemIndex","rt":Object,"p":[$n[0].Int32]}},{"a":2,"n":"FilterPredicate","t":16,"rt":Function,"g":{"a":2,"n":"get_FilterPredicate","t":8,"sn":"getFilterPredicate","rt":Function},"s":{"a":2,"n":"set_FilterPredicate","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"setFilterPredicate","rt":Object,"p":[Function]}},{"a":2,"n":"SortDirection","t":16,"rt":$n[3].ListSortDirection,"g":{"a":2,"n":"get_SortDirection","t":8,"sn":"getSortDirection","rt":$n[3].ListSortDirection},"s":{"a":2,"n":"set_SortDirection","t":8,"pi":[{"n":"value","pt":$n[3].ListSortDirection,"ps":0}],"sn":"setSortDirection","rt":Object,"p":[$n[3].ListSortDirection]}},{"a":2,"n":"SortKeySelector","t":16,"rt":Function,"g":{"a":2,"n":"get_SortKeySelector","t":8,"sn":"getSortKeySelector","rt":Function},"s":{"a":2,"n":"set_SortKeySelector","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"setSortKeySelector","rt":Object,"p":[Function]}},{"a":2,"n":"SourceCollection","t":16,"rt":$n[11].IEnumerable,"g":{"a":2,"n":"get_SourceCollection","t":8,"sn":"getSourceCollection","rt":$n[11].IEnumerable},"s":{"a":1,"n":"set_SourceCollection","t":8,"pi":[{"n":"value","pt":$n[11].IEnumerable,"ps":0}],"sn":"setSourceCollection","rt":Object,"p":[$n[11].IEnumerable]}}]}; });
-    $m($n[2].RelativeSource, function () { return {"att":1048577,"a":2,"at":[new System.Windows.Markup.MarkupExtensionParameterAttribute("Mode", 0)],"m":[{"a":2,"n":"AncestorLevel","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_AncestorLevel","t":8,"sn":"getAncestorLevel","rt":$n[0].Int32},"s":{"a":2,"n":"set_AncestorLevel","t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"sn":"setAncestorLevel","rt":Object,"p":[$n[0].Int32]}},{"a":2,"n":"AncestorType","t":16,"rt":Function,"g":{"a":2,"n":"get_AncestorType","t":8,"sn":"getAncestorType","rt":Function},"s":{"a":2,"n":"set_AncestorType","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"setAncestorType","rt":Object,"p":[Function]}},{"a":2,"n":"Mode","t":16,"rt":$n[2].RelativeSourceMode,"g":{"a":2,"n":"get_Mode","t":8,"sn":"getMode","rt":$n[2].RelativeSourceMode},"s":{"a":2,"n":"set_Mode","t":8,"pi":[{"n":"value","pt":$n[2].RelativeSourceMode,"ps":0}],"sn":"setMode","rt":Object,"p":[$n[2].RelativeSourceMode]}}]}; });
-    $m($n[12].Control, function () { return {"att":1,"a":2,"m":[{"a":2,"n":"Background","t":16,"rt":$n[5].Brush,"g":{"a":2,"n":"get_Background","t":8,"sn":"getBackground","rt":$n[5].Brush},"s":{"a":2,"n":"set_Background","t":8,"pi":[{"n":"value","pt":$n[5].Brush,"ps":0}],"sn":"setBackground","rt":Object,"p":[$n[5].Brush]}},{"a":2,"n":"BorderBrush","t":16,"rt":$n[5].Brush,"g":{"a":2,"n":"get_BorderBrush","t":8,"sn":"getBorderBrush","rt":$n[5].Brush},"s":{"a":2,"n":"set_BorderBrush","t":8,"pi":[{"n":"value","pt":$n[5].Brush,"ps":0}],"sn":"setBorderBrush","rt":Object,"p":[$n[5].Brush]}},{"a":2,"n":"BorderThickness","t":16,"rt":$n[1].Thickness,"g":{"a":2,"n":"get_BorderThickness","t":8,"sn":"getBorderThickness","rt":$n[1].Thickness},"s":{"a":2,"n":"set_BorderThickness","t":8,"pi":[{"n":"value","pt":$n[1].Thickness,"ps":0}],"sn":"setBorderThickness","rt":Object,"p":[$n[1].Thickness]}},{"a":2,"n":"FontFamily","t":16,"rt":$n[5].FontFamily,"g":{"a":2,"n":"get_FontFamily","t":8,"sn":"getFontFamily","rt":$n[5].FontFamily},"s":{"a":2,"n":"set_FontFamily","t":8,"pi":[{"n":"value","pt":$n[5].FontFamily,"ps":0}],"sn":"setFontFamily","rt":Object,"p":[$n[5].FontFamily]}},{"a":2,"n":"FontSize","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_FontSize","t":8,"sn":"getFontSize","rt":$n[0].Double},"s":{"a":2,"n":"set_FontSize","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setFontSize","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"FontStretch","t":16,"rt":$n[1].FontStretch,"g":{"a":2,"n":"get_FontStretch","t":8,"sn":"getFontStretch","rt":$n[1].FontStretch},"s":{"a":2,"n":"set_FontStretch","t":8,"pi":[{"n":"value","pt":$n[1].FontStretch,"ps":0}],"sn":"setFontStretch","rt":Object,"p":[$n[1].FontStretch]}},{"a":2,"n":"FontStyle","t":16,"rt":$n[1].FontStyle,"g":{"a":2,"n":"get_FontStyle","t":8,"sn":"getFontStyle","rt":$n[1].FontStyle},"s":{"a":2,"n":"set_FontStyle","t":8,"pi":[{"n":"value","pt":$n[1].FontStyle,"ps":0}],"sn":"setFontStyle","rt":Object,"p":[$n[1].FontStyle]}},{"a":2,"n":"FontWeight","t":16,"rt":$n[1].FontWeight,"g":{"a":2,"n":"get_FontWeight","t":8,"sn":"getFontWeight","rt":$n[1].FontWeight},"s":{"a":2,"n":"set_FontWeight","t":8,"pi":[{"n":"value","pt":$n[1].FontWeight,"ps":0}],"sn":"setFontWeight","rt":Object,"p":[$n[1].FontWeight]}},{"a":2,"n":"Foreground","t":16,"rt":$n[5].Brush,"g":{"a":2,"n":"get_Foreground","t":8,"sn":"getForeground","rt":$n[5].Brush},"s":{"a":2,"n":"set_Foreground","t":8,"pi":[{"n":"value","pt":$n[5].Brush,"ps":0}],"sn":"setForeground","rt":Object,"p":[$n[5].Brush]}},{"a":2,"n":"HorizontalContentAlignment","t":16,"rt":$n[1].HorizontalAlignment,"g":{"a":2,"n":"get_HorizontalContentAlignment","t":8,"sn":"getHorizontalContentAlignment","rt":$n[1].HorizontalAlignment},"s":{"a":2,"n":"set_HorizontalContentAlignment","t":8,"pi":[{"n":"value","pt":$n[1].HorizontalAlignment,"ps":0}],"sn":"setHorizontalContentAlignment","rt":Object,"p":[$n[1].HorizontalAlignment]}},{"a":2,"n":"IsTabStop","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsTabStop","t":8,"sn":"getIsTabStop","rt":Boolean},"s":{"a":2,"n":"set_IsTabStop","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsTabStop","rt":Object,"p":[Boolean]}},{"a":2,"n":"Padding","t":16,"rt":$n[1].Thickness,"g":{"a":2,"n":"get_Padding","t":8,"sn":"getPadding","rt":$n[1].Thickness},"s":{"a":2,"n":"set_Padding","t":8,"pi":[{"n":"value","pt":$n[1].Thickness,"ps":0}],"sn":"setPadding","rt":Object,"p":[$n[1].Thickness]}},{"a":2,"n":"TabIndex","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_TabIndex","t":8,"sn":"getTabIndex","rt":$n[0].Int32},"s":{"a":2,"n":"set_TabIndex","t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"sn":"setTabIndex","rt":Object,"p":[$n[0].Int32]}},{"a":2,"n":"Template","t":16,"rt":$n[12].ControlTemplate,"g":{"a":2,"n":"get_Template","t":8,"sn":"getTemplate$1","rt":$n[12].ControlTemplate},"s":{"a":2,"n":"set_Template","t":8,"pi":[{"n":"value","pt":$n[12].ControlTemplate,"ps":0}],"sn":"setTemplate$1","rt":Object,"p":[$n[12].ControlTemplate]}},{"a":2,"n":"VerticalContentAlignment","t":16,"rt":$n[1].VerticalAlignment,"g":{"a":2,"n":"get_VerticalContentAlignment","t":8,"sn":"getVerticalContentAlignment","rt":$n[1].VerticalAlignment},"s":{"a":2,"n":"set_VerticalContentAlignment","t":8,"pi":[{"n":"value","pt":$n[1].VerticalAlignment,"ps":0}],"sn":"setVerticalContentAlignment","rt":Object,"p":[$n[1].VerticalAlignment]}}]}; });
-    $m($n[12].ControlTemplate, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":"TargetType","t":16,"rt":Function,"g":{"a":2,"n":"get_TargetType","t":8,"sn":"getTargetType","rt":Function},"s":{"a":2,"n":"set_TargetType","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"setTargetType","rt":Object,"p":[Function]}}]}; });
-    $m($n[12].Decorator, function () { return {"att":1048577,"a":2,"at":[new System.Windows.Markup.ContentPropertyAttribute("Child")],"m":[{"a":2,"n":"Child","t":16,"rt":$n[1].UIElement,"g":{"a":2,"n":"get_Child","t":8,"sn":"getChild","rt":$n[1].UIElement},"s":{"a":2,"n":"set_Child","t":8,"pi":[{"n":"value","pt":$n[1].UIElement,"ps":0}],"sn":"setChild","rt":Object,"p":[$n[1].UIElement]}}]}; });
-    $m($n[12].Grid, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":"ColumnDefinitions","t":16,"rt":$n[1].FreezableCollection$1(System.Windows.Controls.ColumnDefinition),"g":{"a":2,"n":"get_ColumnDefinitions","t":8,"sn":"getColumnDefinitions","rt":$n[1].FreezableCollection$1(System.Windows.Controls.ColumnDefinition)},"s":{"a":1,"n":"set_ColumnDefinitions","t":8,"pi":[{"n":"value","pt":$n[1].FreezableCollection$1(System.Windows.Controls.ColumnDefinition),"ps":0}],"sn":"setColumnDefinitions","rt":Object,"p":[$n[1].FreezableCollection$1(System.Windows.Controls.ColumnDefinition)]}},{"a":2,"n":"RowDefinitions","t":16,"rt":$n[1].FreezableCollection$1(System.Windows.Controls.RowDefinition),"g":{"a":2,"n":"get_RowDefinitions","t":8,"sn":"getRowDefinitions","rt":$n[1].FreezableCollection$1(System.Windows.Controls.RowDefinition)},"s":{"a":1,"n":"set_RowDefinitions","t":8,"pi":[{"n":"value","pt":$n[1].FreezableCollection$1(System.Windows.Controls.RowDefinition),"ps":0}],"sn":"setRowDefinitions","rt":Object,"p":[$n[1].FreezableCollection$1(System.Windows.Controls.RowDefinition)]}}]}; });
-    $m($n[12].ItemCollection, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":"CanFilter","t":16,"rt":Boolean,"g":{"a":2,"n":"get_CanFilter","t":8,"sn":"getCanFilter","rt":Boolean}},{"a":2,"n":"CanSort","t":16,"rt":Boolean,"g":{"a":2,"n":"get_CanSort","t":8,"sn":"getCanSort","rt":Boolean}},{"a":2,"n":"Count","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Count","t":8,"sn":"getCount","rt":$n[0].Int32}},{"a":2,"n":"CurrentItem","t":16,"rt":Object,"g":{"a":2,"n":"get_CurrentItem","t":8,"sn":"getCurrentItem","rt":Object},"s":{"a":2,"n":"set_CurrentItem","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setCurrentItem","rt":Object,"p":[Object]}},{"a":2,"n":"CurrentItemIndex","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_CurrentItemIndex","t":8,"sn":"getCurrentItemIndex","rt":$n[0].Int32},"s":{"a":2,"n":"set_CurrentItemIndex","t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"sn":"setCurrentItemIndex","rt":Object,"p":[$n[0].Int32]}},{"a":2,"n":"FilterPredicate","t":16,"rt":Function,"g":{"a":2,"n":"get_FilterPredicate","t":8,"sn":"getFilterPredicate","rt":Function},"s":{"a":2,"n":"set_FilterPredicate","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"setFilterPredicate","rt":Object,"p":[Function]}},{"a":2,"n":"IsReadOnly","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsReadOnly","t":8,"sn":"getIsReadOnly","rt":Boolean}},{"a":2,"n":"SortDirection","t":16,"rt":$n[3].ListSortDirection,"g":{"a":2,"n":"get_SortDirection","t":8,"sn":"getSortDirection","rt":$n[3].ListSortDirection},"s":{"a":2,"n":"set_SortDirection","t":8,"pi":[{"n":"value","pt":$n[3].ListSortDirection,"ps":0}],"sn":"setSortDirection","rt":Object,"p":[$n[3].ListSortDirection]}},{"a":2,"n":"SortKeySelector","t":16,"rt":Function,"g":{"a":2,"n":"get_SortKeySelector","t":8,"sn":"getSortKeySelector","rt":Function},"s":{"a":2,"n":"set_SortKeySelector","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"setSortKeySelector","rt":Object,"p":[Function]}},{"a":2,"n":"SourceCollection","t":16,"rt":$n[11].IEnumerable,"g":{"a":2,"n":"get_SourceCollection","t":8,"sn":"getSourceCollection","rt":$n[11].IEnumerable}}]}; });
-    $m($n[12].ItemsControl, function () { return {"att":1,"a":2,"at":[new System.Windows.Markup.ContentPropertyAttribute("Items")],"m":[{"a":2,"n":"ItemContainerGenerator","t":16,"rt":$n[13].IItemContainerGenerator,"g":{"a":2,"n":"get_ItemContainerGenerator","t":8,"sn":"getItemContainerGenerator","rt":$n[13].IItemContainerGenerator},"s":{"a":1,"n":"set_ItemContainerGenerator","t":8,"pi":[{"n":"value","pt":$n[13].IItemContainerGenerator,"ps":0}],"sn":"setItemContainerGenerator","rt":Object,"p":[$n[13].IItemContainerGenerator]}},{"a":2,"n":"ItemContainerStyle","t":16,"rt":$n[1].Style,"g":{"a":2,"n":"get_ItemContainerStyle","t":8,"sn":"getItemContainerStyle","rt":$n[1].Style},"s":{"a":2,"n":"set_ItemContainerStyle","t":8,"pi":[{"n":"value","pt":$n[1].Style,"ps":0}],"sn":"setItemContainerStyle","rt":Object,"p":[$n[1].Style]}},{"a":2,"n":"ItemContainerStyleSelector","t":16,"rt":$n[12].IStyleSelector,"g":{"a":2,"n":"get_ItemContainerStyleSelector","t":8,"sn":"getItemContainerStyleSelector","rt":$n[12].IStyleSelector},"s":{"a":2,"n":"set_ItemContainerStyleSelector","t":8,"pi":[{"n":"value","pt":$n[12].IStyleSelector,"ps":0}],"sn":"setItemContainerStyleSelector","rt":Object,"p":[$n[12].IStyleSelector]}},{"a":2,"n":"ItemTemplate","t":16,"rt":$n[1].DataTemplate,"g":{"a":2,"n":"get_ItemTemplate","t":8,"sn":"getItemTemplate","rt":$n[1].DataTemplate},"s":{"a":2,"n":"set_ItemTemplate","t":8,"pi":[{"n":"value","pt":$n[1].DataTemplate,"ps":0}],"sn":"setItemTemplate","rt":Object,"p":[$n[1].DataTemplate]}},{"a":2,"n":"ItemTemplateSelector","t":16,"rt":$n[12].IDataTemplateSelector,"g":{"a":2,"n":"get_ItemTemplateSelector","t":8,"sn":"getItemTemplateSelector","rt":$n[12].IDataTemplateSelector},"s":{"a":2,"n":"set_ItemTemplateSelector","t":8,"pi":[{"n":"value","pt":$n[12].IDataTemplateSelector,"ps":0}],"sn":"setItemTemplateSelector","rt":Object,"p":[$n[12].IDataTemplateSelector]}},{"a":2,"n":"Items","t":16,"rt":$n[12].ItemCollection,"g":{"a":2,"n":"get_Items","t":8,"sn":"getItems","rt":$n[12].ItemCollection},"s":{"a":1,"n":"set_Items","t":8,"pi":[{"n":"value","pt":$n[12].ItemCollection,"ps":0}],"sn":"setItems","rt":Object,"p":[$n[12].ItemCollection]}},{"a":2,"n":"ItemsPanel","t":16,"rt":$n[1].IFrameworkTemplate,"g":{"a":2,"n":"get_ItemsPanel","t":8,"sn":"getItemsPanel","rt":$n[1].IFrameworkTemplate},"s":{"a":2,"n":"set_ItemsPanel","t":8,"pi":[{"n":"value","pt":$n[1].IFrameworkTemplate,"ps":0}],"sn":"setItemsPanel","rt":Object,"p":[$n[1].IFrameworkTemplate]}},{"a":2,"n":"ItemsSource","t":16,"rt":$n[11].IEnumerable,"g":{"a":2,"n":"get_ItemsSource","t":8,"sn":"getItemsSource","rt":$n[11].IEnumerable},"s":{"a":2,"n":"set_ItemsSource","t":8,"pi":[{"n":"value","pt":$n[11].IEnumerable,"ps":0}],"sn":"setItemsSource","rt":Object,"p":[$n[11].IEnumerable]}}]}; });
-    $m($n[12].Panel, function () { return {"att":1048705,"a":2,"at":[new System.Windows.Markup.ContentPropertyAttribute("Children")],"m":[{"a":2,"n":"Background","t":16,"rt":$n[5].Brush,"g":{"a":2,"n":"get_Background","t":8,"sn":"getBackground","rt":$n[5].Brush},"s":{"a":2,"n":"set_Background","t":8,"pi":[{"n":"value","pt":$n[5].Brush,"ps":0}],"sn":"setBackground","rt":Object,"p":[$n[5].Brush]}},{"a":2,"n":"Children","t":16,"rt":$n[12].UIElementCollection,"g":{"a":2,"n":"get_Children","t":8,"sn":"getChildren","rt":$n[12].UIElementCollection},"s":{"a":1,"n":"set_Children","t":8,"pi":[{"n":"value","pt":$n[12].UIElementCollection,"ps":0}],"sn":"setChildren","rt":Object,"p":[$n[12].UIElementCollection]}},{"a":2,"n":"IsItemsHost","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsItemsHost","t":8,"sn":"getIsItemsHost","rt":Boolean},"s":{"a":2,"n":"set_IsItemsHost","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsItemsHost","rt":Object,"p":[Boolean]}},{"a":2,"n":"ItemContainerGenerator","t":16,"rt":$n[13].IItemContainerGenerator,"g":{"a":2,"n":"get_ItemContainerGenerator","t":8,"sn":"getItemContainerGenerator","rt":$n[13].IItemContainerGenerator},"s":{"a":2,"n":"set_ItemContainerGenerator","t":8,"pi":[{"n":"value","pt":$n[13].IItemContainerGenerator,"ps":0}],"sn":"setItemContainerGenerator","rt":Object,"p":[$n[13].IItemContainerGenerator]}}]}; });
-    $m($n[12].PasswordBox, function () { return {"att":257,"a":2,"at":[new System.Windows.TemplatePartAttribute.$ctor1("PART_ContentHost", System.Windows.FrameworkElement)],"m":[{"a":2,"n":"MaxLength","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_MaxLength","t":8,"sn":"getMaxLength","rt":$n[0].Int32},"s":{"a":2,"n":"set_MaxLength","t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"sn":"setMaxLength","rt":Object,"p":[$n[0].Int32]}},{"a":2,"n":"Password","t":16,"rt":String,"g":{"a":2,"n":"get_Password","t":8,"sn":"getPassword","rt":String},"s":{"a":2,"n":"set_Password","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setPassword","rt":Object,"p":[String]}}]}; });
-    $m($n[12].PopupLayer, function () { return {"att":1048577,"a":2}; });
-    $m($n[12].ScrollContentPresenter, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":"AdornerLayer","t":16,"rt":$n[14].AdornerLayer,"g":{"a":2,"n":"get_AdornerLayer","t":8,"sn":"getAdornerLayer","rt":$n[14].AdornerLayer},"s":{"a":1,"n":"set_AdornerLayer","t":8,"pi":[{"n":"value","pt":$n[14].AdornerLayer,"ps":0}],"sn":"setAdornerLayer","rt":Object,"p":[$n[14].AdornerLayer]}},{"a":2,"n":"CanContentScroll","t":16,"rt":Boolean,"g":{"a":2,"n":"get_CanContentScroll","t":8,"sn":"getCanContentScroll","rt":Boolean},"s":{"a":2,"n":"set_CanContentScroll","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setCanContentScroll","rt":Object,"p":[Boolean]}},{"a":2,"n":"CanHorizontallyScroll","t":16,"rt":Boolean,"g":{"a":2,"n":"get_CanHorizontallyScroll","t":8,"sn":"getCanHorizontallyScroll","rt":Boolean},"s":{"a":2,"n":"set_CanHorizontallyScroll","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setCanHorizontallyScroll","rt":Object,"p":[Boolean]}},{"a":2,"n":"CanVerticallyScroll","t":16,"rt":Boolean,"g":{"a":2,"n":"get_CanVerticallyScroll","t":8,"sn":"getCanVerticallyScroll","rt":Boolean},"s":{"a":2,"n":"set_CanVerticallyScroll","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setCanVerticallyScroll","rt":Object,"p":[Boolean]}},{"a":2,"n":"ExtentSize","t":16,"rt":$n[1].Size,"g":{"a":2,"n":"get_ExtentSize","t":8,"sn":"getExtentSize","rt":$n[1].Size}},{"a":2,"n":"Offset","t":16,"rt":$n[1].Point,"g":{"a":2,"n":"get_Offset","t":8,"sn":"getOffset","rt":$n[1].Point},"s":{"a":2,"n":"set_Offset","t":8,"pi":[{"n":"value","pt":$n[1].Point,"ps":0}],"sn":"setOffset","rt":Object,"p":[$n[1].Point]}},{"a":2,"n":"ViewportSize","t":16,"rt":$n[1].Size,"g":{"a":2,"n":"get_ViewportSize","t":8,"sn":"getViewportSize","rt":$n[1].Size}}]}; });
-    $m($n[12].UIElementCollection, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":"Count","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Count","t":8,"sn":"getCount","rt":$n[0].Int32}},{"a":2,"n":"IsReadOnly","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsReadOnly","t":8,"sn":"getIsReadOnly","rt":Boolean}}]}; });
-    $m($n[13].Popup, function () { return {"att":1048577,"a":2,"at":[new System.Windows.Markup.ContentPropertyAttribute("Child")],"m":[{"a":2,"n":"Child","t":16,"rt":$n[1].UIElement,"g":{"a":2,"n":"get_Child","t":8,"sn":"getChild","rt":$n[1].UIElement},"s":{"a":2,"n":"set_Child","t":8,"pi":[{"n":"value","pt":$n[1].UIElement,"ps":0}],"sn":"setChild","rt":Object,"p":[$n[1].UIElement]}},{"a":2,"n":"HorizontalOffset","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_HorizontalOffset","t":8,"sn":"getHorizontalOffset","rt":$n[0].Double},"s":{"a":2,"n":"set_HorizontalOffset","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setHorizontalOffset","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"IsOpen","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsOpen","t":8,"sn":"getIsOpen","rt":Boolean},"s":{"a":2,"n":"set_IsOpen","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsOpen","rt":Object,"p":[Boolean]}},{"a":2,"n":"Placement","t":16,"rt":$n[13].PlacementMode,"g":{"a":2,"n":"get_Placement","t":8,"sn":"getPlacement","rt":$n[13].PlacementMode},"s":{"a":2,"n":"set_Placement","t":8,"pi":[{"n":"value","pt":$n[13].PlacementMode,"ps":0}],"sn":"setPlacement","rt":Object,"p":[$n[13].PlacementMode]}},{"a":2,"n":"PlacementRectangle","t":16,"rt":$n[1].Rect,"g":{"a":2,"n":"get_PlacementRectangle","t":8,"sn":"getPlacementRectangle","rt":$n[1].Rect},"s":{"a":2,"n":"set_PlacementRectangle","t":8,"pi":[{"n":"value","pt":$n[1].Rect,"ps":0}],"sn":"setPlacementRectangle","rt":Object,"p":[$n[1].Rect]}},{"a":2,"n":"PlacementTarget","t":16,"rt":$n[5].Visual,"g":{"a":2,"n":"get_PlacementTarget","t":8,"sn":"getPlacementTarget","rt":$n[5].Visual},"s":{"a":2,"n":"set_PlacementTarget","t":8,"pi":[{"n":"value","pt":$n[5].Visual,"ps":0}],"sn":"setPlacementTarget","rt":Object,"p":[$n[5].Visual]}},{"a":2,"n":"StaysOpen","t":16,"rt":Boolean,"g":{"a":2,"n":"get_StaysOpen","t":8,"sn":"getStaysOpen","rt":Boolean},"s":{"a":2,"n":"set_StaysOpen","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setStaysOpen","rt":Object,"p":[Boolean]}},{"a":2,"n":"VerticalOffset","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_VerticalOffset","t":8,"sn":"getVerticalOffset","rt":$n[0].Double},"s":{"a":2,"n":"set_VerticalOffset","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setVerticalOffset","rt":Object,"p":[$n[0].Double]}}]}; });
-    $m($n[13].Track, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":"DecreaseRepeatButton","t":16,"rt":$n[13].RepeatButton,"g":{"a":2,"n":"get_DecreaseRepeatButton","t":8,"sn":"getDecreaseRepeatButton","rt":$n[13].RepeatButton},"s":{"a":2,"n":"set_DecreaseRepeatButton","t":8,"pi":[{"n":"value","pt":$n[13].RepeatButton,"ps":0}],"sn":"setDecreaseRepeatButton","rt":Object,"p":[$n[13].RepeatButton]}},{"a":2,"n":"IncreaseRepeatButton","t":16,"rt":$n[13].RepeatButton,"g":{"a":2,"n":"get_IncreaseRepeatButton","t":8,"sn":"getIncreaseRepeatButton","rt":$n[13].RepeatButton},"s":{"a":2,"n":"set_IncreaseRepeatButton","t":8,"pi":[{"n":"value","pt":$n[13].RepeatButton,"ps":0}],"sn":"setIncreaseRepeatButton","rt":Object,"p":[$n[13].RepeatButton]}},{"a":2,"n":"Maximum","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_Maximum","t":8,"sn":"getMaximum","rt":$n[0].Double},"s":{"a":2,"n":"set_Maximum","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setMaximum","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"Minimum","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_Minimum","t":8,"sn":"getMinimum","rt":$n[0].Double},"s":{"a":2,"n":"set_Minimum","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setMinimum","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"Orientation","t":16,"rt":$n[12].Orientation,"g":{"a":2,"n":"get_Orientation","t":8,"sn":"getOrientation","rt":$n[12].Orientation},"s":{"a":2,"n":"set_Orientation","t":8,"pi":[{"n":"value","pt":$n[12].Orientation,"ps":0}],"sn":"setOrientation","rt":Object,"p":[$n[12].Orientation]}},{"a":2,"n":"Thumb","t":16,"rt":$n[13].Thumb,"g":{"a":2,"n":"get_Thumb","t":8,"sn":"getThumb","rt":$n[13].Thumb},"s":{"a":2,"n":"set_Thumb","t":8,"pi":[{"n":"value","pt":$n[13].Thumb,"ps":0}],"sn":"setThumb","rt":Object,"p":[$n[13].Thumb]}},{"a":2,"n":"ThumbMinLength","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_ThumbMinLength","t":8,"sn":"getThumbMinLength","rt":$n[0].Double},"s":{"a":2,"n":"set_ThumbMinLength","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setThumbMinLength","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"Value","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_Value","t":8,"sn":"getValue$5","rt":$n[0].Double},"s":{"a":2,"n":"set_Value","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setValue$5","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"ViewportSize","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_ViewportSize","t":8,"sn":"getViewportSize","rt":$n[0].Double},"s":{"a":2,"n":"set_ViewportSize","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setViewportSize","rt":Object,"p":[$n[0].Double]}}]}; });
+    $m($n[12].ButtonBase, function () { return {"at":[new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Normal"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "MouseOver"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Pressed"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Disabled"),new System.Windows.TemplateVisualStateAttribute.$ctor1("FocusStates", "Focused"),new System.Windows.TemplateVisualStateAttribute.$ctor1("FocusStates", "Unfocused")]}; });
+    $m($n[11].ListBoxItem, function () { return {"at":[new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Normal"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "MouseOver"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Disabled"),new System.Windows.TemplateVisualStateAttribute.$ctor1("SelectionStates", "Selected"),new System.Windows.TemplateVisualStateAttribute.$ctor1("SelectionStates", "SelectedUnfocused"),new System.Windows.TemplateVisualStateAttribute.$ctor1("SelectionStates", "Unselected"),new System.Windows.TemplateVisualStateAttribute.$ctor1("FocusStates", "Focused"),new System.Windows.TemplateVisualStateAttribute.$ctor1("FocusStates", "Unfocused")]}; });
+    $m($n[12].ScrollBar, function () { return {"at":[new System.Windows.TemplatePartAttribute.$ctor1("PART_Track", System.Windows.Controls.Primitives.Track),new System.Windows.TemplatePartAttribute.$ctor1("PART_DecreaseButton", System.Windows.Controls.Primitives.ButtonBase),new System.Windows.TemplatePartAttribute.$ctor1("PART_IncreaseButton", System.Windows.Controls.Primitives.ButtonBase)]}; });
+    $m($n[11].ProgressBar, function () { return {"at":[new System.Windows.TemplatePartAttribute.$ctor1("PART_Track", System.Windows.FrameworkElement),new System.Windows.TemplatePartAttribute.$ctor1("PART_Indicator", System.Windows.FrameworkElement),new System.Windows.TemplatePartAttribute.$ctor1("PART_Glow", System.Windows.Controls.Border)]}; });
+    $m($n[11].ScrollViewer, function () { return {"at":[new System.Windows.TemplatePartAttribute.$ctor1("PART_HorizontalScrollBar", System.Windows.Controls.Primitives.ScrollBar),new System.Windows.TemplatePartAttribute.$ctor1("PART_VerticalScrollBar", System.Windows.Controls.Primitives.ScrollBar),new System.Windows.TemplatePartAttribute.$ctor1("PART_ScrollContentPresenter", System.Windows.Controls.ScrollContentPresenter)]}; });
+    $m($n[11].TextBox, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Text")]}; });
+    $m($n[12].ToggleButton, function () { return {"at":[new System.Windows.TemplateVisualStateAttribute.$ctor1("CheckStates", "Checked"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CheckStates", "Unchecked"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CheckStates", "Indeterminate")]}; });
+    $m($n[11].Expander, function () { return {"at":[new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Normal"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "MouseOver"),new System.Windows.TemplateVisualStateAttribute.$ctor1("CommonStates", "Disabled"),new System.Windows.TemplateVisualStateAttribute.$ctor1("ExpansionStates", "Expanded"),new System.Windows.TemplateVisualStateAttribute.$ctor1("ExpansionStates", "Collapsed")]}; });
+    $m($n[1].Application, function () { return {"m":[{"a":2,"n":"BaseUri","t":16,"rt":$n[0].Uri,"g":{"a":2,"n":"get_BaseUri","t":8,"sn":"getBaseUri","rt":$n[0].Uri},"s":{"a":2,"n":"set_BaseUri","t":8,"pi":[{"n":"value","pt":$n[0].Uri,"ps":0}],"sn":"setBaseUri","rt":Object,"p":[$n[0].Uri]}},{"a":2,"n":"MainWindow","t":16,"rt":$n[1].Window,"g":{"a":2,"n":"get_MainWindow","t":8,"sn":"getMainWindow","rt":$n[1].Window},"s":{"a":2,"n":"set_MainWindow","t":8,"pi":[{"n":"value","pt":$n[1].Window,"ps":0}],"sn":"setMainWindow","rt":Object,"p":[$n[1].Window]}},{"a":2,"n":"Resources","t":16,"rt":$n[1].ResourceDictionary,"g":{"a":2,"n":"get_Resources","t":8,"sn":"getResources","rt":$n[1].ResourceDictionary},"s":{"a":2,"n":"set_Resources","t":8,"pi":[{"n":"value","pt":$n[1].ResourceDictionary,"ps":0}],"sn":"setResources","rt":Object,"p":[$n[1].ResourceDictionary]}},{"a":2,"n":"StartupUri","t":16,"rt":$n[0].Uri,"g":{"a":2,"n":"get_StartupUri","t":8,"sn":"getStartupUri","rt":$n[0].Uri},"s":{"a":2,"n":"set_StartupUri","t":8,"pi":[{"n":"value","pt":$n[0].Uri,"ps":0}],"sn":"setStartupUri","rt":Object,"p":[$n[0].Uri]}},{"a":2,"n":"LoadCompleted","t":2,"ad":{"a":2,"n":"add_LoadCompleted","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"addLoadCompleted","rt":Object,"p":[Function]},"r":{"a":2,"n":"remove_LoadCompleted","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"removeLoadCompleted","rt":Object,"p":[Function]}},{"a":2,"n":"ResourcesChanged","t":2,"ad":{"a":2,"n":"add_ResourcesChanged","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"addResourcesChanged","rt":Object,"p":[Function]},"r":{"a":2,"n":"remove_ResourcesChanged","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"removeResourcesChanged","rt":Object,"p":[Function]}},{"a":2,"n":"Startup","t":2,"ad":{"a":2,"n":"add_Startup","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"addStartup","rt":Object,"p":[Function]},"r":{"a":2,"n":"remove_Startup","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"removeStartup","rt":Object,"p":[Function]}}]}; });
+    $m($n[1].Condition, function () { return {"m":[{"a":2,"n":"Binding","t":16,"rt":$n[2].Binding,"g":{"a":2,"n":"get_Binding","t":8,"sn":"getBinding","rt":$n[2].Binding},"s":{"a":2,"n":"set_Binding","t":8,"pi":[{"n":"value","pt":$n[2].Binding,"ps":0}],"sn":"setBinding","rt":Object,"p":[$n[2].Binding]}},{"a":2,"n":"Property","t":16,"rt":$n[1].IPropertyPathElement,"g":{"a":2,"n":"get_Property","t":8,"sn":"getProperty","rt":$n[1].IPropertyPathElement},"s":{"a":2,"n":"set_Property","t":8,"pi":[{"n":"value","pt":$n[1].IPropertyPathElement,"ps":0}],"sn":"setProperty","rt":Object,"p":[$n[1].IPropertyPathElement]}},{"a":2,"n":"SourceName","t":16,"rt":String,"g":{"a":2,"n":"get_SourceName","t":8,"sn":"getSourceName","rt":String},"s":{"a":2,"n":"set_SourceName","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setSourceName","rt":Object,"p":[String]}},{"a":2,"n":"Value","t":16,"rt":Object,"g":{"a":2,"n":"get_Value","t":8,"sn":"getValue","rt":Object},"s":{"a":2,"n":"set_Value","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setValue","rt":Object,"p":[Object]}}]}; });
+    $m($n[1].DataTemplate, function () { return {"at":[new System.Windows.Markup.DictionaryKeyPropertyAttribute("Key")],"m":[{"a":2,"n":"DataType","t":16,"rt":Function,"g":{"a":2,"n":"get_DataType","t":8,"sn":"getDataType","rt":Function},"s":{"a":2,"n":"set_DataType","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"setDataType","rt":Object,"p":[Function]}},{"a":2,"n":"Key","t":16,"rt":Object,"g":{"a":2,"n":"get_Key","t":8,"sn":"getKey","rt":Object},"s":{"a":2,"n":"set_Key","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setKey","rt":Object,"p":[Object]}}]}; });
+    $m($n[1].DataTrigger, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Setters")],"m":[{"a":2,"n":"Binding","t":16,"rt":$n[2].Binding,"g":{"a":2,"n":"get_Binding","t":8,"sn":"getBinding","rt":$n[2].Binding},"s":{"a":2,"n":"set_Binding","t":8,"pi":[{"n":"value","pt":$n[2].Binding,"ps":0}],"sn":"setBinding","rt":Object,"p":[$n[2].Binding]}},{"a":2,"n":"Setters","t":16,"rt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction),"g":{"a":2,"n":"get_Setters","t":8,"sn":"getSetters","rt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction)},"s":{"a":1,"n":"set_Setters","t":8,"pi":[{"n":"value","pt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction),"ps":0}],"sn":"setSetters","rt":Object,"p":[$n[3].ObservableCollection$1(System.Windows.ITriggerAction)]}},{"a":2,"n":"Value","t":16,"rt":Object,"g":{"a":2,"n":"get_Value","t":8,"sn":"getValue$5","rt":Object},"s":{"a":2,"n":"set_Value","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setValue$5","rt":Object,"p":[Object]}}]}; });
+    $m($n[1].DynamicResourceExtension, function () { return {"at":[new System.Windows.Markup.MarkupExtensionParameterAttribute("ResourceKey", 0)],"m":[{"a":2,"n":"ResourceKey","t":16,"rt":Object,"g":{"a":2,"n":"get_ResourceKey","t":8,"sn":"getResourceKey","rt":Object},"s":{"a":2,"n":"set_ResourceKey","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setResourceKey","rt":Object,"p":[Object]}}]}; });
+    $m($n[1].EventSetter, function () { return {"m":[{"a":2,"n":"Event","t":16,"rt":$n[1].RoutedEvent,"g":{"a":2,"n":"get_Event","t":8,"sn":"getEvent","rt":$n[1].RoutedEvent},"s":{"a":2,"n":"set_Event","t":8,"pi":[{"n":"value","pt":$n[1].RoutedEvent,"ps":0}],"sn":"setEvent","rt":Object,"p":[$n[1].RoutedEvent]}},{"a":2,"n":"HandledEventsToo","t":16,"rt":Boolean,"g":{"a":2,"n":"get_HandledEventsToo","t":8,"sn":"getHandledEventsToo","rt":Boolean},"s":{"a":2,"n":"set_HandledEventsToo","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setHandledEventsToo","rt":Object,"p":[Boolean]}},{"a":2,"n":"Handler","t":16,"rt":Function,"g":{"a":2,"n":"get_Handler","t":8,"sn":"getHandler","rt":Function},"s":{"a":2,"n":"set_Handler","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"setHandler","rt":Object,"p":[Function]}}]}; });
+    $m($n[1].EventTrigger, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Actions")],"m":[{"a":2,"n":"Actions","t":16,"rt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction),"g":{"a":2,"n":"get_Actions","t":8,"sn":"getActions","rt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction)},"s":{"a":1,"n":"set_Actions","t":8,"pi":[{"n":"value","pt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction),"ps":0}],"sn":"setActions","rt":Object,"p":[$n[3].ObservableCollection$1(System.Windows.ITriggerAction)]}},{"a":2,"n":"RoutedEvent","t":16,"rt":$n[1].RoutedEvent,"g":{"a":2,"n":"get_RoutedEvent","t":8,"sn":"getRoutedEvent","rt":$n[1].RoutedEvent},"s":{"a":2,"n":"set_RoutedEvent","t":8,"pi":[{"n":"value","pt":$n[1].RoutedEvent,"ps":0}],"sn":"setRoutedEvent","rt":Object,"p":[$n[1].RoutedEvent]}},{"a":2,"n":"SourceName","t":16,"rt":String,"g":{"a":2,"n":"get_SourceName","t":8,"sn":"getSourceName","rt":String},"s":{"a":2,"n":"set_SourceName","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setSourceName","rt":Object,"p":[String]}}]}; });
+    $m($n[1].FrameworkElement, function () { return {"at":[new System.Windows.Markup.RuntimeNamePropertyAttribute("Name")],"m":[{"a":2,"n":"ActualHeight","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_ActualHeight","t":8,"sn":"getActualHeight","rt":$n[0].Double},"s":{"a":1,"n":"set_ActualHeight","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setActualHeight","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"ActualSize","t":16,"rt":$n[1].Size,"g":{"a":2,"n":"get_ActualSize","t":8,"sn":"getActualSize","rt":$n[1].Size},"s":{"a":1,"n":"set_ActualSize","t":8,"pi":[{"n":"value","pt":$n[1].Size,"ps":0}],"sn":"setActualSize","rt":Object,"p":[$n[1].Size]}},{"a":2,"n":"ActualWidth","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_ActualWidth","t":8,"sn":"getActualWidth","rt":$n[0].Double},"s":{"a":1,"n":"set_ActualWidth","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setActualWidth","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"Cursor","t":16,"rt":$n[4].Cursor,"g":{"a":2,"n":"get_Cursor","t":8,"sn":"getCursor","rt":$n[4].Cursor},"s":{"a":2,"n":"set_Cursor","t":8,"pi":[{"n":"value","pt":$n[4].Cursor,"ps":0}],"sn":"setCursor","rt":Object,"p":[$n[4].Cursor]}},{"a":2,"n":"DataContext","t":16,"rt":Object,"g":{"a":2,"n":"get_DataContext","t":8,"sn":"getDataContext","rt":Object},"s":{"a":2,"n":"set_DataContext","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setDataContext","rt":Object,"p":[Object]}},{"a":2,"n":"FocusVisualStyle","t":16,"rt":$n[1].Style,"g":{"a":2,"n":"get_FocusVisualStyle","t":8,"sn":"getFocusVisualStyle","rt":$n[1].Style},"s":{"a":2,"n":"set_FocusVisualStyle","t":8,"pi":[{"n":"value","pt":$n[1].Style,"ps":0}],"sn":"setFocusVisualStyle","rt":Object,"p":[$n[1].Style]}},{"a":2,"n":"ForceCursor","t":16,"rt":Boolean,"g":{"a":2,"n":"get_ForceCursor","t":8,"sn":"getForceCursor","rt":Boolean},"s":{"a":2,"n":"set_ForceCursor","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setForceCursor","rt":Object,"p":[Boolean]}},{"a":2,"n":"Height","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_Height","t":8,"sn":"getHeight","rt":$n[0].Double},"s":{"a":2,"n":"set_Height","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setHeight","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"HorizontalAlignment","t":16,"rt":$n[1].HorizontalAlignment,"g":{"a":2,"n":"get_HorizontalAlignment","t":8,"sn":"getHorizontalAlignment","rt":$n[1].HorizontalAlignment},"s":{"a":2,"n":"set_HorizontalAlignment","t":8,"pi":[{"n":"value","pt":$n[1].HorizontalAlignment,"ps":0}],"sn":"setHorizontalAlignment","rt":Object,"p":[$n[1].HorizontalAlignment]}},{"a":2,"n":"IsInitialized","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsInitialized","t":8,"sn":"getIsInitialized","rt":Boolean},"s":{"a":1,"n":"set_IsInitialized","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsInitialized","rt":Object,"p":[Boolean]}},{"a":2,"n":"LayoutTransform","t":16,"rt":$n[5].Transform,"g":{"a":2,"n":"get_LayoutTransform","t":8,"sn":"getLayoutTransform","rt":$n[5].Transform},"s":{"a":2,"n":"set_LayoutTransform","t":8,"pi":[{"n":"value","pt":$n[5].Transform,"ps":0}],"sn":"setLayoutTransform","rt":Object,"p":[$n[5].Transform]}},{"a":2,"n":"Margin","t":16,"rt":$n[1].Thickness,"g":{"a":2,"n":"get_Margin","t":8,"sn":"getMargin","rt":$n[1].Thickness},"s":{"a":2,"n":"set_Margin","t":8,"pi":[{"n":"value","pt":$n[1].Thickness,"ps":0}],"sn":"setMargin","rt":Object,"p":[$n[1].Thickness]}},{"a":2,"n":"MaxHeight","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_MaxHeight","t":8,"sn":"getMaxHeight","rt":$n[0].Double},"s":{"a":2,"n":"set_MaxHeight","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setMaxHeight","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"MaxSize","t":16,"rt":$n[1].Size,"g":{"a":2,"n":"get_MaxSize","t":8,"sn":"getMaxSize","rt":$n[1].Size},"s":{"a":1,"n":"set_MaxSize","t":8,"pi":[{"n":"value","pt":$n[1].Size,"ps":0}],"sn":"setMaxSize","rt":Object,"p":[$n[1].Size]}},{"a":2,"n":"MaxWidth","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_MaxWidth","t":8,"sn":"getMaxWidth","rt":$n[0].Double},"s":{"a":2,"n":"set_MaxWidth","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setMaxWidth","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"MinHeight","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_MinHeight","t":8,"sn":"getMinHeight","rt":$n[0].Double},"s":{"a":2,"n":"set_MinHeight","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setMinHeight","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"MinSize","t":16,"rt":$n[1].Size,"g":{"a":2,"n":"get_MinSize","t":8,"sn":"getMinSize","rt":$n[1].Size},"s":{"a":1,"n":"set_MinSize","t":8,"pi":[{"n":"value","pt":$n[1].Size,"ps":0}],"sn":"setMinSize","rt":Object,"p":[$n[1].Size]}},{"a":2,"n":"MinWidth","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_MinWidth","t":8,"sn":"getMinWidth","rt":$n[0].Double},"s":{"a":2,"n":"set_MinWidth","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setMinWidth","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"Name","t":16,"rt":String,"g":{"a":2,"n":"get_Name","t":8,"sn":"getName","rt":String},"s":{"a":2,"n":"set_Name","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setName","rt":Object,"p":[String]}},{"a":2,"n":"Resources","t":16,"rt":$n[1].ResourceDictionary,"g":{"a":2,"n":"get_Resources","t":8,"sn":"getResources","rt":$n[1].ResourceDictionary},"s":{"a":2,"n":"set_Resources","t":8,"pi":[{"n":"value","pt":$n[1].ResourceDictionary,"ps":0}],"sn":"setResources","rt":Object,"p":[$n[1].ResourceDictionary]}},{"a":2,"n":"Size","t":16,"rt":$n[1].Size,"g":{"a":2,"n":"get_Size","t":8,"sn":"getSize","rt":$n[1].Size},"s":{"a":1,"n":"set_Size","t":8,"pi":[{"n":"value","pt":$n[1].Size,"ps":0}],"sn":"setSize","rt":Object,"p":[$n[1].Size]}},{"a":2,"n":"Style","t":16,"rt":$n[1].Style,"g":{"a":2,"n":"get_Style","t":8,"sn":"getStyle","rt":$n[1].Style},"s":{"a":2,"n":"set_Style","t":8,"pi":[{"n":"value","pt":$n[1].Style,"ps":0}],"sn":"setStyle","rt":Object,"p":[$n[1].Style]}},{"a":2,"n":"TemplateChild","t":16,"rt":$n[1].UIElement,"g":{"a":2,"n":"get_TemplateChild","t":8,"sn":"getTemplateChild","rt":$n[1].UIElement},"s":{"a":2,"n":"set_TemplateChild","t":8,"pi":[{"n":"value","pt":$n[1].UIElement,"ps":0}],"sn":"setTemplateChild","rt":Object,"p":[$n[1].UIElement]}},{"a":2,"n":"TemplatedParent","t":16,"rt":$n[1].FrameworkElement,"g":{"a":2,"n":"get_TemplatedParent","t":8,"sn":"getTemplatedParent","rt":$n[1].FrameworkElement},"s":{"a":4,"n":"set_TemplatedParent","t":8,"pi":[{"n":"value","pt":$n[1].FrameworkElement,"ps":0}],"sn":"setTemplatedParent","rt":Object,"p":[$n[1].FrameworkElement]}},{"a":2,"n":"Triggers","t":16,"rt":$n[3].ObservableCollection$1(System.Windows.ITrigger),"g":{"a":2,"n":"get_Triggers","t":8,"sn":"getTriggers","rt":$n[3].ObservableCollection$1(System.Windows.ITrigger)},"s":{"a":1,"n":"set_Triggers","t":8,"pi":[{"n":"value","pt":$n[3].ObservableCollection$1(System.Windows.ITrigger),"ps":0}],"sn":"setTriggers","rt":Object,"p":[$n[3].ObservableCollection$1(System.Windows.ITrigger)]}},{"a":2,"n":"VerticalAlignment","t":16,"rt":$n[1].VerticalAlignment,"g":{"a":2,"n":"get_VerticalAlignment","t":8,"sn":"getVerticalAlignment","rt":$n[1].VerticalAlignment},"s":{"a":2,"n":"set_VerticalAlignment","t":8,"pi":[{"n":"value","pt":$n[1].VerticalAlignment,"ps":0}],"sn":"setVerticalAlignment","rt":Object,"p":[$n[1].VerticalAlignment]}},{"a":2,"n":"Width","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_Width","t":8,"sn":"getWidth","rt":$n[0].Double},"s":{"a":2,"n":"set_Width","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setWidth","rt":Object,"p":[$n[0].Double]}}]}; });
+    $m($n[1].FrameworkTemplate, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("FrameworkElementFactory")],"m":[{"a":2,"n":"FrameworkElementFactory","t":16,"rt":$n[1].IFrameworkElementFactory,"g":{"a":2,"n":"get_FrameworkElementFactory","t":8,"sn":"getFrameworkElementFactory","rt":$n[1].IFrameworkElementFactory},"s":{"a":2,"n":"set_FrameworkElementFactory","t":8,"pi":[{"n":"value","pt":$n[1].IFrameworkElementFactory,"ps":0}],"sn":"setFrameworkElementFactory","rt":Object,"p":[$n[1].IFrameworkElementFactory]}},{"a":2,"n":"Triggers","t":16,"rt":$n[3].ObservableCollection$1(System.Windows.ITrigger),"g":{"a":2,"n":"get_Triggers","t":8,"sn":"getTriggers","rt":$n[3].ObservableCollection$1(System.Windows.ITrigger)},"s":{"a":1,"n":"set_Triggers","t":8,"pi":[{"n":"value","pt":$n[3].ObservableCollection$1(System.Windows.ITrigger),"ps":0}],"sn":"setTriggers","rt":Object,"p":[$n[3].ObservableCollection$1(System.Windows.ITrigger)]}}]}; });
+    $m($n[1].MultiDataTriggerBase, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Setters")],"m":[{"a":2,"n":"Conditions","t":16,"rt":$n[3].ObservableCollection$1(System.Windows.Condition),"g":{"a":2,"n":"get_Conditions","t":8,"sn":"getConditions","rt":$n[3].ObservableCollection$1(System.Windows.Condition)},"s":{"a":1,"n":"set_Conditions","t":8,"pi":[{"n":"value","pt":$n[3].ObservableCollection$1(System.Windows.Condition),"ps":0}],"sn":"setConditions","rt":Object,"p":[$n[3].ObservableCollection$1(System.Windows.Condition)]}},{"a":2,"n":"Setters","t":16,"rt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction),"g":{"a":2,"n":"get_Setters","t":8,"sn":"getSetters","rt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction)},"s":{"a":1,"n":"set_Setters","t":8,"pi":[{"n":"value","pt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction),"ps":0}],"sn":"setSetters","rt":Object,"p":[$n[3].ObservableCollection$1(System.Windows.ITriggerAction)]}}]}; });
+    $m($n[1].Point, function () { return {"at":[new System.Windows.Markup.TypeConverterAttribute(System.Windows.PointTypeConverter)],"m":[{"a":2,"n":"IsEmpty","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsEmpty","t":8,"sn":"getIsEmpty","rt":Boolean},"s":{"a":1,"n":"set_IsEmpty","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsEmpty","rt":Object,"p":[Boolean]}},{"a":2,"n":"X","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_X","t":8,"sn":"getX","rt":$n[0].Double},"s":{"a":1,"n":"set_X","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setX","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"Y","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_Y","t":8,"sn":"getY","rt":$n[0].Double},"s":{"a":1,"n":"set_Y","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setY","rt":Object,"p":[$n[0].Double]}}]}; });
+    $m($n[1].ResourceDictionary, function () { return {"m":[{"a":2,"n":"BaseUri","t":16,"rt":$n[0].Uri,"g":{"a":2,"n":"get_BaseUri","t":8,"sn":"getBaseUri","rt":$n[0].Uri},"s":{"a":2,"n":"set_BaseUri","t":8,"pi":[{"n":"value","pt":$n[0].Uri,"ps":0}],"sn":"setBaseUri","rt":Object,"p":[$n[0].Uri]}},{"a":2,"n":"Count","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Count","t":8,"sn":"getCount","rt":$n[0].Int32}},{"a":2,"n":"IsReadOnly","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsReadOnly","t":8,"sn":"getIsReadOnly","rt":Boolean}},{"a":2,"n":"MergedDictionaries","t":16,"rt":$n[3].ObservableCollection$1(System.Windows.ResourceDictionary),"g":{"a":2,"n":"get_MergedDictionaries","t":8,"sn":"getMergedDictionaries","rt":$n[3].ObservableCollection$1(System.Windows.ResourceDictionary)},"s":{"a":1,"n":"set_MergedDictionaries","t":8,"pi":[{"n":"value","pt":$n[3].ObservableCollection$1(System.Windows.ResourceDictionary),"ps":0}],"sn":"setMergedDictionaries","rt":Object,"p":[$n[3].ObservableCollection$1(System.Windows.ResourceDictionary)]}},{"a":2,"n":"Source","t":16,"rt":$n[0].Uri,"g":{"a":2,"n":"get_Source","t":8,"sn":"getSource","rt":$n[0].Uri},"s":{"a":2,"n":"set_Source","t":8,"pi":[{"n":"value","pt":$n[0].Uri,"ps":0}],"sn":"setSource","rt":Object,"p":[$n[0].Uri]}}]}; });
+    $m($n[1].ComponentResourceKey, function () { return {"m":[{"a":2,"n":"Assembly","t":16,"rt":$n[6].Assembly,"g":{"a":2,"n":"get_Assembly","t":8,"sn":"getAssembly","rt":$n[6].Assembly}},{"a":2,"n":"ResourceId","t":16,"rt":Object,"g":{"a":2,"n":"get_ResourceId","t":8,"sn":"getResourceId","rt":Object},"s":{"a":2,"n":"set_ResourceId","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setResourceId","rt":Object,"p":[Object]}},{"a":2,"n":"TypeInTargetAssembly","t":16,"rt":Function,"g":{"a":2,"n":"get_TypeInTargetAssembly","t":8,"sn":"getTypeInTargetAssembly","rt":Function},"s":{"a":2,"n":"set_TypeInTargetAssembly","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"setTypeInTargetAssembly","rt":Object,"p":[Function]}}]}; });
+    $m($n[1].Setter, function () { return {"m":[{"a":2,"n":"Property","t":16,"rt":$n[1].IPropertyPathElement,"g":{"a":2,"n":"get_Property","t":8,"sn":"getProperty","rt":$n[1].IPropertyPathElement},"s":{"a":2,"n":"set_Property","t":8,"pi":[{"n":"value","pt":$n[1].IPropertyPathElement,"ps":0}],"sn":"setProperty","rt":Object,"p":[$n[1].IPropertyPathElement]}},{"a":2,"n":"TargetName","t":16,"rt":String,"g":{"a":2,"n":"get_TargetName","t":8,"sn":"getTargetName","rt":String},"s":{"a":2,"n":"set_TargetName","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setTargetName","rt":Object,"p":[String]}},{"a":2,"n":"Value","t":16,"rt":Object,"g":{"a":2,"n":"get_Value","t":8,"sn":"getValue","rt":Object},"s":{"a":2,"n":"set_Value","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setValue","rt":Object,"p":[Object]}}]}; });
+    $m($n[1].StaticResourceExtension, function () { return {"at":[new System.Windows.Markup.MarkupExtensionParameterAttribute("ResourceKey", 0)],"m":[{"a":2,"n":"ResourceKey","t":16,"rt":Object,"g":{"a":2,"n":"get_ResourceKey","t":8,"sn":"getResourceKey","rt":Object},"s":{"a":2,"n":"set_ResourceKey","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setResourceKey","rt":Object,"p":[Object]}}]}; });
+    $m($n[1].Style, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Setters"),new System.Windows.Markup.DictionaryKeyPropertyAttribute("Key")],"m":[{"a":2,"n":"BasedOn","t":16,"rt":$n[1].Style,"g":{"a":2,"n":"get_BasedOn","t":8,"sn":"getBasedOn","rt":$n[1].Style},"s":{"a":2,"n":"set_BasedOn","t":8,"pi":[{"n":"value","pt":$n[1].Style,"ps":0}],"sn":"setBasedOn","rt":Object,"p":[$n[1].Style]}},{"a":2,"n":"Key","t":16,"rt":Object,"g":{"a":2,"n":"get_Key","t":8,"sn":"getKey","rt":Object},"s":{"a":2,"n":"set_Key","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setKey","rt":Object,"p":[Object]}},{"a":2,"n":"Setters","t":16,"rt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction),"g":{"a":2,"n":"get_Setters","t":8,"sn":"getSetters","rt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction)},"s":{"a":1,"n":"set_Setters","t":8,"pi":[{"n":"value","pt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction),"ps":0}],"sn":"setSetters","rt":Object,"p":[$n[3].ObservableCollection$1(System.Windows.ITriggerAction)]}},{"a":2,"n":"TargetType","t":16,"rt":Function,"g":{"a":2,"n":"get_TargetType","t":8,"sn":"getTargetType","rt":Function},"s":{"a":2,"n":"set_TargetType","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"setTargetType","rt":Object,"p":[Function]}},{"a":2,"n":"Triggers","t":16,"rt":$n[3].ObservableCollection$1(System.Windows.ITrigger),"g":{"a":2,"n":"get_Triggers","t":8,"sn":"getTriggers","rt":$n[3].ObservableCollection$1(System.Windows.ITrigger)},"s":{"a":1,"n":"set_Triggers","t":8,"pi":[{"n":"value","pt":$n[3].ObservableCollection$1(System.Windows.ITrigger),"ps":0}],"sn":"setTriggers","rt":Object,"p":[$n[3].ObservableCollection$1(System.Windows.ITrigger)]}}]}; });
+    $m($n[1].TemplateBindingExtension, function () { return {"at":[new System.Windows.Markup.MarkupExtensionParameterAttribute("Property", 0)],"m":[{"a":2,"n":"Converter","t":16,"rt":$n[2].IValueConverter,"g":{"a":2,"n":"get_Converter","t":8,"sn":"getConverter","rt":$n[2].IValueConverter},"s":{"a":2,"n":"set_Converter","t":8,"pi":[{"n":"value","pt":$n[2].IValueConverter,"ps":0}],"sn":"setConverter","rt":Object,"p":[$n[2].IValueConverter]}},{"a":2,"n":"ConverterParameter","t":16,"rt":Object,"g":{"a":2,"n":"get_ConverterParameter","t":8,"sn":"getConverterParameter","rt":Object},"s":{"a":2,"n":"set_ConverterParameter","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setConverterParameter","rt":Object,"p":[Object]}},{"a":2,"n":"Property","t":16,"rt":$n[1].IPropertyPathElement,"g":{"a":2,"n":"get_Property","t":8,"sn":"getProperty","rt":$n[1].IPropertyPathElement},"s":{"a":2,"n":"set_Property","t":8,"pi":[{"n":"value","pt":$n[1].IPropertyPathElement,"ps":0}],"sn":"setProperty","rt":Object,"p":[$n[1].IPropertyPathElement]}}]}; });
+    $m($n[1].Trigger, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Setters")],"m":[{"a":2,"n":"Property","t":16,"rt":$n[1].IPropertyPathElement,"g":{"a":2,"n":"get_Property","t":8,"sn":"getProperty","rt":$n[1].IPropertyPathElement},"s":{"a":2,"n":"set_Property","t":8,"pi":[{"n":"value","pt":$n[1].IPropertyPathElement,"ps":0}],"sn":"setProperty","rt":Object,"p":[$n[1].IPropertyPathElement]}},{"a":2,"n":"Setters","t":16,"rt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction),"g":{"a":2,"n":"get_Setters","t":8,"sn":"getSetters","rt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction)},"s":{"a":1,"n":"set_Setters","t":8,"pi":[{"n":"value","pt":$n[3].ObservableCollection$1(System.Windows.ITriggerAction),"ps":0}],"sn":"setSetters","rt":Object,"p":[$n[3].ObservableCollection$1(System.Windows.ITriggerAction)]}},{"a":2,"n":"SourceName","t":16,"rt":String,"g":{"a":2,"n":"get_SourceName","t":8,"sn":"getSourceName","rt":String},"s":{"a":2,"n":"set_SourceName","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setSourceName","rt":Object,"p":[String]}},{"a":2,"n":"Value","t":16,"rt":Object,"g":{"a":2,"n":"get_Value","t":8,"sn":"getValue$5","rt":Object},"s":{"a":2,"n":"set_Value","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setValue$5","rt":Object,"p":[Object]}}]}; });
+    $m($n[1].UIElement, function () { return {"m":[{"a":2,"n":"ClipToBounds","t":16,"rt":Boolean,"g":{"a":2,"n":"get_ClipToBounds","t":8,"sn":"getClipToBounds","rt":Boolean},"s":{"a":2,"n":"set_ClipToBounds","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setClipToBounds","rt":Object,"p":[Boolean]}},{"a":2,"n":"DesiredSize","t":16,"rt":$n[1].Size,"g":{"a":2,"n":"get_DesiredSize","t":8,"sn":"getDesiredSize","rt":$n[1].Size},"s":{"a":2,"n":"set_DesiredSize","t":8,"pi":[{"n":"value","pt":$n[1].Size,"ps":0}],"sn":"setDesiredSize","rt":Object,"p":[$n[1].Size]}},{"a":2,"n":"Focusable","t":16,"rt":Boolean,"g":{"a":2,"n":"get_Focusable","t":8,"sn":"getFocusable","rt":Boolean},"s":{"a":2,"n":"set_Focusable","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setFocusable","rt":Object,"p":[Boolean]}},{"a":2,"n":"IsArrangeValid","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsArrangeValid","t":8,"sn":"getIsArrangeValid","rt":Boolean},"s":{"a":1,"n":"set_IsArrangeValid","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsArrangeValid","rt":Object,"p":[Boolean]}},{"a":2,"n":"IsEnabled","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsEnabled","t":8,"sn":"getIsEnabled","rt":Boolean},"s":{"a":2,"n":"set_IsEnabled","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsEnabled","rt":Object,"p":[Boolean]}},{"a":2,"n":"IsFocused","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsFocused","t":8,"sn":"getIsFocused","rt":Boolean},"s":{"a":1,"n":"set_IsFocused","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsFocused","rt":Object,"p":[Boolean]}},{"a":2,"n":"IsHitTestVisible","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsHitTestVisible","t":8,"sn":"getIsHitTestVisible","rt":Boolean},"s":{"a":2,"n":"set_IsHitTestVisible","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsHitTestVisible","rt":Object,"p":[Boolean]}},{"a":2,"n":"IsKeyboardFocusWithin","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsKeyboardFocusWithin","t":8,"sn":"getIsKeyboardFocusWithin","rt":Boolean},"s":{"a":1,"n":"set_IsKeyboardFocusWithin","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsKeyboardFocusWithin","rt":Object,"p":[Boolean]}},{"a":2,"n":"IsKeyboardFocused","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsKeyboardFocused","t":8,"sn":"getIsKeyboardFocused","rt":Boolean},"s":{"a":1,"n":"set_IsKeyboardFocused","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsKeyboardFocused","rt":Object,"p":[Boolean]}},{"a":2,"n":"IsMeasureValid","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsMeasureValid","t":8,"sn":"getIsMeasureValid","rt":Boolean},"s":{"a":1,"n":"set_IsMeasureValid","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsMeasureValid","rt":Object,"p":[Boolean]}},{"a":2,"n":"IsMouseOver","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsMouseOver","t":8,"sn":"getIsMouseOver","rt":Boolean},"s":{"a":1,"n":"set_IsMouseOver","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsMouseOver","rt":Object,"p":[Boolean]}},{"a":2,"n":"IsRootElement","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsRootElement","t":8,"sn":"getIsRootElement","rt":Boolean},"s":{"a":2,"n":"set_IsRootElement","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsRootElement","rt":Object,"p":[Boolean]}},{"a":2,"n":"IsVisible","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsVisible","t":8,"sn":"getIsVisible","rt":Boolean},"s":{"a":1,"n":"set_IsVisible","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsVisible","rt":Object,"p":[Boolean]}},{"a":2,"n":"LogicalChildren","t":16,"rt":$n[7].IEnumerable$1(Object),"g":{"a":2,"n":"get_LogicalChildren","t":8,"sn":"getLogicalChildren","rt":$n[7].IEnumerable$1(Object)},"s":{"a":1,"n":"set_LogicalChildren","t":8,"pi":[{"n":"value","pt":$n[7].IEnumerable$1(Object),"ps":0}],"sn":"setLogicalChildren","rt":Object,"p":[$n[7].IEnumerable$1(Object)]}},{"a":2,"n":"LogicalParent","t":16,"rt":$n[1].UIElement,"g":{"a":2,"n":"get_LogicalParent","t":8,"sn":"getLogicalParent","rt":$n[1].UIElement},"s":{"a":1,"n":"set_LogicalParent","t":8,"pi":[{"n":"value","pt":$n[1].UIElement,"ps":0}],"sn":"setLogicalParent","rt":Object,"p":[$n[1].UIElement]}},{"a":2,"n":"Opacity","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_Opacity","t":8,"sn":"getOpacity","rt":$n[0].Double},"s":{"a":2,"n":"set_Opacity","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setOpacity","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"PreviousAvailableSize","t":16,"rt":$n[1].Size,"g":{"a":2,"n":"get_PreviousAvailableSize","t":8,"sn":"getPreviousAvailableSize","rt":$n[1].Size},"s":{"a":1,"n":"set_PreviousAvailableSize","t":8,"pi":[{"n":"value","pt":$n[1].Size,"ps":0}],"sn":"setPreviousAvailableSize","rt":Object,"p":[$n[1].Size]}},{"a":2,"n":"PreviousFinalRect","t":16,"rt":$n[1].Rect,"g":{"a":2,"n":"get_PreviousFinalRect","t":8,"sn":"getPreviousFinalRect","rt":$n[1].Rect},"s":{"a":1,"n":"set_PreviousFinalRect","t":8,"pi":[{"n":"value","pt":$n[1].Rect,"ps":0}],"sn":"setPreviousFinalRect","rt":Object,"p":[$n[1].Rect]}},{"a":2,"n":"RenderSize","t":16,"rt":$n[1].Size,"g":{"a":2,"n":"get_RenderSize","t":8,"sn":"getRenderSize","rt":$n[1].Size}},{"a":2,"n":"RenderTransform","t":16,"rt":$n[5].Transform,"g":{"a":2,"n":"get_RenderTransform","t":8,"sn":"getRenderTransform","rt":$n[5].Transform},"s":{"a":2,"n":"set_RenderTransform","t":8,"pi":[{"n":"value","pt":$n[5].Transform,"ps":0}],"sn":"setRenderTransform","rt":Object,"p":[$n[5].Transform]}},{"a":2,"n":"RenderTransformOrigin","t":16,"rt":$n[1].Point,"g":{"a":2,"n":"get_RenderTransformOrigin","t":8,"sn":"getRenderTransformOrigin","rt":$n[1].Point},"s":{"a":2,"n":"set_RenderTransformOrigin","t":8,"pi":[{"n":"value","pt":$n[1].Point,"ps":0}],"sn":"setRenderTransformOrigin","rt":Object,"p":[$n[1].Point]}},{"a":2,"n":"Visibility","t":16,"rt":$n[1].Visibility,"g":{"a":2,"n":"get_Visibility","t":8,"sn":"getVisibility","rt":$n[1].Visibility},"s":{"a":2,"n":"set_Visibility","t":8,"pi":[{"n":"value","pt":$n[1].Visibility,"ps":0}],"sn":"setVisibility","rt":Object,"p":[$n[1].Visibility]}}]}; });
+    $m($n[1].VisualState, function () { return {"at":[new System.Windows.Markup.RuntimeNamePropertyAttribute("Name"),new System.Windows.Markup.ContentPropertyAttribute("Storyboard")],"m":[{"a":2,"n":"Name","t":16,"rt":String,"g":{"a":2,"n":"get_Name","t":8,"sn":"getName","rt":String},"s":{"a":2,"n":"set_Name","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setName","rt":Object,"p":[String]}},{"a":2,"n":"Storyboard","t":16,"rt":$n[8].Storyboard,"g":{"a":2,"n":"get_Storyboard","t":8,"sn":"getStoryboard","rt":$n[8].Storyboard},"s":{"a":2,"n":"set_Storyboard","t":8,"pi":[{"n":"value","pt":$n[8].Storyboard,"ps":0}],"sn":"setStoryboard","rt":Object,"p":[$n[8].Storyboard]}}]}; });
+    $m($n[1].VisualStateGroup, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("States"),new System.Windows.Markup.RuntimeNamePropertyAttribute("Name")],"m":[{"a":2,"n":"CurrentState","t":16,"rt":$n[1].VisualState,"g":{"a":2,"n":"get_CurrentState","t":8,"sn":"getCurrentState","rt":$n[1].VisualState},"s":{"a":1,"n":"set_CurrentState","t":8,"pi":[{"n":"value","pt":$n[1].VisualState,"ps":0}],"sn":"setCurrentState","rt":Object,"p":[$n[1].VisualState]}},{"a":2,"n":"Name","t":16,"rt":String,"g":{"a":2,"n":"get_Name","t":8,"sn":"getName","rt":String},"s":{"a":2,"n":"set_Name","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setName","rt":Object,"p":[String]}},{"a":2,"n":"States","t":16,"rt":$n[1].FreezableCollection$1(System.Windows.VisualState),"g":{"a":2,"n":"get_States","t":8,"sn":"getStates","rt":$n[1].FreezableCollection$1(System.Windows.VisualState)},"s":{"a":1,"n":"set_States","t":8,"pi":[{"n":"value","pt":$n[1].FreezableCollection$1(System.Windows.VisualState),"ps":0}],"sn":"setStates","rt":Object,"p":[$n[1].FreezableCollection$1(System.Windows.VisualState)]}},{"a":2,"n":"Transitions","t":16,"rt":$n[1].FreezableCollection$1(System.Windows.VisualTransition),"g":{"a":2,"n":"get_Transitions","t":8,"sn":"getTransitions","rt":$n[1].FreezableCollection$1(System.Windows.VisualTransition)},"s":{"a":1,"n":"set_Transitions","t":8,"pi":[{"n":"value","pt":$n[1].FreezableCollection$1(System.Windows.VisualTransition),"ps":0}],"sn":"setTransitions","rt":Object,"p":[$n[1].FreezableCollection$1(System.Windows.VisualTransition)]}}]}; });
+    $m($n[1].VisualTransition, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Storyboard")],"m":[{"a":2,"n":"From","t":16,"rt":String,"g":{"a":2,"n":"get_From","t":8,"sn":"getFrom","rt":String},"s":{"a":2,"n":"set_From","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setFrom","rt":Object,"p":[String]}},{"a":2,"n":"Storyboard","t":16,"rt":$n[8].Storyboard,"g":{"a":2,"n":"get_Storyboard","t":8,"sn":"getStoryboard","rt":$n[8].Storyboard},"s":{"a":2,"n":"set_Storyboard","t":8,"pi":[{"n":"value","pt":$n[8].Storyboard,"ps":0}],"sn":"setStoryboard","rt":Object,"p":[$n[8].Storyboard]}},{"a":2,"n":"To","t":16,"rt":String,"g":{"a":2,"n":"get_To","t":8,"sn":"getTo","rt":String},"s":{"a":2,"n":"set_To","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setTo","rt":Object,"p":[String]}}]}; });
+    $m($n[5].Brushes, function () { return {"m":[{"a":2,"n":"AliceBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_AliceBlue","is":true,"t":8,"sn":"getAliceBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"AntiqueWhite","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_AntiqueWhite","is":true,"t":8,"sn":"getAntiqueWhite","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Aqua","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Aqua","is":true,"t":8,"sn":"getAqua","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Aquamarine","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Aquamarine","is":true,"t":8,"sn":"getAquamarine","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Azure","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Azure","is":true,"t":8,"sn":"getAzure","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Beige","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Beige","is":true,"t":8,"sn":"getBeige","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Bisque","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Bisque","is":true,"t":8,"sn":"getBisque","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Black","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Black","is":true,"t":8,"sn":"getBlack","rt":$n[5].SolidColorBrush}},{"a":2,"n":"BlanchedAlmond","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_BlanchedAlmond","is":true,"t":8,"sn":"getBlanchedAlmond","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Blue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Blue","is":true,"t":8,"sn":"getBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"BlueViolet","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_BlueViolet","is":true,"t":8,"sn":"getBlueViolet","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Brown","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Brown","is":true,"t":8,"sn":"getBrown","rt":$n[5].SolidColorBrush}},{"a":2,"n":"BurlyWood","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_BurlyWood","is":true,"t":8,"sn":"getBurlyWood","rt":$n[5].SolidColorBrush}},{"a":2,"n":"CadetBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_CadetBlue","is":true,"t":8,"sn":"getCadetBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Chartreuse","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Chartreuse","is":true,"t":8,"sn":"getChartreuse","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Chocolate","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Chocolate","is":true,"t":8,"sn":"getChocolate","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Coral","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Coral","is":true,"t":8,"sn":"getCoral","rt":$n[5].SolidColorBrush}},{"a":2,"n":"CornflowerBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_CornflowerBlue","is":true,"t":8,"sn":"getCornflowerBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Cornsilk","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Cornsilk","is":true,"t":8,"sn":"getCornsilk","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Crimson","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Crimson","is":true,"t":8,"sn":"getCrimson","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Cyan","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Cyan","is":true,"t":8,"sn":"getCyan","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkBlue","is":true,"t":8,"sn":"getDarkBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkCyan","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkCyan","is":true,"t":8,"sn":"getDarkCyan","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkGoldenrod","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkGoldenrod","is":true,"t":8,"sn":"getDarkGoldenrod","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkGray","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkGray","is":true,"t":8,"sn":"getDarkGray","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkGreen","is":true,"t":8,"sn":"getDarkGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkKhaki","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkKhaki","is":true,"t":8,"sn":"getDarkKhaki","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkMagenta","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkMagenta","is":true,"t":8,"sn":"getDarkMagenta","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkOliveGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkOliveGreen","is":true,"t":8,"sn":"getDarkOliveGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkOrange","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkOrange","is":true,"t":8,"sn":"getDarkOrange","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkOrchid","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkOrchid","is":true,"t":8,"sn":"getDarkOrchid","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkRed","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkRed","is":true,"t":8,"sn":"getDarkRed","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkSalmon","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkSalmon","is":true,"t":8,"sn":"getDarkSalmon","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkSeaGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkSeaGreen","is":true,"t":8,"sn":"getDarkSeaGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkSlateBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkSlateBlue","is":true,"t":8,"sn":"getDarkSlateBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkSlateGray","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkSlateGray","is":true,"t":8,"sn":"getDarkSlateGray","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkTurquoise","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkTurquoise","is":true,"t":8,"sn":"getDarkTurquoise","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DarkViolet","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DarkViolet","is":true,"t":8,"sn":"getDarkViolet","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DeepPink","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DeepPink","is":true,"t":8,"sn":"getDeepPink","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DeepSkyBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DeepSkyBlue","is":true,"t":8,"sn":"getDeepSkyBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DimGray","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DimGray","is":true,"t":8,"sn":"getDimGray","rt":$n[5].SolidColorBrush}},{"a":2,"n":"DodgerBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_DodgerBlue","is":true,"t":8,"sn":"getDodgerBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Firebrick","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Firebrick","is":true,"t":8,"sn":"getFirebrick","rt":$n[5].SolidColorBrush}},{"a":2,"n":"FloralWhite","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_FloralWhite","is":true,"t":8,"sn":"getFloralWhite","rt":$n[5].SolidColorBrush}},{"a":2,"n":"ForestGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_ForestGreen","is":true,"t":8,"sn":"getForestGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Fuchsia","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Fuchsia","is":true,"t":8,"sn":"getFuchsia","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Gainsboro","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Gainsboro","is":true,"t":8,"sn":"getGainsboro","rt":$n[5].SolidColorBrush}},{"a":2,"n":"GhostWhite","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_GhostWhite","is":true,"t":8,"sn":"getGhostWhite","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Gold","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Gold","is":true,"t":8,"sn":"getGold","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Goldenrod","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Goldenrod","is":true,"t":8,"sn":"getGoldenrod","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Gray","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Gray","is":true,"t":8,"sn":"getGray","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Green","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Green","is":true,"t":8,"sn":"getGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"GreenYellow","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_GreenYellow","is":true,"t":8,"sn":"getGreenYellow","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Honeydew","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Honeydew","is":true,"t":8,"sn":"getHoneydew","rt":$n[5].SolidColorBrush}},{"a":2,"n":"HotPink","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_HotPink","is":true,"t":8,"sn":"getHotPink","rt":$n[5].SolidColorBrush}},{"a":2,"n":"IndianRed","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_IndianRed","is":true,"t":8,"sn":"getIndianRed","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Indigo","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Indigo","is":true,"t":8,"sn":"getIndigo","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Ivory","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Ivory","is":true,"t":8,"sn":"getIvory","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Khaki","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Khaki","is":true,"t":8,"sn":"getKhaki","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Lavender","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Lavender","is":true,"t":8,"sn":"getLavender","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LavenderBlush","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LavenderBlush","is":true,"t":8,"sn":"getLavenderBlush","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LawnGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LawnGreen","is":true,"t":8,"sn":"getLawnGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LemonChiffon","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LemonChiffon","is":true,"t":8,"sn":"getLemonChiffon","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightBlue","is":true,"t":8,"sn":"getLightBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightCoral","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightCoral","is":true,"t":8,"sn":"getLightCoral","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightCyan","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightCyan","is":true,"t":8,"sn":"getLightCyan","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightGoldenrodYellow","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightGoldenrodYellow","is":true,"t":8,"sn":"getLightGoldenrodYellow","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightGray","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightGray","is":true,"t":8,"sn":"getLightGray","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightGreen","is":true,"t":8,"sn":"getLightGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightPink","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightPink","is":true,"t":8,"sn":"getLightPink","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightSalmon","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightSalmon","is":true,"t":8,"sn":"getLightSalmon","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightSeaGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightSeaGreen","is":true,"t":8,"sn":"getLightSeaGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightSkyBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightSkyBlue","is":true,"t":8,"sn":"getLightSkyBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightSlateGray","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightSlateGray","is":true,"t":8,"sn":"getLightSlateGray","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightSteelBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightSteelBlue","is":true,"t":8,"sn":"getLightSteelBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LightYellow","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LightYellow","is":true,"t":8,"sn":"getLightYellow","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Lime","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Lime","is":true,"t":8,"sn":"getLime","rt":$n[5].SolidColorBrush}},{"a":2,"n":"LimeGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_LimeGreen","is":true,"t":8,"sn":"getLimeGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Linen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Linen","is":true,"t":8,"sn":"getLinen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Magenta","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Magenta","is":true,"t":8,"sn":"getMagenta","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Maroon","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Maroon","is":true,"t":8,"sn":"getMaroon","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MediumAquamarine","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MediumAquamarine","is":true,"t":8,"sn":"getMediumAquamarine","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MediumBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MediumBlue","is":true,"t":8,"sn":"getMediumBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MediumOrchid","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MediumOrchid","is":true,"t":8,"sn":"getMediumOrchid","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MediumPurple","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MediumPurple","is":true,"t":8,"sn":"getMediumPurple","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MediumSeaGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MediumSeaGreen","is":true,"t":8,"sn":"getMediumSeaGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MediumSlateBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MediumSlateBlue","is":true,"t":8,"sn":"getMediumSlateBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MediumSpringGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MediumSpringGreen","is":true,"t":8,"sn":"getMediumSpringGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MediumTurquoise","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MediumTurquoise","is":true,"t":8,"sn":"getMediumTurquoise","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MediumVioletRed","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MediumVioletRed","is":true,"t":8,"sn":"getMediumVioletRed","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MidnightBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MidnightBlue","is":true,"t":8,"sn":"getMidnightBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MintCream","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MintCream","is":true,"t":8,"sn":"getMintCream","rt":$n[5].SolidColorBrush}},{"a":2,"n":"MistyRose","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_MistyRose","is":true,"t":8,"sn":"getMistyRose","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Moccasin","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Moccasin","is":true,"t":8,"sn":"getMoccasin","rt":$n[5].SolidColorBrush}},{"a":2,"n":"NavajoWhite","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_NavajoWhite","is":true,"t":8,"sn":"getNavajoWhite","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Navy","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Navy","is":true,"t":8,"sn":"getNavy","rt":$n[5].SolidColorBrush}},{"a":2,"n":"OldLace","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_OldLace","is":true,"t":8,"sn":"getOldLace","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Olive","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Olive","is":true,"t":8,"sn":"getOlive","rt":$n[5].SolidColorBrush}},{"a":2,"n":"OliveDrab","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_OliveDrab","is":true,"t":8,"sn":"getOliveDrab","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Orange","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Orange","is":true,"t":8,"sn":"getOrange","rt":$n[5].SolidColorBrush}},{"a":2,"n":"OrangeRed","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_OrangeRed","is":true,"t":8,"sn":"getOrangeRed","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Orchid","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Orchid","is":true,"t":8,"sn":"getOrchid","rt":$n[5].SolidColorBrush}},{"a":2,"n":"PaleGoldenrod","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_PaleGoldenrod","is":true,"t":8,"sn":"getPaleGoldenrod","rt":$n[5].SolidColorBrush}},{"a":2,"n":"PaleGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_PaleGreen","is":true,"t":8,"sn":"getPaleGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"PaleTurquoise","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_PaleTurquoise","is":true,"t":8,"sn":"getPaleTurquoise","rt":$n[5].SolidColorBrush}},{"a":2,"n":"PaleVioletRed","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_PaleVioletRed","is":true,"t":8,"sn":"getPaleVioletRed","rt":$n[5].SolidColorBrush}},{"a":2,"n":"PapayaWhip","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_PapayaWhip","is":true,"t":8,"sn":"getPapayaWhip","rt":$n[5].SolidColorBrush}},{"a":2,"n":"PeachPuff","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_PeachPuff","is":true,"t":8,"sn":"getPeachPuff","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Peru","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Peru","is":true,"t":8,"sn":"getPeru","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Pink","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Pink","is":true,"t":8,"sn":"getPink","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Plum","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Plum","is":true,"t":8,"sn":"getPlum","rt":$n[5].SolidColorBrush}},{"a":2,"n":"PowderBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_PowderBlue","is":true,"t":8,"sn":"getPowderBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Purple","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Purple","is":true,"t":8,"sn":"getPurple","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Red","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Red","is":true,"t":8,"sn":"getRed","rt":$n[5].SolidColorBrush}},{"a":2,"n":"RosyBrown","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_RosyBrown","is":true,"t":8,"sn":"getRosyBrown","rt":$n[5].SolidColorBrush}},{"a":2,"n":"RoyalBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_RoyalBlue","is":true,"t":8,"sn":"getRoyalBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"SaddleBrown","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_SaddleBrown","is":true,"t":8,"sn":"getSaddleBrown","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Salmon","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Salmon","is":true,"t":8,"sn":"getSalmon","rt":$n[5].SolidColorBrush}},{"a":2,"n":"SandyBrown","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_SandyBrown","is":true,"t":8,"sn":"getSandyBrown","rt":$n[5].SolidColorBrush}},{"a":2,"n":"SeaGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_SeaGreen","is":true,"t":8,"sn":"getSeaGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"SeaShell","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_SeaShell","is":true,"t":8,"sn":"getSeaShell","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Sienna","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Sienna","is":true,"t":8,"sn":"getSienna","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Silver","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Silver","is":true,"t":8,"sn":"getSilver","rt":$n[5].SolidColorBrush}},{"a":2,"n":"SkyBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_SkyBlue","is":true,"t":8,"sn":"getSkyBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"SlateBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_SlateBlue","is":true,"t":8,"sn":"getSlateBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"SlateGray","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_SlateGray","is":true,"t":8,"sn":"getSlateGray","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Snow","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Snow","is":true,"t":8,"sn":"getSnow","rt":$n[5].SolidColorBrush}},{"a":2,"n":"SpringGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_SpringGreen","is":true,"t":8,"sn":"getSpringGreen","rt":$n[5].SolidColorBrush}},{"a":2,"n":"SteelBlue","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_SteelBlue","is":true,"t":8,"sn":"getSteelBlue","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Tan","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Tan","is":true,"t":8,"sn":"getTan","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Teal","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Teal","is":true,"t":8,"sn":"getTeal","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Thistle","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Thistle","is":true,"t":8,"sn":"getThistle","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Tomato","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Tomato","is":true,"t":8,"sn":"getTomato","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Transparent","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Transparent","is":true,"t":8,"sn":"getTransparent","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Turquoise","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Turquoise","is":true,"t":8,"sn":"getTurquoise","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Violet","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Violet","is":true,"t":8,"sn":"getViolet","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Wheat","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Wheat","is":true,"t":8,"sn":"getWheat","rt":$n[5].SolidColorBrush}},{"a":2,"n":"White","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_White","is":true,"t":8,"sn":"getWhite","rt":$n[5].SolidColorBrush}},{"a":2,"n":"WhiteSmoke","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_WhiteSmoke","is":true,"t":8,"sn":"getWhiteSmoke","rt":$n[5].SolidColorBrush}},{"a":2,"n":"Yellow","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_Yellow","is":true,"t":8,"sn":"getYellow","rt":$n[5].SolidColorBrush}},{"a":2,"n":"YellowGreen","is":true,"t":16,"rt":$n[5].SolidColorBrush,"g":{"a":2,"n":"get_YellowGreen","is":true,"t":8,"sn":"getYellowGreen","rt":$n[5].SolidColorBrush}}]}; });
+    $m($n[5].Colors, function () { return {"m":[{"a":2,"n":"AliceBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_AliceBlue","is":true,"t":8,"sn":"getAliceBlue","rt":$n[5].Color}},{"a":2,"n":"AntiqueWhite","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_AntiqueWhite","is":true,"t":8,"sn":"getAntiqueWhite","rt":$n[5].Color}},{"a":2,"n":"Aqua","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Aqua","is":true,"t":8,"sn":"getAqua","rt":$n[5].Color}},{"a":2,"n":"Aquamarine","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Aquamarine","is":true,"t":8,"sn":"getAquamarine","rt":$n[5].Color}},{"a":2,"n":"Azure","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Azure","is":true,"t":8,"sn":"getAzure","rt":$n[5].Color}},{"a":2,"n":"Beige","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Beige","is":true,"t":8,"sn":"getBeige","rt":$n[5].Color}},{"a":2,"n":"Bisque","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Bisque","is":true,"t":8,"sn":"getBisque","rt":$n[5].Color}},{"a":2,"n":"Black","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Black","is":true,"t":8,"sn":"getBlack","rt":$n[5].Color}},{"a":2,"n":"BlanchedAlmond","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_BlanchedAlmond","is":true,"t":8,"sn":"getBlanchedAlmond","rt":$n[5].Color}},{"a":2,"n":"Blue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Blue","is":true,"t":8,"sn":"getBlue","rt":$n[5].Color}},{"a":2,"n":"BlueViolet","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_BlueViolet","is":true,"t":8,"sn":"getBlueViolet","rt":$n[5].Color}},{"a":2,"n":"Brown","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Brown","is":true,"t":8,"sn":"getBrown","rt":$n[5].Color}},{"a":2,"n":"BurlyWood","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_BurlyWood","is":true,"t":8,"sn":"getBurlyWood","rt":$n[5].Color}},{"a":2,"n":"CadetBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_CadetBlue","is":true,"t":8,"sn":"getCadetBlue","rt":$n[5].Color}},{"a":2,"n":"Chartreuse","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Chartreuse","is":true,"t":8,"sn":"getChartreuse","rt":$n[5].Color}},{"a":2,"n":"Chocolate","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Chocolate","is":true,"t":8,"sn":"getChocolate","rt":$n[5].Color}},{"a":2,"n":"Coral","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Coral","is":true,"t":8,"sn":"getCoral","rt":$n[5].Color}},{"a":2,"n":"CornflowerBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_CornflowerBlue","is":true,"t":8,"sn":"getCornflowerBlue","rt":$n[5].Color}},{"a":2,"n":"Cornsilk","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Cornsilk","is":true,"t":8,"sn":"getCornsilk","rt":$n[5].Color}},{"a":2,"n":"Crimson","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Crimson","is":true,"t":8,"sn":"getCrimson","rt":$n[5].Color}},{"a":2,"n":"Cyan","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Cyan","is":true,"t":8,"sn":"getCyan","rt":$n[5].Color}},{"a":2,"n":"DarkBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkBlue","is":true,"t":8,"sn":"getDarkBlue","rt":$n[5].Color}},{"a":2,"n":"DarkCyan","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkCyan","is":true,"t":8,"sn":"getDarkCyan","rt":$n[5].Color}},{"a":2,"n":"DarkGoldenrod","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkGoldenrod","is":true,"t":8,"sn":"getDarkGoldenrod","rt":$n[5].Color}},{"a":2,"n":"DarkGray","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkGray","is":true,"t":8,"sn":"getDarkGray","rt":$n[5].Color}},{"a":2,"n":"DarkGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkGreen","is":true,"t":8,"sn":"getDarkGreen","rt":$n[5].Color}},{"a":2,"n":"DarkKhaki","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkKhaki","is":true,"t":8,"sn":"getDarkKhaki","rt":$n[5].Color}},{"a":2,"n":"DarkMagenta","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkMagenta","is":true,"t":8,"sn":"getDarkMagenta","rt":$n[5].Color}},{"a":2,"n":"DarkOliveGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkOliveGreen","is":true,"t":8,"sn":"getDarkOliveGreen","rt":$n[5].Color}},{"a":2,"n":"DarkOrange","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkOrange","is":true,"t":8,"sn":"getDarkOrange","rt":$n[5].Color}},{"a":2,"n":"DarkOrchid","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkOrchid","is":true,"t":8,"sn":"getDarkOrchid","rt":$n[5].Color}},{"a":2,"n":"DarkRed","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkRed","is":true,"t":8,"sn":"getDarkRed","rt":$n[5].Color}},{"a":2,"n":"DarkSalmon","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkSalmon","is":true,"t":8,"sn":"getDarkSalmon","rt":$n[5].Color}},{"a":2,"n":"DarkSeaGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkSeaGreen","is":true,"t":8,"sn":"getDarkSeaGreen","rt":$n[5].Color}},{"a":2,"n":"DarkSlateBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkSlateBlue","is":true,"t":8,"sn":"getDarkSlateBlue","rt":$n[5].Color}},{"a":2,"n":"DarkSlateGray","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkSlateGray","is":true,"t":8,"sn":"getDarkSlateGray","rt":$n[5].Color}},{"a":2,"n":"DarkTurquoise","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkTurquoise","is":true,"t":8,"sn":"getDarkTurquoise","rt":$n[5].Color}},{"a":2,"n":"DarkViolet","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DarkViolet","is":true,"t":8,"sn":"getDarkViolet","rt":$n[5].Color}},{"a":2,"n":"DeepPink","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DeepPink","is":true,"t":8,"sn":"getDeepPink","rt":$n[5].Color}},{"a":2,"n":"DeepSkyBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DeepSkyBlue","is":true,"t":8,"sn":"getDeepSkyBlue","rt":$n[5].Color}},{"a":2,"n":"DimGray","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DimGray","is":true,"t":8,"sn":"getDimGray","rt":$n[5].Color}},{"a":2,"n":"DodgerBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_DodgerBlue","is":true,"t":8,"sn":"getDodgerBlue","rt":$n[5].Color}},{"a":2,"n":"Firebrick","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Firebrick","is":true,"t":8,"sn":"getFirebrick","rt":$n[5].Color}},{"a":2,"n":"FloralWhite","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_FloralWhite","is":true,"t":8,"sn":"getFloralWhite","rt":$n[5].Color}},{"a":2,"n":"ForestGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_ForestGreen","is":true,"t":8,"sn":"getForestGreen","rt":$n[5].Color}},{"a":2,"n":"Fuchsia","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Fuchsia","is":true,"t":8,"sn":"getFuchsia","rt":$n[5].Color}},{"a":2,"n":"Gainsboro","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Gainsboro","is":true,"t":8,"sn":"getGainsboro","rt":$n[5].Color}},{"a":2,"n":"GhostWhite","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_GhostWhite","is":true,"t":8,"sn":"getGhostWhite","rt":$n[5].Color}},{"a":2,"n":"Gold","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Gold","is":true,"t":8,"sn":"getGold","rt":$n[5].Color}},{"a":2,"n":"Goldenrod","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Goldenrod","is":true,"t":8,"sn":"getGoldenrod","rt":$n[5].Color}},{"a":2,"n":"Gray","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Gray","is":true,"t":8,"sn":"getGray","rt":$n[5].Color}},{"a":2,"n":"Green","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Green","is":true,"t":8,"sn":"getGreen","rt":$n[5].Color}},{"a":2,"n":"GreenYellow","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_GreenYellow","is":true,"t":8,"sn":"getGreenYellow","rt":$n[5].Color}},{"a":2,"n":"Honeydew","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Honeydew","is":true,"t":8,"sn":"getHoneydew","rt":$n[5].Color}},{"a":2,"n":"HotPink","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_HotPink","is":true,"t":8,"sn":"getHotPink","rt":$n[5].Color}},{"a":2,"n":"IndianRed","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_IndianRed","is":true,"t":8,"sn":"getIndianRed","rt":$n[5].Color}},{"a":2,"n":"Indigo","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Indigo","is":true,"t":8,"sn":"getIndigo","rt":$n[5].Color}},{"a":2,"n":"Ivory","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Ivory","is":true,"t":8,"sn":"getIvory","rt":$n[5].Color}},{"a":2,"n":"Khaki","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Khaki","is":true,"t":8,"sn":"getKhaki","rt":$n[5].Color}},{"a":2,"n":"Lavender","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Lavender","is":true,"t":8,"sn":"getLavender","rt":$n[5].Color}},{"a":2,"n":"LavenderBlush","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LavenderBlush","is":true,"t":8,"sn":"getLavenderBlush","rt":$n[5].Color}},{"a":2,"n":"LawnGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LawnGreen","is":true,"t":8,"sn":"getLawnGreen","rt":$n[5].Color}},{"a":2,"n":"LemonChiffon","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LemonChiffon","is":true,"t":8,"sn":"getLemonChiffon","rt":$n[5].Color}},{"a":2,"n":"LightBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightBlue","is":true,"t":8,"sn":"getLightBlue","rt":$n[5].Color}},{"a":2,"n":"LightCoral","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightCoral","is":true,"t":8,"sn":"getLightCoral","rt":$n[5].Color}},{"a":2,"n":"LightCyan","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightCyan","is":true,"t":8,"sn":"getLightCyan","rt":$n[5].Color}},{"a":2,"n":"LightGoldenrodYellow","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightGoldenrodYellow","is":true,"t":8,"sn":"getLightGoldenrodYellow","rt":$n[5].Color}},{"a":2,"n":"LightGray","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightGray","is":true,"t":8,"sn":"getLightGray","rt":$n[5].Color}},{"a":2,"n":"LightGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightGreen","is":true,"t":8,"sn":"getLightGreen","rt":$n[5].Color}},{"a":2,"n":"LightPink","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightPink","is":true,"t":8,"sn":"getLightPink","rt":$n[5].Color}},{"a":2,"n":"LightSalmon","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightSalmon","is":true,"t":8,"sn":"getLightSalmon","rt":$n[5].Color}},{"a":2,"n":"LightSeaGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightSeaGreen","is":true,"t":8,"sn":"getLightSeaGreen","rt":$n[5].Color}},{"a":2,"n":"LightSkyBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightSkyBlue","is":true,"t":8,"sn":"getLightSkyBlue","rt":$n[5].Color}},{"a":2,"n":"LightSlateGray","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightSlateGray","is":true,"t":8,"sn":"getLightSlateGray","rt":$n[5].Color}},{"a":2,"n":"LightSteelBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightSteelBlue","is":true,"t":8,"sn":"getLightSteelBlue","rt":$n[5].Color}},{"a":2,"n":"LightYellow","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LightYellow","is":true,"t":8,"sn":"getLightYellow","rt":$n[5].Color}},{"a":2,"n":"Lime","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Lime","is":true,"t":8,"sn":"getLime","rt":$n[5].Color}},{"a":2,"n":"LimeGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_LimeGreen","is":true,"t":8,"sn":"getLimeGreen","rt":$n[5].Color}},{"a":2,"n":"Linen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Linen","is":true,"t":8,"sn":"getLinen","rt":$n[5].Color}},{"a":2,"n":"Magenta","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Magenta","is":true,"t":8,"sn":"getMagenta","rt":$n[5].Color}},{"a":2,"n":"Maroon","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Maroon","is":true,"t":8,"sn":"getMaroon","rt":$n[5].Color}},{"a":2,"n":"MediumAquamarine","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MediumAquamarine","is":true,"t":8,"sn":"getMediumAquamarine","rt":$n[5].Color}},{"a":2,"n":"MediumBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MediumBlue","is":true,"t":8,"sn":"getMediumBlue","rt":$n[5].Color}},{"a":2,"n":"MediumOrchid","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MediumOrchid","is":true,"t":8,"sn":"getMediumOrchid","rt":$n[5].Color}},{"a":2,"n":"MediumPurple","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MediumPurple","is":true,"t":8,"sn":"getMediumPurple","rt":$n[5].Color}},{"a":2,"n":"MediumSeaGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MediumSeaGreen","is":true,"t":8,"sn":"getMediumSeaGreen","rt":$n[5].Color}},{"a":2,"n":"MediumSlateBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MediumSlateBlue","is":true,"t":8,"sn":"getMediumSlateBlue","rt":$n[5].Color}},{"a":2,"n":"MediumSpringGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MediumSpringGreen","is":true,"t":8,"sn":"getMediumSpringGreen","rt":$n[5].Color}},{"a":2,"n":"MediumTurquoise","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MediumTurquoise","is":true,"t":8,"sn":"getMediumTurquoise","rt":$n[5].Color}},{"a":2,"n":"MediumVioletRed","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MediumVioletRed","is":true,"t":8,"sn":"getMediumVioletRed","rt":$n[5].Color}},{"a":2,"n":"MidnightBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MidnightBlue","is":true,"t":8,"sn":"getMidnightBlue","rt":$n[5].Color}},{"a":2,"n":"MintCream","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MintCream","is":true,"t":8,"sn":"getMintCream","rt":$n[5].Color}},{"a":2,"n":"MistyRose","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_MistyRose","is":true,"t":8,"sn":"getMistyRose","rt":$n[5].Color}},{"a":2,"n":"Moccasin","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Moccasin","is":true,"t":8,"sn":"getMoccasin","rt":$n[5].Color}},{"a":2,"n":"NavajoWhite","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_NavajoWhite","is":true,"t":8,"sn":"getNavajoWhite","rt":$n[5].Color}},{"a":2,"n":"Navy","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Navy","is":true,"t":8,"sn":"getNavy","rt":$n[5].Color}},{"a":2,"n":"OldLace","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_OldLace","is":true,"t":8,"sn":"getOldLace","rt":$n[5].Color}},{"a":2,"n":"Olive","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Olive","is":true,"t":8,"sn":"getOlive","rt":$n[5].Color}},{"a":2,"n":"OliveDrab","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_OliveDrab","is":true,"t":8,"sn":"getOliveDrab","rt":$n[5].Color}},{"a":2,"n":"Orange","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Orange","is":true,"t":8,"sn":"getOrange","rt":$n[5].Color}},{"a":2,"n":"OrangeRed","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_OrangeRed","is":true,"t":8,"sn":"getOrangeRed","rt":$n[5].Color}},{"a":2,"n":"Orchid","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Orchid","is":true,"t":8,"sn":"getOrchid","rt":$n[5].Color}},{"a":2,"n":"PaleGoldenrod","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_PaleGoldenrod","is":true,"t":8,"sn":"getPaleGoldenrod","rt":$n[5].Color}},{"a":2,"n":"PaleGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_PaleGreen","is":true,"t":8,"sn":"getPaleGreen","rt":$n[5].Color}},{"a":2,"n":"PaleTurquoise","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_PaleTurquoise","is":true,"t":8,"sn":"getPaleTurquoise","rt":$n[5].Color}},{"a":2,"n":"PaleVioletRed","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_PaleVioletRed","is":true,"t":8,"sn":"getPaleVioletRed","rt":$n[5].Color}},{"a":2,"n":"PapayaWhip","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_PapayaWhip","is":true,"t":8,"sn":"getPapayaWhip","rt":$n[5].Color}},{"a":2,"n":"PeachPuff","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_PeachPuff","is":true,"t":8,"sn":"getPeachPuff","rt":$n[5].Color}},{"a":2,"n":"Peru","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Peru","is":true,"t":8,"sn":"getPeru","rt":$n[5].Color}},{"a":2,"n":"Pink","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Pink","is":true,"t":8,"sn":"getPink","rt":$n[5].Color}},{"a":2,"n":"Plum","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Plum","is":true,"t":8,"sn":"getPlum","rt":$n[5].Color}},{"a":2,"n":"PowderBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_PowderBlue","is":true,"t":8,"sn":"getPowderBlue","rt":$n[5].Color}},{"a":2,"n":"Purple","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Purple","is":true,"t":8,"sn":"getPurple","rt":$n[5].Color}},{"a":2,"n":"Red","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Red","is":true,"t":8,"sn":"getRed","rt":$n[5].Color}},{"a":2,"n":"RosyBrown","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_RosyBrown","is":true,"t":8,"sn":"getRosyBrown","rt":$n[5].Color}},{"a":2,"n":"RoyalBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_RoyalBlue","is":true,"t":8,"sn":"getRoyalBlue","rt":$n[5].Color}},{"a":2,"n":"SaddleBrown","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_SaddleBrown","is":true,"t":8,"sn":"getSaddleBrown","rt":$n[5].Color}},{"a":2,"n":"Salmon","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Salmon","is":true,"t":8,"sn":"getSalmon","rt":$n[5].Color}},{"a":2,"n":"SandyBrown","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_SandyBrown","is":true,"t":8,"sn":"getSandyBrown","rt":$n[5].Color}},{"a":2,"n":"SeaGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_SeaGreen","is":true,"t":8,"sn":"getSeaGreen","rt":$n[5].Color}},{"a":2,"n":"SeaShell","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_SeaShell","is":true,"t":8,"sn":"getSeaShell","rt":$n[5].Color}},{"a":2,"n":"Sienna","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Sienna","is":true,"t":8,"sn":"getSienna","rt":$n[5].Color}},{"a":2,"n":"Silver","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Silver","is":true,"t":8,"sn":"getSilver","rt":$n[5].Color}},{"a":2,"n":"SkyBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_SkyBlue","is":true,"t":8,"sn":"getSkyBlue","rt":$n[5].Color}},{"a":2,"n":"SlateBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_SlateBlue","is":true,"t":8,"sn":"getSlateBlue","rt":$n[5].Color}},{"a":2,"n":"SlateGray","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_SlateGray","is":true,"t":8,"sn":"getSlateGray","rt":$n[5].Color}},{"a":2,"n":"Snow","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Snow","is":true,"t":8,"sn":"getSnow","rt":$n[5].Color}},{"a":2,"n":"SpringGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_SpringGreen","is":true,"t":8,"sn":"getSpringGreen","rt":$n[5].Color}},{"a":2,"n":"SteelBlue","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_SteelBlue","is":true,"t":8,"sn":"getSteelBlue","rt":$n[5].Color}},{"a":2,"n":"Tan","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Tan","is":true,"t":8,"sn":"getTan","rt":$n[5].Color}},{"a":2,"n":"Teal","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Teal","is":true,"t":8,"sn":"getTeal","rt":$n[5].Color}},{"a":2,"n":"Thistle","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Thistle","is":true,"t":8,"sn":"getThistle","rt":$n[5].Color}},{"a":2,"n":"Tomato","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Tomato","is":true,"t":8,"sn":"getTomato","rt":$n[5].Color}},{"a":2,"n":"Transparent","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Transparent","is":true,"t":8,"sn":"getTransparent","rt":$n[5].Color}},{"a":2,"n":"Turquoise","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Turquoise","is":true,"t":8,"sn":"getTurquoise","rt":$n[5].Color}},{"a":2,"n":"Violet","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Violet","is":true,"t":8,"sn":"getViolet","rt":$n[5].Color}},{"a":2,"n":"Wheat","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Wheat","is":true,"t":8,"sn":"getWheat","rt":$n[5].Color}},{"a":2,"n":"White","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_White","is":true,"t":8,"sn":"getWhite","rt":$n[5].Color}},{"a":2,"n":"WhiteSmoke","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_WhiteSmoke","is":true,"t":8,"sn":"getWhiteSmoke","rt":$n[5].Color}},{"a":2,"n":"Yellow","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_Yellow","is":true,"t":8,"sn":"getYellow","rt":$n[5].Color}},{"a":2,"n":"YellowGreen","is":true,"t":16,"rt":$n[5].Color,"g":{"a":2,"n":"get_YellowGreen","is":true,"t":8,"sn":"getYellowGreen","rt":$n[5].Color}}]}; });
+    $m($n[5].FontFamily, function () { return {"at":[new System.Windows.Markup.TypeConverterAttribute(System.Windows.Media.FontFamilyTypeConverter)],"m":[{"a":2,"n":"FamilyName","t":16,"rt":String,"g":{"a":2,"n":"get_FamilyName","t":8,"sn":"getFamilyName","rt":String}},{"a":2,"n":"FamilyNames","t":16,"rt":$n[7].IEnumerable$1(String),"g":{"a":2,"n":"get_FamilyNames","t":8,"sn":"getFamilyNames","rt":$n[7].IEnumerable$1(String)},"s":{"a":1,"n":"set_FamilyNames","t":8,"pi":[{"n":"value","pt":$n[7].IEnumerable$1(String),"ps":0}],"sn":"setFamilyNames","rt":Object,"p":[$n[7].IEnumerable$1(String)]}}]}; });
+    $m($n[5].LinearGradientBrush, function () { return {"m":[{"a":2,"n":"EndPoint","t":16,"rt":$n[1].Point,"g":{"a":2,"n":"get_EndPoint","t":8,"sn":"getEndPoint","rt":$n[1].Point},"s":{"a":2,"n":"set_EndPoint","t":8,"pi":[{"n":"value","pt":$n[1].Point,"ps":0}],"sn":"setEndPoint","rt":Object,"p":[$n[1].Point]}},{"a":2,"n":"StartPoint","t":16,"rt":$n[1].Point,"g":{"a":2,"n":"get_StartPoint","t":8,"sn":"getStartPoint","rt":$n[1].Point},"s":{"a":2,"n":"set_StartPoint","t":8,"pi":[{"n":"value","pt":$n[1].Point,"ps":0}],"sn":"setStartPoint","rt":Object,"p":[$n[1].Point]}}]}; });
+    $m($n[5].TransformGroup, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Children")],"m":[{"a":2,"n":"Children","t":16,"rt":$n[1].FreezableCollection$1(System.Windows.Media.Transform),"g":{"a":2,"n":"get_Children","t":8,"sn":"getChildren","rt":$n[1].FreezableCollection$1(System.Windows.Media.Transform)},"s":{"a":1,"n":"set_Children","t":8,"pi":[{"n":"value","pt":$n[1].FreezableCollection$1(System.Windows.Media.Transform),"ps":0}],"sn":"setChildren","rt":Object,"p":[$n[1].FreezableCollection$1(System.Windows.Media.Transform)]}},{"ov":true,"a":2,"n":"Value","t":16,"rt":$n[5].Matrix,"g":{"ov":true,"a":2,"n":"get_Value","t":8,"sn":"getValue$5","rt":$n[5].Matrix}}]}; });
+    $m($n[5].Visual, function () { return {"m":[{"a":2,"n":"VisualBounds","t":16,"rt":$n[1].Rect,"g":{"a":2,"n":"get_VisualBounds","t":8,"sn":"getVisualBounds","rt":$n[1].Rect},"s":{"a":3,"n":"set_VisualBounds","t":8,"pi":[{"n":"value","pt":$n[1].Rect,"ps":0}],"sn":"setVisualBounds","rt":Object,"p":[$n[1].Rect]}},{"a":2,"n":"VisualChildren","t":16,"rt":$n[9].ReadOnlyCollection$1(System.Windows.Media.Visual),"g":{"a":2,"n":"get_VisualChildren","t":8,"sn":"getVisualChildren","rt":$n[9].ReadOnlyCollection$1(System.Windows.Media.Visual)},"s":{"a":1,"n":"set_VisualChildren","t":8,"pi":[{"n":"value","pt":$n[9].ReadOnlyCollection$1(System.Windows.Media.Visual),"ps":0}],"sn":"setVisualChildren","rt":Object,"p":[$n[9].ReadOnlyCollection$1(System.Windows.Media.Visual)]}},{"a":2,"n":"VisualLevel","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_VisualLevel","t":8,"sn":"getVisualLevel","rt":$n[0].Int32}},{"a":2,"n":"VisualOffset","t":16,"rt":$n[1].Point,"g":{"a":2,"n":"get_VisualOffset","t":8,"sn":"getVisualOffset","rt":$n[1].Point}},{"a":2,"n":"VisualParent","t":16,"rt":$n[5].Visual,"g":{"a":2,"n":"get_VisualParent","t":8,"sn":"getVisualParent","rt":$n[5].Visual},"s":{"a":1,"n":"set_VisualParent","t":8,"pi":[{"n":"value","pt":$n[5].Visual,"ps":0}],"sn":"setVisualParent","rt":Object,"p":[$n[5].Visual]}},{"a":2,"n":"VisualSize","t":16,"rt":$n[1].Size,"g":{"a":2,"n":"get_VisualSize","t":8,"sn":"getVisualSize","rt":$n[1].Size}},{"a":2,"n":"VisualTransform","t":16,"rt":$n[5].Matrix,"g":{"a":2,"n":"get_VisualTransform","t":8,"sn":"getVisualTransform","rt":$n[5].Matrix},"s":{"a":1,"n":"set_VisualTransform","t":8,"pi":[{"n":"value","pt":$n[5].Matrix,"ps":0}],"sn":"setVisualTransform","rt":Object,"p":[$n[5].Matrix]}}]}; });
+    $m($n[15].BitmapSource, function () { return {"m":[{"a":2,"n":"IsDownloading","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsDownloading","t":8,"sn":"getIsDownloading","rt":Boolean},"s":{"a":1,"n":"set_IsDownloading","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsDownloading","rt":Object,"p":[Boolean]}},{"ov":true,"a":2,"n":"RenderImageSource","t":16,"rt":$n[5].IRenderImageSource,"g":{"ov":true,"a":2,"n":"get_RenderImageSource","t":8,"sn":"getRenderImageSource","rt":$n[5].IRenderImageSource}}]}; });
+    $m($n[8].KeyFramesAnimationTimeline$1, function (T) { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("KeyFrames")],"m":[{"a":2,"n":"KeyFrames","t":16,"rt":$n[1].FreezableCollection$1(System.Windows.Media.Animation.KeyFrame$1(T)),"g":{"a":2,"n":"get_KeyFrames","t":8,"sn":"getKeyFrames","rt":$n[1].FreezableCollection$1(System.Windows.Media.Animation.KeyFrame$1(T))},"s":{"a":1,"n":"set_KeyFrames","t":8,"pi":[{"n":"value","pt":$n[1].FreezableCollection$1(System.Windows.Media.Animation.KeyFrame$1(T)),"ps":0}],"sn":"setKeyFrames","rt":Object,"p":[$n[1].FreezableCollection$1(System.Windows.Media.Animation.KeyFrame$1(T))]}}]}; });
+    $m($n[8].BeginStoryboard, function () { return {"at":[new System.Windows.Markup.RuntimeNamePropertyAttribute("Name"),new System.Windows.Markup.ContentPropertyAttribute("Storyboard")],"m":[{"a":2,"n":"HandoffBehavior","t":16,"rt":$n[8].HandoffBehavior,"g":{"a":2,"n":"get_HandoffBehavior","t":8,"sn":"getHandoffBehavior","rt":$n[8].HandoffBehavior},"s":{"a":2,"n":"set_HandoffBehavior","t":8,"pi":[{"n":"value","pt":$n[8].HandoffBehavior,"ps":0}],"sn":"setHandoffBehavior","rt":Object,"p":[$n[8].HandoffBehavior]}},{"a":2,"n":"Name","t":16,"rt":String,"g":{"a":2,"n":"get_Name","t":8,"sn":"getName","rt":String},"s":{"a":2,"n":"set_Name","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setName","rt":Object,"p":[String]}},{"a":2,"n":"Storyboard","t":16,"rt":$n[8].Storyboard,"g":{"a":2,"n":"get_Storyboard","t":8,"sn":"getStoryboard","rt":$n[8].Storyboard},"s":{"a":2,"n":"set_Storyboard","t":8,"pi":[{"n":"value","pt":$n[8].Storyboard,"ps":0}],"sn":"setStoryboard","rt":Object,"p":[$n[8].Storyboard]}}]}; });
+    $m($n[8].StoryboardAction, function () { return {"m":[{"a":2,"n":"BeginStoryboardName","t":16,"rt":String,"g":{"a":2,"n":"get_BeginStoryboardName","t":8,"sn":"getBeginStoryboardName","rt":String},"s":{"a":2,"n":"set_BeginStoryboardName","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setBeginStoryboardName","rt":Object,"p":[String]}}]}; });
+    $m($n[8].Timeline, function () { return {"m":[{"a":2,"n":"AutoReverse","t":16,"rt":Boolean,"g":{"a":2,"n":"get_AutoReverse","t":8,"sn":"getAutoReverse","rt":Boolean},"s":{"a":2,"n":"set_AutoReverse","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setAutoReverse","rt":Object,"p":[Boolean]}},{"a":2,"n":"BeginTime","t":16,"rt":$n[0].TimeSpan,"g":{"a":2,"n":"get_BeginTime","t":8,"sn":"getBeginTime","rt":$n[0].TimeSpan},"s":{"a":2,"n":"set_BeginTime","t":8,"pi":[{"n":"value","pt":$n[0].TimeSpan,"ps":0}],"sn":"setBeginTime","rt":Object,"p":[$n[0].TimeSpan]}},{"a":2,"n":"Duration","t":16,"rt":$n[1].Duration,"g":{"a":2,"n":"get_Duration","t":8,"sn":"getDuration","rt":$n[1].Duration},"s":{"a":2,"n":"set_Duration","t":8,"pi":[{"n":"value","pt":$n[1].Duration,"ps":0}],"sn":"setDuration","rt":Object,"p":[$n[1].Duration]}},{"a":2,"n":"FillBehavior","t":16,"rt":$n[8].FillBehavior,"g":{"a":2,"n":"get_FillBehavior","t":8,"sn":"getFillBehavior","rt":$n[8].FillBehavior},"s":{"a":2,"n":"set_FillBehavior","t":8,"pi":[{"n":"value","pt":$n[8].FillBehavior,"ps":0}],"sn":"setFillBehavior","rt":Object,"p":[$n[8].FillBehavior]}},{"a":2,"n":"Parent","t":16,"rt":$n[8].TimelineGroup,"g":{"a":2,"n":"get_Parent","t":8,"sn":"getParent","rt":$n[8].TimelineGroup},"s":{"a":2,"n":"set_Parent","t":8,"pi":[{"n":"value","pt":$n[8].TimelineGroup,"ps":0}],"sn":"setParent","rt":Object,"p":[$n[8].TimelineGroup]}},{"a":2,"n":"RepeatBehavior","t":16,"rt":$n[8].RepeatBehavior,"g":{"a":2,"n":"get_RepeatBehavior","t":8,"sn":"getRepeatBehavior","rt":$n[8].RepeatBehavior},"s":{"a":2,"n":"set_RepeatBehavior","t":8,"pi":[{"n":"value","pt":$n[8].RepeatBehavior,"ps":0}],"sn":"setRepeatBehavior","rt":Object,"p":[$n[8].RepeatBehavior]}}]}; });
+    $m($n[8].TimelineClock, function () { return {"m":[{"a":2,"n":"CurrentState","t":16,"rt":$n[8].ClockState,"g":{"a":2,"n":"get_CurrentState","t":8,"sn":"getCurrentState","rt":$n[8].ClockState},"s":{"a":1,"n":"set_CurrentState","t":8,"pi":[{"n":"value","pt":$n[8].ClockState,"ps":0}],"sn":"setCurrentState","rt":Object,"p":[$n[8].ClockState]}},{"a":2,"n":"Duration","t":16,"rt":$n[0].TimeSpan,"g":{"a":2,"n":"get_Duration","t":8,"sn":"getDuration","rt":$n[0].TimeSpan}},{"a":2,"n":"FirstTick","t":16,"rt":$n[0].TimeSpan,"g":{"a":2,"n":"get_FirstTick","t":8,"sn":"getFirstTick","rt":$n[0].TimeSpan}},{"a":2,"n":"IsFilling","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsFilling","t":8,"sn":"getIsFilling","rt":Boolean}},{"a":2,"n":"LastTick","t":16,"rt":$n[0].TimeSpan,"g":{"a":2,"n":"get_LastTick","t":8,"sn":"getLastTick","rt":$n[0].TimeSpan}},{"a":2,"n":"Timeline","t":16,"rt":$n[8].Timeline,"g":{"a":2,"n":"get_Timeline","t":8,"sn":"getTimeline","rt":$n[8].Timeline},"s":{"a":1,"n":"set_Timeline","t":8,"pi":[{"n":"value","pt":$n[8].Timeline,"ps":0}],"sn":"setTimeline","rt":Object,"p":[$n[8].Timeline]}}]}; });
+    $m($n[8].TimelineGroup, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Children")],"m":[{"a":2,"n":"Children","t":16,"rt":$n[3].ObservableCollection$1(System.Windows.Media.Animation.Timeline),"g":{"a":2,"n":"get_Children","t":8,"sn":"getChildren","rt":$n[3].ObservableCollection$1(System.Windows.Media.Animation.Timeline)},"s":{"a":1,"n":"set_Children","t":8,"pi":[{"n":"value","pt":$n[3].ObservableCollection$1(System.Windows.Media.Animation.Timeline),"ps":0}],"sn":"setChildren","rt":Object,"p":[$n[3].ObservableCollection$1(System.Windows.Media.Animation.Timeline)]}}]}; });
+    $m($n[8].TimelineGroupClock, function () { return {"m":[{"a":2,"n":"Children","t":16,"rt":$n[7].IEnumerable$1(System.Windows.Media.Animation.TimelineClock),"g":{"a":2,"n":"get_Children","t":8,"sn":"getChildren","rt":$n[7].IEnumerable$1(System.Windows.Media.Animation.TimelineClock)},"s":{"a":1,"n":"set_Children","t":8,"pi":[{"n":"value","pt":$n[7].IEnumerable$1(System.Windows.Media.Animation.TimelineClock),"ps":0}],"sn":"setChildren","rt":Object,"p":[$n[7].IEnumerable$1(System.Windows.Media.Animation.TimelineClock)]}}]}; });
+    $m($n[14].XamlTypes.TypeProvider, function () { return {"at":[new System.Windows.Markup.MarkupExtensionParameterAttribute("Type", 0)],"m":[{"a":2,"n":"Type","t":16,"rt":Function,"g":{"a":2,"n":"get_Type","t":8,"sn":"getType","rt":Function},"s":{"a":2,"n":"set_Type","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"setType","rt":Object,"p":[Function]}}]}; });
+    $m($n[13].Adorner, function () { return {"m":[{"a":2,"n":"AdornedElement","t":16,"rt":$n[1].UIElement,"g":{"a":2,"n":"get_AdornedElement","t":8,"sn":"getAdornedElement","rt":$n[1].UIElement},"s":{"a":1,"n":"set_AdornedElement","t":8,"pi":[{"n":"value","pt":$n[1].UIElement,"ps":0}],"sn":"setAdornedElement","rt":Object,"p":[$n[1].UIElement]}},{"a":2,"n":"Child","t":16,"rt":$n[1].UIElement,"g":{"a":2,"n":"get_Child","t":8,"sn":"getChild","rt":$n[1].UIElement},"s":{"a":2,"n":"set_Child","t":8,"pi":[{"n":"value","pt":$n[1].UIElement,"ps":0}],"sn":"setChild","rt":Object,"p":[$n[1].UIElement]}}]}; });
+    $m($n[2].Binding, function () { return {"at":[new System.Windows.Markup.MarkupExtensionParameterAttribute("Path", 0)],"m":[{"a":2,"n":"Converter","t":16,"rt":$n[2].IValueConverter,"g":{"a":2,"n":"get_Converter","t":8,"sn":"getConverter","rt":$n[2].IValueConverter},"s":{"a":2,"n":"set_Converter","t":8,"pi":[{"n":"value","pt":$n[2].IValueConverter,"ps":0}],"sn":"setConverter","rt":Object,"p":[$n[2].IValueConverter]}},{"a":2,"n":"ConverterParameter","t":16,"rt":Object,"g":{"a":2,"n":"get_ConverterParameter","t":8,"sn":"getConverterParameter","rt":Object},"s":{"a":2,"n":"set_ConverterParameter","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setConverterParameter","rt":Object,"p":[Object]}},{"a":2,"n":"ElementName","t":16,"rt":String,"g":{"a":2,"n":"get_ElementName","t":8,"sn":"getElementName","rt":String},"s":{"a":2,"n":"set_ElementName","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setElementName","rt":Object,"p":[String]}},{"a":2,"n":"FallbackValue","t":16,"rt":Object,"g":{"a":2,"n":"get_FallbackValue","t":8,"sn":"getFallbackValue","rt":Object},"s":{"a":2,"n":"set_FallbackValue","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setFallbackValue","rt":Object,"p":[Object]}},{"a":2,"n":"Mode","t":16,"rt":$n[2].BindingMode,"g":{"a":2,"n":"get_Mode","t":8,"sn":"getMode","rt":$n[2].BindingMode},"s":{"a":2,"n":"set_Mode","t":8,"pi":[{"n":"value","pt":$n[2].BindingMode,"ps":0}],"sn":"setMode","rt":Object,"p":[$n[2].BindingMode]}},{"a":2,"n":"Path","t":16,"rt":$n[1].PropertyPath,"g":{"a":2,"n":"get_Path","t":8,"sn":"getPath","rt":$n[1].PropertyPath},"s":{"a":2,"n":"set_Path","t":8,"pi":[{"n":"value","pt":$n[1].PropertyPath,"ps":0}],"sn":"setPath","rt":Object,"p":[$n[1].PropertyPath]}},{"a":2,"n":"RelativeSource","t":16,"rt":$n[2].RelativeSource,"g":{"a":2,"n":"get_RelativeSource","t":8,"sn":"getRelativeSource","rt":$n[2].RelativeSource},"s":{"a":2,"n":"set_RelativeSource","t":8,"pi":[{"n":"value","pt":$n[2].RelativeSource,"ps":0}],"sn":"setRelativeSource","rt":Object,"p":[$n[2].RelativeSource]}},{"a":2,"n":"Source","t":16,"rt":Object,"g":{"a":2,"n":"get_Source","t":8,"sn":"getSource","rt":Object},"s":{"a":2,"n":"set_Source","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setSource","rt":Object,"p":[Object]}},{"a":2,"n":"StringFormat","t":16,"rt":String,"g":{"a":2,"n":"get_StringFormat","t":8,"sn":"getStringFormat","rt":String},"s":{"a":2,"n":"set_StringFormat","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setStringFormat","rt":Object,"p":[String]}},{"a":2,"n":"TargetNullValue","t":16,"rt":Object,"g":{"a":2,"n":"get_TargetNullValue","t":8,"sn":"getTargetNullValue","rt":Object},"s":{"a":2,"n":"set_TargetNullValue","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setTargetNullValue","rt":Object,"p":[Object]}},{"a":2,"n":"UpdateSourceTrigger","t":16,"rt":$n[2].UpdateSourceTrigger,"g":{"a":2,"n":"get_UpdateSourceTrigger","t":8,"sn":"getUpdateSourceTrigger","rt":$n[2].UpdateSourceTrigger},"s":{"a":2,"n":"set_UpdateSourceTrigger","t":8,"pi":[{"n":"value","pt":$n[2].UpdateSourceTrigger,"ps":0}],"sn":"setUpdateSourceTrigger","rt":Object,"p":[$n[2].UpdateSourceTrigger]}}]}; });
+    $m($n[2].CollectionView, function () { return {"m":[{"a":2,"n":"CanFilter","t":16,"rt":Boolean,"g":{"a":2,"n":"get_CanFilter","t":8,"sn":"getCanFilter","rt":Boolean}},{"a":2,"n":"CanSort","t":16,"rt":Boolean,"g":{"a":2,"n":"get_CanSort","t":8,"sn":"getCanSort","rt":Boolean}},{"a":2,"n":"CurrentItem","t":16,"rt":Object,"g":{"a":2,"n":"get_CurrentItem","t":8,"sn":"getCurrentItem","rt":Object},"s":{"a":2,"n":"set_CurrentItem","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setCurrentItem","rt":Object,"p":[Object]}},{"a":2,"n":"CurrentItemIndex","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_CurrentItemIndex","t":8,"sn":"getCurrentItemIndex","rt":$n[0].Int32},"s":{"a":2,"n":"set_CurrentItemIndex","t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"sn":"setCurrentItemIndex","rt":Object,"p":[$n[0].Int32]}},{"a":2,"n":"FilterPredicate","t":16,"rt":Function,"g":{"a":2,"n":"get_FilterPredicate","t":8,"sn":"getFilterPredicate","rt":Function},"s":{"a":2,"n":"set_FilterPredicate","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"setFilterPredicate","rt":Object,"p":[Function]}},{"a":2,"n":"SortDirection","t":16,"rt":$n[3].ListSortDirection,"g":{"a":2,"n":"get_SortDirection","t":8,"sn":"getSortDirection","rt":$n[3].ListSortDirection},"s":{"a":2,"n":"set_SortDirection","t":8,"pi":[{"n":"value","pt":$n[3].ListSortDirection,"ps":0}],"sn":"setSortDirection","rt":Object,"p":[$n[3].ListSortDirection]}},{"a":2,"n":"SortKeySelector","t":16,"rt":Function,"g":{"a":2,"n":"get_SortKeySelector","t":8,"sn":"getSortKeySelector","rt":Function},"s":{"a":2,"n":"set_SortKeySelector","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"setSortKeySelector","rt":Object,"p":[Function]}},{"a":2,"n":"SourceCollection","t":16,"rt":$n[10].IEnumerable,"g":{"a":2,"n":"get_SourceCollection","t":8,"sn":"getSourceCollection","rt":$n[10].IEnumerable},"s":{"a":1,"n":"set_SourceCollection","t":8,"pi":[{"n":"value","pt":$n[10].IEnumerable,"ps":0}],"sn":"setSourceCollection","rt":Object,"p":[$n[10].IEnumerable]}}]}; });
+    $m($n[2].RelativeSource, function () { return {"at":[new System.Windows.Markup.MarkupExtensionParameterAttribute("Mode", 0)],"m":[{"a":2,"n":"AncestorLevel","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_AncestorLevel","t":8,"sn":"getAncestorLevel","rt":$n[0].Int32},"s":{"a":2,"n":"set_AncestorLevel","t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"sn":"setAncestorLevel","rt":Object,"p":[$n[0].Int32]}},{"a":2,"n":"AncestorType","t":16,"rt":Function,"g":{"a":2,"n":"get_AncestorType","t":8,"sn":"getAncestorType","rt":Function},"s":{"a":2,"n":"set_AncestorType","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"setAncestorType","rt":Object,"p":[Function]}},{"a":2,"n":"Mode","t":16,"rt":$n[2].RelativeSourceMode,"g":{"a":2,"n":"get_Mode","t":8,"sn":"getMode","rt":$n[2].RelativeSourceMode},"s":{"a":2,"n":"set_Mode","t":8,"pi":[{"n":"value","pt":$n[2].RelativeSourceMode,"ps":0}],"sn":"setMode","rt":Object,"p":[$n[2].RelativeSourceMode]}}]}; });
+    $m($n[11].Control, function () { return {"m":[{"a":2,"n":"Background","t":16,"rt":$n[5].Brush,"g":{"a":2,"n":"get_Background","t":8,"sn":"getBackground","rt":$n[5].Brush},"s":{"a":2,"n":"set_Background","t":8,"pi":[{"n":"value","pt":$n[5].Brush,"ps":0}],"sn":"setBackground","rt":Object,"p":[$n[5].Brush]}},{"a":2,"n":"BorderBrush","t":16,"rt":$n[5].Brush,"g":{"a":2,"n":"get_BorderBrush","t":8,"sn":"getBorderBrush","rt":$n[5].Brush},"s":{"a":2,"n":"set_BorderBrush","t":8,"pi":[{"n":"value","pt":$n[5].Brush,"ps":0}],"sn":"setBorderBrush","rt":Object,"p":[$n[5].Brush]}},{"a":2,"n":"BorderThickness","t":16,"rt":$n[1].Thickness,"g":{"a":2,"n":"get_BorderThickness","t":8,"sn":"getBorderThickness","rt":$n[1].Thickness},"s":{"a":2,"n":"set_BorderThickness","t":8,"pi":[{"n":"value","pt":$n[1].Thickness,"ps":0}],"sn":"setBorderThickness","rt":Object,"p":[$n[1].Thickness]}},{"a":2,"n":"FontFamily","t":16,"rt":$n[5].FontFamily,"g":{"a":2,"n":"get_FontFamily","t":8,"sn":"getFontFamily","rt":$n[5].FontFamily},"s":{"a":2,"n":"set_FontFamily","t":8,"pi":[{"n":"value","pt":$n[5].FontFamily,"ps":0}],"sn":"setFontFamily","rt":Object,"p":[$n[5].FontFamily]}},{"a":2,"n":"FontSize","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_FontSize","t":8,"sn":"getFontSize","rt":$n[0].Double},"s":{"a":2,"n":"set_FontSize","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setFontSize","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"FontStretch","t":16,"rt":$n[1].FontStretch,"g":{"a":2,"n":"get_FontStretch","t":8,"sn":"getFontStretch","rt":$n[1].FontStretch},"s":{"a":2,"n":"set_FontStretch","t":8,"pi":[{"n":"value","pt":$n[1].FontStretch,"ps":0}],"sn":"setFontStretch","rt":Object,"p":[$n[1].FontStretch]}},{"a":2,"n":"FontStyle","t":16,"rt":$n[1].FontStyle,"g":{"a":2,"n":"get_FontStyle","t":8,"sn":"getFontStyle","rt":$n[1].FontStyle},"s":{"a":2,"n":"set_FontStyle","t":8,"pi":[{"n":"value","pt":$n[1].FontStyle,"ps":0}],"sn":"setFontStyle","rt":Object,"p":[$n[1].FontStyle]}},{"a":2,"n":"FontWeight","t":16,"rt":$n[1].FontWeight,"g":{"a":2,"n":"get_FontWeight","t":8,"sn":"getFontWeight","rt":$n[1].FontWeight},"s":{"a":2,"n":"set_FontWeight","t":8,"pi":[{"n":"value","pt":$n[1].FontWeight,"ps":0}],"sn":"setFontWeight","rt":Object,"p":[$n[1].FontWeight]}},{"a":2,"n":"Foreground","t":16,"rt":$n[5].Brush,"g":{"a":2,"n":"get_Foreground","t":8,"sn":"getForeground","rt":$n[5].Brush},"s":{"a":2,"n":"set_Foreground","t":8,"pi":[{"n":"value","pt":$n[5].Brush,"ps":0}],"sn":"setForeground","rt":Object,"p":[$n[5].Brush]}},{"a":2,"n":"HorizontalContentAlignment","t":16,"rt":$n[1].HorizontalAlignment,"g":{"a":2,"n":"get_HorizontalContentAlignment","t":8,"sn":"getHorizontalContentAlignment","rt":$n[1].HorizontalAlignment},"s":{"a":2,"n":"set_HorizontalContentAlignment","t":8,"pi":[{"n":"value","pt":$n[1].HorizontalAlignment,"ps":0}],"sn":"setHorizontalContentAlignment","rt":Object,"p":[$n[1].HorizontalAlignment]}},{"a":2,"n":"IsTabStop","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsTabStop","t":8,"sn":"getIsTabStop","rt":Boolean},"s":{"a":2,"n":"set_IsTabStop","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsTabStop","rt":Object,"p":[Boolean]}},{"a":2,"n":"Padding","t":16,"rt":$n[1].Thickness,"g":{"a":2,"n":"get_Padding","t":8,"sn":"getPadding","rt":$n[1].Thickness},"s":{"a":2,"n":"set_Padding","t":8,"pi":[{"n":"value","pt":$n[1].Thickness,"ps":0}],"sn":"setPadding","rt":Object,"p":[$n[1].Thickness]}},{"a":2,"n":"TabIndex","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_TabIndex","t":8,"sn":"getTabIndex","rt":$n[0].Int32},"s":{"a":2,"n":"set_TabIndex","t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"sn":"setTabIndex","rt":Object,"p":[$n[0].Int32]}},{"a":2,"n":"Template","t":16,"rt":$n[11].ControlTemplate,"g":{"a":2,"n":"get_Template","t":8,"sn":"getTemplate$1","rt":$n[11].ControlTemplate},"s":{"a":2,"n":"set_Template","t":8,"pi":[{"n":"value","pt":$n[11].ControlTemplate,"ps":0}],"sn":"setTemplate$1","rt":Object,"p":[$n[11].ControlTemplate]}},{"a":2,"n":"VerticalContentAlignment","t":16,"rt":$n[1].VerticalAlignment,"g":{"a":2,"n":"get_VerticalContentAlignment","t":8,"sn":"getVerticalContentAlignment","rt":$n[1].VerticalAlignment},"s":{"a":2,"n":"set_VerticalContentAlignment","t":8,"pi":[{"n":"value","pt":$n[1].VerticalAlignment,"ps":0}],"sn":"setVerticalContentAlignment","rt":Object,"p":[$n[1].VerticalAlignment]}}]}; });
+    $m($n[11].ControlTemplate, function () { return {"at":[new System.Windows.Markup.DictionaryKeyPropertyAttribute("Key")],"m":[{"a":2,"n":"Key","t":16,"rt":Object,"g":{"a":2,"n":"get_Key","t":8,"sn":"getKey","rt":Object},"s":{"a":2,"n":"set_Key","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setKey","rt":Object,"p":[Object]}},{"a":2,"n":"TargetType","t":16,"rt":Function,"g":{"a":2,"n":"get_TargetType","t":8,"sn":"getTargetType","rt":Function},"s":{"a":2,"n":"set_TargetType","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"setTargetType","rt":Object,"p":[Function]}}]}; });
+    $m($n[11].Decorator, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Child")],"m":[{"a":2,"n":"Child","t":16,"rt":$n[1].UIElement,"g":{"a":2,"n":"get_Child","t":8,"sn":"getChild","rt":$n[1].UIElement},"s":{"a":2,"n":"set_Child","t":8,"pi":[{"n":"value","pt":$n[1].UIElement,"ps":0}],"sn":"setChild","rt":Object,"p":[$n[1].UIElement]}}]}; });
+    $m($n[11].Grid, function () { return {"m":[{"a":2,"n":"ColumnDefinitions","t":16,"rt":$n[1].FreezableCollection$1(System.Windows.Controls.ColumnDefinition),"g":{"a":2,"n":"get_ColumnDefinitions","t":8,"sn":"getColumnDefinitions","rt":$n[1].FreezableCollection$1(System.Windows.Controls.ColumnDefinition)},"s":{"a":1,"n":"set_ColumnDefinitions","t":8,"pi":[{"n":"value","pt":$n[1].FreezableCollection$1(System.Windows.Controls.ColumnDefinition),"ps":0}],"sn":"setColumnDefinitions","rt":Object,"p":[$n[1].FreezableCollection$1(System.Windows.Controls.ColumnDefinition)]}},{"a":2,"n":"RowDefinitions","t":16,"rt":$n[1].FreezableCollection$1(System.Windows.Controls.RowDefinition),"g":{"a":2,"n":"get_RowDefinitions","t":8,"sn":"getRowDefinitions","rt":$n[1].FreezableCollection$1(System.Windows.Controls.RowDefinition)},"s":{"a":1,"n":"set_RowDefinitions","t":8,"pi":[{"n":"value","pt":$n[1].FreezableCollection$1(System.Windows.Controls.RowDefinition),"ps":0}],"sn":"setRowDefinitions","rt":Object,"p":[$n[1].FreezableCollection$1(System.Windows.Controls.RowDefinition)]}}]}; });
+    $m($n[11].ItemCollection, function () { return {"m":[{"a":2,"n":"CanFilter","t":16,"rt":Boolean,"g":{"a":2,"n":"get_CanFilter","t":8,"sn":"getCanFilter","rt":Boolean}},{"a":2,"n":"CanSort","t":16,"rt":Boolean,"g":{"a":2,"n":"get_CanSort","t":8,"sn":"getCanSort","rt":Boolean}},{"a":2,"n":"Count","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Count","t":8,"sn":"getCount","rt":$n[0].Int32}},{"a":2,"n":"CurrentItem","t":16,"rt":Object,"g":{"a":2,"n":"get_CurrentItem","t":8,"sn":"getCurrentItem","rt":Object},"s":{"a":2,"n":"set_CurrentItem","t":8,"pi":[{"n":"value","pt":Object,"ps":0}],"sn":"setCurrentItem","rt":Object,"p":[Object]}},{"a":2,"n":"CurrentItemIndex","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_CurrentItemIndex","t":8,"sn":"getCurrentItemIndex","rt":$n[0].Int32},"s":{"a":2,"n":"set_CurrentItemIndex","t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"sn":"setCurrentItemIndex","rt":Object,"p":[$n[0].Int32]}},{"a":2,"n":"FilterPredicate","t":16,"rt":Function,"g":{"a":2,"n":"get_FilterPredicate","t":8,"sn":"getFilterPredicate","rt":Function},"s":{"a":2,"n":"set_FilterPredicate","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"setFilterPredicate","rt":Object,"p":[Function]}},{"a":2,"n":"IsReadOnly","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsReadOnly","t":8,"sn":"getIsReadOnly","rt":Boolean}},{"a":2,"n":"SortDirection","t":16,"rt":$n[3].ListSortDirection,"g":{"a":2,"n":"get_SortDirection","t":8,"sn":"getSortDirection","rt":$n[3].ListSortDirection},"s":{"a":2,"n":"set_SortDirection","t":8,"pi":[{"n":"value","pt":$n[3].ListSortDirection,"ps":0}],"sn":"setSortDirection","rt":Object,"p":[$n[3].ListSortDirection]}},{"a":2,"n":"SortKeySelector","t":16,"rt":Function,"g":{"a":2,"n":"get_SortKeySelector","t":8,"sn":"getSortKeySelector","rt":Function},"s":{"a":2,"n":"set_SortKeySelector","t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"sn":"setSortKeySelector","rt":Object,"p":[Function]}},{"a":2,"n":"SourceCollection","t":16,"rt":$n[10].IEnumerable,"g":{"a":2,"n":"get_SourceCollection","t":8,"sn":"getSourceCollection","rt":$n[10].IEnumerable}}]}; });
+    $m($n[11].ItemsControl, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Items")],"m":[{"a":2,"n":"ItemContainerGenerator","t":16,"rt":$n[12].IItemContainerGenerator,"g":{"a":2,"n":"get_ItemContainerGenerator","t":8,"sn":"getItemContainerGenerator","rt":$n[12].IItemContainerGenerator},"s":{"a":1,"n":"set_ItemContainerGenerator","t":8,"pi":[{"n":"value","pt":$n[12].IItemContainerGenerator,"ps":0}],"sn":"setItemContainerGenerator","rt":Object,"p":[$n[12].IItemContainerGenerator]}},{"a":2,"n":"ItemContainerStyle","t":16,"rt":$n[1].Style,"g":{"a":2,"n":"get_ItemContainerStyle","t":8,"sn":"getItemContainerStyle","rt":$n[1].Style},"s":{"a":2,"n":"set_ItemContainerStyle","t":8,"pi":[{"n":"value","pt":$n[1].Style,"ps":0}],"sn":"setItemContainerStyle","rt":Object,"p":[$n[1].Style]}},{"a":2,"n":"ItemContainerStyleSelector","t":16,"rt":$n[11].IStyleSelector,"g":{"a":2,"n":"get_ItemContainerStyleSelector","t":8,"sn":"getItemContainerStyleSelector","rt":$n[11].IStyleSelector},"s":{"a":2,"n":"set_ItemContainerStyleSelector","t":8,"pi":[{"n":"value","pt":$n[11].IStyleSelector,"ps":0}],"sn":"setItemContainerStyleSelector","rt":Object,"p":[$n[11].IStyleSelector]}},{"a":2,"n":"ItemTemplate","t":16,"rt":$n[1].DataTemplate,"g":{"a":2,"n":"get_ItemTemplate","t":8,"sn":"getItemTemplate","rt":$n[1].DataTemplate},"s":{"a":2,"n":"set_ItemTemplate","t":8,"pi":[{"n":"value","pt":$n[1].DataTemplate,"ps":0}],"sn":"setItemTemplate","rt":Object,"p":[$n[1].DataTemplate]}},{"a":2,"n":"ItemTemplateSelector","t":16,"rt":$n[11].IDataTemplateSelector,"g":{"a":2,"n":"get_ItemTemplateSelector","t":8,"sn":"getItemTemplateSelector","rt":$n[11].IDataTemplateSelector},"s":{"a":2,"n":"set_ItemTemplateSelector","t":8,"pi":[{"n":"value","pt":$n[11].IDataTemplateSelector,"ps":0}],"sn":"setItemTemplateSelector","rt":Object,"p":[$n[11].IDataTemplateSelector]}},{"a":2,"n":"Items","t":16,"rt":$n[11].ItemCollection,"g":{"a":2,"n":"get_Items","t":8,"sn":"getItems","rt":$n[11].ItemCollection},"s":{"a":1,"n":"set_Items","t":8,"pi":[{"n":"value","pt":$n[11].ItemCollection,"ps":0}],"sn":"setItems","rt":Object,"p":[$n[11].ItemCollection]}},{"a":2,"n":"ItemsPanel","t":16,"rt":$n[1].IFrameworkTemplate,"g":{"a":2,"n":"get_ItemsPanel","t":8,"sn":"getItemsPanel","rt":$n[1].IFrameworkTemplate},"s":{"a":2,"n":"set_ItemsPanel","t":8,"pi":[{"n":"value","pt":$n[1].IFrameworkTemplate,"ps":0}],"sn":"setItemsPanel","rt":Object,"p":[$n[1].IFrameworkTemplate]}},{"a":2,"n":"ItemsSource","t":16,"rt":$n[10].IEnumerable,"g":{"a":2,"n":"get_ItemsSource","t":8,"sn":"getItemsSource","rt":$n[10].IEnumerable},"s":{"a":2,"n":"set_ItemsSource","t":8,"pi":[{"n":"value","pt":$n[10].IEnumerable,"ps":0}],"sn":"setItemsSource","rt":Object,"p":[$n[10].IEnumerable]}}]}; });
+    $m($n[11].Panel, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Children")],"m":[{"a":2,"n":"Background","t":16,"rt":$n[5].Brush,"g":{"a":2,"n":"get_Background","t":8,"sn":"getBackground","rt":$n[5].Brush},"s":{"a":2,"n":"set_Background","t":8,"pi":[{"n":"value","pt":$n[5].Brush,"ps":0}],"sn":"setBackground","rt":Object,"p":[$n[5].Brush]}},{"a":2,"n":"Children","t":16,"rt":$n[11].UIElementCollection,"g":{"a":2,"n":"get_Children","t":8,"sn":"getChildren","rt":$n[11].UIElementCollection},"s":{"a":1,"n":"set_Children","t":8,"pi":[{"n":"value","pt":$n[11].UIElementCollection,"ps":0}],"sn":"setChildren","rt":Object,"p":[$n[11].UIElementCollection]}},{"a":2,"n":"IsItemsHost","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsItemsHost","t":8,"sn":"getIsItemsHost","rt":Boolean},"s":{"a":2,"n":"set_IsItemsHost","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsItemsHost","rt":Object,"p":[Boolean]}},{"a":2,"n":"ItemContainerGenerator","t":16,"rt":$n[12].IItemContainerGenerator,"g":{"a":2,"n":"get_ItemContainerGenerator","t":8,"sn":"getItemContainerGenerator","rt":$n[12].IItemContainerGenerator},"s":{"a":2,"n":"set_ItemContainerGenerator","t":8,"pi":[{"n":"value","pt":$n[12].IItemContainerGenerator,"ps":0}],"sn":"setItemContainerGenerator","rt":Object,"p":[$n[12].IItemContainerGenerator]}}]}; });
+    $m($n[11].PasswordBox, function () { return {"at":[new System.Windows.TemplatePartAttribute.$ctor1("PART_ContentHost", System.Windows.FrameworkElement)],"m":[{"a":2,"n":"MaxLength","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_MaxLength","t":8,"sn":"getMaxLength","rt":$n[0].Int32},"s":{"a":2,"n":"set_MaxLength","t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"sn":"setMaxLength","rt":Object,"p":[$n[0].Int32]}},{"a":2,"n":"Password","t":16,"rt":String,"g":{"a":2,"n":"get_Password","t":8,"sn":"getPassword","rt":String},"s":{"a":2,"n":"set_Password","t":8,"pi":[{"n":"value","pt":String,"ps":0}],"sn":"setPassword","rt":Object,"p":[String]}}]}; });
+    $m($n[11].ScrollContentPresenter, function () { return {"m":[{"a":2,"n":"AdornerLayer","t":16,"rt":$n[13].AdornerLayer,"g":{"a":2,"n":"get_AdornerLayer","t":8,"sn":"getAdornerLayer","rt":$n[13].AdornerLayer},"s":{"a":1,"n":"set_AdornerLayer","t":8,"pi":[{"n":"value","pt":$n[13].AdornerLayer,"ps":0}],"sn":"setAdornerLayer","rt":Object,"p":[$n[13].AdornerLayer]}},{"a":2,"n":"CanContentScroll","t":16,"rt":Boolean,"g":{"a":2,"n":"get_CanContentScroll","t":8,"sn":"getCanContentScroll","rt":Boolean},"s":{"a":2,"n":"set_CanContentScroll","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setCanContentScroll","rt":Object,"p":[Boolean]}},{"a":2,"n":"CanHorizontallyScroll","t":16,"rt":Boolean,"g":{"a":2,"n":"get_CanHorizontallyScroll","t":8,"sn":"getCanHorizontallyScroll","rt":Boolean},"s":{"a":2,"n":"set_CanHorizontallyScroll","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setCanHorizontallyScroll","rt":Object,"p":[Boolean]}},{"a":2,"n":"CanVerticallyScroll","t":16,"rt":Boolean,"g":{"a":2,"n":"get_CanVerticallyScroll","t":8,"sn":"getCanVerticallyScroll","rt":Boolean},"s":{"a":2,"n":"set_CanVerticallyScroll","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setCanVerticallyScroll","rt":Object,"p":[Boolean]}},{"a":2,"n":"ExtentSize","t":16,"rt":$n[1].Size,"g":{"a":2,"n":"get_ExtentSize","t":8,"sn":"getExtentSize","rt":$n[1].Size}},{"a":2,"n":"Offset","t":16,"rt":$n[1].Point,"g":{"a":2,"n":"get_Offset","t":8,"sn":"getOffset","rt":$n[1].Point},"s":{"a":2,"n":"set_Offset","t":8,"pi":[{"n":"value","pt":$n[1].Point,"ps":0}],"sn":"setOffset","rt":Object,"p":[$n[1].Point]}},{"a":2,"n":"ViewportSize","t":16,"rt":$n[1].Size,"g":{"a":2,"n":"get_ViewportSize","t":8,"sn":"getViewportSize","rt":$n[1].Size}}]}; });
+    $m($n[11].UIElementCollection, function () { return {"m":[{"a":2,"n":"Count","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Count","t":8,"sn":"getCount","rt":$n[0].Int32}},{"a":2,"n":"IsReadOnly","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsReadOnly","t":8,"sn":"getIsReadOnly","rt":Boolean}}]}; });
+    $m($n[12].Popup, function () { return {"at":[new System.Windows.Markup.ContentPropertyAttribute("Child")],"m":[{"a":2,"n":"Child","t":16,"rt":$n[1].UIElement,"g":{"a":2,"n":"get_Child","t":8,"sn":"getChild","rt":$n[1].UIElement},"s":{"a":2,"n":"set_Child","t":8,"pi":[{"n":"value","pt":$n[1].UIElement,"ps":0}],"sn":"setChild","rt":Object,"p":[$n[1].UIElement]}},{"a":2,"n":"HorizontalOffset","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_HorizontalOffset","t":8,"sn":"getHorizontalOffset","rt":$n[0].Double},"s":{"a":2,"n":"set_HorizontalOffset","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setHorizontalOffset","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"IsOpen","t":16,"rt":Boolean,"g":{"a":2,"n":"get_IsOpen","t":8,"sn":"getIsOpen","rt":Boolean},"s":{"a":2,"n":"set_IsOpen","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setIsOpen","rt":Object,"p":[Boolean]}},{"a":2,"n":"Placement","t":16,"rt":$n[12].PlacementMode,"g":{"a":2,"n":"get_Placement","t":8,"sn":"getPlacement","rt":$n[12].PlacementMode},"s":{"a":2,"n":"set_Placement","t":8,"pi":[{"n":"value","pt":$n[12].PlacementMode,"ps":0}],"sn":"setPlacement","rt":Object,"p":[$n[12].PlacementMode]}},{"a":2,"n":"PlacementRectangle","t":16,"rt":$n[1].Rect,"g":{"a":2,"n":"get_PlacementRectangle","t":8,"sn":"getPlacementRectangle","rt":$n[1].Rect},"s":{"a":2,"n":"set_PlacementRectangle","t":8,"pi":[{"n":"value","pt":$n[1].Rect,"ps":0}],"sn":"setPlacementRectangle","rt":Object,"p":[$n[1].Rect]}},{"a":2,"n":"PlacementTarget","t":16,"rt":$n[5].Visual,"g":{"a":2,"n":"get_PlacementTarget","t":8,"sn":"getPlacementTarget","rt":$n[5].Visual},"s":{"a":2,"n":"set_PlacementTarget","t":8,"pi":[{"n":"value","pt":$n[5].Visual,"ps":0}],"sn":"setPlacementTarget","rt":Object,"p":[$n[5].Visual]}},{"a":2,"n":"StaysOpen","t":16,"rt":Boolean,"g":{"a":2,"n":"get_StaysOpen","t":8,"sn":"getStaysOpen","rt":Boolean},"s":{"a":2,"n":"set_StaysOpen","t":8,"pi":[{"n":"value","pt":Boolean,"ps":0}],"sn":"setStaysOpen","rt":Object,"p":[Boolean]}},{"a":2,"n":"VerticalOffset","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_VerticalOffset","t":8,"sn":"getVerticalOffset","rt":$n[0].Double},"s":{"a":2,"n":"set_VerticalOffset","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setVerticalOffset","rt":Object,"p":[$n[0].Double]}}]}; });
+    $m($n[12].Track, function () { return {"m":[{"a":2,"n":"DecreaseRepeatButton","t":16,"rt":$n[12].RepeatButton,"g":{"a":2,"n":"get_DecreaseRepeatButton","t":8,"sn":"getDecreaseRepeatButton","rt":$n[12].RepeatButton},"s":{"a":2,"n":"set_DecreaseRepeatButton","t":8,"pi":[{"n":"value","pt":$n[12].RepeatButton,"ps":0}],"sn":"setDecreaseRepeatButton","rt":Object,"p":[$n[12].RepeatButton]}},{"a":2,"n":"IncreaseRepeatButton","t":16,"rt":$n[12].RepeatButton,"g":{"a":2,"n":"get_IncreaseRepeatButton","t":8,"sn":"getIncreaseRepeatButton","rt":$n[12].RepeatButton},"s":{"a":2,"n":"set_IncreaseRepeatButton","t":8,"pi":[{"n":"value","pt":$n[12].RepeatButton,"ps":0}],"sn":"setIncreaseRepeatButton","rt":Object,"p":[$n[12].RepeatButton]}},{"a":2,"n":"Maximum","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_Maximum","t":8,"sn":"getMaximum","rt":$n[0].Double},"s":{"a":2,"n":"set_Maximum","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setMaximum","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"Minimum","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_Minimum","t":8,"sn":"getMinimum","rt":$n[0].Double},"s":{"a":2,"n":"set_Minimum","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setMinimum","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"Orientation","t":16,"rt":$n[11].Orientation,"g":{"a":2,"n":"get_Orientation","t":8,"sn":"getOrientation","rt":$n[11].Orientation},"s":{"a":2,"n":"set_Orientation","t":8,"pi":[{"n":"value","pt":$n[11].Orientation,"ps":0}],"sn":"setOrientation","rt":Object,"p":[$n[11].Orientation]}},{"a":2,"n":"Thumb","t":16,"rt":$n[12].Thumb,"g":{"a":2,"n":"get_Thumb","t":8,"sn":"getThumb","rt":$n[12].Thumb},"s":{"a":2,"n":"set_Thumb","t":8,"pi":[{"n":"value","pt":$n[12].Thumb,"ps":0}],"sn":"setThumb","rt":Object,"p":[$n[12].Thumb]}},{"a":2,"n":"ThumbMinLength","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_ThumbMinLength","t":8,"sn":"getThumbMinLength","rt":$n[0].Double},"s":{"a":2,"n":"set_ThumbMinLength","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setThumbMinLength","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"Value","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_Value","t":8,"sn":"getValue$5","rt":$n[0].Double},"s":{"a":2,"n":"set_Value","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setValue$5","rt":Object,"p":[$n[0].Double]}},{"a":2,"n":"ViewportSize","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_ViewportSize","t":8,"sn":"getViewportSize","rt":$n[0].Double},"s":{"a":2,"n":"set_ViewportSize","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"setViewportSize","rt":Object,"p":[$n[0].Double]}}]}; });
     $asm.attr= [new System.Windows.ThemeInfoAttribute.ctor(2),new System.Windows.Markup.XmlnsDefinitionAttribute("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "System.Windows", "Granular.Presentation"),new System.Windows.Markup.XmlnsDefinitionAttribute("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "System.Windows.Controls", "Granular.Presentation"),new System.Windows.Markup.XmlnsDefinitionAttribute("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "System.Windows.Controls.Primitives", "Granular.Presentation"),new System.Windows.Markup.XmlnsDefinitionAttribute("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "System.Windows.Data", "Granular.Presentation"),new System.Windows.Markup.XmlnsDefinitionAttribute("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "System.Windows.Documents", "Granular.Presentation"),new System.Windows.Markup.XmlnsDefinitionAttribute("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "System.Windows.Input", "Granular.Presentation"),new System.Windows.Markup.XmlnsDefinitionAttribute("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "System.Windows.Media", "Granular.Presentation"),new System.Windows.Markup.XmlnsDefinitionAttribute("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "System.Windows.Media.Animation", "Granular.Presentation"),new System.Windows.Markup.XmlnsDefinitionAttribute("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "System.Windows.Media.Imaging", "Granular.Presentation")];
 });

@@ -1,41 +1,38 @@
 /**
- * @version 0.2.1.0
+ * @version 0.2.0.0
  * @copyright Copyright ☺ 2016
- * @compiler Bridge.NET 15.7.0
+ * @compiler Bridge.NET 15.5.0
  */
 Bridge.assembly("Granular.Common", function ($asm, globals) {
     "use strict";
 
     Bridge.define("Granular.Collections.CacheDictionary$2", function (TKey, TValue) { return {
         statics: {
-            defaultValue: null,
-            create$1: function (tryResolveValue, comparer) {
-                if (comparer === void 0) { comparer = null; }
-                return new (Granular.Collections.CacheDictionary$2(TKey,TValue))(tryResolveValue, null, new (Granular.Collections.MinimalDictionary$2(TKey,TValue))(comparer), new (Granular.Collections.MinimalSet$1(TKey))(comparer));
-            },
-            create: function (resolveValue, comparer) {
-                if (comparer === void 0) { comparer = null; }
-                return new (Granular.Collections.CacheDictionary$2(TKey,TValue))(null, resolveValue, new (Granular.Collections.MinimalDictionary$2(TKey,TValue))(comparer), new (Granular.Collections.MinimalSet$1(TKey))(comparer));
-            },
-            createUsingStringKeys$1: function (tryResolveValue, getStringKey) {
-                if (getStringKey === void 0) { getStringKey = null; }
-                return new (Granular.Collections.CacheDictionary$2(TKey,TValue))(tryResolveValue, null, new (Granular.Collections.ConvertedStringDictionary$2(TKey,TValue))(getStringKey), new (Granular.Collections.ConvertedStringSet$1(TKey))(getStringKey));
-            },
-            createUsingStringKeys: function (resolveValue, getStringKey) {
-                if (getStringKey === void 0) { getStringKey = null; }
-                return new (Granular.Collections.CacheDictionary$2(TKey,TValue))(null, resolveValue, new (Granular.Collections.ConvertedStringDictionary$2(TKey,TValue))(getStringKey), new (Granular.Collections.ConvertedStringSet$1(TKey))(getStringKey));
-            }
+            defaultValue: null
         },
         tryResolveValue: null,
         resolveValue: null,
-        values: null,
+        dictionary: null,
         unsetValues: null,
-        ctor: function (tryResolveValue, resolveValue, valuesContainer, unsetValuesContainer) {
+        ctor: function (resolveValue, equalityComparer) {
+            if (equalityComparer === void 0) { equalityComparer = null; }
+
+            Granular.Collections.CacheDictionary$2(TKey,TValue).$ctor1.call(this, null, resolveValue, equalityComparer);
+            //
+        },
+        $ctor2: function (tryResolveValue, equalityComparer) {
+            if (equalityComparer === void 0) { equalityComparer = null; }
+
+            Granular.Collections.CacheDictionary$2(TKey,TValue).$ctor1.call(this, tryResolveValue, null, equalityComparer);
+            //
+        },
+        $ctor1: function (tryResolveValue, resolveValue, equalityComparer) {
             this.$initialize();
             this.tryResolveValue = tryResolveValue;
             this.resolveValue = resolveValue;
-            this.values = valuesContainer;
-            this.unsetValues = unsetValuesContainer;
+
+            this.dictionary = new (System.Collections.Generic.Dictionary$2(TKey, TValue))(null, equalityComparer);
+            this.unsetValues = new (System.Collections.Generic.HashSet$1(TKey))();
         },
         getValue: function (key) {
             var value = { };
@@ -46,60 +43,41 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             throw new Granular.Exception("Key \"{0}\" was not found", [key]);
         },
         tryGetValue: function (key, value) {
-            var result = { };
+            if (this.dictionary.tryGetValue(key, value)) {
+                return true;
+            }
 
-            if (this.values.Granular$Collections$IMinimalDictionary$tryGetValue(key, result)) {
-                value.v = result.v;
+            if (this.unsetValues.contains(key)) {
+                value.v = Granular.Collections.CacheDictionary$2(TKey,TValue).defaultValue;
+                return false;
+            }
+
+            if (!Bridge.staticEquals(this.tryResolveValue, null) && this.tryResolveValue(key, value)) {
+                this.dictionary.add(key, value.v);
                 return true;
             }
 
             if (!Bridge.staticEquals(this.resolveValue, null)) {
                 value.v = this.resolveValue(key);
-                this.values.Granular$Collections$IMinimalDictionary$add(key, value.v);
+                this.dictionary.add(key, value.v);
                 return true;
             }
 
-            if (this.unsetValues.Granular$Collections$IMinimalSet$contains(key)) {
-                value.v = Granular.Collections.CacheDictionary$2(TKey,TValue).defaultValue;
-                return false;
-            }
-
-            if (this.tryResolveValue(key, value)) {
-                this.values.Granular$Collections$IMinimalDictionary$add(key, value.v);
-                return true;
-            }
-
-            this.unsetValues.Granular$Collections$IMinimalSet$add(key);
+            this.unsetValues.add(key);
             value.v = Granular.Collections.CacheDictionary$2(TKey,TValue).defaultValue;
             return false;
         },
         contains: function (key) {
-            return this.values.Granular$Collections$IMinimalDictionary$containsKey(key) || this.unsetValues.Granular$Collections$IMinimalSet$contains(key);
+            return this.dictionary.containsKey(key) || this.unsetValues.contains(key);
         },
         remove: function (key) {
-            this.values.Granular$Collections$IMinimalDictionary$remove(key);
-            this.unsetValues.Granular$Collections$IMinimalSet$remove(key);
+            this.dictionary.remove(key);
+            this.unsetValues.remove(key);
         },
         clear: function () {
-            this.values.Granular$Collections$IMinimalDictionary$clear();
-            this.unsetValues.Granular$Collections$IMinimalSet$clear();
+            this.dictionary.clear();
+            this.unsetValues.clear();
         }
-    }; });
-
-    Bridge.define("Granular.Collections.IMinimalDictionary", {
-        $kind: "interface"
-    });
-
-    Bridge.definei("Granular.Collections.IMinimalDictionary$2", function (TKey, TValue) { return {
-        $kind: "interface"
-    }; });
-
-    Bridge.define("Granular.Collections.IMinimalSet", {
-        $kind: "interface"
-    });
-
-    Bridge.definei("Granular.Collections.IMinimalSet$1", function (T) { return {
-        $kind: "interface"
     }; });
 
     Bridge.define("Granular.Collections.INotifyCollectionChanged", {
@@ -133,29 +111,6 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
         }
     });
 
-    Bridge.define("Granular.Collections.MinimalDictionaryExtensions", {
-        statics: {
-            getValue: function (TKey, TValue, minimalDictionary, key) {
-                var value = { };
-
-                if (minimalDictionary["Granular$Collections$IMinimalDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$tryGetValue"](key, value)) {
-                    return value.v;
-                }
-
-                throw new Granular.Exception("The given key was not present in the dictionary.");
-            },
-            getValue$1: function (minimalDictionary, key) {
-                var value = { };
-
-                if (minimalDictionary.Granular$Collections$IMinimalDictionary$tryGetValue(key, value)) {
-                    return value.v;
-                }
-
-                throw new Granular.Exception("The given key was not present in the dictionary.");
-            }
-        }
-    });
-
     Bridge.define("Granular.Collections.NotifyCollectionChangedAction", {
         $kind: "enum",
         statics: {
@@ -170,25 +125,25 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
     Bridge.define("Granular.Collections.NotifyCollectionChangedEventArgs", {
         statics: {
             add: function (item, index) {
-                return Granular.Collections.NotifyCollectionChangedEventArgs.addRange(System.Array.init([item], Object), index);
+                return Granular.Collections.NotifyCollectionChangedEventArgs.addRange([item], index);
             },
             addRange: function (items, startingIndex) {
-                return new Granular.Collections.NotifyCollectionChangedEventArgs(Granular.Collections.NotifyCollectionChangedAction.Add, System.Array.init(0, null, Object), -1, items, startingIndex);
+                return new Granular.Collections.NotifyCollectionChangedEventArgs(Granular.Collections.NotifyCollectionChangedAction.Add, System.Array.init(0, null), -1, items, startingIndex);
             },
             remove: function (item, index) {
-                return Granular.Collections.NotifyCollectionChangedEventArgs.removeRange(System.Array.init([item], Object), index);
+                return Granular.Collections.NotifyCollectionChangedEventArgs.removeRange([item], index);
             },
             removeRange: function (items, startingIndex) {
-                return new Granular.Collections.NotifyCollectionChangedEventArgs(Granular.Collections.NotifyCollectionChangedAction.Remove, items, startingIndex, System.Array.init(0, null, Object), -1);
+                return new Granular.Collections.NotifyCollectionChangedEventArgs(Granular.Collections.NotifyCollectionChangedAction.Remove, items, startingIndex, System.Array.init(0, null), -1);
             },
             replace: function (oldItem, newItem, index) {
-                return Granular.Collections.NotifyCollectionChangedEventArgs.replaceRange(System.Array.init([oldItem], Object), System.Array.init([newItem], Object), index);
+                return Granular.Collections.NotifyCollectionChangedEventArgs.replaceRange([oldItem], [newItem], index);
             },
             replaceRange: function (oldItems, newItems, index) {
                 return new Granular.Collections.NotifyCollectionChangedEventArgs(Granular.Collections.NotifyCollectionChangedAction.Replace, oldItems, index, newItems, index);
             },
             move: function (item, oldIndex, newIndex) {
-                return Granular.Collections.NotifyCollectionChangedEventArgs.moveRange(System.Array.init([item], Object), oldIndex, newIndex);
+                return Granular.Collections.NotifyCollectionChangedEventArgs.moveRange([item], oldIndex, newIndex);
             },
             moveRange: function (items, oldStartingIndex, newStartingIndex) {
                 return new Granular.Collections.NotifyCollectionChangedEventArgs(Granular.Collections.NotifyCollectionChangedAction.Move, items, oldStartingIndex, items, newStartingIndex);
@@ -226,33 +181,45 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
         }
     });
 
-    Bridge.define("Granular.Collections.PriorityQueue$1", function (TValue) { return {
+    Bridge.define("Granular.Collections.PriorityQueue$2", function (TKey, TValue) { return {
+        inherits: [System.Collections.Generic.IEnumerable$1(System.Collections.Generic.KeyValuePair$2(TKey,TValue))],
         statics: {
             defaultValue: null
         },
-        queues: null,
-        count: 0,
-        topPriority: 0,
-        ctor: function (maxPriotiry) {
+        comparer: null,
+        items: null,
+        config: {
+            alias: [
+            "getEnumerator", "System$Collections$Generic$IEnumerable$1$System$Collections$Generic$KeyValuePair$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$getEnumerator"
+            ]
+        },
+        ctor: function () {
+            Granular.Collections.PriorityQueue$2(TKey,TValue).$ctor1.call(this, Granular.Compatibility.Comparer$1(TKey).getDefault());
+            //
+        },
+        $ctor1: function (comparer) {
             this.$initialize();
-            this.queues = System.Array.init(maxPriotiry, null, System.Collections.Generic.Queue$1(TValue));
+            this.comparer = comparer;
+            this.items = new (System.Collections.Generic.List$1(System.Collections.Generic.KeyValuePair$2(TKey,TValue)))();
         },
         getCount: function () {
-            return this.count;
+            return this.items.getCount();
         },
-        enqueue: function (priotiry, value) {
-            var queue = this.queues[priotiry];
-            if (queue == null) {
-                queue = new (System.Collections.Generic.Queue$1(TValue))();
-                this.queues[priotiry] = queue;
+        enqueue: function (key, value) {
+            this.items.insert(this.getKeyIndex(key, 0, this.items.getCount()), new (System.Collections.Generic.KeyValuePair$2(TKey,TValue))(key, value));
+        },
+        getKeyIndex: function (key, startIndex, endIndex) {
+            if (((endIndex - startIndex) | 0) === 0) {
+                return endIndex;
             }
 
-            queue.enqueue(value);
-            this.count = (this.count + 1) | 0;
-
-            if (this.topPriority < priotiry) {
-                this.topPriority = priotiry;
+            if (((endIndex - startIndex) | 0) === 1) {
+                return this.comparer["System$Collections$Generic$IComparer$1$" + Bridge.getTypeAlias(TKey) + "$compare"](key, this.items.getItem(startIndex).key) > 0 ? startIndex : endIndex;
             }
+
+            var middleIndex = (Bridge.Int.div((((startIndex + endIndex) | 0)), 2)) | 0;
+
+            return this.comparer["System$Collections$Generic$IComparer$1$" + Bridge.getTypeAlias(TKey) + "$compare"](key, this.items.getItem(middleIndex).key) > 0 ? this.getKeyIndex(key, startIndex, middleIndex) : this.getKeyIndex(key, middleIndex, endIndex);
         },
         dequeue: function () {
             var value = { };
@@ -263,19 +230,13 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             throw new System.InvalidOperationException("Queue is empty");
         },
         tryDequeue: function (value) {
-            if (this.count === 0) {
-                value.v = Granular.Collections.PriorityQueue$1(TValue).defaultValue;
-                return false;
+            if (this.tryPeek(value)) {
+                this.items.removeAt(0);
+                return true;
             }
 
-            while (this.queues[this.topPriority] == null || this.queues[this.topPriority].getCount() === 0) {
-                this.topPriority = (this.topPriority - 1) | 0;
-            }
-
-            value.v = this.queues[this.topPriority].dequeue();
-            this.count = (this.count - 1) | 0;
-
-            return true;
+            value.v = Granular.Collections.PriorityQueue$2(TKey,TValue).defaultValue;
+            return false;
         },
         peek: function () {
             var value = { };
@@ -286,17 +247,19 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             throw new System.InvalidOperationException("Queue is empty");
         },
         tryPeek: function (value) {
-            if (this.count === 0) {
-                value.v = Granular.Collections.PriorityQueue$1(TValue).defaultValue;
-                return false;
+            if (this.items.getCount() > 0) {
+                value.v = this.items.getItem(0).value;
+                return true;
             }
 
-            while (this.queues[this.topPriority] == null || this.queues[this.topPriority].getCount() === 0) {
-                this.topPriority = (this.topPriority - 1) | 0;
-            }
-
-            value.v = this.queues[this.topPriority].peek();
-            return true;
+            value.v = Granular.Collections.PriorityQueue$2(TKey,TValue).defaultValue;
+            return false;
+        },
+        getEnumerator: function () {
+            return this.items.getEnumerator();
+        },
+        System$Collections$IEnumerable$getEnumerator: function () {
+            return this.items.getEnumerator();
         }
     }; });
 
@@ -318,7 +281,7 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
                 throw new Granular.Exception("Stack is empty");
             }
 
-            var current = this.enumerator.System$Collections$IEnumerator$getCurrent();
+            var current = this.enumerator[Bridge.geti(this.enumerator, "System$Collections$Generic$IEnumerator$1$" + Bridge.getTypeAlias(T) + "$getCurrent$1", "getCurrent$1")]();
 
             this.moveNext();
 
@@ -329,41 +292,12 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
                 throw new Granular.Exception("Stack is empty");
             }
 
-            return this.enumerator.System$Collections$IEnumerator$getCurrent();
+            return this.enumerator[Bridge.geti(this.enumerator, "System$Collections$Generic$IEnumerator$1$" + Bridge.getTypeAlias(T) + "$getCurrent$1", "getCurrent$1")]();
         },
         moveNext: function () {
             this.setIsEmpty(!this.enumerator.System$Collections$IEnumerator$moveNext());
         }
     }; });
-
-    (function(){
-        
-        Bridge.Reflection.resolveTypeFullName = Bridge.Reflection.getTypeFullName;
-
-        Bridge.Reflection.getTypeFullName = function (obj) {
-            if (obj.$$fullname === undefined) {
-                obj.$$fullname = Bridge.Reflection.resolveTypeFullName(obj);
-            }
-
-            return obj.$$fullname;
-        };
-    
-    })();
-    (function(){
-        
-        Bridge.resolveTypeAlias = Bridge.getTypeAlias;
-
-        Bridge.getTypeAlias = function (obj) {
-            if (obj.$$alias === undefined) {
-                obj.$$alias = Bridge.resolveTypeAlias(obj);
-            }
-
-            return obj.$$alias;
-        };
-     
-    })();
-
-    Bridge.define("Granular.Common.Compatibility.Initialize");
 
     Bridge.define("Granular.Compatibility.AppDomain");
 
@@ -493,11 +427,11 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             doubleFormat: null,
             config: {
                 init: function () {
-                    this.doubleFormat = new RegExp("^[+-]?([0-9]*,)*[0-9]*(\\.([0-9]*))?([eE]([+-]?)[0-9]*)?$");
+                    this.doubleFormat = new System.Text.RegularExpressions.Regex.ctor("[+-]?([0-9]*,)*[0-9]*(\\.([0-9]*))?([eE]([+-]?)[0-9]*)?");
                 }
             },
             tryParse: function (s, result) {
-                if (Granular.Compatibility.Double.doubleFormat.exec(s) == null) {
+                if (!Granular.Compatibility.Double.doubleFormat.match(s).getSuccess()) {
                     result.v = Number.NaN;
                     return false;
                 }
@@ -553,519 +487,10 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
         }
     }; });
 
-    Bridge.define("Granular.Compatibility.Linq.Enumerable", {
-        statics: {
-            aggregate: function (TSource, source, func) {
-                return System.Linq.Enumerable.from(source).aggregate(func);
-            },
-            all: function (TSource, source, predicate) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).all(predicate);
-                }
-
-                for (var i = 0; i < sourceArray.length; i = (i + 1) | 0) {
-                    if (!predicate(sourceArray[i])) {
-                        return false;
-                    }
-                }
-
-                return true;
-            },
-            any: function (TSource, source) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).any();
-                }
-
-                return sourceArray.length > 0;
-            },
-            any$1: function (TSource, source, predicate) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).any(predicate);
-                }
-
-                for (var i = 0; i < sourceArray.length; i = (i + 1) | 0) {
-                    if (predicate(sourceArray[i])) {
-                        return true;
-                    }
-                }
-
-                return false;
-            },
-            cast: function (TResult, source) {
-                var sourceArray = Bridge.as(source, Array);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).select(function(x) { return Bridge.cast(x, TResult); });
-                }
-
-                var resultArray = System.Array.init(sourceArray.length, function (){
-                    return Bridge.getDefaultValue(TResult);
-                }, TResult);
-
-                for (var i = 0; i < sourceArray.length; i = (i + 1) | 0) {
-                    resultArray[i] = Bridge.cast(System.Array.get(sourceArray, i), TResult);
-                }
-
-                return resultArray;
-            },
-            concat: function (TSource, first, second) {
-                var firstArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, first);
-                var secondArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, second);
-
-                if (firstArray == null || secondArray == null) {
-                    return System.Linq.Enumerable.from(first).concat(second);
-                }
-
-                var resultArray = System.Array.init(((firstArray.length + secondArray.length) | 0), function (){
-                    return Bridge.getDefaultValue(TSource);
-                }, TSource);
-                var j = 0;
-
-                for (var i = 0; i < firstArray.length; i = (i + 1) | 0) {
-                    resultArray[j] = firstArray[i];
-                    j = (j + 1) | 0;
-                }
-
-                for (var i1 = 0; i1 < secondArray.length; i1 = (i1 + 1) | 0) {
-                    resultArray[j] = secondArray[i1];
-                    j = (j + 1) | 0;
-                }
-
-                return resultArray;
-            },
-            contains: function (TSource, source, value) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).contains(value);
-                }
-
-                for (var i = 0; i < sourceArray.length; i = (i + 1) | 0) {
-                    if (Bridge.equals(sourceArray[i], value)) {
-                        return true;
-                    }
-                }
-
-                return false;
-            },
-            count: function (TSource, source) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).count();
-                }
-
-                return sourceArray.length;
-            },
-            count$1: function (TSource, source, predicate) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).count(predicate);
-                }
-
-                var count = 0;
-
-                for (var i = 0; i < sourceArray.length; i = (i + 1) | 0) {
-                    if (predicate(sourceArray[i])) {
-                        count = (count + 1) | 0;
-                    }
-                }
-
-                return count;
-            },
-            defaultIfEmpty: function (TSource, source) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).defaultIfEmpty(Bridge.getDefaultValue(TSource));
-                }
-
-                return sourceArray.length > 0 ? sourceArray : System.Array.init([Bridge.getDefaultValue(TSource)], TSource);
-            },
-            defaultIfEmpty$1: function (TSource, source, defaultValue) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).defaultIfEmpty(defaultValue);
-                }
-
-                return sourceArray.length > 0 ? sourceArray : System.Array.init([defaultValue], TSource);
-            },
-            distinct: function (TSource, source) {
-                return System.Linq.Enumerable.from(source).distinct();
-            },
-            elementAt: function (TSource, source, index) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).elementAt(index);
-                }
-
-                return sourceArray[index];
-            },
-            empty: function (TResult) {
-                return System.Array.init(0, function (){
-                    return Bridge.getDefaultValue(TResult);
-                }, TResult);
-            },
-            except: function (TSource, first, second) {
-                return System.Linq.Enumerable.from(first).except(second);
-            },
-            first: function (TSource, source) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).first();
-                }
-
-                if (sourceArray.length === 0) {
-                    throw new Granular.Exception("Sequence contains no elements");
-                }
-
-                return sourceArray[0];
-            },
-            first$1: function (TSource, source, predicate) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).first(predicate);
-                }
-
-                if (sourceArray.length === 0) {
-                    throw new Granular.Exception("Sequence contains no elements");
-                }
-
-                for (var i = 0; i < sourceArray.length; i = (i + 1) | 0) {
-                    if (predicate(sourceArray[i])) {
-                        return sourceArray[i];
-                    }
-                }
-
-                throw new Granular.Exception("Sequence contains no matching element");
-            },
-            firstOrDefault: function (TSource, source) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).firstOrDefault(null, Bridge.getDefaultValue(TSource));
-                }
-
-                return sourceArray.length > 0 ? sourceArray[0] : Bridge.getDefaultValue(TSource);
-            },
-            firstOrDefault$1: function (TSource, source, predicate) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).firstOrDefault(predicate, Bridge.getDefaultValue(TSource));
-                }
-
-                for (var i = 0; i < sourceArray.length; i = (i + 1) | 0) {
-                    if (predicate(sourceArray[i])) {
-                        return sourceArray[i];
-                    }
-                }
-
-                return Bridge.getDefaultValue(TSource);
-            },
-            intersect: function (TSource, first, second) {
-                return System.Linq.Enumerable.from(first).intersect(second);
-            },
-            last: function (TSource, source) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).last();
-                }
-
-                if (sourceArray.length === 0) {
-                    throw new Granular.Exception("Sequence contains no elements");
-                }
-
-                return sourceArray[((sourceArray.length - 1) | 0)];
-            },
-            last$1: function (TSource, source, predicate) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).last(predicate);
-                }
-
-                if (sourceArray.length === 0) {
-                    throw new Granular.Exception("Sequence contains no elements");
-                }
-
-                for (var i = (sourceArray.length - 1) | 0; i >= 0; i = (i - 1) | 0) {
-                    if (predicate(sourceArray[i])) {
-                        return sourceArray[i];
-                    }
-                }
-
-                throw new Granular.Exception("Sequence contains no matching element");
-            },
-            lastOrDefault: function (TSource, source) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).lastOrDefault(null, Bridge.getDefaultValue(TSource));
-                }
-
-                return sourceArray.length > 0 ? sourceArray[((sourceArray.length - 1) | 0)] : Bridge.getDefaultValue(TSource);
-            },
-            lastOrDefault$1: function (TSource, source, predicate) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).lastOrDefault(predicate, Bridge.getDefaultValue(TSource));
-                }
-
-                for (var i = (sourceArray.length - 1) | 0; i >= 0; i = (i - 1) | 0) {
-                    if (predicate(sourceArray[i])) {
-                        return sourceArray[i];
-                    }
-                }
-
-                return Bridge.getDefaultValue(TSource);
-            },
-            max$1: function (source) {
-                return System.Linq.Enumerable.from(source).max();
-            },
-            max: function (TSource, source) {
-                return System.Linq.Enumerable.from(source).max();
-            },
-            min$1: function (source) {
-                return System.Linq.Enumerable.from(source).min();
-            },
-            min: function (TSource, source) {
-                return System.Linq.Enumerable.from(source).min();
-            },
-            ofType: function (TResult, source) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray$1(source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).ofType(TResult);
-                }
-
-                var resultArray = System.Array.init(0, function (){
-                    return Bridge.getDefaultValue(TResult);
-                }, TResult);
-
-                for (var i = 0; i < sourceArray.length; i = (i + 1) | 0) {
-                    var item = Bridge.as(sourceArray[i], TResult);
-                    if (item != null) {
-                        resultArray.push(item);
-                    }
-                }
-
-                return sourceArray.length === resultArray.length ? sourceArray : resultArray;
-            },
-            orderBy: function (TSource, TKey, source, keySelector) {
-                return System.Linq.Enumerable.from(source).orderBy(keySelector);
-            },
-            orderByDescending: function (TSource, TKey, source, keySelector) {
-                return System.Linq.Enumerable.from(source).orderByDescending(keySelector);
-            },
-            reverse: function (TSource, source) {
-                return System.Linq.Enumerable.from(source).reverse();
-            },
-            select: function (TSource, TResult, source, selector) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).select(selector);
-                }
-
-                var resultArray = System.Array.init(sourceArray.length, function (){
-                    return Bridge.getDefaultValue(TResult);
-                }, TResult);
-
-                for (var i = 0; i < sourceArray.length; i = (i + 1) | 0) {
-                    resultArray[i] = selector(sourceArray[i]);
-                }
-
-                return resultArray;
-            },
-            selectMany: function (TSource, TResult, source, selector) {
-                var $t;
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).selectMany(selector);
-                }
-
-                var resultArray = System.Array.init(0, function (){
-                    return Bridge.getDefaultValue(TResult);
-                }, TResult);
-
-                for (var i = 0; i < sourceArray.length; i = (i + 1) | 0) {
-                    $t = Bridge.getEnumerator(selector(sourceArray[i]), TResult);
-                    while ($t.moveNext()) {
-                        var result = $t.getCurrent();
-                        resultArray.push(result);
-                    }
-                }
-
-                return resultArray;
-            },
-            sequenceEqual: function (TSource, first, second) {
-                return System.Linq.Enumerable.from(first).sequenceEqual(second);
-            },
-            single: function (TSource, source) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).single();
-                }
-
-                if (sourceArray.length === 1) {
-                    return sourceArray[0];
-                }
-
-                if (sourceArray.length === 0) {
-                    throw new Granular.Exception("Sequence contains no elements");
-                }
-
-                throw new Granular.Exception("Sequence contains more than one element");
-            },
-            skip: function (TSource, source, count) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).skip(count);
-                }
-
-                var length = (sourceArray.length - count) | 0;
-                var resultArray = System.Array.init(length, function (){
-                    return Bridge.getDefaultValue(TSource);
-                }, TSource);
-
-                System.Array.copy(sourceArray, count, resultArray, 0, length);
-
-                return resultArray;
-            },
-            sum$2: function (source) {
-                return System.Linq.Enumerable.from(source).sum();
-            },
-            sum$3: function (TSource, source, selector) {
-                return System.Linq.Enumerable.from(source).sum(selector);
-            },
-            sum: function (source) {
-                return System.Linq.Enumerable.from(source).sum();
-            },
-            sum$1: function (TSource, source, selector) {
-                return System.Linq.Enumerable.from(source).sum(selector);
-            },
-            take: function (TSource, source, count) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).take(count);
-                }
-
-                var resultArray = System.Array.init(count, function (){
-                    return Bridge.getDefaultValue(TSource);
-                }, TSource);
-
-                System.Array.copy(sourceArray, 0, resultArray, 0, count);
-
-                return resultArray;
-            },
-            toArray: function (TSource, source) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).toArray();
-                }
-
-                var resultArray = System.Array.init(sourceArray.length, function (){
-                    return Bridge.getDefaultValue(TSource);
-                }, TSource);
-
-                System.Array.copy(sourceArray, 0, resultArray, 0, sourceArray.length);
-
-                return resultArray;
-            },
-            toList: function (TSource, source) {
-                return System.Linq.Enumerable.from(source).toList(TSource);
-            },
-            union: function (TSource, first, second) {
-                return System.Linq.Enumerable.from(first).union(second);
-            },
-            where: function (TSource, source, predicate) {
-                var sourceArray = Granular.Compatibility.Linq.Enumerable.asArray(TSource, source);
-
-                if (sourceArray == null) {
-                    return System.Linq.Enumerable.from(source).where(predicate);
-                }
-
-                var resultArray = System.Array.init(0, function (){
-                    return Bridge.getDefaultValue(TSource);
-                }, TSource);
-
-                for (var i = 0; i < sourceArray.length; i = (i + 1) | 0) {
-                    var item = sourceArray[i];
-                    if (predicate(item)) {
-                        resultArray.push(item);
-                    }
-                }
-
-                return sourceArray.length === resultArray.length ? sourceArray : resultArray;
-            },
-            zip: function (TFirst, TSecond, TResult, first, second, resultSelector) {
-                return System.Linq.Enumerable.from(first).zip(second, resultSelector);
-            },
-            asArray$1: function (source) {
-                return (Bridge.as(source, Array) || Bridge.as(source.items, Array));
-            },
-            asArray: function (TSource, source) {
-                return (Bridge.as(source, Array) || Bridge.as(source.items, Array));
-            }
-        }
-    });
-
     Bridge.define("Granular.Compatibility.String", {
         statics: {
             fromByteArray: function (data) {
                 return decodeURIComponent(escape(String.fromCharCode.apply(null, data)));
-            },
-            startsWith: function (s, value) {
-                return s.length > 0 && s.charCodeAt(0) === value;
-            },
-            startsWith$1: function (s, prefix) {
-                if (prefix.length > s.length) {
-                    return false;
-                }
-
-                for (var i = 0; i < prefix.length; i = (i + 1) | 0) {
-                    if (s.charCodeAt(i) !== prefix.charCodeAt(i)) {
-                        return false;
-                    }
-                }
-
-                return true;
-            },
-            endsWith: function (s, value) {
-                return s.length > 0 && s.charCodeAt(((s.length - 1) | 0)) === value;
-            },
-            endsWith$1: function (s, prefix) {
-                if (prefix.length > s.length) {
-                    return false;
-                }
-
-                var startIndex = (s.length - prefix.length) | 0;
-                for (var i = 0; i < prefix.length; i = (i + 1) | 0) {
-                    if (s.charCodeAt(((startIndex + i) | 0)) !== prefix.charCodeAt(i)) {
-                        return false;
-                    }
-                }
-
-                return true;
             }
         }
     });
@@ -1084,7 +509,7 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
                 init: function () {
                     this.minValue = System.TimeSpan.fromDays(-10000) || new System.TimeSpan();
                     this.maxValue = System.TimeSpan.fromDays(10000) || new System.TimeSpan();
-                    this.timeSpanFormatRegex = new RegExp("^(-?)(((([0-9]+)\\.)?([0-9]+):([0-9]+)(:([0-9]*)(\\.([0-9]+))?)?)|([0-9]+))$");
+                    this.timeSpanFormatRegex = new System.Text.RegularExpressions.Regex.ctor("(-?)(((([0-9]+)\\.)?([0-9]+):([0-9]+)(:([0-9]*)(\\.([0-9]+))?)?)|([0-9]+))");
                 }
             },
             tryParse: function (s, result) {
@@ -1094,19 +519,19 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
                 var seconds = 0;
                 var milliseconds = 0;
 
-                var match = Granular.Compatibility.TimeSpan.timeSpanFormatRegex.exec(s);
+                var match = Granular.Compatibility.TimeSpan.timeSpanFormatRegex.match(s);
 
-                if (match == null) {
+                if (!match.getSuccess()) {
                     result.v = System.TimeSpan.zero;
                     return false;
                 }
 
-                if (!System.Int32.tryParse(match[Granular.Compatibility.TimeSpan.TimeSpanFormatDaysAlternativeGroupIndex], days)) {
-                    days.v = System.Int32.parse(Granular.Extensions.StringExtensions.defaultIfNullOrEmpty(match[Granular.Compatibility.TimeSpan.TimeSpanFormatDaysGroupIndex], "0"));
-                    hours = System.Int32.parse(Granular.Extensions.StringExtensions.defaultIfNullOrEmpty(match[Granular.Compatibility.TimeSpan.TimeSpanFormatHoursGroupIndex], "0"));
-                    minutes = System.Int32.parse(Granular.Extensions.StringExtensions.defaultIfNullOrEmpty(match[Granular.Compatibility.TimeSpan.TimeSpanFormatMinutesGroupIndex], "0"));
-                    seconds = System.Int32.parse(Granular.Extensions.StringExtensions.defaultIfNullOrEmpty(match[Granular.Compatibility.TimeSpan.TimeSpanFormatSecondsGroupIndex], "0"));
-                    milliseconds = System.Int32.parse(System.String.alignString(Granular.Extensions.StringExtensions.defaultIfNullOrEmpty(match[Granular.Compatibility.TimeSpan.TimeSpanFormatMillisecondsGroupIndex], "000"), -3, 48));
+                if (!System.Int32.tryParse(match.getGroups().get(Granular.Compatibility.TimeSpan.TimeSpanFormatDaysAlternativeGroupIndex).getValue(), days)) {
+                    days.v = System.Int32.parse(Granular.Extensions.StringExtensions.defaultIfNullOrEmpty(match.getGroups().get(Granular.Compatibility.TimeSpan.TimeSpanFormatDaysGroupIndex).getValue(), "0"));
+                    hours = System.Int32.parse(Granular.Extensions.StringExtensions.defaultIfNullOrEmpty(match.getGroups().get(Granular.Compatibility.TimeSpan.TimeSpanFormatHoursGroupIndex).getValue(), "0"));
+                    minutes = System.Int32.parse(Granular.Extensions.StringExtensions.defaultIfNullOrEmpty(match.getGroups().get(Granular.Compatibility.TimeSpan.TimeSpanFormatMinutesGroupIndex).getValue(), "0"));
+                    seconds = System.Int32.parse(Granular.Extensions.StringExtensions.defaultIfNullOrEmpty(match.getGroups().get(Granular.Compatibility.TimeSpan.TimeSpanFormatSecondsGroupIndex).getValue(), "0"));
+                    milliseconds = System.Int32.parse(System.String.alignString(Granular.Extensions.StringExtensions.defaultIfNullOrEmpty(match.getGroups().get(Granular.Compatibility.TimeSpan.TimeSpanFormatMillisecondsGroupIndex).getValue(), "000"), -3, 48));
                 }
 
                 if (hours >= 24 || minutes >= 60 || seconds >= 60 || milliseconds >= 1000) {
@@ -1114,7 +539,7 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
                     return false;
                 }
 
-                if (Bridge.referenceEquals(match[Granular.Compatibility.TimeSpan.TimeSpanFormatSignGroupIndex], "-")) {
+                if (Bridge.referenceEquals(match.getGroups().get(Granular.Compatibility.TimeSpan.TimeSpanFormatSignGroupIndex).getValue(), "-")) {
                     days.v = (-days.v) | 0;
                     hours = (-hours) | 0;
                     minutes = (-minutes) | 0;
@@ -1268,13 +693,13 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             HttpsDefaultPort: 443,
             config: {
                 init: function () {
-                    this.absoluteUriRegex = new RegExp("^([^:]*):(\\/\\/(([^@]*)@)?([^:\\/]*)(:[^\\/]*)?)?(\\/?[^\\?#]*)(\\?[^#]*)?(#.*)?$");
-                    this.relativeUriRegex = new RegExp("^(\\/?[^\\?#]*)(\\?[^#]*)?(#.*)?$");
-                    this.rootedPathRegex = new RegExp("^([a-zA-Z]:\\/)[^\\/]");
+                    this.absoluteUriRegex = new System.Text.RegularExpressions.Regex.ctor("^(?<scheme>[^:]*):(//((?<userInfo>[^@]*)@)?(?<host>[^:/]*)(?<port>:[^/]*)?)?(?<path>/?[^\\?#]*)(?<query>\\?[^#]*)?((?<fragment>#.*))?$");
+                    this.relativeUriRegex = new System.Text.RegularExpressions.Regex.ctor("^(?<path>/?[^\\?#]*)(?<query>\\?[^#]*)?((?<fragment>#.*))?$");
+                    this.rootedPathRegex = new System.Text.RegularExpressions.Regex.ctor("^(?<root>[a-zA-Z]:/)[^/]");
                 }
             },
             combineFilePath: function (path, relativePath) {
-                if (Granular.Compatibility.UriComponents.rootedPathRegex.exec(relativePath) != null) {
+                if (Granular.Compatibility.UriComponents.rootedPathRegex.isMatch(relativePath)) {
                     return relativePath;
                 }
 
@@ -1290,27 +715,27 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             tryParse: function (uriString, uriComponents) {
                 uriString = System.String.replaceAll(uriString, String.fromCharCode(92), String.fromCharCode(47));
 
-                if (Granular.Compatibility.UriComponents.rootedPathRegex.exec(uriString) != null) {
-                    uriString = System.String.concat("file:///", uriString);
+                if (Granular.Compatibility.UriComponents.rootedPathRegex.isMatch(uriString)) {
+                    uriString = System.String.format("file:///{0}", uriString);
                 }
 
-                var absoluteUriMatch = Granular.Compatibility.UriComponents.absoluteUriRegex.exec(uriString);
-                if (absoluteUriMatch == null) {
+                var absoluteUriMatch = Granular.Compatibility.UriComponents.absoluteUriRegex.match(uriString);
+                if (!absoluteUriMatch.getSuccess()) {
                     uriComponents.v = null;
                     return false;
                 }
 
-                var scheme = Granular.Extensions.StringExtensions.defaultIfNullOrEmpty(absoluteUriMatch[1]);
-                var userInfo = Granular.Extensions.StringExtensions.defaultIfNullOrEmpty(absoluteUriMatch[4]);
-                var path = Granular.Extensions.StringExtensions.defaultIfNullOrEmpty(absoluteUriMatch[7]);
-                var query = Granular.Extensions.StringExtensions.defaultIfNullOrEmpty(absoluteUriMatch[8]);
-                var fragment = Granular.Extensions.StringExtensions.defaultIfNullOrEmpty(absoluteUriMatch[9]);
+                var scheme = absoluteUriMatch.getGroups().getByName("scheme").getValue();
+                var userInfo = absoluteUriMatch.getGroups().getByName("userInfo").getValue();
+                var path = absoluteUriMatch.getGroups().getByName("path").getValue();
+                var query = absoluteUriMatch.getGroups().getByName("query").getValue();
+                var fragment = absoluteUriMatch.getGroups().getByName("fragment").getValue();
 
                 var host;
                 var port = { };
 
-                var hostGroupValue = Granular.Extensions.StringExtensions.defaultIfNullOrEmpty(absoluteUriMatch[5]);
-                var portGroupValue = Granular.Extensions.StringExtensions.defaultIfNullOrEmpty(absoluteUriMatch[6]);
+                var hostGroupValue = absoluteUriMatch.getGroups().getByName("host").getValue();
+                var portGroupValue = absoluteUriMatch.getGroups().getByName("port").getValue();
 
                 if (Granular.Extensions.StringExtensions.isNullOrEmpty(portGroupValue)) {
                     host = hostGroupValue;
@@ -1326,11 +751,11 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
                 return true;
             },
             getDefaultPort: function (scheme) {
-                if (Bridge.referenceEquals(scheme.toLowerCase(), "http")) {
+                if (System.String.equals(scheme, "http", 3)) {
                     return Granular.Compatibility.UriComponents.HttpDefaultPort;
                 }
 
-                if (Bridge.referenceEquals(scheme.toLowerCase(), "https")) {
+                if (System.String.equals(scheme, "https", 3)) {
                     return Granular.Compatibility.UriComponents.HttpsDefaultPort;
                 }
 
@@ -1338,12 +763,7 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             },
             getPathSegments: function (path) {
                 var segments = path.split(String.fromCharCode(47));
-
-                for (var i = 0; i < ((segments.length - 1) | 0); i = (i + 1) | 0) {
-                    segments[i] = System.String.concat(segments[i], "/");
-                }
-
-                return segments;
+                return System.Linq.Enumerable.from(segments).take(((segments.length - 1) | 0)).select($asm.$.Granular.Compatibility.UriComponents.f1).concat([System.Linq.Enumerable.from(segments).last()]).toArray();
             },
             getAbsoluteUri: function (scheme, userInfo, host, port, path, query, fragment) {
                 var stringBuilder = new System.Text.StringBuilder();
@@ -1391,9 +811,9 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
         },
         ctor: function (scheme, userInfo, host, port, path, query, fragment) {
             this.$initialize();
-            var isFile = Bridge.referenceEquals(scheme.toLowerCase(), "file");
+            var isFile = System.String.equals(scheme, "file", 3);
             var isUnc = isFile && !Granular.Extensions.StringExtensions.isNullOrEmpty(host);
-            var isLocalhost = Bridge.referenceEquals(host.toLowerCase(), "localhost");
+            var isLocalhost = System.String.equals(host, "localhost", 3);
             var absolutePath = isFile && !isUnc ? System.String.trimStart(path, [47]) : path;
 
             this.setScheme(scheme);
@@ -1407,9 +827,9 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             this.setIsFile(isFile);
             this.setIsUnc(isUnc);
             this.setIsLoopback(isFile && !isUnc || isLocalhost);
-            this.setLocalPath(isUnc ? System.String.concat("\\\\", host, System.String.replaceAll(absolutePath, String.fromCharCode(47), String.fromCharCode(92))) : isFile ? System.String.replaceAll(absolutePath, String.fromCharCode(47), String.fromCharCode(92)) : absolutePath);
+            this.setLocalPath(isUnc ? System.String.format("\\\\{0}{1}", host, System.String.replaceAll(absolutePath, String.fromCharCode(47), String.fromCharCode(92))) : isFile ? System.String.replaceAll(absolutePath, String.fromCharCode(47), String.fromCharCode(92)) : absolutePath);
             this.setIsDefaultPort(this.getPort() === Granular.Compatibility.UriComponents.getDefaultPort(scheme));
-            this.setPathAndQuery(System.String.concat(absolutePath, query));
+            this.setPathAndQuery(System.String.format("{0}{1}", absolutePath, query));
             this.setAbsoluteUri(Granular.Compatibility.UriComponents.getAbsoluteUri(scheme, userInfo, host, port, path, query, fragment));
             this.setSegments(Granular.Compatibility.UriComponents.getPathSegments(path));
         },
@@ -1424,15 +844,23 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
                 return new Granular.Compatibility.UriComponents(this.getScheme(), this.getUserInfo(), this.getHost(), this.getPort(), System.String.concat("/", Granular.Compatibility.UriComponents.combineFilePath(this.getAbsolutePath(), relativeUriString)), this.getQuery(), this.getFragment());
             }
 
-            var relativeUriMatch = Granular.Compatibility.UriComponents.relativeUriRegex.exec(relativeUriString);
+            var relativeUriMatch = Granular.Compatibility.UriComponents.relativeUriRegex.match(relativeUriString);
 
-            var path = Granular.Extensions.StringExtensions.defaultIfNullOrEmpty(relativeUriMatch[1]);
-            var query = Granular.Extensions.StringExtensions.defaultIfNullOrEmpty(relativeUriMatch[2]);
-            var fragment = Granular.Extensions.StringExtensions.defaultIfNullOrEmpty(relativeUriMatch[3]);
+            var path = relativeUriMatch.getGroups().getByName("path").getValue();
+            var query = relativeUriMatch.getGroups().getByName("query").getValue();
+            var fragment = relativeUriMatch.getGroups().getByName("fragment").getValue();
 
             var combinedPath = System.String.startsWith(path, "/") ? path : (System.String.concat(this.getAbsolutePath().substr(0, ((this.getAbsolutePath().lastIndexOf(String.fromCharCode(47)) + 1) | 0)), path));
 
             return new Granular.Compatibility.UriComponents(this.getScheme(), this.getUserInfo(), this.getHost(), this.getPort(), combinedPath, query, fragment);
+        }
+    });
+
+    Bridge.ns("Granular.Compatibility.UriComponents", $asm.$);
+
+    Bridge.apply($asm.$.Granular.Compatibility.UriComponents, {
+        f1: function (segment) {
+            return System.String.format("{0}/", segment);
         }
     });
 
@@ -1642,7 +1070,7 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
                     return System.Linq.Enumerable.from(attributes.v).ofType(T);
                 }
 
-                attributes.v = assembly.getCustomAttributes(false) || System.Array.init(0, null, Object);
+                attributes.v = assembly.getCustomAttributes(false) || System.Array.init(0, null);
 
                 Granular.Extensions.AssemblyExtensions.attributesCache.add(assembly.name, attributes.v);
                 return System.Linq.Enumerable.from(attributes.v).ofType(T);
@@ -1701,7 +1129,7 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
     Bridge.define("Granular.Extensions.EnumerableExtensions", {
         statics: {
             concatSingle: function (TSource, source, value) {
-                return System.Linq.Enumerable.from(source).concat(System.Array.init([value], TSource));
+                return System.Linq.Enumerable.from(source).concat([value]);
             },
             trySelect: function (TSource, TResult, source, selector) {
                 var $t;
@@ -1798,14 +1226,14 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
                 return System.String.isNullOrEmpty($this) ? (($t = defaultValue, $t != null ? $t : "")) : $this;
             },
             getCharacterIndexFromLineIndex: function ($this, lineIndex) {
-                var linesStartIndex = System.Linq.Enumerable.from(Bridge.cast(System.Array.init([0], System.Int32), System.Collections.Generic.IEnumerable$1(System.Int32))).concat(System.Linq.Enumerable.from(Granular.Extensions.StringExtensions.indexOfAll($this, "\n")).select($asm.$.Granular.Extensions.StringExtensions.f1)).toArray();
+                var linesStartIndex = System.Linq.Enumerable.from(Bridge.cast([0], System.Collections.Generic.IEnumerable$1(System.Int32))).concat(System.Linq.Enumerable.from(Granular.Extensions.StringExtensions.indexOfAll($this, "\n")).select($asm.$.Granular.Extensions.StringExtensions.f1)).toArray();
 
                 return lineIndex >= 0 && lineIndex < linesStartIndex.length ? linesStartIndex[lineIndex] : -1;
             },
             getLineIndexFromCharacterIndex: function ($this, charIndex) {
                 var linesIndex = Granular.Extensions.StringExtensions.indexOfAll($this, "\n");
-                var linesStartIndex = System.Linq.Enumerable.from(Bridge.cast(System.Array.init([0], System.Int32), System.Collections.Generic.IEnumerable$1(System.Int32))).concat(System.Linq.Enumerable.from(linesIndex).select($asm.$.Granular.Extensions.StringExtensions.f1)).toArray();
-                var linesEndIndex = System.Linq.Enumerable.from(Bridge.cast(linesIndex, System.Collections.Generic.IEnumerable$1(System.Int32))).concat(System.Array.init([$this.length], System.Int32)).toArray();
+                var linesStartIndex = System.Linq.Enumerable.from(Bridge.cast([0], System.Collections.Generic.IEnumerable$1(System.Int32))).concat(System.Linq.Enumerable.from(linesIndex).select($asm.$.Granular.Extensions.StringExtensions.f1)).toArray();
+                var linesEndIndex = System.Linq.Enumerable.from(Bridge.cast(linesIndex, System.Collections.Generic.IEnumerable$1(System.Int32))).concat([$this.length]).toArray();
 
                 for (var i = 0; i < linesStartIndex.length; i = (i + 1) | 0) {
                     if (linesStartIndex[i] <= charIndex && charIndex <= linesEndIndex[i]) {
@@ -1826,8 +1254,8 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             getLines: function ($this) {
                 var linesIndex = Granular.Extensions.StringExtensions.indexOfAll($this, "\n");
 
-                var linesStartIndex = System.Linq.Enumerable.from(Bridge.cast(System.Array.init([0], System.Int32), System.Collections.Generic.IEnumerable$1(System.Int32))).concat(System.Linq.Enumerable.from(linesIndex).select($asm.$.Granular.Extensions.StringExtensions.f1));
-                var linesEndIndex = System.Linq.Enumerable.from(Bridge.cast(linesIndex, System.Collections.Generic.IEnumerable$1(System.Int32))).concat(System.Array.init([$this.length], System.Int32)).select(function(x) {{ return Bridge.cast(x, System.Int32); }});
+                var linesStartIndex = System.Linq.Enumerable.from(Bridge.cast([0], System.Collections.Generic.IEnumerable$1(System.Int32))).concat(System.Linq.Enumerable.from(linesIndex).select($asm.$.Granular.Extensions.StringExtensions.f1));
+                var linesEndIndex = System.Linq.Enumerable.from(Bridge.cast(linesIndex, System.Collections.Generic.IEnumerable$1(System.Int32))).concat([$this.length]).select(function(x) {{ return Bridge.cast(x, System.Int32); }});
 
                 return System.Linq.Enumerable.from(linesStartIndex).zip(linesEndIndex, function (lineStartIndex, lineEndIndex) {
                         return System.String.trimEnd($this.substr(lineStartIndex, ((lineEndIndex - lineStartIndex) | 0)), [13]);
@@ -1960,8 +1388,11 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
 
     Bridge.define("System.Collections.Generic.DictionaryExtensions", {
         statics: {
-            clear: function (TKey, TValue, dictionary) {
-                Bridge.cast(dictionary, System.Collections.Generic.Dictionary$2(TKey,TValue)).clear();
+            getKeys: function (TKey, TValue, dictionary) {
+                return dictionary["System$Collections$Generic$IDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$getKeys"]();
+            },
+            getValues: function (TKey, TValue, dictionary) {
+                return dictionary["System$Collections$Generic$IDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$getValues"]();
             }
         }
     });
@@ -1981,11 +1412,9 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             "copyTo", "System$Collections$Generic$ICollection$1$" + Bridge.getTypeAlias(T) + "$copyTo"
             ]
         },
-        ctor: function (comparer) {
-            if (comparer === void 0) { comparer = null; }
-
+        ctor: function () {
             this.$initialize();
-            this.dictionary = new (System.Collections.Generic.Dictionary$2(T, Object))(null, comparer);
+            this.dictionary = new (System.Collections.Generic.Dictionary$2(T,Object))();
         },
         getCount: function () {
             return this.dictionary.getCount();
@@ -2016,40 +1445,6 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
         }
     }; });
 
-    Bridge.define("System.Collections.Generic.Queue$1", function (T) { return {
-        inherits: [System.Collections.Generic.IEnumerable$1(T)],
-        list: null,
-        config: {
-            alias: [
-            "getEnumerator", "System$Collections$Generic$IEnumerable$1$" + Bridge.getTypeAlias(T) + "$getEnumerator"
-            ]
-        },
-        ctor: function () {
-            this.$initialize();
-            this.list = new (System.Collections.Generic.List$1(T))();
-        },
-        getCount: function () {
-            return this.list.getCount();
-        },
-        enqueue: function (item) {
-            this.list.add(item);
-        },
-        dequeue: function () {
-            var item = this.list.getItem(0);
-            this.list.removeAt(0);
-            return item;
-        },
-        peek: function () {
-            return this.list.getItem(0);
-        },
-        getEnumerator: function () {
-            return this.list.getEnumerator();
-        },
-        System$Collections$IEnumerable$getEnumerator: function () {
-            return this.getEnumerator();
-        }
-    }; });
-
     Bridge.define("System.Collections.Generic.SortedList$2", function (TKey, TValue) { return {
         inherits: [System.Collections.Generic.IDictionary$2(TKey,TValue)],
         statics: {
@@ -2066,18 +1461,12 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             "System$Collections$Generic$IDictionary$2$TKey$TValue$getValues", "System$Collections$Generic$IDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$getValues",
             "getItem", "System$Collections$Generic$IDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$getItem",
             "setItem", "System$Collections$Generic$IDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$setItem",
-            "getCount", "System$Collections$Generic$ICollection$1$System$Collections$Generic$KeyValuePair$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$getCount",
-            "getIsReadOnly", "System$Collections$Generic$ICollection$1$System$Collections$Generic$KeyValuePair$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$getIsReadOnly",
+            "getCount", "System$Collections$Generic$IDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$getCount",
             "containsKey", "System$Collections$Generic$IDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$containsKey",
-            "add$1", "System$Collections$Generic$IDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$add",
-            "remove$1", "System$Collections$Generic$IDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$remove",
+            "add", "System$Collections$Generic$IDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$add",
+            "remove", "System$Collections$Generic$IDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$remove",
             "tryGetValue", "System$Collections$Generic$IDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$tryGetValue",
-            "clear", "System$Collections$Generic$ICollection$1$System$Collections$Generic$KeyValuePair$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$clear",
-            "getEnumerator", "System$Collections$Generic$IEnumerable$1$System$Collections$Generic$KeyValuePair$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$getEnumerator",
-            "remove", "System$Collections$Generic$ICollection$1$System$Collections$Generic$KeyValuePair$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$remove",
-            "add", "System$Collections$Generic$ICollection$1$System$Collections$Generic$KeyValuePair$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$add",
-            "copyTo", "System$Collections$Generic$ICollection$1$System$Collections$Generic$KeyValuePair$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$copyTo",
-            "contains", "System$Collections$Generic$ICollection$1$System$Collections$Generic$KeyValuePair$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$contains"
+            "getEnumerator", "System$Collections$Generic$IEnumerable$1$System$Collections$Generic$KeyValuePair$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$getEnumerator"
             ]
         },
         ctor: function (comparer) {
@@ -2124,7 +1513,7 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             var index = { };
             return this.findItem$1(key, index);
         },
-        add$1: function (key, value) {
+        add: function (key, value) {
             var index = { };
             if (this.findItem$1(key, index)) {
                 throw new Granular.Exception("Item with key \"{0}\" already exists", [key]);
@@ -2133,10 +1522,7 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             this.keys.insert(index.v, key);
             this.values.insert(index.v, value);
         },
-        add: function (item) {
-            this.add$1(item.key, item.value);
-        },
-        remove$1: function (key) {
+        remove: function (key) {
             var index = { };
             if (!this.findItem$1(key, index)) {
                 return false;
@@ -2145,9 +1531,6 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             this.keys.removeAt(index.v);
             this.values.removeAt(index.v);
             return true;
-        },
-        remove: function (item) {
-            throw new System.NotImplementedException();
         },
         removeAt: function (index) {
             if (index >= this.getCount()) {
@@ -2202,13 +1585,6 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
         },
         System$Collections$IEnumerable$getEnumerator: function () {
             return this.getEnumerator();
-        },
-        copyTo: function (array, arrayIndex) {
-            //
-        },
-        contains: function (item) {
-            var value = { };
-            return this.tryGetValue(item.key, value) && Bridge.equals(item.value, value.v);
         }
     }; });
 
@@ -2367,7 +1743,7 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             whiteSpaceRegex: null,
             config: {
                 init: function () {
-                    this.whiteSpaceRegex = new RegExp("^[ \t]+");
+                    this.whiteSpaceRegex = new System.Text.RegularExpressions.Regex.ctor("[ \t]+");
                 }
             }
         },
@@ -2384,15 +1760,15 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             var start = 0;
 
             while (start < stream.length) {
-                var matches = System.Windows.Markup.Lexer.whiteSpaceRegex.exec(stream.substr(start));
+                var match = System.Windows.Markup.Lexer.whiteSpaceRegex.match(stream.substr(start));
 
-                if (matches != null) {
-                    start = (start + matches[0].length) | 0;
+                if (match.getSuccess() && match.getGroups().get(0).getIndex() === 0) {
+                    start = (start + match.getGroups().get(0).getLength()) | 0;
                 }
 
                 var selectedToken = null;
 
-                $t = Bridge.getEnumerator(this.tokensDefinition);
+                $t = Bridge.getEnumerator(this.tokensDefinition, System.Windows.Markup.ITokenDefinition);
                 while ($t.moveNext()) {
                     var tokenDefinition = $t.getCurrent();
                     var matchedToken = tokenDefinition.System$Windows$Markup$ITokenDefinition$match(stream, start);
@@ -2433,7 +1809,7 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             lexer: null,
             config: {
                 init: function () {
-                    this.lexer = new System.Windows.Markup.Lexer([new System.Windows.Markup.RegexTokenDefinition(System.Windows.Markup.MarkupExtensionParser.TokenType.Terminal, new RegExp("^[{}=,]")), new System.Windows.Markup.RegexTokenDefinition(System.Windows.Markup.MarkupExtensionParser.TokenType.Boolean, new RegExp("^(true|True|false|False)")), new System.Windows.Markup.RegexTokenDefinition(System.Windows.Markup.MarkupExtensionParser.TokenType.String, new RegExp("^'([^']|'')*'")), new System.Windows.Markup.RegexTokenDefinition(System.Windows.Markup.MarkupExtensionParser.TokenType.Integer, new RegExp("^[0-9]+")), new System.Windows.Markup.RegexTokenDefinition(System.Windows.Markup.MarkupExtensionParser.TokenType.Decimal, new RegExp("^[0-9]*\\.[0-9]+")), new System.Windows.Markup.RegexTokenDefinition(System.Windows.Markup.MarkupExtensionParser.TokenType.Identifier, new RegExp("^[A-Za-z0-9_:\\(\\)\\.]*"))]);
+                    this.lexer = new System.Windows.Markup.Lexer([new System.Windows.Markup.RegexTokenDefinition(System.Windows.Markup.MarkupExtensionParser.TokenType.Terminal, new System.Text.RegularExpressions.Regex.ctor("[{}=,]")), new System.Windows.Markup.RegexTokenDefinition(System.Windows.Markup.MarkupExtensionParser.TokenType.Boolean, new System.Text.RegularExpressions.Regex.ctor("true|True|false|False")), new System.Windows.Markup.RegexTokenDefinition(System.Windows.Markup.MarkupExtensionParser.TokenType.String, new System.Text.RegularExpressions.Regex.ctor("'([^']|'')*'")), new System.Windows.Markup.RegexTokenDefinition(System.Windows.Markup.MarkupExtensionParser.TokenType.Integer, new System.Text.RegularExpressions.Regex.ctor("[0-9]+")), new System.Windows.Markup.RegexTokenDefinition(System.Windows.Markup.MarkupExtensionParser.TokenType.Decimal, new System.Text.RegularExpressions.Regex.ctor("[0-9]*\\.[0-9]+")), new System.Windows.Markup.RegexTokenDefinition(System.Windows.Markup.MarkupExtensionParser.TokenType.Identifier, new System.Text.RegularExpressions.Regex.ctor("[A-Za-z0-9_:\\(\\)\\.]*"))]);
                 }
             },
             booleanParse: function (value) {
@@ -2458,10 +1834,10 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             },
             isMarkupExtension: function (text) {
                 text = text.trim();
-                return Granular.Compatibility.String.startsWith(text, 123) && Granular.Compatibility.String.endsWith(text, 125);
+                return System.String.startsWith(text, "{") && System.String.endsWith(text, "}");
             },
             isEscaped: function (text) {
-                return Granular.Compatibility.String.startsWith$1(text, "{}");
+                return System.String.startsWith(text, "{}");
             },
             getEscapedText: function (text) {
                 return text.substr(2);
@@ -2709,23 +2085,27 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             nameDirective: null,
             keyDirective: null,
             sharedDirective: null,
+            directives: null,
             nullTypeName: null,
             typeTypeName: null,
+            xamlTypes: null,
             config: {
                 init: function () {
                     this.classDirective = new System.Windows.Markup.XamlName("Class", System.Windows.Markup.XamlLanguage.NamespaceName);
                     this.nameDirective = new System.Windows.Markup.XamlName("Name", System.Windows.Markup.XamlLanguage.NamespaceName);
                     this.keyDirective = new System.Windows.Markup.XamlName("Key", System.Windows.Markup.XamlLanguage.NamespaceName);
                     this.sharedDirective = new System.Windows.Markup.XamlName("Shared", System.Windows.Markup.XamlLanguage.NamespaceName);
+                    this.directives = [System.Windows.Markup.XamlLanguage.classDirective, System.Windows.Markup.XamlLanguage.nameDirective, System.Windows.Markup.XamlLanguage.keyDirective, System.Windows.Markup.XamlLanguage.sharedDirective];
                     this.nullTypeName = new System.Windows.Markup.XamlName("Null", System.Windows.Markup.XamlLanguage.NamespaceName);
                     this.typeTypeName = new System.Windows.Markup.XamlName("Type", System.Windows.Markup.XamlLanguage.NamespaceName);
+                    this.xamlTypes = [System.Windows.Markup.XamlLanguage.nullTypeName, System.Windows.Markup.XamlLanguage.typeTypeName];
                 }
             },
             isDirective: function (namespaceName, localName) {
-                return Bridge.referenceEquals(namespaceName, System.Windows.Markup.XamlLanguage.NamespaceName) && (Bridge.referenceEquals(localName, System.Windows.Markup.XamlLanguage.classDirective.getLocalName()) || Bridge.referenceEquals(localName, System.Windows.Markup.XamlLanguage.nameDirective.getLocalName()) || Bridge.referenceEquals(localName, System.Windows.Markup.XamlLanguage.keyDirective.getLocalName()) || Bridge.referenceEquals(localName, System.Windows.Markup.XamlLanguage.sharedDirective.getLocalName()));
+                return Bridge.referenceEquals(namespaceName, System.Windows.Markup.XamlLanguage.NamespaceName) && System.Linq.Enumerable.from(System.Windows.Markup.XamlLanguage.directives).contains(new System.Windows.Markup.XamlName(localName, namespaceName));
             },
-            isXamlType: function (namespaceName, localName) {
-                return Bridge.referenceEquals(namespaceName, System.Windows.Markup.XamlLanguage.NamespaceName) && (Bridge.referenceEquals(localName, System.Windows.Markup.XamlLanguage.nullTypeName.getLocalName()) || Bridge.referenceEquals(localName, System.Windows.Markup.XamlLanguage.typeTypeName.getLocalName()));
+            isXamlType: function (name) {
+                return System.Linq.Enumerable.from(System.Windows.Markup.XamlLanguage.xamlTypes).contains(name);
             }
         }
     });
@@ -2733,15 +2113,15 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
     Bridge.define("System.Windows.Markup.XamlMemberExtensions", {
         statics: {
             getSingleValue: function (member) {
-                if (!Granular.Compatibility.Linq.Enumerable.any(Object, member.getValues())) {
+                if (!System.Linq.Enumerable.from(member.getValues()).any()) {
                     throw new Granular.Exception("Member \"{0}\" doesn't have values", [member.getName()]);
                 }
 
-                if (Granular.Compatibility.Linq.Enumerable.count(Object, member.getValues()) > 1) {
+                if (System.Linq.Enumerable.from(member.getValues()).count() > 1) {
                     throw new Granular.Exception("Member \"{0}\" cannot have multiple values", [member.getName()]);
                 }
 
-                return Granular.Compatibility.Linq.Enumerable.first(Object, member.getValues());
+                return System.Linq.Enumerable.from(member.getValues()).first();
             }
         }
     });
@@ -2758,7 +2138,7 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
                 var typeName = prefixedName;
                 var typeNamespacePrefix = "";
 
-                var namespaceSeparatorIndex = System.String.indexOf(prefixedName, String.fromCharCode(58));
+                var namespaceSeparatorIndex = System.String.indexOf(prefixedName, ":");
                 if (namespaceSeparatorIndex !== -1) {
                     typeNamespacePrefix = prefixedName.substr(0, namespaceSeparatorIndex);
                     typeName = prefixedName.substr(((namespaceSeparatorIndex + 1) | 0));
@@ -2777,38 +2157,35 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             properties: {
                 LocalName: null,
                 NamespaceName: null,
-                FullName: null,
+                IsMemberName: false,
                 MemberName: null,
-                HasContainingTypeName: false,
                 ContainingTypeName: null
             }
         },
         ctor: function (localName, namespaceName) {
             if (namespaceName === void 0) { namespaceName = null; }
 
-            this.$initialize();            var $t;
+            this.$initialize();            var $t, $t1;
 
-            this.setLocalName(localName);
-            this.setNamespaceName(($t = namespaceName, $t != null ? $t : ""));
+            this.setLocalName(($t = localName, $t != null ? $t : ""));
+            this.setNamespaceName(($t1 = namespaceName, $t1 != null ? $t1 : ""));
 
-            this.setFullName(namespaceName == null ? localName : System.String.concat(namespaceName, ":", localName));
-
-            var typeSeparatorIndex = System.String.indexOf(localName, String.fromCharCode(46));
+            var typeSeparatorIndex = System.String.indexOf(this.getLocalName(), String.fromCharCode(46));
 
             if (typeSeparatorIndex !== -1) {
-                this.setMemberName(localName.substr(((typeSeparatorIndex + 1) | 0)));
-                this.setContainingTypeName(localName.substr(0, typeSeparatorIndex));
+                this.setMemberName(this.getLocalName().substr(((typeSeparatorIndex + 1) | 0)));
+                this.setContainingTypeName(new System.Windows.Markup.XamlName(this.getLocalName().substr(0, typeSeparatorIndex), this.getNamespaceName()));
 
-                this.setHasContainingTypeName(true);
+                this.setIsMemberName(true);
             } else {
-                this.setMemberName(localName);
+                this.setMemberName(this.getLocalName());
             }
     },
     getIsEmpty: function () {
         return Granular.Extensions.StringExtensions.isNullOrEmpty(this.getLocalName());
     },
     toString: function () {
-        return this.getFullName();
+        return Granular.Extensions.StringExtensions.isNullOrEmpty(this.getNamespaceName()) ? this.getLocalName() : System.String.format("{0}:{1}", this.getNamespaceName(), this.getLocalName());
     },
     getHashCode: function () {
         return Bridge.getHashCode(this.getLocalName()) ^ Bridge.getHashCode(this.getNamespaceName());
@@ -2825,17 +2202,17 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             empty: null,
             config: {
                 init: function () {
-                    this.empty = new System.Windows.Markup.XamlNamespaces.ctor(System.Array.init(0, null, System.Windows.Markup.NamespaceDeclaration));
+                    this.empty = new System.Windows.Markup.XamlNamespaces.ctor(System.Array.init(0, null));
                 }
             }
         },
         items: null,
         $ctor1: function ($namespace) {
-            System.Windows.Markup.XamlNamespaces.ctor.call(this, System.Array.init([new System.Windows.Markup.NamespaceDeclaration.ctor($namespace)], System.Windows.Markup.NamespaceDeclaration));
+            System.Windows.Markup.XamlNamespaces.ctor.call(this, [new System.Windows.Markup.NamespaceDeclaration.ctor($namespace)]);
             //
         },
         $ctor2: function (prefix, $namespace) {
-            System.Windows.Markup.XamlNamespaces.ctor.call(this, System.Array.init([new System.Windows.Markup.NamespaceDeclaration.$ctor1(prefix, $namespace)], System.Windows.Markup.NamespaceDeclaration));
+            System.Windows.Markup.XamlNamespaces.ctor.call(this, [new System.Windows.Markup.NamespaceDeclaration.$ctor1(prefix, $namespace)]);
             //
         },
         ctor: function (items) {
@@ -2843,26 +2220,26 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             this.items = items;
         },
         toString: function () {
-            var count = Granular.Compatibility.Linq.Enumerable.count(System.Windows.Markup.NamespaceDeclaration, this.items);
+            var count = System.Linq.Enumerable.from(this.items).count();
             return count === 0 ? "XamlNamespaces.Empty" : System.String.format("XamlNamespaces[{0}]", count);
         },
         containsPrefix: function (prefix) {
-            return Granular.Compatibility.Linq.Enumerable.any$1(System.Windows.Markup.NamespaceDeclaration, this.items, function (item) {
-                return Bridge.referenceEquals(item.getPrefix(), prefix);
-            });
+            return System.Linq.Enumerable.from(this.items).any(function (item) {
+                    return Bridge.referenceEquals(item.getPrefix(), prefix);
+                });
         },
         containsNamespace: function ($namespace) {
-            return Granular.Compatibility.Linq.Enumerable.any$1(System.Windows.Markup.NamespaceDeclaration, this.items, function (item) {
-                return Bridge.referenceEquals(item.getNamespace(), $namespace);
-            });
+            return System.Linq.Enumerable.from(this.items).any(function (item) {
+                    return Bridge.referenceEquals(item.getNamespace(), $namespace);
+                });
         },
         getNamespace: function (prefix) {
             return this.getNamespaceDeclaration(prefix).getNamespace();
         },
         getNamespaceDeclaration: function (prefix) {
-            var namespaceDeclaration = Granular.Compatibility.Linq.Enumerable.firstOrDefault$1(System.Windows.Markup.NamespaceDeclaration, this.items, function (item) {
-                return Bridge.referenceEquals(item.getPrefix(), prefix);
-            });
+            var namespaceDeclaration = System.Linq.Enumerable.from(this.items).firstOrDefault(function (item) {
+                    return Bridge.referenceEquals(item.getPrefix(), prefix);
+                }, null);
 
             if (namespaceDeclaration == null) {
                 throw new Granular.Exception("Namespaces doesn't contain a namespace with prefix \"{0}\"", [prefix]);
@@ -2871,7 +2248,7 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             return namespaceDeclaration;
         },
         merge: function (namespaceDeclarations) {
-            return Granular.Compatibility.Linq.Enumerable.any(System.Windows.Markup.NamespaceDeclaration, namespaceDeclarations) ? new System.Windows.Markup.XamlNamespaces.ctor(Granular.Compatibility.Linq.Enumerable.toArray(System.Windows.Markup.NamespaceDeclaration, Granular.Compatibility.Linq.Enumerable.distinct(System.Windows.Markup.NamespaceDeclaration, Granular.Compatibility.Linq.Enumerable.concat(System.Windows.Markup.NamespaceDeclaration, this.items, namespaceDeclarations)))) : this;
+            return System.Linq.Enumerable.from(namespaceDeclarations).any() ? new System.Windows.Markup.XamlNamespaces.ctor(System.Linq.Enumerable.from(this.items).concat(namespaceDeclarations).distinct().toArray()) : this;
         }
     });
 
@@ -2904,13 +2281,13 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             },
             createXamlMembers: function (element, namespaces, ignorableNamespaces, sourceUri) {
                 var $t;
-                var members = new (System.Collections.Generic.List$1(System.Windows.Markup.XamlMember))(Granular.Compatibility.Linq.Enumerable.select(System.Xml.Linq.XAttribute, System.Windows.Markup.XamlMember, Granular.Compatibility.Linq.Enumerable.where(System.Xml.Linq.XAttribute, element.attributes(), function (attribute) {
-                    return !System.Windows.Markup.XamlParser.isDirective(attribute.getName()) && !attribute.getIsNamespaceDeclaration() && !System.Windows.Markup.XamlParser.isIgnorableAttribute(attribute) && !System.Windows.Markup.XamlParser.isIgnorable(attribute.getName(), ignorableNamespaces);
-                }), function (attribute) {
+                var members = new (System.Collections.Generic.List$1(System.Windows.Markup.XamlMember))(System.Linq.Enumerable.from(element.attributes()).where(function (attribute) {
+                        return !System.Windows.Markup.XamlParser.isDirective(attribute.getName()) && !attribute.getIsNamespaceDeclaration() && !System.Windows.Markup.XamlParser.isIgnorableAttribute(attribute) && !System.Windows.Markup.XamlParser.isIgnorable(attribute.getName(), ignorableNamespaces);
+                    }).select(function (attribute) {
                     return System.Windows.Markup.XamlParser.createXamlMember(attribute, namespaces, ignorableNamespaces, sourceUri);
                 }));
 
-                $t = Bridge.getEnumerator(element.elements());
+                $t = Bridge.getEnumerator(element.elements(), System.Xml.Linq.XElement);
                 while ($t.moveNext()) {
                     var memberElement = $t.getCurrent();
                     if (!System.Windows.Markup.XamlParser.isMemberName(memberElement.getName())) {
@@ -2938,35 +2315,35 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             createXamlMember$1: function (element, namespaces, ignorableNamespaces, sourceUri) {
                 var name = new System.Windows.Markup.XamlName(element.getName().getLocalName(), Granular.Extensions.StringExtensions.isNullOrEmpty(element.getName().getNamespaceName()) ? System.Windows.Markup.XamlNamespacesExtensions.getDefaultNamespace(namespaces) : element.getName().getNamespaceName());
 
-                if (Granular.Compatibility.Linq.Enumerable.any$1(System.Xml.Linq.XAttribute, element.attributes(), function (attribute) {
-                    return !System.Windows.Markup.XamlParser.isIgnorable(attribute.getName(), ignorableNamespaces);
-                })) {
+                if (System.Linq.Enumerable.from(element.attributes()).any(function (attribute) {
+                        return !System.Windows.Markup.XamlParser.isIgnorable(attribute.getName(), ignorableNamespaces);
+                    })) {
                     throw new Granular.Exception("Member \"{0}\" cannot contain attributes", [element.getName()]);
                 }
 
-                if (Granular.Compatibility.Linq.Enumerable.any$1(System.Xml.Linq.XElement, element.elements(), function (child) {
-                    return !System.Windows.Markup.XamlParser.isIgnorable(child.getName(), ignorableNamespaces) && System.Windows.Markup.XamlParser.isMemberName(child.getName());
-                })) {
+                if (System.Linq.Enumerable.from(element.elements()).any(function (child) {
+                        return !System.Windows.Markup.XamlParser.isIgnorable(child.getName(), ignorableNamespaces) && System.Windows.Markup.XamlParser.isMemberName(child.getName());
+                    })) {
                     throw new Granular.Exception("Member \"{0}\" cannot contain member elements", [element.getName()]);
                 }
 
                 return new System.Windows.Markup.XamlMember.ctor(name, namespaces, sourceUri, System.Windows.Markup.XamlParser.createValues(element, namespaces, ignorableNamespaces, sourceUri));
             },
             createDirectives: function (element, namespaces, ignorableNamespaces, sourceUri) {
-                var attributeDirectives = Granular.Compatibility.Linq.Enumerable.select(System.Xml.Linq.XAttribute, System.Windows.Markup.XamlMember, Granular.Compatibility.Linq.Enumerable.where(System.Xml.Linq.XAttribute, element.attributes(), $asm.$.System.Windows.Markup.XamlParser.f1), function (attribute) {
+                var attributeDirectives = System.Linq.Enumerable.from(element.attributes()).where($asm.$.System.Windows.Markup.XamlParser.f1).select(function (attribute) {
                     return System.Windows.Markup.XamlParser.createXamlMember(attribute, namespaces, ignorableNamespaces, sourceUri);
                 });
-                var elementDirectives = Granular.Compatibility.Linq.Enumerable.select(System.Xml.Linq.XElement, System.Windows.Markup.XamlMember, Granular.Compatibility.Linq.Enumerable.where(System.Xml.Linq.XElement, element.elements(), $asm.$.System.Windows.Markup.XamlParser.f2), function (child) {
+                var elementDirectives = System.Linq.Enumerable.from(element.elements()).where($asm.$.System.Windows.Markup.XamlParser.f2).select(function (child) {
                     return System.Windows.Markup.XamlParser.createXamlMember$1(child, namespaces, ignorableNamespaces, sourceUri);
                 });
 
-                return Granular.Compatibility.Linq.Enumerable.toArray(System.Windows.Markup.XamlMember, Granular.Compatibility.Linq.Enumerable.concat(System.Windows.Markup.XamlMember, attributeDirectives, elementDirectives));
+                return System.Linq.Enumerable.from(attributeDirectives).concat(elementDirectives).toArray();
             },
             createValues: function (element, namespaces, ignorableNamespaces, sourceUri) {
                 var $t;
                 var values = new (System.Collections.Generic.List$1(Object))();
 
-                $t = Bridge.getEnumerator(element.nodes());
+                $t = Bridge.getEnumerator(element.nodes(), System.Xml.Linq.XNode);
                 while ($t.moveNext()) {
                     var value = $t.getCurrent();
                     var valueText = Bridge.as(value, System.Xml.Linq.XText);
@@ -2994,10 +2371,10 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
                 return values;
             },
             isMemberName: function (name) {
-                return System.String.contains(name.getLocalName(),".") && !System.Windows.Markup.XamlParser.isDirective(name);
+                return System.Linq.Enumerable.from(name.getLocalName()).contains(46) && !System.Windows.Markup.XamlParser.isDirective(name);
             },
             isValueName: function (name) {
-                return !System.String.contains(name.getLocalName(),".") && !System.Windows.Markup.XamlParser.isDirective(name);
+                return !System.Linq.Enumerable.from(name.getLocalName()).contains(46) && !System.Windows.Markup.XamlParser.isDirective(name);
             },
             isDirective: function (name) {
                 return System.Windows.Markup.XamlLanguage.isDirective(name.getNamespaceName(), name.getLocalName());
@@ -3009,12 +2386,12 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
                 return Bridge.referenceEquals(attribute.getName().getNamespaceName(), System.Windows.Markup.MarkupCompatibility.ignorableDirective.getNamespaceName()) && Bridge.referenceEquals(attribute.getName().getLocalName(), System.Windows.Markup.MarkupCompatibility.ignorableDirective.getLocalName());
             },
             getNamespaces: function (element) {
-                return Granular.Compatibility.Linq.Enumerable.toArray(System.Windows.Markup.NamespaceDeclaration, Granular.Compatibility.Linq.Enumerable.select(System.Xml.Linq.XAttribute, System.Windows.Markup.NamespaceDeclaration, Granular.Compatibility.Linq.Enumerable.where(System.Xml.Linq.XAttribute, element.attributes(), $asm.$.System.Windows.Markup.XamlParser.f3), $asm.$.System.Windows.Markup.XamlParser.f4));
+                return System.Linq.Enumerable.from(element.attributes()).where($asm.$.System.Windows.Markup.XamlParser.f3).select($asm.$.System.Windows.Markup.XamlParser.f4).toArray();
             },
             getIgnorableNamespaces: function (element, namespaces) {
-                return Granular.Compatibility.Linq.Enumerable.toArray(System.Windows.Markup.NamespaceDeclaration, Granular.Compatibility.Linq.Enumerable.select(String, System.Windows.Markup.NamespaceDeclaration, Granular.Compatibility.Linq.Enumerable.selectMany(System.Xml.Linq.XAttribute, String, Granular.Compatibility.Linq.Enumerable.where(System.Xml.Linq.XAttribute, element.attributes(), System.Windows.Markup.XamlParser.isIgnorableAttribute), $asm.$.System.Windows.Markup.XamlParser.f5), function (prefix) {
+                return System.Linq.Enumerable.from(element.attributes()).where(System.Windows.Markup.XamlParser.isIgnorableAttribute).selectMany($asm.$.System.Windows.Markup.XamlParser.f5).select(function (prefix) {
                     return namespaces.getNamespaceDeclaration(prefix);
-                }));
+                }).toArray();
             },
             getNamespaceDeclarationPrefix: function (attribute) {
                 return Granular.Extensions.StringExtensions.isNullOrEmpty(attribute.getName().getNamespaceName()) ? "" : attribute.getName().getLocalName();
@@ -3101,202 +2478,22 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
         }
     });
 
-    Bridge.define("Granular.Collections.ConvertedStringDictionary$2", function (TKey, TValue) { return {
-        inherits: [Granular.Collections.IMinimalDictionary$2(TKey,TValue),Granular.Collections.IMinimalDictionary],
+    Bridge.define("System.Xml.Linq.XNodeFactory", {
         statics: {
-            defaultValue: null
-        },
-        keys: null,
-        values: null,
-        getStringKey: null,
-        config: {
-            alias: [
-            "add", "Granular$Collections$IMinimalDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$add",
-            "containsKey", "Granular$Collections$IMinimalDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$containsKey",
-            "remove", "Granular$Collections$IMinimalDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$remove",
-            "tryGetValue", "Granular$Collections$IMinimalDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$tryGetValue",
-            "clear", "Granular$Collections$IMinimalDictionary$clear",
-            "clear", "Granular$Collections$IMinimalDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$clear",
-            "getKeys", "Granular$Collections$IMinimalDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$getKeys",
-            "getValues", "Granular$Collections$IMinimalDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$getValues"
-            ]
-        },
-        ctor: function (getStringKey) {
-            if (getStringKey === void 0) { getStringKey = null; }
+            tryCreateNode: function (node, result) {
+                if (node.nodeType === 1) {
+                    result.v = new System.Xml.Linq.XElement(Bridge.cast(node, Element));
+                    return true;
+                }
 
-            this.$initialize();
-            this.keys = new Granular.Compatibility.StringDictionary();
-            this.values = new Granular.Compatibility.StringDictionary();
-            this.getStringKey = getStringKey || ($asm.$.Granular.Collections.ConvertedStringDictionary$2.f1);
-        },
-        add: function (key, value) {
-            var stringKey = this.getStringKey(key);
+                if (node.nodeType === 3 && !Granular.Extensions.StringExtensions.isNullOrWhiteSpace(node.nodeValue)) {
+                    result.v = new System.Xml.Linq.XText(node);
+                    return true;
+                }
 
-            this.keys.Granular$Collections$IMinimalDictionary$2$String$Object$add(stringKey, key);
-            this.values.Granular$Collections$IMinimalDictionary$2$String$Object$add(stringKey, value);
-        },
-        Granular$Collections$IMinimalDictionary$add: function (key, value) {
-            var stringKey = this.getStringKey(key);
-
-            this.keys.Granular$Collections$IMinimalDictionary$2$String$Object$add(stringKey, key);
-            this.values.Granular$Collections$IMinimalDictionary$2$String$Object$add(stringKey, value);
-        },
-        containsKey: function (key) {
-            return this.keys.Granular$Collections$IMinimalDictionary$2$String$Object$containsKey(this.getStringKey(key));
-        },
-        Granular$Collections$IMinimalDictionary$containsKey: function (key) {
-            return this.keys.Granular$Collections$IMinimalDictionary$2$String$Object$containsKey(this.getStringKey(key));
-        },
-        remove: function (key) {
-            var stringKey = this.getStringKey(key);
-
-            return this.keys.Granular$Collections$IMinimalDictionary$2$String$Object$remove(stringKey) && this.values.Granular$Collections$IMinimalDictionary$2$String$Object$remove(stringKey);
-        },
-        Granular$Collections$IMinimalDictionary$remove: function (key) {
-            var stringKey = this.getStringKey(key);
-
-            return this.keys.Granular$Collections$IMinimalDictionary$2$String$Object$remove(stringKey) && this.values.Granular$Collections$IMinimalDictionary$2$String$Object$remove(stringKey);
-        },
-        tryGetValue: function (key, value) {
-            var result = { };
-            if (this.values.Granular$Collections$IMinimalDictionary$2$String$Object$tryGetValue(this.getStringKey(key), result)) {
-                value.v = result.v;
-                return true;
-            }
-
-            value.v = Granular.Collections.ConvertedStringDictionary$2(TKey,TValue).defaultValue;
-            return false;
-        },
-        Granular$Collections$IMinimalDictionary$tryGetValue: function (key, value) {
-            return this.values.Granular$Collections$IMinimalDictionary$2$String$Object$tryGetValue(this.getStringKey(key), value);
-        },
-        clear: function () {
-            this.keys.Granular$Collections$IMinimalDictionary$2$String$Object$clear();
-            this.values.Granular$Collections$IMinimalDictionary$2$String$Object$clear();
-        },
-        getKeys: function () {
-            return Granular.Compatibility.Linq.Enumerable.cast(TKey, this.keys.Granular$Collections$IMinimalDictionary$2$String$Object$getValues());
-        },
-        Granular$Collections$IMinimalDictionary$getKeys: function () {
-            return this.keys.Granular$Collections$IMinimalDictionary$2$String$Object$getValues();
-        },
-        getValues: function () {
-            return Granular.Compatibility.Linq.Enumerable.cast(TValue, this.values.Granular$Collections$IMinimalDictionary$2$String$Object$getValues());
-        },
-        Granular$Collections$IMinimalDictionary$getValues: function () {
-            return this.values.Granular$Collections$IMinimalDictionary$2$String$Object$getValues();
-        },
-        getKeyValuePairs: function () {
-            var $t;
-            var stringKeys = Granular.Compatibility.Linq.Enumerable.toArray(String, this.keys.Granular$Collections$IMinimalDictionary$2$String$Object$getKeys());
-
-            var pairs = System.Array.init(stringKeys.length, function (){
-                return new (System.Collections.Generic.KeyValuePair$2(TKey,TValue))();
-            }, System.Collections.Generic.KeyValuePair$2(TKey,TValue));
-
-            var i = 0;
-            $t = Bridge.getEnumerator(stringKeys);
-            while ($t.moveNext()) {
-                var stringKey = $t.getCurrent();
-                pairs[i] = new (System.Collections.Generic.KeyValuePair$2(TKey,TValue))(Granular.Collections.MinimalDictionaryExtensions.getValue(String, Object, this.keys, stringKey), Granular.Collections.MinimalDictionaryExtensions.getValue(String, Object, this.values, stringKey));
-                i = (i + 1) | 0;
-            }
-
-            return pairs;
-        }
-    }; });
-
-    Bridge.ns("Granular.Collections.ConvertedStringDictionary$2", $asm.$);
-
-    Bridge.apply($asm.$.Granular.Collections.ConvertedStringDictionary$2, {
-        f1: function (key) {
-            return key.toString();
-        }
-    });
-
-    Bridge.define("Granular.Collections.ConvertedStringSet$1", function (T) { return {
-        inherits: [Granular.Collections.IMinimalSet$1(T),Granular.Collections.IMinimalSet],
-        items: null,
-        getStringItem: null,
-        config: {
-            alias: [
-            "add", "Granular$Collections$IMinimalSet$1$" + Bridge.getTypeAlias(T) + "$add",
-            "contains", "Granular$Collections$IMinimalSet$1$" + Bridge.getTypeAlias(T) + "$contains",
-            "remove", "Granular$Collections$IMinimalSet$1$" + Bridge.getTypeAlias(T) + "$remove",
-            "clear", "Granular$Collections$IMinimalSet$clear",
-            "clear", "Granular$Collections$IMinimalSet$1$" + Bridge.getTypeAlias(T) + "$clear",
-            "getValues", "Granular$Collections$IMinimalSet$1$" + Bridge.getTypeAlias(T) + "$getValues"
-            ]
-        },
-        ctor: function (getStringItem) {
-            if (getStringItem === void 0) { getStringItem = null; }
-
-            this.$initialize();
-            this.items = new Granular.Compatibility.StringDictionary();
-            this.getStringItem = getStringItem || ($asm.$.Granular.Collections.ConvertedStringSet$1.f1);
-        },
-        add: function (item) {
-            var stringItem = this.getStringItem(item);
-
-            if (this.items.Granular$Collections$IMinimalDictionary$2$String$Object$containsKey(stringItem)) {
+                result.v = null;
                 return false;
             }
-
-            this.items.Granular$Collections$IMinimalDictionary$2$String$Object$add(stringItem, item);
-            return true;
-        },
-        Granular$Collections$IMinimalSet$add: function (item) {
-            var stringItem = this.getStringItem(item);
-
-            if (this.items.Granular$Collections$IMinimalDictionary$2$String$Object$containsKey(stringItem)) {
-                return false;
-            }
-
-            this.items.Granular$Collections$IMinimalDictionary$2$String$Object$add(stringItem, item);
-            return true;
-        },
-        contains: function (item) {
-            return this.items.Granular$Collections$IMinimalDictionary$2$String$Object$containsKey(this.getStringItem(item));
-        },
-        Granular$Collections$IMinimalSet$contains: function (item) {
-            return this.items.Granular$Collections$IMinimalDictionary$2$String$Object$containsKey(this.getStringItem(item));
-        },
-        remove: function (item) {
-            var stringItem = this.getStringItem(item);
-
-            if (!this.items.Granular$Collections$IMinimalDictionary$2$String$Object$containsKey(stringItem)) {
-                return false;
-            }
-
-            this.items.Granular$Collections$IMinimalDictionary$2$String$Object$remove(stringItem);
-            return true;
-        },
-        Granular$Collections$IMinimalSet$remove: function (item) {
-            var stringItem = this.getStringItem(item);
-
-            if (!this.items.Granular$Collections$IMinimalDictionary$2$String$Object$containsKey(stringItem)) {
-                return false;
-            }
-
-            this.items.Granular$Collections$IMinimalDictionary$2$String$Object$remove(stringItem);
-            return true;
-        },
-        clear: function () {
-            this.items.Granular$Collections$IMinimalDictionary$2$String$Object$clear();
-        },
-        getValues: function () {
-            return System.Linq.Enumerable.from(this.items.Granular$Collections$IMinimalDictionary$2$String$Object$getValues()).select(function(x) { return Bridge.cast(x, T); });
-        },
-        Granular$Collections$IMinimalSet$getValues: function () {
-            return this.items.Granular$Collections$IMinimalDictionary$2$String$Object$getValues();
-        }
-    }; });
-
-    Bridge.ns("Granular.Collections.ConvertedStringSet$1", $asm.$);
-
-    Bridge.apply($asm.$.Granular.Collections.ConvertedStringSet$1, {
-        f1: function (item) {
-            return item.toString();
         }
     });
 
@@ -3358,7 +2555,7 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
         getValues: function (key) {
             return this.dictionary.containsKey(key) ? Bridge.cast(this.dictionary.get(key), System.Collections.Generic.IEnumerable$1(TValue)) : System.Array.init(0, function (){
                 return Bridge.getDefaultValue(TValue);
-            }, TValue);
+            });
         },
         getEnumerator: function () {
             return System.Linq.Enumerable.from(this.dictionary).selectMany(function (pair) {
@@ -3380,204 +2577,6 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
         }
     });
 
-    Bridge.define("Granular.Collections.MinimalDictionary$2", function (TKey, TValue) { return {
-        inherits: [Granular.Collections.IMinimalDictionary$2(TKey,TValue),Granular.Collections.IMinimalDictionary],
-        statics: {
-            defaultValue: null
-        },
-        dictionary: null,
-        config: {
-            alias: [
-            "add", "Granular$Collections$IMinimalDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$add",
-            "containsKey", "Granular$Collections$IMinimalDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$containsKey",
-            "remove", "Granular$Collections$IMinimalDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$remove",
-            "tryGetValue", "Granular$Collections$IMinimalDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$tryGetValue",
-            "clear", "Granular$Collections$IMinimalDictionary$clear",
-            "clear", "Granular$Collections$IMinimalDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$clear",
-            "getKeys", "Granular$Collections$IMinimalDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$getKeys",
-            "getValues", "Granular$Collections$IMinimalDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$getValues"
-            ]
-        },
-        ctor: function (comparer) {
-            if (comparer === void 0) { comparer = null; }
-
-            this.$initialize();
-            this.dictionary = new (System.Collections.Generic.Dictionary$2(Object, Object))(null, Bridge.cast(comparer, System.Collections.Generic.IEqualityComparer$1(Object)));
-        },
-        add: function (key, value) {
-            this.dictionary.add(key, value);
-        },
-        Granular$Collections$IMinimalDictionary$add: function (key, value) {
-            this.dictionary.add(key, value);
-        },
-        containsKey: function (key) {
-            return this.dictionary.containsKey(key);
-        },
-        Granular$Collections$IMinimalDictionary$containsKey: function (key) {
-            return this.dictionary.containsKey(key);
-        },
-        remove: function (key) {
-            return this.dictionary.remove(key);
-        },
-        Granular$Collections$IMinimalDictionary$remove: function (key) {
-            return this.dictionary.remove(key);
-        },
-        tryGetValue: function (key, value) {
-            var result = { };
-            if (this.dictionary.tryGetValue(key, result)) {
-                value.v = result.v;
-                return true;
-            }
-
-            value.v = Granular.Collections.MinimalDictionary$2(TKey,TValue).defaultValue;
-            return false;
-        },
-        Granular$Collections$IMinimalDictionary$tryGetValue: function (key, value) {
-            return this.dictionary.tryGetValue(key, value);
-        },
-        clear: function () {
-            this.dictionary.clear();
-        },
-        getKeys: function () {
-            return System.Linq.Enumerable.from(Bridge.cast(this.dictionary, System.Collections.Generic.IDictionary$2(Object,Object)).System$Collections$Generic$IDictionary$2$Object$Object$getKeys()).select(function(x) { return Bridge.cast(x, TKey); });
-        },
-        Granular$Collections$IMinimalDictionary$getKeys: function () {
-            return Bridge.cast(this.dictionary, System.Collections.Generic.IDictionary$2(Object,Object)).System$Collections$Generic$IDictionary$2$Object$Object$getKeys();
-        },
-        getValues: function () {
-            return System.Linq.Enumerable.from(Bridge.cast(this.dictionary, System.Collections.Generic.IDictionary$2(Object,Object)).System$Collections$Generic$IDictionary$2$Object$Object$getValues()).select(function(x) { return Bridge.cast(x, TValue); });
-        },
-        Granular$Collections$IMinimalDictionary$getValues: function () {
-            return Bridge.cast(this.dictionary, System.Collections.Generic.IDictionary$2(Object,Object)).System$Collections$Generic$IDictionary$2$Object$Object$getValues();
-        }
-    }; });
-
-    Bridge.define("Granular.Collections.MinimalSet$1", function (TValue) { return {
-        inherits: [Granular.Collections.IMinimalSet$1(TValue),Granular.Collections.IMinimalSet],
-        set: null,
-        config: {
-            alias: [
-            "add", "Granular$Collections$IMinimalSet$1$" + Bridge.getTypeAlias(TValue) + "$add",
-            "contains", "Granular$Collections$IMinimalSet$1$" + Bridge.getTypeAlias(TValue) + "$contains",
-            "remove", "Granular$Collections$IMinimalSet$1$" + Bridge.getTypeAlias(TValue) + "$remove",
-            "clear", "Granular$Collections$IMinimalSet$clear",
-            "clear", "Granular$Collections$IMinimalSet$1$" + Bridge.getTypeAlias(TValue) + "$clear",
-            "getValues", "Granular$Collections$IMinimalSet$1$" + Bridge.getTypeAlias(TValue) + "$getValues"
-            ]
-        },
-        ctor: function (comparer) {
-            if (comparer === void 0) { comparer = null; }
-
-            this.$initialize();
-            this.set = new (System.Collections.Generic.HashSet$1(Object))(Bridge.cast(comparer, System.Collections.Generic.IEqualityComparer$1(Object)));
-        },
-        add: function (item) {
-            if (this.set.contains(item)) {
-                return false;
-            }
-
-            this.set.add(item);
-            return true;
-        },
-        Granular$Collections$IMinimalSet$add: function (item) {
-            if (this.set.contains(item)) {
-                return false;
-            }
-
-            this.set.add(item);
-            return true;
-        },
-        contains: function (item) {
-            return this.set.contains(item);
-        },
-        Granular$Collections$IMinimalSet$contains: function (item) {
-            return this.set.contains(item);
-        },
-        remove: function (item) {
-            return this.set.remove(item);
-        },
-        Granular$Collections$IMinimalSet$remove: function (item) {
-            return this.set.remove(item);
-        },
-        clear: function () {
-            this.set.clear();
-        },
-        getValues: function () {
-            return System.Linq.Enumerable.from(this.set).select(function(x) { return Bridge.cast(x, TValue); });
-        },
-        Granular$Collections$IMinimalSet$getValues: function () {
-            return this.set;
-        }
-    }; });
-
-    Bridge.define("Granular.Compatibility.StringDictionary", {
-        inherits: [Granular.Collections.IMinimalDictionary$2(String,Object)],
-        statics: {
-            ctor: function () {
-                
-                if (!Object.values) {
-                    Object.values = function (obj) {
-                        return Object.keys(obj).map(function (key) { return obj[key]; });
-                    }
-                }
-            
-            }
-        },
-        dictionary: null,
-        config: {
-            alias: [
-            "add", "Granular$Collections$IMinimalDictionary$2$String$Object$add",
-            "containsKey", "Granular$Collections$IMinimalDictionary$2$String$Object$containsKey",
-            "remove", "Granular$Collections$IMinimalDictionary$2$String$Object$remove",
-            "tryGetValue", "Granular$Collections$IMinimalDictionary$2$String$Object$tryGetValue",
-            "clear", "Granular$Collections$IMinimalDictionary$2$String$Object$clear",
-            "getKeys", "Granular$Collections$IMinimalDictionary$2$String$Object$getKeys",
-            "getValues", "Granular$Collections$IMinimalDictionary$2$String$Object$getValues"
-            ]
-        },
-        ctor: function () {
-            this.$initialize();
-            this.dictionary = {  };
-        },
-        add: function (key, value) {
-            if (!(this.dictionary[key] === undefined)) {
-                throw new Granular.Exception("An item with the same key has already been added.");
-            }
-
-            this.dictionary[key] = value;
-        },
-        containsKey: function (key) {
-            return !(this.dictionary[key] === undefined);
-        },
-        remove: function (key) {
-            if ((this.dictionary[key] === undefined)) {
-                return false;
-            }
-
-            delete this.dictionary[key];
-            return true;
-        },
-        tryGetValue: function (key, value) {
-            value.v = this.dictionary[key];
-
-            if ((value.v === undefined)) {
-                value.v = null;
-                return false;
-            }
-
-            return true;
-        },
-        clear: function () {
-            this.dictionary = {  };
-        },
-        getKeys: function () {
-            return Object.keys(this.dictionary);
-        },
-        getValues: function () {
-            return Object.values(this.dictionary);
-        }
-    });
-
     Bridge.define("System.Windows.Markup.RegexTokenDefinition", {
         inherits: [System.Windows.Markup.ITokenDefinition],
         id: null,
@@ -3593,10 +2592,10 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             this.regex = regex;
         },
         match: function (stream, start) {
-            var matches = this.regex.exec(stream.substr(start));
+            var match = this.regex.match(stream.substr(start));
 
-            if (matches != null) {
-                return new System.Windows.Markup.Token(this.id, matches[0], start);
+            if (match.getSuccess() && match.getIndex() === 0) {
+                return new System.Windows.Markup.Token(this.id, match.getGroups().get(0).getValue(), start);
             }
 
             return null;
@@ -3611,9 +2610,9 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             emptyDirectives: null,
             config: {
                 init: function () {
-                    this.emptyMembers = System.Array.init(0, null, System.Windows.Markup.XamlMember);
-                    this.emptyValues = System.Array.init(0, null, Object);
-                    this.emptyDirectives = System.Array.init(0, null, System.Windows.Markup.XamlMember);
+                    this.emptyMembers = System.Array.init(0, null);
+                    this.emptyValues = System.Array.init(0, null);
+                    this.emptyDirectives = System.Array.init(0, null);
                 }
             }
         },
@@ -3643,7 +2642,7 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             emptyValues: null,
             config: {
                 init: function () {
-                    this.emptyValues = System.Array.init(0, null, Object);
+                    this.emptyValues = System.Array.init(0, null);
                 }
             }
         },
@@ -3653,7 +2652,7 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             }
         },
         $ctor1: function (name, namespaces, sourceUri, value) {
-            System.Windows.Markup.XamlMember.ctor.call(this, name, namespaces, sourceUri, System.Array.init([value], Object));
+            System.Windows.Markup.XamlMember.ctor.call(this, name, namespaces, sourceUri, [value]);
             //
         },
         ctor: function (name, namespaces, sourceUri, values) {
@@ -3662,34 +2661,21 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             this.setValues(values || System.Windows.Markup.XamlMember.emptyValues);
         },
         toString: function () {
-            return Granular.Compatibility.Linq.Enumerable.count(Object, this.getValues()) === 1 ? System.String.format("{0}={1}", System.Windows.Markup.XamlNode.prototype.toString.call(this), Granular.Compatibility.Linq.Enumerable.first(Object, this.getValues()).toString()) : System.Windows.Markup.XamlNode.prototype.toString.call(this);
+            return System.Linq.Enumerable.from(this.getValues()).count() === 1 ? System.String.format("{0}={1}", System.Windows.Markup.XamlNode.prototype.toString.call(this), System.Linq.Enumerable.from(this.getValues()).first().toString()) : System.Windows.Markup.XamlNode.prototype.toString.call(this);
         }
     });
 
     Bridge.define("System.Xml.Linq.XContainer", {
         inherits: [System.Xml.Linq.XNode],
+        node: null,
         nodes$1: null,
         elements$1: null,
         ctor: function (node) {
             this.$initialize();
             System.Xml.Linq.XNode.ctor.call(this);
-            this.nodes$1 = System.Array.init(0, null, System.Xml.Linq.XNode);
-            this.elements$1 = System.Array.init(0, null, System.Xml.Linq.XElement);
-
-            for (var i = 0; i < node.childNodes.length; i = (i + 1) | 0) {
-                var childNode = node.childNodes[i];
-
-                if (childNode.nodeType === 1) {
-                    var childElement = new System.Xml.Linq.XElement(Bridge.cast(childNode, Element));
-                    this.elements$1.push(childElement);
-                    this.nodes$1.push(childElement);
-                }
-
-                if (childNode.nodeType === 3 && !Granular.Extensions.StringExtensions.isNullOrWhiteSpace(childNode.nodeValue)) {
-                    var childText = new System.Xml.Linq.XText(childNode);
-                    this.nodes$1.push(childText);
-                }
-            }
+            this.node = node;
+            this.nodes$1 = System.Linq.Enumerable.from(Granular.Extensions.EnumerableExtensions.trySelect(Node, System.Xml.Linq.XNode, node.childNodes, System.Xml.Linq.XNodeFactory.tryCreateNode)).toArray();
+            this.elements$1 = System.Linq.Enumerable.from(this.nodes$1).ofType(System.Xml.Linq.XElement).toArray();
         },
         nodes: function () {
             return this.nodes$1;
@@ -3702,13 +2688,16 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
     Bridge.define("System.Xml.Linq.XText", {
         inherits: [System.Xml.Linq.XNode],
         node: null,
+        config: {
+            properties: {
+                Value: null
+            }
+        },
         ctor: function (node) {
             this.$initialize();
             System.Xml.Linq.XNode.ctor.call(this);
             this.node = node;
-        },
-        getValue: function () {
-            return this.node.nodeValue;
+            this.setValue(node.nodeValue);
         }
     });
 
@@ -3844,7 +2833,7 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
                 return new System.Xml.Linq.XDocument(parser.parseFromString(text, "application/xml"));
             }
         },
-        node: null,
+        node$1: null,
         config: {
             properties: {
                 Root: null
@@ -3853,8 +2842,8 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
         ctor: function (node) {
             this.$initialize();
             System.Xml.Linq.XContainer.ctor.call(this, node);
-            this.node = node;
-            this.setRoot(new System.Xml.Linq.XElement(Bridge.cast(node.firstChild, Element)));
+            this.node$1 = node;
+            this.setRoot(new System.Xml.Linq.XElement(Bridge.cast(System.Linq.Enumerable.from(node.childNodes).single(), Element)));
         }
     });
 
@@ -3872,14 +2861,18 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             System.Xml.Linq.XContainer.ctor.call(this, element);
             this.element = element;
             this.setName(System.Xml.Linq.XName.get(System.Xml.Linq.NodeExtensions.getLocalName(element), element.namespaceURI));
-
-            this.attributes$1 = System.Array.init(element.attributes.length, null, System.Xml.Linq.XAttribute);
-            for (var i = 0; i < this.attributes$1.length; i = (i + 1) | 0) {
-                this.attributes$1[i] = new System.Xml.Linq.XAttribute(element.attributes[i]);
-            }
+            this.attributes$1 = System.Linq.Enumerable.from(element.attributes).select($asm.$.System.Xml.Linq.XElement.f1);
         },
         attributes: function () {
             return this.attributes$1;
+        }
+    });
+
+    Bridge.ns("System.Xml.Linq.XElement", $asm.$);
+
+    Bridge.apply($asm.$.System.Xml.Linq.XElement, {
+        f1: function (node) {
+            return new System.Xml.Linq.XAttribute(node);
         }
     });
 
